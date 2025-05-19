@@ -35,14 +35,16 @@ We follow a structured analysis approach based on the **CRISP-DM** model. Key st
   Metrics: Sensitivity, FAR, AUC, Specificity, PPV, Accuracy  
 
 ## 📁 Project Structure
-ecg-seizure-detection
-├── data/ # Data loaders and preprocessed ECG files
-├── notebooks/ # Jupyter notebooks for exploration and prototyping
-├── models/ # Implementation of MERLIN++, TimeVQVAE-AD, etc.
-├── scripts/ # Scripts for training, evaluation, and metrics
-├── results/ # Evaluation outputs and plots
-├── README.md # This file
-└── requirements.txt # Dependencies
+
+- `ecg-seizure-detection/`
+  - `data/` – Data loaders and preprocessed ECG files
+  - `notebooks/` – Jupyter notebooks for exploration and prototyping
+  - `models/` – Implementation of MERLIN++, TimeVQVAE-AD, etc.
+  - `scripts/` – Scripts for training, evaluation, and metrics
+  - `results/` – Evaluation outputs and plots
+  - `README.md` – Project overview and instructions
+  - `requirements.txt` – Python dependencies
+
 
 
 ## 📂 Dataset
