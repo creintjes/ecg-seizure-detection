@@ -1,0 +1,10 @@
+.venv
+.claude
+aws
+ds005873-download
+.pytest_cache
+Claude.md
+venv_win
+__pycache__/
+ds005873-1.1.0
+specs

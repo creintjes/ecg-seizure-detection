@@ -32,7 +32,7 @@ We follow a structured analysis approach based on the **CRISP-DM** model. Key st
   A 1-class SVM is used for comparison  
 - **Tracking & Evaluation**  
   Using [Weights & Biases](https://wandb.ai/) for experiment tracking  
-  Metrics: Sensitivity, FAR, AUC, Specificity, PPV, Accuracy  
+  Metrics: Sensitivity, FAR, AUC, Specificity, PPV  
 
 ## 📁 Project Structure
 
