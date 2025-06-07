@@ -10,3 +10,5 @@ ds005873-1.1.0
 specs
 results/preprocessed
 results/preprocessed_all
+load_failingFiles.sh
+ds005873-1.1.0.sh

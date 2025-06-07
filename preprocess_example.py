@@ -29,31 +29,17 @@ def main():
         print("Please update the data_path variable with correct SeizeIT2 dataset path")
         return
     
-    # 3. Single recording preprocessing
-    print("Processing single recording...")
-    subject_id = "sub-001"
-    run_id = "run-01"
-    
-    result = preprocessor.preprocess_pipeline(data_path, subject_id, run_id)
-    
-    if result:
-        print(f"✓ Processed {subject_id} {run_id}")
-        print(f"  - Recording duration: {result['recording_duration']:.1f}s")
-        print(f"  - Total seizures: {result['total_seizures']}")
-        
-        for channel in result['channels']:
-            print(f"  - Channel {channel['channel_name']}: {channel['n_windows']} windows "
-                  f"({channel['n_seizure_windows']} seizure windows)")
+
     
     # 4. Batch preprocessing example
     print("\nBatch processing multiple recordings...")
     
-    # Build recordings list (example for sub-001)
+    # Nur diese zwei spezifischen Aufnahmen preprocessen
     recordings = [
-        ("sub-001", "run-01"),
-        ("sub-001", "run-02"),
-        # Add more recordings as needed
+        ("sub-071", "run-12"),
+        ("sub-051", "run-03"),
     ]
+
     
     
     # Process batch with results saving
