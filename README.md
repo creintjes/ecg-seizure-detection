@@ -55,6 +55,10 @@ We use the **SeizeIT2 dataset**, which includes:
 - Over 11,000 hours of data sampled at 250Hz
 - 886 annotated focal seizures
 
+To download all needed files use:
+```bash
+nohup ./filtered_download_script.sh > filtered_download.log 2>&1 &
+```
 ➡️ Download instructions will be added soon.
 
 ## ⚙️ Installation
