@@ -8,3 +8,5 @@ venv_win
 __pycache__/
 ds005873-1.1.0
 specs
+results/preprocessed
+results/preprocessed_all
