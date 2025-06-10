@@ -105,10 +105,17 @@ def main():
         
         for subject_id, run_id in batch:
             try:
+                # Skip if file already exists
+                filename = f"{subject_id}_{run_id}_preprocessed.pkl"
+                filepath = results_path / filename
+                if filepath.exists():
+                    print(f"Skipping {subject_id} {run_id}: already preprocessed.")
+                    successful_recordings.append((subject_id, run_id))  # optional: oder ignorieren
+                    continue
+
                 print(f"Processing {subject_id} {run_id}...")
-                
                 result = preprocessor.preprocess_pipeline(data_path, subject_id, run_id)
-                
+
                 if result is not None:
                     # Save individual result
                     filename = f"{subject_id}_{run_id}_preprocessed.pkl"
