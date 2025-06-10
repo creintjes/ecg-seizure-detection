@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 class MatrixProfile:
     @staticmethod
-    def calculate_matrix_profile_for_sample(sample:np.array, subsequence_length:int):
+    def calculate_matrix_profile_for_sample(sample:np.ndarray, subsequence_length:int):
         return stumpy.stump(sample, subsequence_length)
     
     @staticmethod
@@ -12,7 +12,7 @@ class MatrixProfile:
         return np.argsort(matrix_profile[:, 0])[-1]
     
     @staticmethod
-    def plot_matrix_profile(sample: np.ndarray, matrix_profile: np.ndarray) -> plt.Figure:
+    def plot_matrix_profile(sample: np.ndarray, matrix_profile: np.ndarray) -> None:
         """Plot the original time series and its matrix profile, and highlight the detected anomaly.
         
         Args:
