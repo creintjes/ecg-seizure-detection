@@ -8,6 +8,8 @@ from pathlib import Path
 import os
 import time
 import pandas as pd
+import csv
+
 
 def discover_all_recordings(data_path):
     """
@@ -68,19 +70,19 @@ def main():
     data_path = "ds005873-1.1.0"
     
     if not Path(data_path).exists():
-        print(f"❌ Error: Data path {data_path} does not exist!")
+        print(f"Error: Data path {data_path} does not exist!")
         print("Please ensure the SeizeIT2 dataset is downloaded and extracted.")
         return
     
     # Discover all recordings
-    print("\n📂 Discovering recordings...")
+    print("\n Discovering recordings...")
     recordings = discover_all_recordings(data_path)
     
     if not recordings:
-        print("❌ No recordings found!")
+        print("No recordings found!")
         return
     
-    print(f"✅ Found {len(recordings)} recordings to process")
+    print(f"Found {len(recordings)} recordings to process")
     
     # Create output directory
     results_path = Path("./results/preprocessed_all")
@@ -98,7 +100,7 @@ def main():
         batch_num = i // batch_size + 1
         total_batches = (len(recordings) + batch_size - 1) // batch_size
         
-        print(f"\n🔄 Processing batch {batch_num}/{total_batches} ({len(batch)} recordings)")
+        print(f"\nProcessing batch {batch_num}/{total_batches} ({len(batch)} recordings)")
         print("-" * 40)
         
         for subject_id, run_id in batch:
@@ -119,14 +121,14 @@ def main():
                     total_windows = sum(ch['n_windows'] for ch in result['channels'])
                     seizure_windows = sum(ch['n_seizure_windows'] for ch in result['channels'])
                     
-                    print(f"  ✅ Success: {total_windows} windows ({seizure_windows} seizure)")
+                    print(f"Success: {total_windows} windows ({seizure_windows} seizure)")
                 else:
                     failed_recordings.append((subject_id, run_id))
-                    print(f"  ❌ Failed: No data or processing error")
+                    print(f"Failed: No data or processing error")
                     
             except Exception as e:
                 failed_recordings.append((subject_id, run_id))
-                print(f"  ❌ Error: {str(e)}")
+                print(f"Error: {str(e)}")
         
         # Progress update
         elapsed = time.time() - start_time
@@ -134,19 +136,19 @@ def main():
         rate = processed / elapsed if elapsed > 0 else 0
         eta = (len(recordings) - processed) / rate if rate > 0 else 0
         
-        print(f"\n📊 Progress: {processed}/{len(recordings)} recordings")
-        print(f"   Success rate: {len(successful_recordings)}/{processed} ({len(successful_recordings)/processed*100:.1f}%)")
-        print(f"   Processing rate: {rate:.1f} recordings/min")
-        print(f"   ETA: {eta/60:.1f} minutes")
+        print(f"Progress: {processed}/{len(recordings)} recordings")
+        print(f"Success rate: {len(successful_recordings)}/{processed} ({len(successful_recordings)/processed*100:.1f}%)")
+        print(f"Processing rate: {rate:.1f} recordings/min")
+        print(f"ETA: {eta/60:.1f} minutes")
     
     # Final summary
     total_time = time.time() - start_time
     
     print("\n" + "="*50)
-    print("🎯 PREPROCESSING COMPLETE!")
+    print("PREPROCESSING COMPLETE!")
     print("="*50)
     
-    print(f"\n📊 FINAL STATISTICS:")
+    print(f"\nFINAL STATISTICS:")
     print(f"  • Total recordings found:     {len(recordings)}")
     print(f"  • Successfully processed:     {len(successful_recordings)}")
     print(f"  • Failed:                     {len(failed_recordings)}")
@@ -156,7 +158,7 @@ def main():
     
     # Calculate total data statistics
     if successful_recordings:
-        print(f"\n💾 DATA SUMMARY:")
+        print(f"\nDATA SUMMARY:")
         
         total_windows = 0
         total_seizure_windows = 0
@@ -187,12 +189,27 @@ def main():
     
     # List failed recordings
     if failed_recordings:
-        print(f"\n❌ FAILED RECORDINGS ({len(failed_recordings)}):")
+        print(f"\nFAILED RECORDINGS ({len(failed_recordings)}):")
         for subject_id, run_id in failed_recordings:
             print(f"  • {subject_id} {run_id}")
+
+    # Name of the CSV file
+    csv_filename = "failed_recordings_preprocessing_SeizeIT2_ECG.csv"
+
+    # Create and write to the CSV file
+    with open(csv_filename, mode="w", newline="", encoding="utf-8") as file:
+        writer = csv.writer(file)
+        
+        # Write the header row
+        writer.writerow(["subject_id", "run_id"])
+        
+        # Write the data rows
+        for subject_id, run_id in failed_recordings:
+            writer.writerow([subject_id, run_id])
+
+    print(f"CSV file '{csv_filename}' has been successfully created.")
     
-    print(f"\n💾 Results saved to: {results_path}")
-    print("✅ Ready for anomaly detection model training!")
+    print(f"\n Results saved to: {results_path}")
 
 if __name__ == "__main__":
     main()
