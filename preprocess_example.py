@@ -21,7 +21,7 @@ def main():
     )
     
     # 2. Set data path (adjust to your SeizeIT2 dataset location)
-    data_path = "ds005873-download"  # Update this path!
+    data_path = "ds005873-1.1.0"  # Update this path!
     
     # Check if path exists
     if not Path(data_path).exists():
