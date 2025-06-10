@@ -141,13 +141,13 @@ def main():
         print(f"Processing rate: {rate:.1f} recordings/min")
         print(f"ETA: {eta/60:.1f} minutes")
     
-    # Final summary
+    # Final summary incl. saving
     total_time = time.time() - start_time
-    
+
     print("\n" + "="*50)
     print("PREPROCESSING COMPLETE!")
     print("="*50)
-    
+
     print(f"\nFINAL STATISTICS:")
     print(f"  • Total recordings found:     {len(recordings)}")
     print(f"  • Successfully processed:     {len(successful_recordings)}")
@@ -155,38 +155,64 @@ def main():
     print(f"  • Success rate:               {len(successful_recordings)/len(recordings)*100:.1f}%")
     print(f"  • Total processing time:      {total_time/60:.1f} minutes")
     print(f"  • Average time per recording: {total_time/len(recordings):.1f} seconds")
-    
+
+    # Prepare dictionary to collect printed variables
+    stats = {
+        "Total recordings found": len(recordings),
+        "Successfully processed": len(successful_recordings),
+        "Failed": len(failed_recordings),
+        "Success rate (%)": (len(successful_recordings)/len(recordings)*100) if recordings else 0,
+        "Total processing time (minutes)": total_time / 60,
+        "Average time per recording (seconds)": (total_time / len(recordings)) if recordings else 0,
+    }
+
     # Calculate total data statistics
     if successful_recordings:
         print(f"\nDATA SUMMARY:")
-        
+
         total_windows = 0
         total_seizure_windows = 0
         total_duration = 0
-        
+
         for subject_id, run_id in successful_recordings:
             filename = f"{subject_id}_{run_id}_preprocessed.pkl"
             filepath = results_path / filename
-            
+
             try:
                 result = pd.read_pickle(filepath)
                 total_duration += result['recording_duration']
-                
+
                 for channel in result['channels']:
                     total_windows += channel['n_windows']
                     total_seizure_windows += channel['n_seizure_windows']
             except:
                 continue
-        
+
+        seizure_percentage = (total_seizure_windows / total_windows * 100) if total_windows else 0
+
         print(f"  • Total recording duration:   {total_duration/3600:.1f} hours")
         print(f"  • Total windows created:      {total_windows:,}")
         print(f"  • Seizure windows:            {total_seizure_windows:,}")
-        print(f"  • Seizure percentage:         {total_seizure_windows/total_windows*100:.2f}%")
-        
-        # Calculate storage size
+        print(f"  • Seizure percentage:         {seizure_percentage:.2f}%")
+
         total_size = sum(f.stat().st_size for f in results_path.glob("*.pkl"))
         print(f"  • Total storage size:         {total_size/(1024**3):.2f} GB")
-    
+
+        # Add data summary to dictionary
+        stats.update({
+            "Total recording duration (hours)": total_duration / 3600,
+            "Total windows created": total_windows,
+            "Seizure windows": total_seizure_windows,
+            "Seizure percentage (%)": seizure_percentage,
+            "Total storage size (GB)": total_size / (1024 ** 3),
+        })
+
+    # Export stats to Excel file
+    df_stats = pd.DataFrame(list(stats.items()), columns=["Metric", "Value"])
+    excel_path = results_path / "preprocessing_summary.xlsx"
+    df_stats.to_excel(excel_path, index=False)
+
+    #
     # List failed recordings
     if failed_recordings:
         print(f"\nFAILED RECORDINGS ({len(failed_recordings)}):")
