@@ -49,7 +49,7 @@ def discover_all_recordings(data_path):
     return recordings
 
 def main():
-    print("🔄 PREPROCESSING ALL SEIZEIT2 ECG DATA")
+    print("PREPROCESSING ALL SEIZEIT2 ECG DATA")
     print("=" * 50)
     
     # Initialize preprocessor
@@ -65,7 +65,7 @@ def main():
     )
     
     # Set data path
-    data_path = "ds005873-download"
+    data_path = "ds005873-1.1.0"
     
     if not Path(data_path).exists():
         print(f"❌ Error: Data path {data_path} does not exist!")
