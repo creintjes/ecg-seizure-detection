@@ -61,7 +61,7 @@ def main():
             'high_freq': 40.0,   # Remove high-frequency noise
             'order': 4           # Filter order
         },
-        downsample_freq=125,     # Target sampling rate
+        downsample_freq=128,     # Target sampling rate
         window_size=30.0,        # 30 second windows
         stride=15.0              # 50% overlap
     )
