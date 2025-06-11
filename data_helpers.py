@@ -4,7 +4,7 @@ from typing import List, Tuple
 import numpy as np
 from pathlib import Path
 
-def load_preprocessed_samples(data_dir: str) -> Tuple[List[np.ndarray], List[int]]:
+def load_preprocessed_samples(data_dir: str, max_loaded_files: int) -> Tuple[List[np.ndarray], List[int]]:
     """
     Load preprocessed ECG window samples from pickle files and collect them into a list.
 
@@ -17,9 +17,14 @@ def load_preprocessed_samples(data_dir: str) -> Tuple[List[np.ndarray], List[int
     all_samples: List[np.ndarray] = []
     all_labels: List[int] = []
     amount_empty_or_corrupted_files: int = 0
+    count_loaded_files : int = 0
 
     # Iterate through all .pkl files in the given directory
     for filename in os.listdir(data_dir):
+        
+        if count_loaded_files >= max_loaded_files:
+            break
+
         if filename.endswith("_preprocessed.pkl"):
             filepath = os.path.join(data_dir, filename)
             
@@ -42,6 +47,7 @@ def load_preprocessed_samples(data_dir: str) -> Tuple[List[np.ndarray], List[int
                         labels = channel_data.get("labels", [])
                         all_samples.extend(windows)
                         all_labels.extend(labels)
+                    count_loaded_files +=1
             
             except (EOFError, pickle.UnpicklingError) as e:
                 # print(f"Warning: {filename} is empty or corrupted.")
