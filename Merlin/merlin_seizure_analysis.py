@@ -15,11 +15,11 @@ Key features:
 
 Usage:
     python merlin_seizure_analysis.py --data-path DATA_PATH
-    python merlin_seizure_analysis.py --data-dir SEIZURE_DATA_DIR --config seizure_optimized
+    python merlin_seizure_analysis.py --data-dir SEIZURE_DATA_DIR --config seizure_optimize
     python merlin_seizure_analysis.py --subject sub-001 --seizure-idx 0
+Example:
+    python merlin_seizure_analysis.py --data-path /home/swolf/asim_shared/preprocessed_data/seizure_only/8hz_5min/downsample_8hz_context_5min/sub-002_run-01_seizure_00_preprocessed.pk
 
-Author: Generated for seizure-focused MERLIN analysis
-Date: 2025
 """
 
 import numpy as np
@@ -40,7 +40,7 @@ from collections import defaultdict
 warnings.filterwarnings('ignore')
 
 # Add the Information/Merlin directory to path to import MERLIN
-sys.path.append(os.path.join('Information', 'Merlin'))
+sys.path.append(os.path.join('..','Information', 'Merlin'))
 
 try:
     from _merlin import MERLIN

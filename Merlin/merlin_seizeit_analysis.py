@@ -207,7 +207,7 @@ def run_merlin_on_window(window_data: np.ndarray, config: Dict[str, Any], fs: in
     detector = MERLIN(
         min_length=config['min_length'],
         max_length=config['max_length'],
-        max_iterations=500
+        max_iterations=50
     )
     
     try:

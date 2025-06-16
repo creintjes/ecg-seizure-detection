@@ -89,7 +89,7 @@ class FlexibleMerlinAnalyzer:
         
         if max_length_seconds is None:
             if self.window_size_seconds >= 3600:  # 1 hour or more
-                max_length_seconds = 900  # 15 minutes maximum
+                max_length_seconds = 90  # 1,5 minutes maximum
             elif self.window_size_seconds >= 300:  # 5 minutes or more
                 max_length_seconds = 60   # 1 minute maximum
             else:
@@ -107,9 +107,9 @@ class FlexibleMerlinAnalyzer:
         if self.window_size_seconds >= 3600:  # Long windows (hours)
             configs = [
                 {
-                    "name": f"Short-term ({min_length_seconds}s-{min_length_seconds*5}s)",
+                    "name": f"Short-term ({min_length_seconds}s-{min_length_seconds*1.5}s)",
                     "min_length": int(min_length_seconds * self.fs),
-                    "max_length": int(min_length_seconds * 5 * self.fs),
+                    "max_length": int(min_length_seconds * 1.5 * self.fs),
                     "description": f"Detect short anomalies ({min_length_seconds}-{min_length_seconds*5}s)"
                 },
                 {
@@ -232,11 +232,13 @@ class FlexibleMerlinAnalyzer:
         # Initialize MERLIN
         detector = MERLIN(
             min_length=config['min_length'],
-            max_length=config['max_length'],
-            max_iterations=500
+            #max_length=config['max_length'],
+            max_length=int(config['min_length'] * 1.5),
+            max_iterations=10
         )
         
         try:
+        
             # Run detection
             anomalies = detector.fit_predict(window_data.astype(np.float64))
             detection_time = time.time() - start_time
@@ -431,8 +433,8 @@ class FlexibleMerlinAnalyzer:
         # Initialize MERLIN
         detector = MERLIN(
             min_length=config['min_length'],
-            max_length=config['max_length'],
-            max_iterations=500
+            max_length=int(config['min_length'] * 1.5),
+            max_iterations=10
         )
         
         results = []

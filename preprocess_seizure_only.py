@@ -6,7 +6,6 @@ Extracts seizure events ± 30 minutes for efficient algorithm testing.
 This script implements a targeted preprocessing approach that:
 - Discovers all seizure events across the dataset
 - Extracts only seizure segments with surrounding context
-- Reduces data volume by ~13x while preserving all seizures
 - Enables rapid parameter optimization and algorithm testing
 """
 
@@ -40,33 +39,28 @@ PREPROCESSING_CONFIGS = {
         'filter_range': (0.5, 40),
         'context_minutes': 30
     },
-    'timevqvae': {
-        'downsample_freq': 100,
+    'merlin_8hz_5min': {
+        'downsample_freq': 8,
         'filter_range': (0.5, 40),
-        'context_minutes': 30
+        'context_minutes': 5
     },
-    'matrix_profile': {
-        'downsample_freq': 50,
+    'merlin_32hz_5min': {
+        'downsample_freq': 32,
         'filter_range': (0.5, 40),
-        'context_minutes': 30
+        'context_minutes': 5
     },
-    'multi_algorithm': {
-        'downsample_freq': 125,  # High resolution for flexibility
-        'filter_range': (0.5, 40),
-        'context_minutes': 30
-    }
 }
 
 
 def main():
     parser = argparse.ArgumentParser(description='Preprocess seizure-only segments from SeizeIT2')
     parser.add_argument('--config', choices=list(PREPROCESSING_CONFIGS.keys()), 
-                       default='default', help='Preprocessing configuration preset')
+                       default='merlin_32hz_5min', help='Preprocessing configuration preset')
     parser.add_argument('--data-path', type=str, 
                        default="/home/swolf/asim_shared/raw_data/ds005873-1.1.0",
                        help='Path to SeizeIT2 dataset')
     parser.add_argument('--output-path', type=str,
-                       default="/home/swolf/asim_shared/preprocessed_data/seizure_only",
+                       default="/home/swolf/asim_shared/preprocessed_data/seizure_only/32hz_5min",
                        help='Output directory for processed segments')
     parser.add_argument('--context-minutes', type=int, default=None,
                        help='Minutes of context before/after seizure (overrides config)')
