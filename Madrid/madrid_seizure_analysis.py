@@ -173,7 +173,10 @@ class SeizureFocusedMadridAnalyzer:
             
             total_duration = data['metadata']['total_duration']
             seizure_duration = data['metadata']['seizure_duration']
-            
+            data_len = len(data['channels'][0]['data'])
+            labels_len = len(data['channels'][0]['labels'])
+            assert data_len == labels_len, f"Mismatch: {data_len} data vs {labels_len} labels"
+
             print("✓ Seizure data loaded successfully")
             print(f"  Subject: {data['subject_id']}")
             print(f"  Run: {data['run_id']}")

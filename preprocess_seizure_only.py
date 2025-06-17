@@ -49,18 +49,23 @@ PREPROCESSING_CONFIGS = {
         'filter_range': (0.5, 40),
         'context_minutes': 5
     },
+    'merlin_125hz_5min': {
+        'downsample_freq': 125,
+        'filter_range': (0.5, 40),
+        'context_minutes': 5
+    },
 }
 
 
 def main():
     parser = argparse.ArgumentParser(description='Preprocess seizure-only segments from SeizeIT2')
     parser.add_argument('--config', choices=list(PREPROCESSING_CONFIGS.keys()), 
-                       default='merlin_32hz_5min', help='Preprocessing configuration preset')
+                       default='merlin_125hz_5min', help='Preprocessing configuration preset')
     parser.add_argument('--data-path', type=str, 
                        default="/home/swolf/asim_shared/raw_data/ds005873-1.1.0",
                        help='Path to SeizeIT2 dataset')
     parser.add_argument('--output-path', type=str,
-                       default="/home/swolf/asim_shared/preprocessed_data/seizure_only/32hz_5min",
+                       default="/home/swolf/asim_shared/preprocessed_data/seizure_only/125hz_5min",
                        help='Output directory for processed segments')
     parser.add_argument('--context-minutes', type=int, default=None,
                        help='Minutes of context before/after seizure (overrides config)')
@@ -161,6 +166,11 @@ def main():
             )
             
             if result is not None:
+                for ch in result['channels']:
+                    assert len(ch['data']) == len(ch['labels']), (
+                        f"❌ Mismatch in saved segment! "
+                        f"Data: {len(ch['data'])}, Labels: {len(ch['labels'])}"
+        )
                 # Save result
                 pd.to_pickle(result, filepath)
                 successful_segments.append((subject_id, run_id, seizure_idx))

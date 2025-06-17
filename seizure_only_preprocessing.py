@@ -358,10 +358,14 @@ class SeizureOnlyECGPreprocessor:
                 new_fs = min(self.downsample_freq, int(fs))
                 
                 # Create sample-level labels
+                segment_duration_actual = len(downsampled_signal) / new_fs
                 labels = self.create_seizure_context_labels(
-                    annotations.rec_duration, new_fs, annotations.events
+                    segment_duration_actual, new_fs, annotations.events
                 )
-                
+                assert len(labels) == len(downsampled_signal), (
+                    f"Label/Data mismatch after fix: {len(labels)} vs {len(downsampled_signal)}"
+                )
+
                 # Create timestamps
                 n_samples = len(downsampled_signal)
                 timestamps = np.linspace(extract_start, extract_end, n_samples)
