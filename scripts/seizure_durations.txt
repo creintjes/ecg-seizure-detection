@@ -1,7 +1,7 @@
 ================================================================================
 SEIZURE DURATION ANALYSIS RESULTS
 ================================================================================
-Generated: 2025-06-17 15:23:47
+Generated: 2025-06-17 15:34:25
 Files analyzed: 856
 Total seizures: 863
 Subjects: 120
@@ -24,10 +24,28 @@ Minimum:                 2.00 seconds
 Maximum:               962.00 seconds
 Range:                 960.00 seconds
 
-Percentiles:
-  5th percentile:        7.00 seconds
+Percentiles (in 5% steps):
+   5th percentile:       7.00 seconds
+  10th percentile:       9.20 seconds
+  15th percentile:      11.00 seconds
+  20th percentile:      12.00 seconds
   25th percentile:      14.00 seconds
+
+  30th percentile:      15.00 seconds
+  35th percentile:      18.70 seconds
+  40th percentile:      22.00 seconds
+  45th percentile:      27.00 seconds
+  50th percentile:      33.00 seconds
+
+  55th percentile:      41.00 seconds
+  60th percentile:      51.00 seconds
+  65th percentile:      62.30 seconds
+  70th percentile:      74.40 seconds
   75th percentile:      84.00 seconds
+
+  80th percentile:      94.00 seconds
+  85th percentile:     107.00 seconds
+  90th percentile:     121.80 seconds
   95th percentile:     157.80 seconds
 
 DURATION DISTRIBUTION
@@ -205,14 +223,31 @@ AGGRESSIVE Approach:
                step_size=1, 
                train_test_split=len(data)//3)
 
-SPECIFIC m-VALUE RECOMMENDATIONS:
-----------------------------------------
-  Mean duration     : m =  461 samples (57.74s)
-  Median duration   : m =  264 samples (33.00s)
-  Half mean         : m =  230 samples (28.87s)
-  Double mean       : m =  923 samples (115.49s)
-  25th percentile   : m =  112 samples (14.00s)
-  75th percentile   : m =  672 samples (84.00s)
+SPECIFIC m-VALUE RECOMMENDATIONS (by percentiles):
+-------------------------------------------------------
+Description        Duration (s) m (samples) 
+---------------------------------------------
+Mean duration           57.74s        461
+Median duration         33.00s        264
+5th percentile           7.00s         56
+10th percentile          9.20s         73
+15th percentile         11.00s         88
+20th percentile         12.00s         96
+25th percentile         14.00s        112
+30th percentile         15.00s        120
+35th percentile         18.70s        149
+40th percentile         22.00s        176
+45th percentile         27.00s        216
+50th percentile         33.00s        264
+55th percentile         41.00s        328
+60th percentile         51.00s        408
+65th percentile         62.30s        498
+70th percentile         74.40s        595
+75th percentile         84.00s        672
+80th percentile         94.00s        752
+85th percentile        107.00s        856
+90th percentile        121.80s        974
+95th percentile        157.80s       1262
 
 DETAILED PER-FILE RESULTS
 ------------------------------
