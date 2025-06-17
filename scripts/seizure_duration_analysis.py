@@ -307,16 +307,15 @@ class SeizureDurationAnalyzer:
             'min_duration': float(np.min(all_durations)),
             'max_duration': float(np.max(all_durations)),
             
-            # Percentiles
-            'percentile_5': float(np.percentile(all_durations, 5)),
-            'percentile_25': float(np.percentile(all_durations, 25)),
-            'percentile_75': float(np.percentile(all_durations, 75)),
-            'percentile_95': float(np.percentile(all_durations, 95)),
-            
             # Additional statistics
             'range': float(np.max(all_durations) - np.min(all_durations)),
             'coefficient_of_variation': float(np.std(all_durations) / np.mean(all_durations)),
         }
+        
+        # Add all percentiles in 5% steps
+        percentile_values = range(5, 100, 5)  # 5%, 10%, 15%, ..., 95%
+        for p in percentile_values:
+            duration_stats[f'percentile_{p}'] = float(np.percentile(all_durations, p))
         
         # Distribution analysis
         duration_categories = {
@@ -473,11 +472,18 @@ class SeizureDurationAnalyzer:
             f.write(f"Maximum:             {stats['max_duration']:8.2f} seconds\n")
             f.write(f"Range:               {stats['range']:8.2f} seconds\n\n")
             
-            f.write("Percentiles:\n")
-            f.write(f"  5th percentile:    {stats['percentile_5']:8.2f} seconds\n")
-            f.write(f"  25th percentile:   {stats['percentile_25']:8.2f} seconds\n")
-            f.write(f"  75th percentile:   {stats['percentile_75']:8.2f} seconds\n")
-            f.write(f"  95th percentile:   {stats['percentile_95']:8.2f} seconds\n\n")
+            f.write("Percentiles (in 5% steps):\n")
+            percentile_values = range(5, 100, 5)  # 5%, 10%, 15%, ..., 95%
+            for i, p in enumerate(percentile_values):
+                percentile_key = f'percentile_{p}'
+                if percentile_key in stats:
+                    f.write(f"  {p:2d}th percentile:   {stats[percentile_key]:8.2f} seconds\n")
+                    # Add line break every 5 percentiles for readability
+                    if (i + 1) % 5 == 0:
+                        f.write("\n")
+            
+            if len(percentile_values) % 5 != 0:  # Add final line break if needed
+                f.write("\n")
             
             # Duration Categories
             f.write("DURATION DISTRIBUTION\n")
@@ -532,26 +538,34 @@ class SeizureDurationAnalyzer:
                     f.write(f"               step_size={approach['step_m_samples']}, \n")
                     f.write(f"               train_test_split=len(data)//3)\n\n")
                 
-                # Specific m-value recommendations
-                f.write("SPECIFIC m-VALUE RECOMMENDATIONS:\n")
-                f.write("-"*40 + "\n")
+                # Specific m-value recommendations based on percentiles
+                f.write("SPECIFIC m-VALUE RECOMMENDATIONS (by percentiles):\n")
+                f.write("-"*55 + "\n")
                 
-                mean_duration = results['duration_stats']['mean_duration']
-                median_duration = results['duration_stats']['median_duration']
+                stats = results['duration_stats']
+                mean_duration = stats['mean_duration']
+                median_duration = stats['median_duration']
                 
+                # Add mean and median first
                 specific_m_values = [
                     ("Mean duration", mean_duration, int(mean_duration * fs)),
                     ("Median duration", median_duration, int(median_duration * fs)),
-                    ("Half mean", mean_duration * 0.5, int(mean_duration * 0.5 * fs)),
-                    ("Double mean", mean_duration * 2.0, int(mean_duration * 2.0 * fs)),
-                    ("25th percentile", results['duration_stats']['percentile_25'], 
-                     int(results['duration_stats']['percentile_25'] * fs)),
-                    ("75th percentile", results['duration_stats']['percentile_75'], 
-                     int(results['duration_stats']['percentile_75'] * fs))
                 ]
                 
+                # Add all percentiles in 5% steps
+                percentile_values = range(5, 100, 5)  # 5%, 10%, 15%, ..., 95%
+                for p in percentile_values:
+                    percentile_key = f'percentile_{p}'
+                    if percentile_key in stats:
+                        duration_sec = stats[percentile_key]
+                        m_samples = int(duration_sec * fs)
+                        specific_m_values.append((f"{p}th percentile", duration_sec, m_samples))
+                
+                # Print in a nice formatted table
+                f.write(f"{'Description':<18} {'Duration (s)':<12} {'m (samples)':<12}\n")
+                f.write("-"*45 + "\n")
                 for name, duration_sec, m_samples in specific_m_values:
-                    f.write(f"  {name:<18}: m = {m_samples:4d} samples ({duration_sec:5.2f}s)\n")
+                    f.write(f"{name:<18} {duration_sec:>10.2f}s {m_samples:>10d}\n")
                 
                 f.write("\n")
             
