@@ -94,9 +94,9 @@ class MadridMAnalyzer:
         else:
             # Default ranges based on mode and sampling frequency
             if mode == 'quick':
-                min_m = int(0.5 * fs)   # 0.5 seconds
-                max_m = int(10.0 * fs)  # 10 seconds
-                step = step or max(1, fs // 2)  # 0.5 second steps
+                min_m = int(10.0 * fs)   # 0.5 seconds
+                max_m = int(100.0 * fs)  # 10 seconds
+                step = step or max(1, fs * 10)  # 10 second steps
             elif mode == 'comprehensive':
                 min_m = int(0.1 * fs)   # 0.1 seconds
                 max_m = int(30.0 * fs)  # 30 seconds
