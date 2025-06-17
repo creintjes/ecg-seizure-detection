@@ -60,12 +60,12 @@ PREPROCESSING_CONFIGS = {
 def main():
     parser = argparse.ArgumentParser(description='Preprocess seizure-only segments from SeizeIT2')
     parser.add_argument('--config', choices=list(PREPROCESSING_CONFIGS.keys()), 
-                       default='merlin_125hz_5min', help='Preprocessing configuration preset')
+                       default='merlin_32hz_5min', help='Preprocessing configuration preset')
     parser.add_argument('--data-path', type=str, 
                        default="/home/swolf/asim_shared/raw_data/ds005873-1.1.0",
                        help='Path to SeizeIT2 dataset')
     parser.add_argument('--output-path', type=str,
-                       default="/home/swolf/asim_shared/preprocessed_data/seizure_only/125hz_5min",
+                       default="/home/swolf/asim_shared/preprocessed_data/seizure_only/32hz_5min",
                        help='Output directory for processed segments')
     parser.add_argument('--context-minutes', type=int, default=None,
                        help='Minutes of context before/after seizure (overrides config)')
