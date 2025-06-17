@@ -96,13 +96,13 @@ class MadridMAnalyzer:
             if mode == 'quick':
                 min_m = int(0.5 * fs)   # 0.5 seconds
                 max_m = int(10.0 * fs)  # 10 seconds
-                step = step or max(1, fs // 4)  # 0.25 second steps
+                step = step or max(1, fs // 2)  # 0.5 second steps
             elif mode == 'comprehensive':
                 min_m = int(0.1 * fs)   # 0.1 seconds
                 max_m = int(30.0 * fs)  # 30 seconds
                 step = step or max(1, fs // 8)  # 0.125 second steps
             elif mode == 'seizure_focused':
-                min_m = int(0.2 * fs)   # 0.2 seconds
+                min_m = int(2 * fs)   # 2 seconds
                 max_m = int(15.0 * fs)  # 15 seconds
                 step = step or max(1, fs // 5)  # 0.2 second steps
             else:

@@ -384,22 +384,22 @@ class SeizureDurationAnalyzer:
             
             # Conservative approach - cover most seizures
             'conservative': {
-                'min_m_seconds': max(0.1, stats['percentile_5'] * 0.5),
-                'max_m_seconds': min(60.0, stats['percentile_95'] * 1.5),
+                'min_m_seconds': max(0.1, stats['percentile_5'] ),
+                'max_m_seconds': min(600.0, stats['percentile_95'] ),
                 'description': 'Covers 90% of seizures with safety margin'
             },
             
             # Focused approach - target typical seizures
             'focused': {
-                'min_m_seconds': max(0.2, stats['percentile_25'] * 0.8),
-                'max_m_seconds': min(30.0, stats['percentile_75'] * 1.2),
+                'min_m_seconds': max(0.2, stats['percentile_25'] ),
+                'max_m_seconds': min(300.0, stats['percentile_75'] ),
                 'description': 'Targets central 50% of seizures'
             },
             
             # Aggressive approach - tight around mean
             'aggressive': {
-                'min_m_seconds': max(0.1, stats['mean_duration'] * 0.3),
-                'max_m_seconds': min(20.0, stats['mean_duration'] * 2.0),
+                'min_m_seconds': max(0.1, stats['mean_duration']),
+                'max_m_seconds': min(200.0, stats['mean_duration']),
                 'description': 'Tight range around mean duration'
             }
         }
