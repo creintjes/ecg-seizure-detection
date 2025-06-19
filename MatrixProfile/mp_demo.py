@@ -4,6 +4,11 @@ import re
 import pickle
 import numpy as np
 from datetime import datetime
+# # Add parent directory (../) to sys.path
+# project_root = Path().resolve().parent
+# if str(project_root) not in sys.path:
+#     sys.path.insert(0, str(project_root))
+from data_helpers import load_preprocessed_samples
 
 def save_numpy_array_list(array_list: list[np.ndarray], name:str) -> None:
     """
@@ -14,8 +19,9 @@ def save_numpy_array_list(array_list: list[np.ndarray], name:str) -> None:
     array_list : list[np.ndarray]
         List of NumPy arrays to save.
     """
-    timestamp = datetime.now().strftime("%H-%M-%S")
-    filename = f"{name}_{timestamp}.pkl"
+    # timestamp = datetime.now().strftime("%H-%M-%S")
+    timestamp = datetime.now().strftime("%d.%m.%Y, %H:%M")
+    filename = f"/home/jhagenbe_sw/ASIM/ecg-seizure-detection/MatrixProfile/MPs/{name}_{timestamp}.pkl"
     
     with open(filename, "wb") as f:
         pickle.dump(array_list, f)
@@ -27,17 +33,13 @@ def MatProfDemo()-> None:
     if str(project_root) not in sys.path:
         sys.path.insert(0, str(project_root))
 
-    from data_helpers import load_preprocessed_samples
 
-    # DATA_DIRECTORY = "../results/preprocessed_all"
-
-    
-    DATA_DIRECTORY = "/home/swolf/asim_shared/preprocessed_data/downsample_freq=32,window_size=3600_0,stride=1800_0"
+    DATA_DIRECTORY = "/home/swolf/asim_shared/preprocessed_data/downsample_freq=32,window_size=120_0,stride=60_0"
     match = re.search(r"downsample_freq=(\d+)", DATA_DIRECTORY)
     downsample_freq: int = int(match.group(1))
     samples, labels = load_preprocessed_samples(data_dir=DATA_DIRECTORY, max_loaded_files=350)
     samples.__len__()
-    amount_samples : int = 3000
+    amount_samples : int = 3500
     example_samples = samples[:amount_samples]
     from matrix_profile import MatrixProfile
     matrix_profiles = []
@@ -48,8 +50,11 @@ def MatProfDemo()-> None:
         counter +=1
         if counter % 100 == 0:
             print(counter)
+        if counter % 400 == 0:
+            save_numpy_array_list(array_list=matrix_profiles, name=str(list(DATA_DIRECTORY.split("/"))[-1])+f"_samples_till:{counter}")
+            matrix_profiles = []
 
-    save_numpy_array_list(array_list=matrix_profiles, name=list(DATA_DIRECTORY.split("/"))[-1])
+    save_numpy_array_list(array_list=matrix_profiles, name=str(list(DATA_DIRECTORY.split("/"))[-1])+f"_samples_till:{counter}")
 
 if __name__ == "__main__":
     MatProfDemo()    
