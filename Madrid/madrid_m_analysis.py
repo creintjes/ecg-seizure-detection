@@ -18,6 +18,8 @@ Usage:
     python madrid_m_analysis.py --data-dir DATA_DIR --m-range 50 1000 --step 25
     python madrid_m_analysis.py --data-dir DATA_DIR --percentage 25 --output m_analysis.txt
 
+    python madrid_m_analysis.py --data-dir /home/swolf/asim_shared/preprocessed_data/seizure_only/32hz_5min/downsample_32hz_context_5min --num-files 40 --mode quick
+
 
 """
 

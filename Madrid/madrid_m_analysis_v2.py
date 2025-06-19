@@ -6,6 +6,8 @@ Dieses Skript untersucht, wie sich verschiedene Subsequenzlängen (m) auf die
 Sensitivität der MADRID-Seizure-Erkennung auswirken – jetzt deutlich effizienter,
 weil jede Datei nur einmal durch MADRID läuft.
 
+python madrid_m_analysis_v2.py --data-dir /home/swolf/asim_shared/preprocessed_data/seizure_only/32hz_30min/downsample_32hz_context_30min --percentage 40 --m-range 320 3200 --step 320 --workers 4
+
 """
 
 from __future__ import annotations
@@ -79,8 +81,8 @@ class MultiLengthRunner:
         return ml_table, bsf, bsf_loc
 
     # --------------------------------------------------------------------- #
-    @staticmethod
     def sensitivity_for_m(
+        self,
         m: int,
         bsf: np.ndarray,
         bsf_loc: np.ndarray,
@@ -95,7 +97,7 @@ class MultiLengthRunner:
         idx = 0  # Index im bsf-Vektor
         if len(bsf) > 1:
             # bsf ist in gleicher Reihenfolge wie Range(min_m,max_m,step)
-            idx = (m - m_values[0]) // step_val
+            idx = (m - self.min_m) // self.step
         loc = int(bsf_loc[idx]) if not np.isnan(bsf_loc[idx]) else None
         if loc is None:
             return 0.0
@@ -176,11 +178,17 @@ def analyse_directory(
     # -------- Verarbeitung (option. parallel) --------
     if workers > 1:
         from joblib import Parallel, delayed
-
         def _process(path):
             sig, regions, fs = load_pickle(path)
-            ml_table, bsf, bsf_loc = runner.run(sig)
-            return sig, regions, fs, bsf, bsf_loc
+            try:
+                ml_table, bsf, bsf_loc = runner.run(sig)
+                return sig, regions, fs, bsf, bsf_loc
+            except ValueError as e:
+                if "constant" in str(e):
+                    print(f"⚠️  Datei übersprungen wegen konstanter Region: {path.name}")
+                    return None  # später filtern
+                else:
+                    raise
 
         results = Parallel(n_jobs=workers)(
             delayed(_process)(p) for p in files
@@ -188,16 +196,25 @@ def analyse_directory(
     else:
         results = []
         for p in files:
-            sig, regions, fs = load_pickle(p)
-            ml_table, bsf, bsf_loc = runner.run(sig)
-            results.append((sig, regions, fs, bsf, bsf_loc))
+            try:
+                sig, regions, fs = load_pickle(p)
+                ml_table, bsf, bsf_loc = runner.run(sig)
+                results.append((sig, regions, fs, bsf, bsf_loc))
+            except ValueError as e:
+                if "constant" in str(e):
+                    print(f"⚠️  Datei übersprungen wegen konstanter Region: {p.name}")
+                else:
+                    raise
+
+    results = [r for r in results if r is not None]
+
 
     # -------- Sensitivität für jede m --------
     sens_dict = defaultdict(list)
 
     for sig, regions, fs, bsf, bsf_loc in results:
         for m in m_values:
-            hit = MultiLengthRunner.sensitivity_for_m(
+            hit = runner.sensitivity_for_m(
                 m, bsf, bsf_loc, regions, fs, overlap_thresh
             )
             sens_dict[m].append(hit)
@@ -257,6 +274,31 @@ def cli():
     for m in sorted(sensitivities):
         print(f"m={m:5d}: Sensitivität = {sensitivities[m]:.3f}")
     print(f"\n🏆 Bestes m = {best_m} (Sensitivität {sensitivities[best_m]:.3f})")
+        # ---- Ergebnis speichern ----
+    # Beispiel: "32hz_30min" aus dem letzten Ordner extrahieren
+    suffix = data_dir.name  # z. B. "downsample_32hz_context_30min"
+    hz_match = next((part for part in suffix.split("_") if "hz" in part), "unknownhz")
+    min_match = next((part for part in suffix.split("_") if "min" in part), "unknownmin")
+
+    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    out_dir = Path("output")
+    out_dir.mkdir(exist_ok=True)
+    out_path = out_dir / f"ergebnisse_{hz_match}_{min_match}_{timestamp}.txt"
+
+    with open(out_path, "w") as f:
+        f.write("MADRID Sensitivitätsanalyse – Ergebnisse\n")
+        f.write(f"Verwendete Daten: {data_dir}\n")
+        f.write(f"Samplingrate: {hz_match}, Fenster: {min_match}\n")
+        f.write(f"Prozent der Daten: {args.percentage}%, GPU: {'Ja' if not args.no_gpu else 'Nein'}\n")
+        f.write(f"m-Werte: {min_m} bis {max_m} in {args.step}er-Schritten\n")
+        f.write(f"Gesamtzeit: {elapsed:.1f} Sekunden\n\n")
+        f.write("m\tSensitivität\n")
+        for m in sorted(sensitivities):
+            f.write(f"{m}\t{sensitivities[m]:.3f}\n")
+        f.write(f"\nBestes m: {best_m} (Sensitivität {sensitivities[best_m]:.3f})\n")
+
+    print(f"💾 Ergebnisse gespeichert in: {out_path}")
+
     print(f"⏱  Gesamtzeit: {elapsed:.1f}s  (GPU={'Ja' if not args.no_gpu else 'Nein'})")
 
 
