@@ -276,8 +276,21 @@ class MadridTop3Analyzer:
         fig.suptitle(f'Madrid Top-{self.top_k} Anomaly Detection Analysis\nFile: {file_name}', 
                     fontsize=14, fontweight='bold')
         
-        # Define colors for different ranks
-        rank_colors = ['red', 'orange', 'yellow']
+        # Define colors for different ranks - dynamically generate enough colors
+        import matplotlib.cm as cm
+        import matplotlib.colors as mcolors
+        
+        # Generate colors for all ranks
+        if self.top_k <= 10:
+            # Use predefined colors for common cases
+            base_colors = ['red', 'orange', 'gold', 'lime', 'cyan', 
+                          'blue', 'purple', 'pink', 'brown', 'gray']
+            rank_colors = base_colors[:self.top_k]
+        else:
+            # Use colormap for larger k values
+            cmap = cm.get_cmap('tab20')  # or 'viridis', 'Set3', etc.
+            rank_colors = [cmap(i / self.top_k) for i in range(self.top_k)]
+        
         seizure_markers = ['o', 's']  # circle for seizure, square for non-seizure
         
         # Plot 1: Score vs m-value (colored by rank, shaped by seizure detection)
