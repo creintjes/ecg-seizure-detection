@@ -100,3 +100,4 @@ RECOMMENDATIONS
                         step_size=1, train_test_split=len(signal)//3)
    anomalies = madrid.get_anomaly_scores(threshold_percentile=90)
 
+used: Madrid/madrid_m_analysis.py
