@@ -119,21 +119,41 @@ class MadridSingleFileAnalyzer:
                 train_test_split=train_test_split,
             )
             
-            # Extract results for each requested m value
-            for i, m in enumerate(range(min_m, max_m + 1, step_size)):
-                if m in m_values and i < len(bsf):
-                    score = float(bsf[i]) if not np.isnan(bsf[i]) else 0.0
-                    location = int(bsf_loc[i]) if not np.isnan(bsf_loc[i]) else None
+            # Debug: Print array shapes and contents
+            print(f"    Debug: BSF shape: {bsf.shape}, BSF_loc shape: {bsf_loc.shape}")
+            print(f"    Debug: Multi-length table shape: {multi_length_table.shape}")
+            print(f"    Debug: Expected m-values: {list(range(min_m, max_m + 1, step_size))}")
+            print(f"    Debug: BSF values: {bsf}")
+            print(f"    Debug: BSF_loc values: {bsf_loc}")
+            
+            # Alternative approach: Extract from multi_length_table directly
+            m_range = list(range(min_m, max_m + 1, step_size))
+            print(f"    Debug: Processing {len(m_range)} m-values from multi_length_table")
+            
+            for i, m in enumerate(m_range):
+                if m in m_values and i < multi_length_table.shape[0]:
+                    # Find best discord in this row (for this m-value)
+                    row = multi_length_table[i, train_test_split:]  # Only test portion
+                    if len(row) > 0 and not np.all(np.isinf(row)):
+                        max_idx = np.nanargmax(row)
+                        score = float(row[max_idx]) if not np.isnan(row[max_idx]) else 0.0
+                        location = int(max_idx + train_test_split) if not np.isnan(row[max_idx]) else None
+                    else:
+                        score = 0.0
+                        location = None
                     
                     results[m] = {
                         "score": score,
                         "location": location
                     }
                     print(f"    m={m}: score={score:.4f}, location={location}")
+                elif m in m_values:
+                    print(f"    m={m}: Index {i} außerhalb multi_length_table-Bereich")
             
             # Fill in any missing m values with zeros
             for m in m_values:
                 if m not in results:
+                    print(f"    m={m}: Nicht gefunden, setze auf 0")
                     results[m] = {"score": 0.0, "location": None}
                     
         except ValueError as e:
