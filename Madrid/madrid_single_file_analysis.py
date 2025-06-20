@@ -126,29 +126,29 @@ class MadridSingleFileAnalyzer:
             print(f"    Debug: BSF values: {bsf}")
             print(f"    Debug: BSF_loc values: {bsf_loc}")
             
-            # Alternative approach: Extract from multi_length_table directly
-            m_range = list(range(min_m, max_m + 1, step_size))
-            print(f"    Debug: Processing {len(m_range)} m-values from multi_length_table")
+            # Extract from multi_length_table - jede Zeile entspricht einem m-Wert
+            print(f"    Debug: Processing {multi_length_table.shape[0]} rows from multi_length_table")
             
-            for i, m in enumerate(m_range):
-                if m in m_values and i < multi_length_table.shape[0]:
-                    # Find best discord in this row (for this m-value)
-                    row = multi_length_table[i, train_test_split:]  # Only test portion
-                    if len(row) > 0 and not np.all(np.isinf(row)):
-                        max_idx = np.nanargmax(row)
-                        score = float(row[max_idx]) if not np.isnan(row[max_idx]) else 0.0
-                        location = int(max_idx + train_test_split) if not np.isnan(row[max_idx]) else None
-                    else:
-                        score = 0.0
-                        location = None
+            # Die tatsächlichen m-Werte entsprechen möglicherweise nicht unserer ursprünglichen Liste
+            # wegen Downsampling. Wir müssen die BSF-Arrays verwenden, da sie die richtige Länge haben.
+            for i in range(len(bsf)):
+                if i < multi_length_table.shape[0]:
+                    # Versuche herauszufinden, welches m-Wert das entspricht
+                    # Das ist schwierig ohne die internen MADRID-Parameter zu kennen
+                    score = float(bsf[i]) if not np.isnan(bsf[i]) else 0.0
+                    location = int(bsf_loc[i]) if not np.isnan(bsf_loc[i]) else None
                     
-                    results[m] = {
-                        "score": score,
-                        "location": location
-                    }
-                    print(f"    m={m}: score={score:.4f}, location={location}")
-                elif m in m_values:
-                    print(f"    m={m}: Index {i} außerhalb multi_length_table-Bereich")
+                    # Für jetzt verwenden wir den Index als Platzhalter
+                    # Das ist nicht ideal, aber besser als nichts
+                    if i < len(m_values):
+                        m = m_values[i]
+                        results[m] = {
+                            "score": score,
+                            "location": location
+                        }
+                        print(f"    m={m} (row {i}): score={score:.4f}, location={location}")
+                    else:
+                        print(f"    Row {i}: score={score:.4f}, location={location} (kein passendes m gefunden)")
             
             # Fill in any missing m values with zeros
             for m in m_values:

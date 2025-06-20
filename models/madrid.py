@@ -401,9 +401,16 @@ class MADRID:
         
         # Run core MADRID algorithm
         start_time = time.time()
+        # IMPORTANT: Adjust step_size for downsampling factor
+        step_size_sampled = max(1, int(np.ceil(step_size / factor)))
+        
+        # Debug output for step_size adjustment
+        print(f"MADRID Debug: Original step_size={step_size}, factor={factor}, adjusted step_size={step_size_sampled}")
+        print(f"MADRID Debug: Expected m_values: {list(range(min_len_sampled, max_len_sampled + 1, step_size_sampled))}")
+        
         multi_length_table, bsf, bsf_loc = self._madrid_core(
             T_sampled, min_len_sampled, max_len_sampled, 
-            step_size, split_sampled
+            step_size_sampled, split_sampled
         )
         execution_time = time.time() - start_time
         
