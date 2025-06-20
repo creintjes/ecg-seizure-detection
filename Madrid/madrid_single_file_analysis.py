@@ -84,7 +84,7 @@ class MadridSingleFileAnalyzer:
     
     def run_madrid_analysis(self, signal: np.ndarray, m_values: List[int]) -> Dict[int, Dict[str, Any]]:
         """
-        Führt Madrid-Analyse für verschiedene m-Werte durch.
+        Führt Madrid-Analyse EINMAL für alle m-Werte durch - viel effizienter!
         
         Args:
             signal: ECG Signal
@@ -96,39 +96,56 @@ class MadridSingleFileAnalyzer:
         results = {}
         train_test_split = int(len(signal) * self.train_ratio)
         
-        # Run Madrid for each m value
-        for m in m_values:
-            print(f"  Analysiere m={m}...")
+        # Determine step size from m_values
+        if len(m_values) > 1:
+            step_size = m_values[1] - m_values[0]
+        else:
+            step_size = 1
             
-            try:
-                madrid = MADRID(use_gpu=self.use_gpu, enable_output=False)
-                
-                # Run Madrid with single m value
-                multi_length_table, bsf, bsf_loc = madrid.fit(
-                    T=signal,
-                    min_length=m,
-                    max_length=m,
-                    step_size=1,
-                    train_test_split=train_test_split,
-                )
-                
-                # Extract best result
-                score = float(bsf[0]) if len(bsf) > 0 else 0.0
-                location = int(bsf_loc[0]) if len(bsf_loc) > 0 and not np.isnan(bsf_loc[0]) else None
-                
-                results[m] = {
-                    "score": score,
-                    "location": location
-                }
-                
-            except ValueError as e:
-                if "constant" in str(e).lower():
-                    print(f"    Warnung: Konstante Regionen für m={m}, überspringe...")
+        min_m = min(m_values)
+        max_m = max(m_values)
+        
+        print(f"  Führe MADRID einmal durch für m={min_m} bis {max_m} (step={step_size})...")
+        
+        try:
+            madrid = MADRID(use_gpu=self.use_gpu, enable_output=False)
+            
+            # Run Madrid ONCE for entire m range
+            multi_length_table, bsf, bsf_loc = madrid.fit(
+                T=signal,
+                min_length=min_m,
+                max_length=max_m,
+                step_size=step_size,
+                train_test_split=train_test_split,
+            )
+            
+            # Extract results for each requested m value
+            for i, m in enumerate(range(min_m, max_m + 1, step_size)):
+                if m in m_values and i < len(bsf):
+                    score = float(bsf[i]) if not np.isnan(bsf[i]) else 0.0
+                    location = int(bsf_loc[i]) if not np.isnan(bsf_loc[i]) else None
+                    
+                    results[m] = {
+                        "score": score,
+                        "location": location
+                    }
+                    print(f"    m={m}: score={score:.4f}, location={location}")
+            
+            # Fill in any missing m values with zeros
+            for m in m_values:
+                if m not in results:
                     results[m] = {"score": 0.0, "location": None}
-                else:
-                    raise
-            except Exception as e:
-                print(f"    Fehler bei m={m}: {e}")
+                    
+        except ValueError as e:
+            if "constant" in str(e).lower():
+                print(f"    Warnung: Konstante Regionen erkannt, setze alle Werte auf 0...")
+                for m in m_values:
+                    results[m] = {"score": 0.0, "location": None}
+            else:
+                raise
+        except Exception as e:
+            print(f"    Fehler bei MADRID-Ausführung: {e}")
+            for m in m_values:
                 results[m] = {"score": 0.0, "location": None}
         
         return results
