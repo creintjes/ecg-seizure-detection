@@ -168,6 +168,7 @@ class MadridTop3Analyzer:
                 max_length=max_m,
                 step_size=step_size,
                 train_test_split=train_test_split,
+                factor=1
             )
             
             print(f"    Debug: Multi-length table shape: {multi_length_table.shape}")
