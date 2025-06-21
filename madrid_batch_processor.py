@@ -169,8 +169,41 @@ class MadridBatchProcessor:
                 logger.warning(f"Empty signal data in: {file_path}")
                 return None
             
-            # Extract sampling rate
-            sampling_rate = data.get('processing_params', {}).get('downsample_freq', 125)
+            # Extract sampling rate - check multiple possible locations
+            sampling_rate = None
+            
+            # Try different possible keys for sampling rate
+            if 'processing_params' in data:
+                sampling_rate = data['processing_params'].get('downsample_freq')
+            
+            if sampling_rate is None and 'downsample_freq' in data:
+                sampling_rate = data['downsample_freq']
+            
+            # Check if it's in channel metadata
+            if sampling_rate is None:
+                channel = data['channels'][0]
+                if 'fs' in channel:
+                    sampling_rate = channel['fs']
+                elif 'sampling_rate' in channel:
+                    sampling_rate = channel['sampling_rate']
+            
+            # Try to infer from filename or path
+            if sampling_rate is None:
+                file_path_lower = file_path.lower()
+                if '8hz' in file_path_lower:
+                    sampling_rate = 8
+                elif '32hz' in file_path_lower:
+                    sampling_rate = 32
+                elif '125hz' in file_path_lower:
+                    sampling_rate = 125
+            
+            # Default fallback
+            if sampling_rate is None:
+                sampling_rate = 125
+                logger.warning(f"Could not determine sampling rate for {file_path}, using default 125Hz")
+            else:
+                logger.info(f"Detected sampling rate: {sampling_rate}Hz for {file_path}")
+            
             original_sampling_rate = 250  # Default for SeizeIT2
             
             # Signal metadata
