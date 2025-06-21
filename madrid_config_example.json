@@ -1,0 +1,37 @@
+{
+  "use_gpu": true,
+  "enable_output": false,
+  "madrid_parameters": {
+    "m_range": {
+      "min_length": 80,
+      "max_length": 800,
+      "step_size": 80
+    },
+    "analysis_config": {
+      "top_k": 3,
+      "train_test_split_ratio": 0.5,
+      "threshold_percentile": 95
+    },
+    "algorithm_settings": {
+      "use_gpu": true,
+      "downsampling_factor": 1
+    }
+  },
+  "sampling_rate_adaptations": {
+    "125hz": {
+      "min_length": 80,
+      "max_length": 800,
+      "step_size": 80
+    },
+    "32hz": {
+      "min_length": 20,
+      "max_length": 200,
+      "step_size": 20
+    },
+    "8hz": {
+      "min_length": 5,
+      "max_length": 50,
+      "step_size": 5
+    }
+  }
+}
