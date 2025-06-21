@@ -172,37 +172,48 @@ class MadridBatchProcessor:
             # Extract sampling rate - check multiple possible locations
             sampling_rate = None
             
-            # Try different possible keys for sampling rate
-            if 'processing_params' in data:
-                sampling_rate = data['processing_params'].get('downsample_freq')
+            # Method 1: Direct top-level key (preferred for seizure-only data)
+            if 'sampling_rate' in data:
+                sampling_rate = data['sampling_rate']
+                logger.info(f"Found sampling rate in top-level data: {sampling_rate}Hz")
             
-            if sampling_rate is None and 'downsample_freq' in data:
+            # Method 2: Processing params
+            elif 'preprocessing_params' in data and 'downsample_freq' in data['preprocessing_params']:
+                sampling_rate = data['preprocessing_params']['downsample_freq']
+                logger.info(f"Found sampling rate in preprocessing_params: {sampling_rate}Hz")
+            
+            # Method 3: Direct downsample_freq key
+            elif 'downsample_freq' in data:
                 sampling_rate = data['downsample_freq']
+                logger.info(f"Found sampling rate in downsample_freq: {sampling_rate}Hz")
             
-            # Check if it's in channel metadata
-            if sampling_rate is None:
+            # Method 4: Check channel metadata
+            elif 'channels' in data and len(data['channels']) > 0:
                 channel = data['channels'][0]
                 if 'fs' in channel:
                     sampling_rate = channel['fs']
+                    logger.info(f"Found sampling rate in channel.fs: {sampling_rate}Hz")
                 elif 'sampling_rate' in channel:
                     sampling_rate = channel['sampling_rate']
+                    logger.info(f"Found sampling rate in channel.sampling_rate: {sampling_rate}Hz")
             
-            # Try to infer from filename or path
+            # Method 5: Infer from filename or path
             if sampling_rate is None:
                 file_path_lower = file_path.lower()
                 if '8hz' in file_path_lower:
                     sampling_rate = 8
+                    logger.info(f"Inferred sampling rate from filename: {sampling_rate}Hz")
                 elif '32hz' in file_path_lower:
                     sampling_rate = 32
+                    logger.info(f"Inferred sampling rate from filename: {sampling_rate}Hz")
                 elif '125hz' in file_path_lower:
                     sampling_rate = 125
+                    logger.info(f"Inferred sampling rate from filename: {sampling_rate}Hz")
             
             # Default fallback
             if sampling_rate is None:
                 sampling_rate = 125
                 logger.warning(f"Could not determine sampling rate for {file_path}, using default 125Hz")
-            else:
-                logger.info(f"Detected sampling rate: {sampling_rate}Hz for {file_path}")
             
             original_sampling_rate = 250  # Default for SeizeIT2
             
