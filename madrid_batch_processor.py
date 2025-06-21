@@ -475,7 +475,8 @@ class MadridBatchProcessor:
                 min_length=madrid_params['min_length'],
                 max_length=madrid_params['max_length'],
                 step_size=madrid_params['step_size'],
-                train_test_split=int(len(signal) * self.madrid_params['analysis_config']['train_test_split_ratio'])
+                train_test_split=int(len(signal) * self.madrid_params['analysis_config']['train_test_split_ratio']),
+                factor=1
             )
             
             # Get anomaly information
@@ -573,26 +574,13 @@ class MadridBatchProcessor:
         """
         base_params = self.madrid_params['m_range']
         
-        if sampling_rate >= 100:  # 125Hz
+        if sampling_rate > 0: 
             return {
-                'min_length': base_params['min_length'],
-                'max_length': base_params['max_length'],
-                'step_size': base_params['step_size']
+                'min_length': sampling_rate*10,
+                'max_length': sampling_rate*100,
+                'step_size': sampling_rate*10
             }
-        elif sampling_rate >= 25:  # 32Hz
-            factor = 125 / sampling_rate
-            return {
-                'min_length': max(10, int(base_params['min_length'] / factor)),
-                'max_length': max(50, int(base_params['max_length'] / factor)),
-                'step_size': max(5, int(base_params['step_size'] / factor))
-            }
-        else:  # 8Hz
-            factor = 125 / sampling_rate
-            return {
-                'min_length': max(5, int(base_params['min_length'] / factor)),
-                'max_length': max(25, int(base_params['max_length'] / factor)),
-                'step_size': max(2, int(base_params['step_size'] / factor))
-            }
+       
     
     def validate_against_ground_truth(self, anomalies: List[Dict], ground_truth: Dict, sampling_rate: int) -> List[Dict]:
         """

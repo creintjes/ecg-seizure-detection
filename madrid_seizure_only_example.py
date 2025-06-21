@@ -40,19 +40,20 @@ def create_seizure_only_config():
         },
         'sampling_rate_adaptations': {
             '125hz': {
+                'min_length': 1250,
+                'max_length': 12500,
+
+                'step_size': 1250
+            },
+            '32hz': {
+                'min_length': 320,
+                'max_length': 3200,
+                'step_size': 320
+            },
+            '8hz': {
                 'min_length': 80,
                 'max_length': 800,
                 'step_size': 80
-            },
-            '32hz': {
-                'min_length': 20,
-                'max_length': 200,
-                'step_size': 20
-            },
-            '8hz': {
-                'min_length': 5,
-                'max_length': 50,
-                'step_size': 5
             }
         }
     }
