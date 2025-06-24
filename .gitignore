@@ -17,3 +17,6 @@ failed_recordings.csv
 failed_recordings_preprocessing_SeizeIT2_ECG.csv
 .idea/
 Madrid/output
+madrid_seizure_results_parallel_old
+madrid_seizure_results_parallel_40files
+madrid_seizure_results_parallel

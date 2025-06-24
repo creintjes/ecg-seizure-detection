@@ -36,7 +36,7 @@ warnings.filterwarnings('ignore')
 sys.path.append(os.path.join(os.path.dirname(__file__), '.'))
 
 try:
-    from models.madrid import MADRID
+    from models.madrid_v2 import MADRID_V2
     MADRID_AVAILABLE = True
     print("✓ MADRID successfully imported")
 except ImportError as e:
@@ -148,7 +148,7 @@ class MadridBatchProcessorCore:
     
     def __init__(self, config: Dict[str, Any]):
         self.config = config
-        self.madrid_detector = MADRID(
+        self.madrid_detector = MADRID_V2(
             use_gpu=config.get('use_gpu', True),
             enable_output=False  # Disable output in workers to avoid conflicts
         )

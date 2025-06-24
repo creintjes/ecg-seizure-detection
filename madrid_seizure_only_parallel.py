@@ -8,6 +8,7 @@ with Madrid algorithm and JSON output.
 Usage:
     python madrid_seizure_only_parallel.py --seizure-data-dir /path/to/data --n-workers 8 --max-files 20
     python madrid_seizure_only_parallel.py --seizure-data-dir /path/to/data --sampling-rate 32 --n-workers 4
+    python madrid_seizure_only_parallel.py --seizure-data-dir /home/swolf/asim_shared/preprocessed_data/seizure_only/32hz_30min/downsample_32hz_context_30min --max-files 5 --n-workers 8
 
 Features:
     - Parallel processing with multiprocessing
