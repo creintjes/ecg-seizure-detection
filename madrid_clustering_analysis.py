@@ -5,8 +5,7 @@ Madrid Clustering Analysis Script
 This script analyzes Madrid seizure detection results, performs clustering on detected anomalies 
 to reduce false positives, and compares metrics before and after clustering.
 
-Author: Claude Code Assistant
-Date: 2025-06-24
+
 """
 
 import json
