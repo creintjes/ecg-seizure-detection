@@ -90,27 +90,37 @@ class SmartMadridClusteringAnalyzer:
         }
         
     def time_based_clustering(self, time_threshold: float) -> List[List[Dict]]:
-        """Time-based clustering strategy."""
-        sorted_anomalies = sorted(self.all_anomalies, key=lambda x: x['location_time_seconds'])
+        """Time-based clustering strategy - performed separately per file."""
+        all_clusters = []
         
-        clusters = []
-        current_cluster = []
+        # Group anomalies by file
+        file_groups = defaultdict(list)
+        for anomaly in self.all_anomalies:
+            file_groups[anomaly['file_id']].append(anomaly)
         
-        for anomaly in sorted_anomalies:
-            if not current_cluster:
-                current_cluster = [anomaly]
-            else:
-                time_diff = anomaly['location_time_seconds'] - current_cluster[-1]['location_time_seconds']
-                if time_diff <= time_threshold:
-                    current_cluster.append(anomaly)
-                else:
-                    clusters.append(current_cluster)
-                    current_cluster = [anomaly]
-                    
-        if current_cluster:
-            clusters.append(current_cluster)
+        # Perform clustering within each file separately
+        for file_id, file_anomalies in file_groups.items():
+            # Sort anomalies within this file by time
+            sorted_anomalies = sorted(file_anomalies, key=lambda x: x['location_time_seconds'])
             
-        return clusters
+            current_cluster = []
+            for anomaly in sorted_anomalies:
+                if not current_cluster:
+                    current_cluster = [anomaly]
+                else:
+                    time_diff = anomaly['location_time_seconds'] - current_cluster[-1]['location_time_seconds']
+                    if time_diff <= time_threshold:
+                        current_cluster.append(anomaly)
+                    else:
+                        if current_cluster:
+                            all_clusters.append(current_cluster)
+                        current_cluster = [anomaly]
+                        
+            # Add the last cluster from this file
+            if current_cluster:
+                all_clusters.append(current_cluster)
+        
+        return all_clusters
         
     def score_based_clustering(self, time_threshold: float = 30.0) -> List[List[Dict]]:
         """Time-based clustering with different threshold (renamed for compatibility)."""

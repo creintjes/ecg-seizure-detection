@@ -98,35 +98,51 @@ class SimpleMadridClusteringAnalyzer:
         return metrics_before
         
     def simple_time_based_clustering(self, time_threshold: float = 300.0) -> List[List[Dict]]:
-        """Simple time-based clustering: group anomalies within time_threshold seconds."""
-        print(f"Performing simple time-based clustering (threshold: {time_threshold}s)")
+        """Simple time-based clustering: group anomalies within time_threshold seconds per file."""
+        print(f"Performing simple time-based clustering per file (threshold: {time_threshold}s)")
         
-        # Sort anomalies by time location
-        sorted_anomalies = sorted(self.all_anomalies, key=lambda x: x['location_time_seconds'])
+        all_clusters = []
         
-        clusters = []
-        current_cluster = []
+        # Group anomalies by file
+        file_groups = defaultdict(list)
+        for anomaly in self.all_anomalies:
+            file_groups[anomaly['file_id']].append(anomaly)
         
-        for anomaly in sorted_anomalies:
-            if not current_cluster:
-                current_cluster = [anomaly]
-            else:
-                # Check if anomaly is within time threshold of last anomaly in cluster
-                time_diff = anomaly['location_time_seconds'] - current_cluster[-1]['location_time_seconds']
-                if time_diff <= time_threshold:
-                    current_cluster.append(anomaly)
-                else:
-                    # Start new cluster
-                    clusters.append(current_cluster)
-                    current_cluster = [anomaly]
-                    
-        # Add the last cluster
-        if current_cluster:
-            clusters.append(current_cluster)
+        print(f"Processing {len(file_groups)} files separately...")
+        
+        # Perform clustering within each file separately
+        for file_id, file_anomalies in file_groups.items():
+            print(f"  File {file_id}: {len(file_anomalies)} anomalies")
             
-        print(f"Found {len(clusters)} clusters from {len(self.all_anomalies)} anomalies")
+            # Sort anomalies within this file by time
+            sorted_anomalies = sorted(file_anomalies, key=lambda x: x['location_time_seconds'])
+            
+            current_cluster = []
+            file_clusters = 0
+            
+            for anomaly in sorted_anomalies:
+                if not current_cluster:
+                    current_cluster = [anomaly]
+                else:
+                    time_diff = anomaly['location_time_seconds'] - current_cluster[-1]['location_time_seconds']
+                    if time_diff <= time_threshold:
+                        current_cluster.append(anomaly)
+                    else:
+                        if current_cluster:
+                            all_clusters.append(current_cluster)
+                            file_clusters += 1
+                        current_cluster = [anomaly]
+                        
+            # Add the last cluster from this file
+            if current_cluster:
+                all_clusters.append(current_cluster)
+                file_clusters += 1
+                
+            print(f"    → {file_clusters} clusters")
         
-        return clusters
+        print(f"Found {len(all_clusters)} total clusters from {len(self.all_anomalies)} anomalies across {len(file_groups)} files")
+        
+        return all_clusters
         
     def select_cluster_representatives(self, clusters: List[List[Dict]]) -> List[Dict]:
         """Select representative based on minimal time distance to all cluster members."""
