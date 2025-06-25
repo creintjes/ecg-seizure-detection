@@ -1107,3 +1107,14 @@
 2025-06-23 17:43:17,552 - MainProcess - INFO - 📄 Processing summary saved to: madrid_seizure_results_parallel/processing_summary.json
 2025-06-23 17:43:17,552 - MainProcess - WARNING - ⚠️  Low speedup achieved (1.0x vs 8x theoretical)
 2025-06-23 17:43:17,552 - MainProcess - WARNING -    Consider reducing workers or checking GPU availability
+2025-06-24 16:27:22,393 - MainProcess - INFO - 🚀 PARALLEL MADRID PROCESSING PLAN
+2025-06-24 16:27:22,393 - MainProcess - INFO - Files to process: 400
+2025-06-24 16:27:22,393 - MainProcess - INFO - Parallel workers: 8
+2025-06-24 16:27:22,393 - MainProcess - INFO - Estimated time: 32.2 minutes
+2025-06-24 16:27:22,393 - MainProcess - INFO - Expected speedup: 6.2x
+2025-06-24 16:27:22,393 - MainProcess - INFO - ETA: 16:59:37
+2025-06-24 16:27:22,393 - MainProcess - INFO - Using default seizure-only configuration
+2025-06-24 16:27:22,393 - MainProcess - INFO - 🔧 Initializing parallel processor with 8 workers...
+2025-06-24 16:27:22,394 - MainProcess - INFO - Parallel Madrid Processor initialized with 8 workers
+2025-06-24 16:27:22,394 - MainProcess - INFO - 🚀 Starting parallel processing...
+2025-06-24 16:27:22,397 - MainProcess - INFO - Found 400 files to process with 8 workers
