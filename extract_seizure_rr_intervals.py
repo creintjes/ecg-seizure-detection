@@ -12,6 +12,7 @@ import numpy as np
 from pathlib import Path
 from scipy.signal import find_peaks
 import argparse
+import matplotlib.pyplot as plt
 
 # Add the seizeit2 classes to the path
 sys.path.append(os.path.join(os.path.dirname(__file__), 'Information', 'Data', 'seizeit2-main'))
@@ -63,6 +64,95 @@ def calculate_rr_intervals(r_peaks, fs):
     return rr_intervals_ms
 
 
+def plot_r_peaks(ecg_segment, r_peaks, fs, seizure_start_idx, seizure_end_idx, 
+                 recording_info, seizure_id, output_dir="."):
+    """
+    Create a plot showing ECG signal with detected R peaks and seizure boundaries.
+    
+    Args:
+        ecg_segment: ECG signal array
+        r_peaks: Array of R peak indices
+        fs: Sampling frequency
+        seizure_start_idx: Index where seizure starts in segment
+        seizure_end_idx: Index where seizure ends in segment
+        recording_info: Recording information tuple (subject, run)
+        seizure_id: Seizure identifier for filename
+        output_dir: Directory to save plot
+    """
+    # Create time axis in seconds
+    time_axis = np.arange(len(ecg_segment)) / fs
+    
+    # Create figure with subplots
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(15, 10))
+    
+    # Plot 1: Full segment overview
+    ax1.plot(time_axis, ecg_segment, 'b-', linewidth=0.8, alpha=0.7, label='ECG Signal')
+    ax1.plot(time_axis[r_peaks], ecg_segment[r_peaks], 'ro', markersize=4, 
+             label=f'R Peaks (n={len(r_peaks)})')
+    
+    # Mark seizure period
+    if seizure_start_idx < len(ecg_segment) and seizure_end_idx < len(ecg_segment):
+        ax1.axvspan(seizure_start_idx/fs, seizure_end_idx/fs, 
+                   alpha=0.3, color='red', label='Seizure Period')
+    
+    ax1.set_xlabel('Time (seconds)')
+    ax1.set_ylabel('ECG Amplitude')
+    ax1.set_title(f'ECG Signal with R Peak Detection - {recording_info[0]} {recording_info[1]} Seizure {seizure_id}')
+    ax1.legend()
+    ax1.grid(True, alpha=0.3)
+    
+    # Plot 2: Zoomed view of seizure period (±30 seconds around seizure)
+    if seizure_start_idx < len(ecg_segment) and seizure_end_idx < len(ecg_segment):
+        seizure_center = (seizure_start_idx + seizure_end_idx) // 2
+        zoom_start = max(0, seizure_center - int(30 * fs))  # 30 seconds before center
+        zoom_end = min(len(ecg_segment), seizure_center + int(30 * fs))  # 30 seconds after center
+        
+        zoom_time = time_axis[zoom_start:zoom_end]
+        zoom_ecg = ecg_segment[zoom_start:zoom_end]
+        
+        # Find R peaks in zoom window
+        zoom_peaks = r_peaks[(r_peaks >= zoom_start) & (r_peaks < zoom_end)] - zoom_start
+        
+        ax2.plot(zoom_time, zoom_ecg, 'b-', linewidth=1.2, label='ECG Signal')
+        if len(zoom_peaks) > 0:
+            ax2.plot(zoom_time[zoom_peaks], zoom_ecg[zoom_peaks], 'ro', markersize=6, 
+                    label=f'R Peaks (n={len(zoom_peaks)})')
+        
+        # Mark seizure boundaries in zoom
+        seizure_start_time = seizure_start_idx / fs
+        seizure_end_time = seizure_end_idx / fs
+        if zoom_time[0] <= seizure_start_time <= zoom_time[-1]:
+            ax2.axvline(seizure_start_time, color='red', linestyle='--', 
+                       label='Seizure Start', linewidth=2)
+        if zoom_time[0] <= seizure_end_time <= zoom_time[-1]:
+            ax2.axvline(seizure_end_time, color='red', linestyle='--', 
+                       label='Seizure End', linewidth=2)
+        
+        ax2.set_xlabel('Time (seconds)')
+        ax2.set_ylabel('ECG Amplitude')
+        ax2.set_title('Zoomed View: Seizure Period (±30 seconds)')
+        ax2.legend()
+        ax2.grid(True, alpha=0.3)
+    else:
+        ax2.text(0.5, 0.5, 'Seizure boundaries not available for zoom view', 
+                transform=ax2.transAxes, ha='center', va='center', fontsize=12)
+        ax2.set_title('Zoomed View: Not Available')
+    
+    plt.tight_layout()
+    
+    # Save plot
+    output_path = Path(output_dir)
+    output_path.mkdir(exist_ok=True)
+    
+    filename = f"r_peaks_{recording_info[0]}_{recording_info[1]}_seizure_{seizure_id:02d}.png"
+    filepath = output_path / filename
+    
+    plt.savefig(filepath, dpi=300, bbox_inches='tight')
+    plt.close()  # Close to free memory
+    
+    print(f"  - Plot saved: {filepath}")
+
+
 def extract_seizure_segment(ecg_data, annotations, seizure_idx, fs, pre_minutes=5, post_minutes=5):
     """
     Extract ECG segment around a seizure event.
@@ -99,7 +189,7 @@ def extract_seizure_segment(ecg_data, annotations, seizure_idx, fs, pre_minutes=
     return ecg_segment, seizure_start_in_segment, seizure_end_in_segment
 
 
-def process_seizures(data_path, output_file, num_seizures=5):
+def process_seizures(data_path, output_file, num_seizures=5, plot_dir="r_peak_plots"):
     """
     Process random seizures and extract RR intervals.
     
@@ -107,6 +197,7 @@ def process_seizures(data_path, output_file, num_seizures=5):
         data_path: Path to SeizeIT2 dataset
         output_file: Output file path
         num_seizures: Number of seizures to process
+        plot_dir: Directory to save R peak plots
     """
     data_path = Path(data_path)
     
@@ -189,6 +280,10 @@ def process_seizures(data_path, output_file, num_seizures=5):
                 print(f"No RR intervals found for seizure {i+1}")
                 continue
             
+            # Create plot showing R peaks
+            plot_r_peaks(ecg_segment, r_peaks, fs, seizure_start_idx, seizure_end_idx,
+                        seizure_info['recording'], i + 1, output_dir=plot_dir)
+            
             # Find which RR intervals correspond to seizure period
             seizure_rr_indices = []
             for j, peak_idx in enumerate(r_peaks[:-1]):  # -1 because RR intervals are between peaks
@@ -247,6 +342,8 @@ def main():
                        help='Number of seizures to process (default: 5)')
     parser.add_argument('--seed', type=int, default=42,
                        help='Random seed for reproducibility (default: 42)')
+    parser.add_argument('--plot-dir', default='r_peak_plots',
+                       help='Directory to save R peak plots (default: r_peak_plots)')
     
     args = parser.parse_args()
     
@@ -258,7 +355,7 @@ def main():
         print(f"Error: Data path {args.data_path} does not exist")
         sys.exit(1)
     
-    process_seizures(args.data_path, args.output, args.num_seizures)
+    process_seizures(args.data_path, args.output, args.num_seizures, args.plot_dir)
 
 
 if __name__ == "__main__":
