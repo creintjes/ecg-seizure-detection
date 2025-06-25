@@ -111,8 +111,8 @@ def process_seizures(data_path, output_file, num_seizures=5):
     data_path = Path(data_path)
     
     # Build recordings list
-    sub_list = [x for x in data_path.glob("sub*")]
-    recordings = [[x.name, xx.name.split('_')[-2]] for x in sub_list for xx in (x / 'ses-01' / 'eeg').glob("*edf")]
+    sub_list = [x for x in data_path.glob("sub-*") if x.is_dir()]
+    recordings = [[x.name, xx.name.split('_')[-2]] for x in sub_list for xx in (x / 'ses-01' / 'ecg').glob("*_ecg.edf")]
     
     print(f"Found {len(recordings)} recordings")
     
