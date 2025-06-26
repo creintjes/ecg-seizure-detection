@@ -27,6 +27,7 @@ def save_numpy_array_list(array_list: list[np.ndarray], name:str) -> None:
         pickle.dump(array_list, f)
 
 
+
 def MatProfDemo()-> None:
     # Add parent directory (../) to sys.path
     project_root = Path().resolve().parent
@@ -35,11 +36,13 @@ def MatProfDemo()-> None:
 
 
     DATA_DIRECTORY = "/home/swolf/asim_shared/preprocessed_data/downsample_freq=32,window_size=120_0,stride=60_0"
+
     match = re.search(r"downsample_freq=(\d+)", DATA_DIRECTORY)
     downsample_freq: int = int(match.group(1))
     samples, labels = load_preprocessed_samples(data_dir=DATA_DIRECTORY, max_loaded_files=350)
     samples.__len__()
     amount_samples : int = 3500
+
     example_samples = samples[:amount_samples]
     from matrix_profile import MatrixProfile
     matrix_profiles = []
@@ -58,3 +61,4 @@ def MatProfDemo()-> None:
 
 if __name__ == "__main__":
     MatProfDemo()    
+

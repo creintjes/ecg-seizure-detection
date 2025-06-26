@@ -61,13 +61,13 @@ def main():
             'high_freq': 40.0,   # Remove high-frequency noise
             'order': 4           # Filter order
         },
-        downsample_freq=125,     # Target sampling rate
-        window_size=30.0,        # 30 second windows
-        stride=15.0              # 50% overlap
+        downsample_freq=8,     # Target sampling rate
+        window_size=3600.0,        # 30 second windows
+        stride=1800.0              # 50% overlap
     )
     
     # Set data path
-    data_path = "ds005873-1.1.0"
+    data_path = "/home/swolf/asim_shared/raw_data/ds005873-1.1.0" 
     
     if not Path(data_path).exists():
         print(f"Error: Data path {data_path} does not exist!")
@@ -85,7 +85,10 @@ def main():
     print(f"Found {len(recordings)} recordings to process")
     
     # Create output directory
-    results_path = Path("./results/preprocessed_all")
+    results_path = Path(
+        "/home/swolf/asim_shared/preprocessed_data/"
+        "downsample_freq=8,window_size=3600_0,stride=1800_0"
+    )
     results_path.mkdir(parents=True, exist_ok=True)
     
     # Process in batches to avoid memory issues

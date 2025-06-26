@@ -19,3 +19,13 @@ test/
 preprocessed_data/
 ASIM_v1/
 MatrixProfile/MPs
+.idea/
+Madrid/output
+madrid_seizure_results_parallel_old
+madrid_seizure_results_parallel_40files
+madrid_seizure_results_parallel
+results
+madrid_seizure_results_parallel_example_smart_clustered
+madrid_seizure_results_parallel_example_clustered
+madrid_results
+

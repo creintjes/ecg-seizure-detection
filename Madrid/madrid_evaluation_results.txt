@@ -1,0 +1,167 @@
+================================================================================
+MADRID BATCH EVALUATION RESULTS
+================================================================================
+Generated: 2025-06-17 14:02:01
+Total files processed: 340
+Successful analyses: 85
+Minimum overlap threshold: 0.1
+GPU acceleration: True
+
+EXECUTIVE SUMMARY
+----------------------------------------
+ictal_focused       : 1.282 sensitivity, 0.641 precision, 0.855 F1
+
+Best performing configuration: ictal_focused (Sensitivity: 1.282)
+
+DETAILED CONFIGURATION RESULTS
+--------------------------------------------------
+
+Configuration: ictal_focused
+==============================
+Files processed: 85
+Successful analyses: 85
+Total true seizures: 85
+Total detected anomalies: 170
+True positives: 109
+False positives: 61
+False negatives: 30
+
+Overall Performance:
+  Sensitivity: 1.2824
+  Precision:   0.6412
+  F1-Score:    0.8549
+
+Per-File Statistics:
+  Mean Sensitivity: 1.2824 ± 0.9532
+  Mean Specificity: 0.9885 ± 0.0157
+  Mean Precision:   0.6412 ± 0.4766
+  Mean F1-Score:    0.8549 ± 0.6354
+
+Performance:
+  Mean detection time: 60.889s ± 14.609s
+
+Sensitivity Distribution:
+  Min:     0.000
+  25th:    0.000
+  Median:  2.000
+  75th:    2.000
+  Max:     2.000
+  Perfect detections (≥0.99): 55/85 (64.7%)
+  Good detections (≥0.80): 55/85 (64.7%)
+
+--------------------------------------------------
+
+CONFIGURATION COMPARISON
+------------------------------
+Configuration        Sensitivity  Precision    F1-Score   Time(s) 
+----------------------------------------------------------------------
+ictal_focused        1.2824       0.6412       0.8549     60.889  
+
+DETAILED PER-FILE RESULTS
+----------------------------------------
+
+Configuration: ictal_focused
+==============================
+File                      Subject    Seizures Detected  Sens   Prec   F1    
+---------------------------------------------------------------------------
+sub-001_run-05_seizur...  sub-001    1        2         2.000  1.000  1.333 
+sub-002_run-01_seizur...  sub-002    1        2         2.000  1.000  1.333 
+sub-002_run-03_seizur...  sub-002    1        2         0.000  0.000  0.000 
+sub-003_run-06_seizur...  sub-003    1        2         2.000  1.000  1.333 
+sub-004_run-01_seizur...  sub-004    1        2         2.000  1.000  1.333 
+sub-004_run-01_seizur...  sub-004    1        2         2.000  1.000  1.333 
+sub-010_run-08_seizur...  sub-010    1        2         2.000  1.000  1.333 
+sub-012_run-03_seizur...  sub-012    1        2         2.000  1.000  1.333 
+sub-013_run-01_seizur...  sub-013    1        2         2.000  1.000  1.333 
+sub-015_run-03_seizur...  sub-015    1        2         2.000  1.000  1.333 
+sub-019_run-07_seizur...  sub-019    1        2         2.000  1.000  1.333 
+sub-021_run-04_seizur...  sub-021    1        2         2.000  1.000  1.333 
+sub-022_run-03_seizur...  sub-022    1        2         2.000  1.000  1.333 
+sub-027_run-07_seizur...  sub-027    1        2         2.000  1.000  1.333 
+sub-031_run-03_seizur...  sub-031    1        2         2.000  1.000  1.333 
+sub-034_run-07_seizur...  sub-034    1        2         2.000  1.000  1.333 
+sub-034_run-09_seizur...  sub-034    1        2         0.000  0.000  0.000 
+sub-035_run-03_seizur...  sub-035    1        2         0.000  0.000  0.000 
+sub-035_run-03_seizur...  sub-035    1        2         0.000  0.000  0.000 
+sub-035_run-07_seizur...  sub-035    1        2         2.000  1.000  1.333 
+sub-035_run-11_seizur...  sub-035    1        2         0.000  0.000  0.000 
+sub-035_run-11_seizur...  sub-035    1        2         0.000  0.000  0.000 
+sub-035_run-14_seizur...  sub-035    1        2         0.000  0.000  0.000 
+sub-039_run-01_seizur...  sub-039    1        2         2.000  1.000  1.333 
+sub-039_run-01_seizur...  sub-039    1        2         0.000  0.000  0.000 
+sub-039_run-04_seizur...  sub-039    1        2         2.000  1.000  1.333 
+sub-039_run-04_seizur...  sub-039    1        2         0.000  0.000  0.000 
+sub-039_run-04_seizur...  sub-039    1        2         2.000  1.000  1.333 
+sub-039_run-06_seizur...  sub-039    1        2         2.000  1.000  1.333 
+sub-039_run-09_seizur...  sub-039    1        2         2.000  1.000  1.333 
+sub-039_run-09_seizur...  sub-039    1        2         2.000  1.000  1.333 
+sub-039_run-09_seizur...  sub-039    1        2         2.000  1.000  1.333 
+sub-043_run-08_seizur...  sub-043    1        2         2.000  1.000  1.333 
+sub-045_run-09_seizur...  sub-045    1        2         2.000  1.000  1.333 
+sub-046_run-01_seizur...  sub-046    1        2         2.000  1.000  1.333 
+sub-047_run-02_seizur...  sub-047    1        2         0.000  0.000  0.000 
+sub-047_run-04_seizur...  sub-047    1        2         0.000  0.000  0.000 
+sub-047_run-04_seizur...  sub-047    1        2         0.000  0.000  0.000 
+sub-047_run-06_seizur...  sub-047    1        2         0.000  0.000  0.000 
+sub-047_run-07_seizur...  sub-047    1        2         0.000  0.000  0.000 
+sub-052_run-07_seizur...  sub-052    1        2         2.000  1.000  1.333 
+sub-053_run-02_seizur...  sub-053    1        2         2.000  1.000  1.333 
+sub-055_run-01_seizur...  sub-055    1        2         0.000  0.000  0.000 
+sub-059_run-01_seizur...  sub-059    1        2         2.000  1.000  1.333 
+sub-060_run-02_seizur...  sub-060    1        2         2.000  1.000  1.333 
+sub-066_run-06_seizur...  sub-066    1        2         0.000  0.000  0.000 
+sub-067_run-05_seizur...  sub-067    1        2         0.000  0.000  0.000 
+sub-068_run-05_seizur...  sub-068    1        2         2.000  1.000  1.333 
+sub-068_run-09_seizur...  sub-068    1        2         0.000  0.000  0.000 
+sub-071_run-08_seizur...  sub-071    1        2         2.000  1.000  1.333 
+sub-072_run-12_seizur...  sub-072    1        2         2.000  1.000  1.333 
+sub-072_run-16_seizur...  sub-072    1        2         2.000  1.000  1.333 
+sub-073_run-30_seizur...  sub-073    1        2         2.000  1.000  1.333 
+sub-073_run-41_seizur...  sub-073    1        2         2.000  1.000  1.333 
+sub-073_run-42_seizur...  sub-073    1        2         0.000  0.000  0.000 
+sub-073_run-42_seizur...  sub-073    1        2         2.000  1.000  1.333 
+sub-073_run-47_seizur...  sub-073    1        2         2.000  1.000  1.333 
+sub-080_run-16_seizur...  sub-080    1        2         0.000  0.000  0.000 
+sub-083_run-32_seizur...  sub-083    1        2         2.000  1.000  1.333 
+sub-085_run-42_seizur...  sub-085    1        2         0.000  0.000  0.000 
+sub-087_run-03_seizur...  sub-087    1        2         0.000  0.000  0.000 
+sub-087_run-13_seizur...  sub-087    1        2         0.000  0.000  0.000 
+sub-087_run-14_seizur...  sub-087    1        2         0.000  0.000  0.000 
+sub-087_run-14_seizur...  sub-087    1        2         2.000  1.000  1.333 
+sub-087_run-16_seizur...  sub-087    1        2         2.000  1.000  1.333 
+sub-090_run-02_seizur...  sub-090    1        2         2.000  1.000  1.333 
+sub-094_run-08_seizur...  sub-094    1        2         2.000  1.000  1.333 
+sub-095_run-60_seizur...  sub-095    1        2         2.000  1.000  1.333 
+sub-101_run-02_seizur...  sub-101    1        2         0.000  0.000  0.000 
+sub-102_run-01_seizur...  sub-102    1        2         2.000  1.000  1.333 
+sub-102_run-03_seizur...  sub-102    1        2         2.000  1.000  1.333 
+sub-103_run-02_seizur...  sub-103    1        2         0.000  0.000  0.000 
+sub-103_run-04_seizur...  sub-103    1        2         0.000  0.000  0.000 
+sub-103_run-04_seizur...  sub-103    1        2         0.000  0.000  0.000 
+sub-103_run-07_seizur...  sub-103    1        2         2.000  1.000  1.333 
+sub-109_run-03_seizur...  sub-109    1        2         2.000  1.000  1.333 
+sub-109_run-07_seizur...  sub-109    1        2         2.000  1.000  1.333 
+sub-110_run-08_seizur...  sub-110    1        2         2.000  1.000  1.333 
+sub-112_run-04_seizur...  sub-112    1        2         2.000  1.000  1.333 
+sub-115_run-52_seizur...  sub-115    1        2         1.000  0.500  0.667 
+sub-115_run-57_seizur...  sub-115    1        2         2.000  1.000  1.333 
+sub-117_run-06_seizur...  sub-117    1        2         2.000  1.000  1.333 
+sub-117_run-10_seizur...  sub-117    1        2         0.000  0.000  0.000 
+sub-119_run-28_seizur...  sub-119    1        2         0.000  0.000  0.000 
+sub-123_run-81_seizur...  sub-123    1        2         2.000  1.000  1.333 
+
+RECOMMENDATIONS
+--------------------
+1. Best overall configuration: 'ictal_focused'
+   - Achieves 128.2% sensitivity
+   - 64.1% precision
+   - Average detection time: 60.89s
+
+2. Most consistent configuration: 'ictal_focused'
+   - Sensitivity std: 0.953
+   - Mean sensitivity: 1.282
+
+3. Fastest configuration: 'ictal_focused'
+   - Average time: 60.89s
+   - Sensitivity: 1.282
+

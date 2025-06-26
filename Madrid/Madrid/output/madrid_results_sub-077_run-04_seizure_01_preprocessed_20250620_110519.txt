@@ -1,0 +1,23 @@
+Madrid Single File Analysis Results
+===================================
+
+File: /home/swolf/asim_shared/preprocessed_data/seizure_only/8hz_30min/downsample_8hz_context_30min/sub-077_run-04_seizure_01_preprocessed.pkl
+Analysis time: 1211.9 seconds
+Signal length: 29208 samples
+Sampling rate: 8 Hz
+Seizure regions: 1
+m-range: 80 to 800 (step: 80)
+GPU used: Yes
+
+Results per m-value:
+m	Score	Location	Seizure_Hit
+80	0.5994	10022	False
+160	0.6323	10206	False
+240	0.6521	10212	False
+320	0.6641	10250	False
+400	0.6668	10327	False
+480	0.6720	10248	False
+560	0.6762	10174	False
+640	0.6780	10115	False
+720	0.6804	9952	False
+800	0.6811	9931	False

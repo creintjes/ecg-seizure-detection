@@ -15,13 +15,13 @@ def main():
             'high_freq': 40.0,  # Low-pass: remove noise  
             'order': 4          # Filter order
         },
-        downsample_freq=125,    # Target sampling rate
-        window_size=30.0,       # 30 second windows
-        stride=15.0             # 50% overlap (15s stride)
+        downsample_freq=8,    # Target sampling rate
+        window_size=3600.0,       
+        stride=1800.0             
     )
     
     # 2. Set data path (adjust to your SeizeIT2 dataset location)
-    data_path = "ds005873-1.1.0"  # Update this path!
+    data_path = "/home/swolf/asim_shared/raw_data/ds005873-1.1.0"  # Update this path!
     
     # Check if path exists
     if not Path(data_path).exists():
@@ -43,7 +43,7 @@ def main():
     
     
     # Process batch with results saving
-    results_path = "./results/preprocessed"
+    results_path = "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0"
     Path(results_path).mkdir(parents=True, exist_ok=True)
     
     batch_results = preprocessor.batch_preprocess(
