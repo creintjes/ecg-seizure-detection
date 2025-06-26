@@ -1,0 +1,44 @@
+Madrid Top-3 Anomalies Analysis Results
+==================================================
+
+File: /home/swolf/asim_shared/preprocessed_data/seizure_only/8hz_5min/downsample_8hz_context_5min/sub-077_run-04_seizure_01_preprocessed.pkl
+Analysis time: 28.4 seconds
+Signal length: 5208 samples
+Sampling rate: 8 Hz
+Seizure regions: 1
+m-range: 80 to 800 (step: 80)
+Top-K: 3
+GPU used: Yes
+
+Results per m-value:
+m	Rank	Score	Location	Seizure_Hit
+80	1	0.6243	2542	True
+80	2	0.5792	2501	True
+80	3	0.5697	2583	True
+160	1	0.6358	2526	True
+160	2	0.6017	2421	True
+160	3	0.5961	2954	False
+240	1	0.6462	2492	True
+240	2	0.6097	2615	True
+240	3	0.6069	2371	True
+320	1	0.6569	2475	True
+320	2	0.6286	2853	False
+320	3	0.6192	2663	True
+400	1	0.6579	2473	True
+400	2	0.6284	2772	False
+400	3	0.6254	2268	True
+480	1	0.6585	2476	True
+480	2	0.6383	2839	False
+480	3	0.6288	2235	True
+560	1	0.6546	2413	True
+560	2	0.6453	2736	True
+560	3	0.6268	3412	False
+640	1	0.6609	2476	True
+640	2	0.6375	2878	False
+640	3	0.6302	3408	False
+720	1	0.6629	2620	True
+720	2	0.6539	2259	True
+720	3	0.6369	3155	False
+800	1	0.6696	2503	True
+800	2	0.6444	3087	False
+800	3	0.6277	3604	False

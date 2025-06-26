@@ -1,0 +1,535 @@
+================================================================================
+MADRID BATCH EVALUATION RESULTS
+================================================================================
+Generated: 2025-06-17 13:30:41
+Total files processed: 340
+Successful analyses: 340
+Minimum overlap threshold: 0.1
+GPU acceleration: True
+
+EXECUTIVE SUMMARY
+----------------------------------------
+ultra_sensitive     : 0.000 sensitivity, 0.000 precision, 0.000 F1
+ictal_focused       : 0.000 sensitivity, 0.000 precision, 0.000 F1
+robust_detection    : 0.000 sensitivity, 0.000 precision, 0.000 F1
+comprehensive       : 0.000 sensitivity, 0.000 precision, 0.000 F1
+
+Best performing configuration: None (Sensitivity: 0.000)
+
+DETAILED CONFIGURATION RESULTS
+--------------------------------------------------
+
+Configuration: ultra_sensitive
+==============================
+Files processed: 85
+Successful analyses: 85
+Total true seizures: 85
+Total detected anomalies: 85
+True positives: 0
+False positives: 85
+False negatives: 85
+
+Overall Performance:
+  Sensitivity: 0.0000
+  Precision:   0.0000
+  F1-Score:    0.0000
+
+Per-File Statistics:
+  Mean Sensitivity: 0.0000 ± 0.0000
+  Mean Specificity: 0.9998 ± 0.0000
+  Mean Precision:   0.0000 ± 0.0000
+  Mean F1-Score:    0.0000 ± 0.0000
+
+Performance:
+  Mean detection time: 5.917s ± 1.385s
+
+Sensitivity Distribution:
+  Min:     0.000
+  25th:    0.000
+  Median:  0.000
+  75th:    0.000
+  Max:     0.000
+  Perfect detections (≥0.99): 0/85 (0.0%)
+  Good detections (≥0.80): 0/85 (0.0%)
+
+--------------------------------------------------
+
+Configuration: ictal_focused
+==============================
+Files processed: 85
+Successful analyses: 85
+Total true seizures: 85
+Total detected anomalies: 85
+True positives: 0
+False positives: 85
+False negatives: 85
+
+Overall Performance:
+  Sensitivity: 0.0000
+  Precision:   0.0000
+  F1-Score:    0.0000
+
+Per-File Statistics:
+  Mean Sensitivity: 0.0000 ± 0.0000
+  Mean Specificity: 0.9991 ± 0.0001
+  Mean Precision:   0.0000 ± 0.0000
+  Mean F1-Score:    0.0000 ± 0.0000
+
+Performance:
+  Mean detection time: 5.822s ± 1.382s
+
+Sensitivity Distribution:
+  Min:     0.000
+  25th:    0.000
+  Median:  0.000
+  75th:    0.000
+  Max:     0.000
+  Perfect detections (≥0.99): 0/85 (0.0%)
+  Good detections (≥0.80): 0/85 (0.0%)
+
+--------------------------------------------------
+
+Configuration: robust_detection
+==============================
+Files processed: 85
+Successful analyses: 85
+Total true seizures: 85
+Total detected anomalies: 85
+True positives: 0
+False positives: 85
+False negatives: 85
+
+Overall Performance:
+  Sensitivity: 0.0000
+  Precision:   0.0000
+  F1-Score:    0.0000
+
+Per-File Statistics:
+  Mean Sensitivity: 0.0000 ± 0.0000
+  Mean Specificity: 0.9971 ± 0.0005
+  Mean Precision:   0.0000 ± 0.0000
+  Mean F1-Score:    0.0000 ± 0.0000
+
+Performance:
+  Mean detection time: 25.395s ± 6.041s
+
+Sensitivity Distribution:
+  Min:     0.000
+  25th:    0.000
+  Median:  0.000
+  75th:    0.000
+  Max:     0.000
+  Perfect detections (≥0.99): 0/85 (0.0%)
+  Good detections (≥0.80): 0/85 (0.0%)
+
+--------------------------------------------------
+
+Configuration: comprehensive
+==============================
+Files processed: 85
+Successful analyses: 85
+Total true seizures: 85
+Total detected anomalies: 85
+True positives: 0
+False positives: 85
+False negatives: 85
+
+Overall Performance:
+  Sensitivity: 0.0000
+  Precision:   0.0000
+  F1-Score:    0.0000
+
+Per-File Statistics:
+  Mean Sensitivity: 0.0000 ± 0.0000
+  Mean Specificity: 0.9950 ± 0.0007
+  Mean Precision:   0.0000 ± 0.0000
+  Mean F1-Score:    0.0000 ± 0.0000
+
+Performance:
+  Mean detection time: 12.143s ± 2.978s
+
+Sensitivity Distribution:
+  Min:     0.000
+  25th:    0.000
+  Median:  0.000
+  75th:    0.000
+  Max:     0.000
+  Perfect detections (≥0.99): 0/85 (0.0%)
+  Good detections (≥0.80): 0/85 (0.0%)
+
+--------------------------------------------------
+
+CONFIGURATION COMPARISON
+------------------------------
+Configuration        Sensitivity  Precision    F1-Score   Time(s) 
+----------------------------------------------------------------------
+ultra_sensitive      0.0000       0.0000       0.0000     5.917   
+ictal_focused        0.0000       0.0000       0.0000     5.822   
+robust_detection     0.0000       0.0000       0.0000     25.395  
+comprehensive        0.0000       0.0000       0.0000     12.143  
+
+DETAILED PER-FILE RESULTS
+----------------------------------------
+
+Configuration: ultra_sensitive
+==============================
+File                      Subject    Seizures Detected  Sens   Prec   F1    
+---------------------------------------------------------------------------
+sub-002_run-01_seizur...  sub-002    1        1         0.000  0.000  0.000 
+sub-002_run-09_seizur...  sub-002    1        1         0.000  0.000  0.000 
+sub-003_run-06_seizur...  sub-003    1        1         0.000  0.000  0.000 
+sub-004_run-01_seizur...  sub-004    1        1         0.000  0.000  0.000 
+sub-015_run-03_seizur...  sub-015    1        1         0.000  0.000  0.000 
+sub-015_run-04_seizur...  sub-015    1        1         0.000  0.000  0.000 
+sub-015_run-09_seizur...  sub-015    1        1         0.000  0.000  0.000 
+sub-019_run-07_seizur...  sub-019    1        1         0.000  0.000  0.000 
+sub-024_run-07_seizur...  sub-024    1        1         0.000  0.000  0.000 
+sub-026_run-06_seizur...  sub-026    1        1         0.000  0.000  0.000 
+sub-030_run-03_seizur...  sub-030    1        1         0.000  0.000  0.000 
+sub-030_run-05_seizur...  sub-030    1        1         0.000  0.000  0.000 
+sub-034_run-03_seizur...  sub-034    1        1         0.000  0.000  0.000 
+sub-034_run-07_seizur...  sub-034    1        1         0.000  0.000  0.000 
+sub-034_run-09_seizur...  sub-034    1        1         0.000  0.000  0.000 
+sub-034_run-09_seizur...  sub-034    1        1         0.000  0.000  0.000 
+sub-034_run-09_seizur...  sub-034    1        1         0.000  0.000  0.000 
+sub-034_run-09_seizur...  sub-034    1        1         0.000  0.000  0.000 
+sub-035_run-03_seizur...  sub-035    1        1         0.000  0.000  0.000 
+sub-035_run-04_seizur...  sub-035    1        1         0.000  0.000  0.000 
+sub-035_run-06_seizur...  sub-035    1        1         0.000  0.000  0.000 
+sub-035_run-09_seizur...  sub-035    1        1         0.000  0.000  0.000 
+sub-035_run-11_seizur...  sub-035    1        1         0.000  0.000  0.000 
+sub-035_run-11_seizur...  sub-035    1        1         0.000  0.000  0.000 
+sub-039_run-01_seizur...  sub-039    1        1         0.000  0.000  0.000 
+sub-039_run-01_seizur...  sub-039    1        1         0.000  0.000  0.000 
+sub-039_run-03_seizur...  sub-039    1        1         0.000  0.000  0.000 
+sub-039_run-04_seizur...  sub-039    1        1         0.000  0.000  0.000 
+sub-039_run-04_seizur...  sub-039    1        1         0.000  0.000  0.000 
+sub-039_run-04_seizur...  sub-039    1        1         0.000  0.000  0.000 
+sub-039_run-04_seizur...  sub-039    1        1         0.000  0.000  0.000 
+sub-039_run-04_seizur...  sub-039    1        1         0.000  0.000  0.000 
+sub-039_run-04_seizur...  sub-039    1        1         0.000  0.000  0.000 
+sub-039_run-08_seizur...  sub-039    1        1         0.000  0.000  0.000 
+sub-040_run-05_seizur...  sub-040    1        1         0.000  0.000  0.000 
+sub-044_run-05_seizur...  sub-044    1        1         0.000  0.000  0.000 
+sub-047_run-02_seizur...  sub-047    1        1         0.000  0.000  0.000 
+sub-047_run-02_seizur...  sub-047    1        1         0.000  0.000  0.000 
+sub-047_run-03_seizur...  sub-047    1        1         0.000  0.000  0.000 
+sub-047_run-06_seizur...  sub-047    1        1         0.000  0.000  0.000 
+sub-047_run-06_seizur...  sub-047    1        1         0.000  0.000  0.000 
+sub-047_run-07_seizur...  sub-047    1        1         0.000  0.000  0.000 
+sub-050_run-05_seizur...  sub-050    1        1         0.000  0.000  0.000 
+sub-052_run-05_seizur...  sub-052    1        1         0.000  0.000  0.000 
+sub-053_run-02_seizur...  sub-053    1        1         0.000  0.000  0.000 
+sub-055_run-02_seizur...  sub-055    1        1         0.000  0.000  0.000 
+sub-056_run-02_seizur...  sub-056    1        1         0.000  0.000  0.000 
+sub-060_run-03_seizur...  sub-060    1        1         0.000  0.000  0.000 
+sub-060_run-04_seizur...  sub-060    1        1         0.000  0.000  0.000 
+sub-066_run-12_seizur...  sub-066    1        1         0.000  0.000  0.000 
+sub-068_run-09_seizur...  sub-068    1        1         0.000  0.000  0.000 
+sub-069_run-33_seizur...  sub-069    1        1         0.000  0.000  0.000 
+sub-071_run-08_seizur...  sub-071    1        1         0.000  0.000  0.000 
+sub-072_run-12_seizur...  sub-072    1        1         0.000  0.000  0.000 
+sub-072_run-16_seizur...  sub-072    1        1         0.000  0.000  0.000 
+sub-073_run-20_seizur...  sub-073    1        1         0.000  0.000  0.000 
+sub-073_run-36_seizur...  sub-073    1        1         0.000  0.000  0.000 
+sub-073_run-36_seizur...  sub-073    1        1         0.000  0.000  0.000 
+sub-073_run-38_seizur...  sub-073    1        1         0.000  0.000  0.000 
+sub-073_run-42_seizur...  sub-073    1        1         0.000  0.000  0.000 
+sub-073_run-42_seizur...  sub-073    1        1         0.000  0.000  0.000 
+sub-073_run-43_seizur...  sub-073    1        1         0.000  0.000  0.000 
+sub-073_run-51_seizur...  sub-073    1        1         0.000  0.000  0.000 
+sub-074_run-06_seizur...  sub-074    1        1         0.000  0.000  0.000 
+sub-077_run-06_seizur...  sub-077    1        1         0.000  0.000  0.000 
+sub-081_run-19_seizur...  sub-081    1        1         0.000  0.000  0.000 
+sub-082_run-11_seizur...  sub-082    1        1         0.000  0.000  0.000 
+sub-082_run-11_seizur...  sub-082    1        1         0.000  0.000  0.000 
+sub-083_run-32_seizur...  sub-083    1        1         0.000  0.000  0.000 
+sub-085_run-40_seizur...  sub-085    1        1         0.000  0.000  0.000 
+sub-087_run-06_seizur...  sub-087    1        1         0.000  0.000  0.000 
+sub-087_run-14_seizur...  sub-087    1        1         0.000  0.000  0.000 
+sub-087_run-16_seizur...  sub-087    1        1         0.000  0.000  0.000 
+sub-095_run-60_seizur...  sub-095    1        1         0.000  0.000  0.000 
+sub-103_run-04_seizur...  sub-103    1        1         0.000  0.000  0.000 
+sub-109_run-03_seizur...  sub-109    1        1         0.000  0.000  0.000 
+sub-109_run-03_seizur...  sub-109    1        1         0.000  0.000  0.000 
+sub-109_run-03_seizur...  sub-109    1        1         0.000  0.000  0.000 
+sub-109_run-07_seizur...  sub-109    1        1         0.000  0.000  0.000 
+sub-113_run-04_seizur...  sub-113    1        1         0.000  0.000  0.000 
+sub-115_run-52_seizur...  sub-115    1        1         0.000  0.000  0.000 
+sub-116_run-18_seizur...  sub-116    1        1         0.000  0.000  0.000 
+sub-116_run-27_seizur...  sub-116    1        1         0.000  0.000  0.000 
+sub-119_run-28_seizur...  sub-119    1        1         0.000  0.000  0.000 
+sub-123_run-81_seizur...  sub-123    1        1         0.000  0.000  0.000 
+
+Configuration: ictal_focused
+==============================
+File                      Subject    Seizures Detected  Sens   Prec   F1    
+---------------------------------------------------------------------------
+sub-002_run-01_seizur...  sub-002    1        1         0.000  0.000  0.000 
+sub-002_run-09_seizur...  sub-002    1        1         0.000  0.000  0.000 
+sub-003_run-06_seizur...  sub-003    1        1         0.000  0.000  0.000 
+sub-004_run-01_seizur...  sub-004    1        1         0.000  0.000  0.000 
+sub-015_run-03_seizur...  sub-015    1        1         0.000  0.000  0.000 
+sub-015_run-04_seizur...  sub-015    1        1         0.000  0.000  0.000 
+sub-015_run-09_seizur...  sub-015    1        1         0.000  0.000  0.000 
+sub-019_run-07_seizur...  sub-019    1        1         0.000  0.000  0.000 
+sub-024_run-07_seizur...  sub-024    1        1         0.000  0.000  0.000 
+sub-026_run-06_seizur...  sub-026    1        1         0.000  0.000  0.000 
+sub-030_run-03_seizur...  sub-030    1        1         0.000  0.000  0.000 
+sub-030_run-05_seizur...  sub-030    1        1         0.000  0.000  0.000 
+sub-034_run-03_seizur...  sub-034    1        1         0.000  0.000  0.000 
+sub-034_run-07_seizur...  sub-034    1        1         0.000  0.000  0.000 
+sub-034_run-09_seizur...  sub-034    1        1         0.000  0.000  0.000 
+sub-034_run-09_seizur...  sub-034    1        1         0.000  0.000  0.000 
+sub-034_run-09_seizur...  sub-034    1        1         0.000  0.000  0.000 
+sub-034_run-09_seizur...  sub-034    1        1         0.000  0.000  0.000 
+sub-035_run-03_seizur...  sub-035    1        1         0.000  0.000  0.000 
+sub-035_run-04_seizur...  sub-035    1        1         0.000  0.000  0.000 
+sub-035_run-06_seizur...  sub-035    1        1         0.000  0.000  0.000 
+sub-035_run-09_seizur...  sub-035    1        1         0.000  0.000  0.000 
+sub-035_run-11_seizur...  sub-035    1        1         0.000  0.000  0.000 
+sub-035_run-11_seizur...  sub-035    1        1         0.000  0.000  0.000 
+sub-039_run-01_seizur...  sub-039    1        1         0.000  0.000  0.000 
+sub-039_run-01_seizur...  sub-039    1        1         0.000  0.000  0.000 
+sub-039_run-03_seizur...  sub-039    1        1         0.000  0.000  0.000 
+sub-039_run-04_seizur...  sub-039    1        1         0.000  0.000  0.000 
+sub-039_run-04_seizur...  sub-039    1        1         0.000  0.000  0.000 
+sub-039_run-04_seizur...  sub-039    1        1         0.000  0.000  0.000 
+sub-039_run-04_seizur...  sub-039    1        1         0.000  0.000  0.000 
+sub-039_run-04_seizur...  sub-039    1        1         0.000  0.000  0.000 
+sub-039_run-04_seizur...  sub-039    1        1         0.000  0.000  0.000 
+sub-039_run-08_seizur...  sub-039    1        1         0.000  0.000  0.000 
+sub-040_run-05_seizur...  sub-040    1        1         0.000  0.000  0.000 
+sub-044_run-05_seizur...  sub-044    1        1         0.000  0.000  0.000 
+sub-047_run-02_seizur...  sub-047    1        1         0.000  0.000  0.000 
+sub-047_run-02_seizur...  sub-047    1        1         0.000  0.000  0.000 
+sub-047_run-03_seizur...  sub-047    1        1         0.000  0.000  0.000 
+sub-047_run-06_seizur...  sub-047    1        1         0.000  0.000  0.000 
+sub-047_run-06_seizur...  sub-047    1        1         0.000  0.000  0.000 
+sub-047_run-07_seizur...  sub-047    1        1         0.000  0.000  0.000 
+sub-050_run-05_seizur...  sub-050    1        1         0.000  0.000  0.000 
+sub-052_run-05_seizur...  sub-052    1        1         0.000  0.000  0.000 
+sub-053_run-02_seizur...  sub-053    1        1         0.000  0.000  0.000 
+sub-055_run-02_seizur...  sub-055    1        1         0.000  0.000  0.000 
+sub-056_run-02_seizur...  sub-056    1        1         0.000  0.000  0.000 
+sub-060_run-03_seizur...  sub-060    1        1         0.000  0.000  0.000 
+sub-060_run-04_seizur...  sub-060    1        1         0.000  0.000  0.000 
+sub-066_run-12_seizur...  sub-066    1        1         0.000  0.000  0.000 
+sub-068_run-09_seizur...  sub-068    1        1         0.000  0.000  0.000 
+sub-069_run-33_seizur...  sub-069    1        1         0.000  0.000  0.000 
+sub-071_run-08_seizur...  sub-071    1        1         0.000  0.000  0.000 
+sub-072_run-12_seizur...  sub-072    1        1         0.000  0.000  0.000 
+sub-072_run-16_seizur...  sub-072    1        1         0.000  0.000  0.000 
+sub-073_run-20_seizur...  sub-073    1        1         0.000  0.000  0.000 
+sub-073_run-36_seizur...  sub-073    1        1         0.000  0.000  0.000 
+sub-073_run-36_seizur...  sub-073    1        1         0.000  0.000  0.000 
+sub-073_run-38_seizur...  sub-073    1        1         0.000  0.000  0.000 
+sub-073_run-42_seizur...  sub-073    1        1         0.000  0.000  0.000 
+sub-073_run-42_seizur...  sub-073    1        1         0.000  0.000  0.000 
+sub-073_run-43_seizur...  sub-073    1        1         0.000  0.000  0.000 
+sub-073_run-51_seizur...  sub-073    1        1         0.000  0.000  0.000 
+sub-074_run-06_seizur...  sub-074    1        1         0.000  0.000  0.000 
+sub-077_run-06_seizur...  sub-077    1        1         0.000  0.000  0.000 
+sub-081_run-19_seizur...  sub-081    1        1         0.000  0.000  0.000 
+sub-082_run-11_seizur...  sub-082    1        1         0.000  0.000  0.000 
+sub-082_run-11_seizur...  sub-082    1        1         0.000  0.000  0.000 
+sub-083_run-32_seizur...  sub-083    1        1         0.000  0.000  0.000 
+sub-085_run-40_seizur...  sub-085    1        1         0.000  0.000  0.000 
+sub-087_run-06_seizur...  sub-087    1        1         0.000  0.000  0.000 
+sub-087_run-14_seizur...  sub-087    1        1         0.000  0.000  0.000 
+sub-087_run-16_seizur...  sub-087    1        1         0.000  0.000  0.000 
+sub-095_run-60_seizur...  sub-095    1        1         0.000  0.000  0.000 
+sub-103_run-04_seizur...  sub-103    1        1         0.000  0.000  0.000 
+sub-109_run-03_seizur...  sub-109    1        1         0.000  0.000  0.000 
+sub-109_run-03_seizur...  sub-109    1        1         0.000  0.000  0.000 
+sub-109_run-03_seizur...  sub-109    1        1         0.000  0.000  0.000 
+sub-109_run-07_seizur...  sub-109    1        1         0.000  0.000  0.000 
+sub-113_run-04_seizur...  sub-113    1        1         0.000  0.000  0.000 
+sub-115_run-52_seizur...  sub-115    1        1         0.000  0.000  0.000 
+sub-116_run-18_seizur...  sub-116    1        1         0.000  0.000  0.000 
+sub-116_run-27_seizur...  sub-116    1        1         0.000  0.000  0.000 
+sub-119_run-28_seizur...  sub-119    1        1         0.000  0.000  0.000 
+sub-123_run-81_seizur...  sub-123    1        1         0.000  0.000  0.000 
+
+Configuration: robust_detection
+==============================
+File                      Subject    Seizures Detected  Sens   Prec   F1    
+---------------------------------------------------------------------------
+sub-002_run-01_seizur...  sub-002    1        1         0.000  0.000  0.000 
+sub-002_run-09_seizur...  sub-002    1        1         0.000  0.000  0.000 
+sub-003_run-06_seizur...  sub-003    1        1         0.000  0.000  0.000 
+sub-004_run-01_seizur...  sub-004    1        1         0.000  0.000  0.000 
+sub-015_run-03_seizur...  sub-015    1        1         0.000  0.000  0.000 
+sub-015_run-04_seizur...  sub-015    1        1         0.000  0.000  0.000 
+sub-015_run-09_seizur...  sub-015    1        1         0.000  0.000  0.000 
+sub-019_run-07_seizur...  sub-019    1        1         0.000  0.000  0.000 
+sub-024_run-07_seizur...  sub-024    1        1         0.000  0.000  0.000 
+sub-026_run-06_seizur...  sub-026    1        1         0.000  0.000  0.000 
+sub-030_run-03_seizur...  sub-030    1        1         0.000  0.000  0.000 
+sub-030_run-05_seizur...  sub-030    1        1         0.000  0.000  0.000 
+sub-034_run-03_seizur...  sub-034    1        1         0.000  0.000  0.000 
+sub-034_run-07_seizur...  sub-034    1        1         0.000  0.000  0.000 
+sub-034_run-09_seizur...  sub-034    1        1         0.000  0.000  0.000 
+sub-034_run-09_seizur...  sub-034    1        1         0.000  0.000  0.000 
+sub-034_run-09_seizur...  sub-034    1        1         0.000  0.000  0.000 
+sub-034_run-09_seizur...  sub-034    1        1         0.000  0.000  0.000 
+sub-035_run-03_seizur...  sub-035    1        1         0.000  0.000  0.000 
+sub-035_run-04_seizur...  sub-035    1        1         0.000  0.000  0.000 
+sub-035_run-06_seizur...  sub-035    1        1         0.000  0.000  0.000 
+sub-035_run-09_seizur...  sub-035    1        1         0.000  0.000  0.000 
+sub-035_run-11_seizur...  sub-035    1        1         0.000  0.000  0.000 
+sub-035_run-11_seizur...  sub-035    1        1         0.000  0.000  0.000 
+sub-039_run-01_seizur...  sub-039    1        1         0.000  0.000  0.000 
+sub-039_run-01_seizur...  sub-039    1        1         0.000  0.000  0.000 
+sub-039_run-03_seizur...  sub-039    1        1         0.000  0.000  0.000 
+sub-039_run-04_seizur...  sub-039    1        1         0.000  0.000  0.000 
+sub-039_run-04_seizur...  sub-039    1        1         0.000  0.000  0.000 
+sub-039_run-04_seizur...  sub-039    1        1         0.000  0.000  0.000 
+sub-039_run-04_seizur...  sub-039    1        1         0.000  0.000  0.000 
+sub-039_run-04_seizur...  sub-039    1        1         0.000  0.000  0.000 
+sub-039_run-04_seizur...  sub-039    1        1         0.000  0.000  0.000 
+sub-039_run-08_seizur...  sub-039    1        1         0.000  0.000  0.000 
+sub-040_run-05_seizur...  sub-040    1        1         0.000  0.000  0.000 
+sub-044_run-05_seizur...  sub-044    1        1         0.000  0.000  0.000 
+sub-047_run-02_seizur...  sub-047    1        1         0.000  0.000  0.000 
+sub-047_run-02_seizur...  sub-047    1        1         0.000  0.000  0.000 
+sub-047_run-03_seizur...  sub-047    1        1         0.000  0.000  0.000 
+sub-047_run-06_seizur...  sub-047    1        1         0.000  0.000  0.000 
+sub-047_run-06_seizur...  sub-047    1        1         0.000  0.000  0.000 
+sub-047_run-07_seizur...  sub-047    1        1         0.000  0.000  0.000 
+sub-050_run-05_seizur...  sub-050    1        1         0.000  0.000  0.000 
+sub-052_run-05_seizur...  sub-052    1        1         0.000  0.000  0.000 
+sub-053_run-02_seizur...  sub-053    1        1         0.000  0.000  0.000 
+sub-055_run-02_seizur...  sub-055    1        1         0.000  0.000  0.000 
+sub-056_run-02_seizur...  sub-056    1        1         0.000  0.000  0.000 
+sub-060_run-03_seizur...  sub-060    1        1         0.000  0.000  0.000 
+sub-060_run-04_seizur...  sub-060    1        1         0.000  0.000  0.000 
+sub-066_run-12_seizur...  sub-066    1        1         0.000  0.000  0.000 
+sub-068_run-09_seizur...  sub-068    1        1         0.000  0.000  0.000 
+sub-069_run-33_seizur...  sub-069    1        1         0.000  0.000  0.000 
+sub-071_run-08_seizur...  sub-071    1        1         0.000  0.000  0.000 
+sub-072_run-12_seizur...  sub-072    1        1         0.000  0.000  0.000 
+sub-072_run-16_seizur...  sub-072    1        1         0.000  0.000  0.000 
+sub-073_run-20_seizur...  sub-073    1        1         0.000  0.000  0.000 
+sub-073_run-36_seizur...  sub-073    1        1         0.000  0.000  0.000 
+sub-073_run-36_seizur...  sub-073    1        1         0.000  0.000  0.000 
+sub-073_run-38_seizur...  sub-073    1        1         0.000  0.000  0.000 
+sub-073_run-42_seizur...  sub-073    1        1         0.000  0.000  0.000 
+sub-073_run-42_seizur...  sub-073    1        1         0.000  0.000  0.000 
+sub-073_run-43_seizur...  sub-073    1        1         0.000  0.000  0.000 
+sub-073_run-51_seizur...  sub-073    1        1         0.000  0.000  0.000 
+sub-074_run-06_seizur...  sub-074    1        1         0.000  0.000  0.000 
+sub-077_run-06_seizur...  sub-077    1        1         0.000  0.000  0.000 
+sub-081_run-19_seizur...  sub-081    1        1         0.000  0.000  0.000 
+sub-082_run-11_seizur...  sub-082    1        1         0.000  0.000  0.000 
+sub-082_run-11_seizur...  sub-082    1        1         0.000  0.000  0.000 
+sub-083_run-32_seizur...  sub-083    1        1         0.000  0.000  0.000 
+sub-085_run-40_seizur...  sub-085    1        1         0.000  0.000  0.000 
+sub-087_run-06_seizur...  sub-087    1        1         0.000  0.000  0.000 
+sub-087_run-14_seizur...  sub-087    1        1         0.000  0.000  0.000 
+sub-087_run-16_seizur...  sub-087    1        1         0.000  0.000  0.000 
+sub-095_run-60_seizur...  sub-095    1        1         0.000  0.000  0.000 
+sub-103_run-04_seizur...  sub-103    1        1         0.000  0.000  0.000 
+sub-109_run-03_seizur...  sub-109    1        1         0.000  0.000  0.000 
+sub-109_run-03_seizur...  sub-109    1        1         0.000  0.000  0.000 
+sub-109_run-03_seizur...  sub-109    1        1         0.000  0.000  0.000 
+sub-109_run-07_seizur...  sub-109    1        1         0.000  0.000  0.000 
+sub-113_run-04_seizur...  sub-113    1        1         0.000  0.000  0.000 
+sub-115_run-52_seizur...  sub-115    1        1         0.000  0.000  0.000 
+sub-116_run-18_seizur...  sub-116    1        1         0.000  0.000  0.000 
+sub-116_run-27_seizur...  sub-116    1        1         0.000  0.000  0.000 
+sub-119_run-28_seizur...  sub-119    1        1         0.000  0.000  0.000 
+sub-123_run-81_seizur...  sub-123    1        1         0.000  0.000  0.000 
+
+Configuration: comprehensive
+==============================
+File                      Subject    Seizures Detected  Sens   Prec   F1    
+---------------------------------------------------------------------------
+sub-002_run-01_seizur...  sub-002    1        1         0.000  0.000  0.000 
+sub-002_run-09_seizur...  sub-002    1        1         0.000  0.000  0.000 
+sub-003_run-06_seizur...  sub-003    1        1         0.000  0.000  0.000 
+sub-004_run-01_seizur...  sub-004    1        1         0.000  0.000  0.000 
+sub-015_run-03_seizur...  sub-015    1        1         0.000  0.000  0.000 
+sub-015_run-04_seizur...  sub-015    1        1         0.000  0.000  0.000 
+sub-015_run-09_seizur...  sub-015    1        1         0.000  0.000  0.000 
+sub-019_run-07_seizur...  sub-019    1        1         0.000  0.000  0.000 
+sub-024_run-07_seizur...  sub-024    1        1         0.000  0.000  0.000 
+sub-026_run-06_seizur...  sub-026    1        1         0.000  0.000  0.000 
+sub-030_run-03_seizur...  sub-030    1        1         0.000  0.000  0.000 
+sub-030_run-05_seizur...  sub-030    1        1         0.000  0.000  0.000 
+sub-034_run-03_seizur...  sub-034    1        1         0.000  0.000  0.000 
+sub-034_run-07_seizur...  sub-034    1        1         0.000  0.000  0.000 
+sub-034_run-09_seizur...  sub-034    1        1         0.000  0.000  0.000 
+sub-034_run-09_seizur...  sub-034    1        1         0.000  0.000  0.000 
+sub-034_run-09_seizur...  sub-034    1        1         0.000  0.000  0.000 
+sub-034_run-09_seizur...  sub-034    1        1         0.000  0.000  0.000 
+sub-035_run-03_seizur...  sub-035    1        1         0.000  0.000  0.000 
+sub-035_run-04_seizur...  sub-035    1        1         0.000  0.000  0.000 
+sub-035_run-06_seizur...  sub-035    1        1         0.000  0.000  0.000 
+sub-035_run-09_seizur...  sub-035    1        1         0.000  0.000  0.000 
+sub-035_run-11_seizur...  sub-035    1        1         0.000  0.000  0.000 
+sub-035_run-11_seizur...  sub-035    1        1         0.000  0.000  0.000 
+sub-039_run-01_seizur...  sub-039    1        1         0.000  0.000  0.000 
+sub-039_run-01_seizur...  sub-039    1        1         0.000  0.000  0.000 
+sub-039_run-03_seizur...  sub-039    1        1         0.000  0.000  0.000 
+sub-039_run-04_seizur...  sub-039    1        1         0.000  0.000  0.000 
+sub-039_run-04_seizur...  sub-039    1        1         0.000  0.000  0.000 
+sub-039_run-04_seizur...  sub-039    1        1         0.000  0.000  0.000 
+sub-039_run-04_seizur...  sub-039    1        1         0.000  0.000  0.000 
+sub-039_run-04_seizur...  sub-039    1        1         0.000  0.000  0.000 
+sub-039_run-04_seizur...  sub-039    1        1         0.000  0.000  0.000 
+sub-039_run-08_seizur...  sub-039    1        1         0.000  0.000  0.000 
+sub-040_run-05_seizur...  sub-040    1        1         0.000  0.000  0.000 
+sub-044_run-05_seizur...  sub-044    1        1         0.000  0.000  0.000 
+sub-047_run-02_seizur...  sub-047    1        1         0.000  0.000  0.000 
+sub-047_run-02_seizur...  sub-047    1        1         0.000  0.000  0.000 
+sub-047_run-03_seizur...  sub-047    1        1         0.000  0.000  0.000 
+sub-047_run-06_seizur...  sub-047    1        1         0.000  0.000  0.000 
+sub-047_run-06_seizur...  sub-047    1        1         0.000  0.000  0.000 
+sub-047_run-07_seizur...  sub-047    1        1         0.000  0.000  0.000 
+sub-050_run-05_seizur...  sub-050    1        1         0.000  0.000  0.000 
+sub-052_run-05_seizur...  sub-052    1        1         0.000  0.000  0.000 
+sub-053_run-02_seizur...  sub-053    1        1         0.000  0.000  0.000 
+sub-055_run-02_seizur...  sub-055    1        1         0.000  0.000  0.000 
+sub-056_run-02_seizur...  sub-056    1        1         0.000  0.000  0.000 
+sub-060_run-03_seizur...  sub-060    1        1         0.000  0.000  0.000 
+sub-060_run-04_seizur...  sub-060    1        1         0.000  0.000  0.000 
+sub-066_run-12_seizur...  sub-066    1        1         0.000  0.000  0.000 
+sub-068_run-09_seizur...  sub-068    1        1         0.000  0.000  0.000 
+sub-069_run-33_seizur...  sub-069    1        1         0.000  0.000  0.000 
+sub-071_run-08_seizur...  sub-071    1        1         0.000  0.000  0.000 
+sub-072_run-12_seizur...  sub-072    1        1         0.000  0.000  0.000 
+sub-072_run-16_seizur...  sub-072    1        1         0.000  0.000  0.000 
+sub-073_run-20_seizur...  sub-073    1        1         0.000  0.000  0.000 
+sub-073_run-36_seizur...  sub-073    1        1         0.000  0.000  0.000 
+sub-073_run-36_seizur...  sub-073    1        1         0.000  0.000  0.000 
+sub-073_run-38_seizur...  sub-073    1        1         0.000  0.000  0.000 
+sub-073_run-42_seizur...  sub-073    1        1         0.000  0.000  0.000 
+sub-073_run-42_seizur...  sub-073    1        1         0.000  0.000  0.000 
+sub-073_run-43_seizur...  sub-073    1        1         0.000  0.000  0.000 
+sub-073_run-51_seizur...  sub-073    1        1         0.000  0.000  0.000 
+sub-074_run-06_seizur...  sub-074    1        1         0.000  0.000  0.000 
+sub-077_run-06_seizur...  sub-077    1        1         0.000  0.000  0.000 
+sub-081_run-19_seizur...  sub-081    1        1         0.000  0.000  0.000 
+sub-082_run-11_seizur...  sub-082    1        1         0.000  0.000  0.000 
+sub-082_run-11_seizur...  sub-082    1        1         0.000  0.000  0.000 
+sub-083_run-32_seizur...  sub-083    1        1         0.000  0.000  0.000 
+sub-085_run-40_seizur...  sub-085    1        1         0.000  0.000  0.000 
+sub-087_run-06_seizur...  sub-087    1        1         0.000  0.000  0.000 
+sub-087_run-14_seizur...  sub-087    1        1         0.000  0.000  0.000 
+sub-087_run-16_seizur...  sub-087    1        1         0.000  0.000  0.000 
+sub-095_run-60_seizur...  sub-095    1        1         0.000  0.000  0.000 
+sub-103_run-04_seizur...  sub-103    1        1         0.000  0.000  0.000 
+sub-109_run-03_seizur...  sub-109    1        1         0.000  0.000  0.000 
+sub-109_run-03_seizur...  sub-109    1        1         0.000  0.000  0.000 
+sub-109_run-03_seizur...  sub-109    1        1         0.000  0.000  0.000 
+sub-109_run-07_seizur...  sub-109    1        1         0.000  0.000  0.000 
+sub-113_run-04_seizur...  sub-113    1        1         0.000  0.000  0.000 
+sub-115_run-52_seizur...  sub-115    1        1         0.000  0.000  0.000 
+sub-116_run-18_seizur...  sub-116    1        1         0.000  0.000  0.000 
+sub-116_run-27_seizur...  sub-116    1        1         0.000  0.000  0.000 
+sub-119_run-28_seizur...  sub-119    1        1         0.000  0.000  0.000 
+sub-123_run-81_seizur...  sub-123    1        1         0.000  0.000  0.000 
+
+RECOMMENDATIONS
+--------------------

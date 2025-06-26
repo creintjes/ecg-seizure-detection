@@ -4,7 +4,8 @@ import matplotlib.pyplot as plt
 
 class MatrixProfile:
     @staticmethod
-    def calculate_matrix_profile_for_sample(sample:np.array, subsequence_length:int):
+
+    def calculate_matrix_profile_for_sample(sample:np.ndarray, subsequence_length:int):
         return stumpy.stump(sample, subsequence_length)
     
     @staticmethod
