@@ -9,6 +9,10 @@ class MatrixProfile:
         return stumpy.stump(sample, subsequence_length)
     
     @staticmethod
+    def calculate_matrix_profile_for_sample_gpu(sample:np.ndarray, subsequence_length:int):
+        return stumpy.gpu_stump(sample, subsequence_length)    
+    
+    @staticmethod
     def get_annomaly_index_from_matrix_profile(matrix_profile:np.ndarray) -> int:
         return np.argsort(matrix_profile[:, 0])[-1]
     
