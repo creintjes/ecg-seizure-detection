@@ -15,3 +15,7 @@ ds005873-1.1.0.sh
 filtered_download.log
 failed_recordings.csv
 failed_recordings_preprocessing_SeizeIT2_ECG.csv
+test/
+preprocessed_data/
+ASIM_v1/
+MatrixProfile/MPs
