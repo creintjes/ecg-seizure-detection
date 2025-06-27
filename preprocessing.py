@@ -127,6 +127,22 @@ class ECGPreprocessor:
         
         return filtered_signal
     
+    def z_normalize(signal: np.ndarray) -> np.ndarray:
+        """
+        Apply global z-score normalization to the signal.
+
+        Parameters:
+            signal (np.ndarray): Input time series signal.
+
+        Returns:
+            np.ndarray: Z-normalized signal with mean 0 and std 1.
+        """
+        mean = np.mean(signal)
+        std = np.std(signal)
+        if std == 0:
+            raise ValueError("Standard deviation is zero; cannot normalize.")
+        return (signal - mean) / std
+
     def downsample(self, signal_data: np.ndarray, original_fs: int) -> np.ndarray:
         """
         Downsample signal to target frequency.
