@@ -1,6 +1,7 @@
 import numpy as np
 import stumpy
 import matplotlib.pyplot as plt
+from typing import List
 
 class MatrixProfile:
     @staticmethod
@@ -31,7 +32,31 @@ class MatrixProfile:
         matrix_profile = stumpy.scrump(time_series, m=subsequence_length, percentage=percentage, pre_scrump=pre_scrump)
         return matrix_profile
 
-    
+    def get_top_k_anomaly_indices(matrix_profile: np.ndarray, k: int) -> List[int]:
+        """
+        Identify the indices of the top-k highest values in a matrix profile, 
+        which are indicative of the most anomalous subsequences.
+
+        Parameters:
+        ----------
+        matrix_profile : np.ndarray
+            The matrix profile array, typically computed with STUMP or STUMPI.
+        k : int
+            The number of top anomalies (i.e., highest matrix profile values) to return.
+
+        Returns:
+        -------
+        List[int]
+            A list of indices corresponding to the top-k anomaly scores in the matrix profile.
+        """
+        if k > len(matrix_profile):
+            raise ValueError(f"Requested top-{k} anomalies, but matrix profile has only {len(matrix_profile)} elements.")
+
+        # Get the indices of the top-k highest values in descending order
+        top_k_indices = np.argsort(matrix_profile)[-k:][::-1]
+        
+        return top_k_indices.tolist()
+
     @staticmethod
     def calculate_matrix_profile_for_sample_gpu(sample:np.ndarray, subsequence_length:int):
         return stumpy.gpu_stump(sample, subsequence_length)    
