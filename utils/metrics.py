@@ -100,3 +100,70 @@ def compute_sensitivity_false_alarm_rate_seizures(
     false_alarm_rate = false_positives / total_detections if total_detections > 0 else 0.0
 
     return sensitivity, false_alarm_rate
+
+def compute_sensitivity_false_alarm_rate_timing_tolerance(
+    label_sequences: List[np.ndarray],
+    detection_indices: List[List[int]],
+    lower: int,
+    upper: int,
+    frequency: float
+) -> Tuple[float, float]:
+    """
+    Computes event-based sensitivity and false alarm rate with timing tolerance.
+    
+    An event is defined as a contiguous block of 1s in the label array.
+    A detection is a true positive if it falls within the event block extended by a tolerance range.
+    
+    Args:
+        label_sequences (List[np.ndarray]): Binary label arrays (0 or 1) indicating event regions.
+        detection_indices (List[List[int]]): Lists of detection indices corresponding to each label sequence.
+        lower (int): Time in seconds to extend before the start of an event.
+        upper (int): Time in seconds to extend after the end of an event.
+        frequency (float): Sampling frequency in Hz (used to convert seconds to samples).
+    
+    Returns:
+        Tuple[float, float]: (sensitivity, false alarm rate)
+        
+        - Sensitivity = true_positives / total_events
+        - False Alarm Rate = false_positives / total_detections
+    """
+    total_events = 0
+    true_positives = 0
+    false_positives = 0
+    total_detections = 0
+
+    tolerance_left = int(lower * frequency)
+    tolerance_right = int(upper * frequency)
+
+    for labels, indices in zip(label_sequences, detection_indices):
+        labels = np.asarray(labels)
+        indices_set = set(indices)
+        total_detections += len(indices)
+
+        # Efficient extraction of event regions
+        event_indices = np.where(labels == 1)[0]
+        if event_indices.size == 0:
+            continue
+
+        # Identify contiguous event regions
+        gaps = np.where(np.diff(event_indices) > 1)[0]
+        split_points = np.split(event_indices, gaps + 1)
+        event_regions = [(max(0, event[0] - tolerance_left), min(len(labels) - 1, event[-1] + tolerance_right))
+                         for event in split_points]
+
+        total_events += len(event_regions)
+
+        # Count true positives (detections within extended regions)
+        for start, end in event_regions:
+            if any(start <= idx <= end for idx in indices_set):
+                true_positives += 1
+
+        # Count false positives (detections outside all extended regions)
+        for idx in indices:
+            if not any(start <= idx <= end for start, end in event_regions):
+                false_positives += 1
+
+    sensitivity = true_positives / total_events if total_events > 0 else 0.0
+    false_alarm_rate = false_positives / total_detections if total_detections > 0 else 0.0
+
+    return sensitivity, false_alarm_rate
