@@ -56,6 +56,42 @@ class MatrixProfile:
         top_k_indices = np.argsort(matrix_profile)[-k:][::-1]
         
         return top_k_indices.tolist()
+    
+    def has_consecutive_anomalies(indices: List[int], n: int, max_gap: int = 1) -> bool:
+        """
+        Check if there are at least 'n' consecutive or closely spaced anomaly indices.
+
+        Parameters:
+        ----------
+        indices : List[int]
+            The list of anomaly indices (e.g., top-k indices from a matrix profile).
+        n : int
+            Minimum number of consecutive or closely spaced anomalies required.
+        max_gap : int, optional
+            Maximum allowed gap between indices to still be considered consecutive.
+            Default is 1 (i.e., strictly consecutive).
+
+        Returns:
+        -------
+        bool
+            True if there exists a group of at least 'n' consecutive or closely spaced anomaly indices.
+        """
+        if len(indices) < n:
+            return False
+
+        sorted_indices = sorted(indices)
+        current_count = 1
+
+        for i in range(1, len(sorted_indices)):
+            if sorted_indices[i] - sorted_indices[i - 1] <= max_gap:
+                current_count += 1
+                if current_count >= n:
+                    return True
+            else:
+                current_count = 1
+
+        return False
+
 
     @staticmethod
     def calculate_matrix_profile_for_sample_gpu(sample:np.ndarray, subsequence_length:int):
