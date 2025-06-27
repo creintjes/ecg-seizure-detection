@@ -27,7 +27,8 @@ class ECGPreprocessor:
         filter_params: Dict[str, float] = None,
         downsample_freq: int = 125,
         window_size: float = 30.0,
-        stride: float = 15.0
+        stride: float = 15.0,
+        create_window:bool = True
     ):
         """
         Initialize ECG preprocessor.
@@ -50,6 +51,7 @@ class ECGPreprocessor:
         self.downsample_freq = downsample_freq
         self.window_size = window_size
         self.stride = stride
+        self.create_window = create_window
         
         # Validate parameters
         self._validate_parameters()
@@ -217,7 +219,103 @@ class ECGPreprocessor:
             metadata.append(meta)
         
         return windows, labels, metadata
-    
+    def _get_no_window_labels(self, length: float, frequency: int, intervals: list[list[float]]) -> np.ndarray:
+        """
+        Generates a 1D NumPy array of zeros with specified length and frequency.
+        Regions defined by pairs of float start-end intervals (converted to integer sample indices) are set to 1.
+
+        Parameters:
+        ----------
+        length : float
+            Total length of the signal in seconds.
+        frequency : float
+            Sampling frequency in Hz.
+        intervals : list[list[float]]
+            A list of [start, end] interval pairs as float values, specifying sample indices (e.g. [[10.0, 20.0], [30.0, 40.0]]).
+            The float values should represent integers (e.g., 10.0, not 10.3).
+
+        Returns:
+        -------
+        np.ndarray
+            A 1D NumPy array of shape (int(length * frequency),) with 1s in specified intervals.
+        """
+        total_samples = int(length * frequency)
+        signal = np.zeros(total_samples, dtype=int)
+
+        for pair in intervals:
+            if len(pair) != 2:
+                raise ValueError(f"Each interval must contain exactly two elements. Got: {pair}")
+            start = int(pair[0])*frequency
+            end = int(pair[1])*frequency
+            if not (0 <= start <= end <= total_samples):
+                raise ValueError(f"Invalid interval range: {start} to {end}. Must be within [0, {total_samples}].")
+            signal[start:end] = 1
+
+        return signal
+
+    def create_no_windows(
+        self, 
+        signal_data: np.ndarray, 
+        fs: int,
+        annotations: Annotation
+    ) -> Tuple[List[np.ndarray], List[int], List[Dict]]:
+        """
+        Parse the signal data.
+        
+        Args:
+            signal_data: Preprocessed ECG signal
+            fs: Sampling frequency
+            annotations: Seizure annotations
+            
+        Returns:
+            Tuple of (windows, labels, metadata)
+        """
+        # Calculate window parameters in samples
+        # window_samples = int(self.window_size * int(fs))
+        # stride_samples = int(self.stride * int(fs))
+        
+        # Calculate number of windows
+        # signal_length = len(signal_data)
+        # n_windows = (signal_length - window_samples) // stride_samples + 1
+        
+        # if n_windows <= 0:
+        #     warnings.warn("Signal too short for windowing")
+        #     return [], [], []
+        
+        windows = []
+        labels = []
+        metadata = []
+        
+        # Extract seizure events timing
+        seizure_events = annotations.events if annotations.events else []
+        
+        # for i in range(n_windows):
+        # start_idx = i * stride_samples
+        # end_idx = start_idx + window_samples
+        
+        # Extract window
+        # window = signal_data[start_idx:end_idx]
+        windows.append(signal_data)
+        
+        # Calculate window timing in seconds
+        start_time = 0
+        end_time = float(annotations.rec_duration)
+        
+        # Determine label (1 for seizure, 0 for normal)
+        label = self._get_no_window_labels(end_time, self.downsample_freq, seizure_events)
+        labels.append(label)
+        
+        # Store metadata
+        meta = {
+            'start_time': start_time,
+            'end_time': end_time,
+            'start_idx': 0,
+            'end_idx': end_time*self.downsample_freq,
+            'sampling_rate': int(self.downsample_freq)
+        }
+        metadata.append(meta)
+        
+        return windows, labels, metadata
     def _get_window_label(
         self, 
         start_time: float, 
@@ -286,9 +384,14 @@ class ECGPreprocessor:
                 new_fs = min(self.downsample_freq, int(fs))
                 
                 # Create windows
-                windows, labels, metadata = self.create_windows(
-                    downsampled_signal, new_fs, annotations
-                )
+                if self.create_window:
+                    windows, labels, metadata = self.create_windows(
+                        downsampled_signal, new_fs, annotations
+                    )
+                else:
+                    windows, labels, metadata = self.create_no_windows(
+                        downsampled_signal, new_fs, annotations
+                    )
                 
                 channel_result = {
                     'channel_name': channel_name,
