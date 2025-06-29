@@ -4,13 +4,53 @@ import re
 import pickle
 import numpy as np
 from datetime import datetime
-# # Add parent directory (../) to sys.path
-# project_root = Path().resolve().parent
-# if str(project_root) not in sys.path:
-#     sys.path.insert(0, str(project_root))
-from data_helpers import load_preprocessed_samples
+from matrix_profile import MatrixProfile
+from typing import List, Tuple
 
-def save_numpy_array_list(array_list: list[np.ndarray], name:str) -> None:
+import os
+# Add parent directory (../) to sys.path
+project_root = Path().resolve().parent
+if str(project_root) not in sys.path:
+    sys.path.insert(0, str(project_root))
+# from data_helpers import load_one_preprocessed_sample
+def load_one_preprocessed_sample(filepath: str) -> Tuple[List[np.ndarray], List[int]]:
+    """
+    Load preprocessed ECG window samples from pickle files and collect them into a list.
+
+    Args:
+        data_dir: Path to directory containing the preprocessed .pkl files.
+
+    Returns:
+        List of windowed ECG samples as numpy arrays and a List with their according labels [0 or 1].
+    """
+    # Skip empty files
+    if os.path.getsize(filepath) == 0:
+        print(50*"-")
+        print(f"Skipped empty file: {filepath}")
+        return None
+
+    try:
+        with open(filepath, 'rb') as file:
+            data = pickle.load(file)
+
+            if not data or "channels" not in data:
+                print(50*"-")
+                print(f"Missig channels or data in file: {filepath}")
+                return None
+                
+
+            # Since data only cover 1 channel we can use chanell[0]
+            channel_data = data["channels"][0]
+            windows = channel_data.get("windows", [])
+            labels = channel_data.get("labels", [])
+
+    except (EOFError, pickle.UnpicklingError) as e:
+        # print(f"Warning: {filename} is empty or corrupted.")
+        print(f"Corrupted pickle file: {filepath} ({e})")
+        return None
+    return windows, labels
+
+def save_numpy_array_list(array_list: list[np.ndarray], name:str, path:str) -> None:
     """
     Saves a list of NumPy arrays to a compressed .npz file with a timestamped filename.
     
@@ -21,43 +61,55 @@ def save_numpy_array_list(array_list: list[np.ndarray], name:str) -> None:
     """
     # timestamp = datetime.now().strftime("%H-%M-%S")
     timestamp = datetime.now().strftime("%d.%m.%Y, %H:%M")
-    filename = f"/home/jhagenbe_sw/ASIM/ecg-seizure-detection/MatrixProfile/MPs/{name}_{timestamp}.pkl"
+    filename = f"/home/swolf/asim_shared/results/MP/{name}_{timestamp}.pkl"
     
     with open(filename, "wb") as f:
         pickle.dump(array_list, f)
 
-
+def save_one_mp(mp:np.ndarray, folder:str, run_name:str):
+    filename = f"{folder}/mp_{run_name}.pkl"
+    with open(filename, "wb") as f:
+        pickle.dump(mp, f)
 
 def MatProfDemo()-> None:
+    print(f'Started MP calc at {datetime.now().strftime("%d.%m.%Y, %H:%M")}')
+    downsample_freq: int=8
+    window_size_sec:int = 25
+    subsequence_length:int = downsample_freq*window_size_sec # Assuming seizure of max. N sec
+    amount_samples : int = 5000
+    approx_matrix_profile: bool = False
+    printer_int = 100
     # Add parent directory (../) to sys.path
     project_root = Path().resolve().parent
     if str(project_root) not in sys.path:
         sys.path.insert(0, str(project_root))
 
+    DATA_DIRECTORY = f"/home/swolf/asim_shared/preprocessed_data/downsample_freq={downsample_freq},no_windows"
+    results_path = Path(
+        f"/home/swolf/asim_shared/results/MP/downsample_freq={downsample_freq},no_windows/seq_len{window_size_sec}sec"
+        # f"/home/jhagenbe_sw/ASIM/ecg-seizure-detection/PP_demo_jh/downsample_freq={downsample_freq},no_windows/seq_len{window_size_sec}sec"
+    )
+    results_path.mkdir(parents=True, exist_ok=True)
 
-    DATA_DIRECTORY = "/home/swolf/asim_shared/preprocessed_data/downsample_freq=32,window_size=120_0,stride=60_0"
+    filenames = [filename for filename in os.listdir(DATA_DIRECTORY) if filename.endswith("_preprocessed.pkl")]
 
-    match = re.search(r"downsample_freq=(\d+)", DATA_DIRECTORY)
-    downsample_freq: int = int(match.group(1))
-    samples, labels = load_preprocessed_samples(data_dir=DATA_DIRECTORY, max_loaded_files=350)
-    samples.__len__()
-    amount_samples : int = 3500
-
-    example_samples = samples[:amount_samples]
-    from matrix_profile import MatrixProfile
-    matrix_profiles = []
     counter:int = 0
-    subsequence_length:int = downsample_freq*70 # Assuming seizure of max. 70 sec
-    for s in example_samples:
-        matrix_profiles.append(MatrixProfile.calculate_matrix_profile_for_sample(sample=s, subsequence_length=subsequence_length))
+    for filename in filenames[:amount_samples]:
+        data, label = load_one_preprocessed_sample(filepath=os.path.join(DATA_DIRECTORY, filename))
+        data = data[0]
+        run_name = filename[:-17]
+        # print(data)
+        if approx_matrix_profile:
+            mp = MatrixProfile.compute_approx_matrix_profile(time_series=data, subsequence_length=subsequence_length, percentage=0.1)
+        else:
+            mp = MatrixProfile.calculate_matrix_profile_for_sample(sample=data, subsequence_length=subsequence_length)
+        save_one_mp(mp=mp, folder=results_path, run_name=run_name)
         counter +=1
-        if counter % 100 == 0:
+        if counter % printer_int == 0:
             print(counter)
-        if counter % 400 == 0:
-            save_numpy_array_list(array_list=matrix_profiles, name=str(list(DATA_DIRECTORY.split("/"))[-1])+f"_samples_till:{counter}")
-            matrix_profiles = []
+    print(f'Ended MP calc at {datetime.now().strftime("%d.%m.%Y, %H:%M")}')
+    
 
-    save_numpy_array_list(array_list=matrix_profiles, name=str(list(DATA_DIRECTORY.split("/"))[-1])+f"_samples_till:{counter}")
 
 if __name__ == "__main__":
     MatProfDemo()    
