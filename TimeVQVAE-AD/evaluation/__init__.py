@@ -21,9 +21,8 @@ from scipy.signal import find_peaks
 from experiments.exp_stage2 import ExpStage2
 from preprocessing.preprocess import scale
 from utils import get_root_dir, set_window_size
-from preprocessing.preprocess import UCR_AnomalySequence, UCRAnomalyDataset
 from models.stage2.maskgit import MaskGIT
-
+from data_helpers import load_continuous_test_series
 
 def load_args():
     parser = ArgumentParser()
@@ -32,22 +31,28 @@ def load_args():
     return parser.parse_args([])
 
 
+
 def load_data(dataset_idx, config, kind: str):
     """used during evaluation"""
     assert kind in ['train', 'test']
-
-    dataset_importer = UCR_AnomalySequence.create_by_id(dataset_idx)
-    window_size = set_window_size(dataset_idx, config['dataset']['n_periods'])
-    dataset = UCRAnomalyDataset(kind, dataset_importer, window_size)
-
-    X = dataset.X  # (ts_len, 1)
-    X = rearrange(X, 'l c -> c l')  # (1, ts_len)
-
+    # resolve your preprocessed folder
+    data_dir = get_root_dir().joinpath(config['dataset']['root_dir'])
+    print("data_dir", data_dir)
+    # for train we only need the continuous ECG (no labels)
     if kind == 'train':
+        ecg, _ = load_continuous_test_series(str(data_dir), dataset_idx)
+        print("ecg", ecg)
+        # shape to (1, ts_len)
+        X = torch.from_numpy(ecg)[None, :]
         return X
-    elif kind == 'test':
-        Y = dataset.Y  # (ts_len,)
-        return X, Y
+
+    # for test we need both ECG and mask
+    ecg, mask = load_continuous_test_series(str(data_dir), dataset_idx)
+    
+    print("mask", mask)
+    X = torch.from_numpy(ecg)[None, :]               # (1, ts_len)
+    Y = torch.from_numpy(mask)                       # (ts_len,)
+    return X, Y
 
 
 def mask_prediction(s, height, slice_rng, maskgit:MaskGIT):
@@ -258,7 +263,7 @@ def evaluate_fn(config,
     - latent_window_size_rate: latent_window_size = latent_window_size_rate * latent_window_size (i.e., latent width)
     """
     # load model
-    input_length = window_size = set_window_size(dataset_idx, config['dataset']['n_periods'])
+    input_length = window_size = 3750# set_window_size(dataset_idx, config['dataset']['n_periods'])
     stage2 = ExpStage2.load_from_checkpoint(os.path.join('saved_models', f'stage2-{dataset_idx}.ckpt'), 
                                             dataset_idx=dataset_idx, input_length=input_length, config=config, 
                                             map_location=f'cuda:{device}')
@@ -272,6 +277,7 @@ def evaluate_fn(config,
     # compute the anomaly score on the training set
     print('===== compute the anomaly scores of the training set... =====')
     X_train_unscaled = load_data(dataset_idx, config, 'train')  # (1, ts_len)
+    print("X_train_unscaled", X_train_unscaled)
     logs_train = detect(X_train_unscaled,
                         maskgit,
                         window_size,
@@ -279,7 +285,7 @@ def evaluate_fn(config,
                         latent_window_size,
                         compute_reconstructed_X=False,
                         device=device)
-
+    print("logs_train", logs_train)
     # anomaly threshold
     if q <= 1.0:
         anom_threshold = np.quantile(logs_train['a_star'], q=q, axis=-1)  # (n_channels H')
@@ -477,7 +483,7 @@ def save_final_summarized_figure(dataset_idx, X_test_unscaled, Y, timestep_rng_t
     # plot: explainable sampling
     if args.explainable_sampling:
         # load model
-        input_length = window_size = set_window_size(dataset_idx, config['dataset']['n_periods'])
+        input_length = window_size = 3750 # set_window_size(dataset_idx, config['dataset']['n_periods'])
         stage2 = ExpStage2.load_from_checkpoint(os.path.join('saved_models', f'stage2-{dataset_idx}.ckpt'), 
                                                 dataset_idx=dataset_idx, input_length=input_length, config=config, 
                                                 map_location=f'cuda:{args.device}')
