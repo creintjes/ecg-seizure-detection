@@ -9,3 +9,4 @@ __pycache__/
 ds005873-1.1.0
 specs
 .idea/
+.vscode/*
