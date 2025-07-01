@@ -8,3 +8,7 @@ venv_win
 __pycache__/
 ds005873-1.1.0
 specs
+madrid_seizure_results_parallel
+madrid_results
+Madrid/output
+results
