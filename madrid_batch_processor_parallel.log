@@ -1118,3 +1118,6 @@
 2025-06-24 16:27:22,394 - MainProcess - INFO - Parallel Madrid Processor initialized with 8 workers
 2025-06-24 16:27:22,394 - MainProcess - INFO - 🚀 Starting parallel processing...
 2025-06-24 16:27:22,397 - MainProcess - INFO - Found 400 files to process with 8 workers
+2025-06-25 10:28:52,868 - ForkPoolWorker-6 - ERROR - Error processing /home/swolf/asim_shared/preprocessed_data/seizure_only/32hz_30min/downsample_32hz_context_30min/sub-080_run-05_seizure_00_preprocessed.pkl: [Errno 2] No such file or directory: 'madrid_seizure_results_parallel/madrid_results_sub-080_run-05_seizure_00_20250625_102852.json'
+2025-06-28 22:13:35,906 - ForkPoolWorker-1 - ERROR - Madrid analysis failed: Time series contains constant regions that would make anomaly detection trivial. Consider: 1) Increasing min_length, 2) Adding noise, 3) Adding linear trend, 4) Removing constant sections
+2025-06-30 14:47:05,624 - MainProcess - WARNING - 🛑 Processing interrupted by user
