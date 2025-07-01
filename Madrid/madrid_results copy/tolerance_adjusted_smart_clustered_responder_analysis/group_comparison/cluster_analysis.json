@@ -1,0 +1,57 @@
+{
+  "responders": {
+    "name": "Responders",
+    "count": 223,
+    "cluster_sizes": {
+      "mean": 8.443946188340806,
+      "median": 5,
+      "std": 8.940506396604272,
+      "min": 1,
+      "max": 45
+    },
+    "anomaly_scores": {
+      "mean": 0.6293189617178108,
+      "median": 0.6308804022772707,
+      "std": 0.016178250515939265,
+      "min": 0.5616437990919484,
+      "max": 0.6690245744305776
+    },
+    "cluster_tp_counts": {
+      "mean": 2.9192825112107625,
+      "median": 0,
+      "total": 651
+    },
+    "seizure_hit_rate": 0.22869955156950672,
+    "representatives_per_patient": 37.166666666666664
+  },
+  "non_responders": {
+    "name": "Non-Responders",
+    "count": 24,
+    "cluster_sizes": {
+      "mean": 8.25,
+      "median": 5.5,
+      "std": 8.709065741338534,
+      "min": 1,
+      "max": 36
+    },
+    "anomaly_scores": {
+      "mean": 0.6207408803514445,
+      "median": 0.6155725081038745,
+      "std": 0.017365928466553448,
+      "min": 0.5933689076668853,
+      "max": 0.6544493352056481
+    },
+    "cluster_tp_counts": {
+      "mean": 1.7916666666666667,
+      "median": 0.0,
+      "total": 43
+    },
+    "seizure_hit_rate": 0.125,
+    "representatives_per_patient": 12.0
+  },
+  "differences": {
+    "mean_cluster_size_diff": 0.19394618834080646,
+    "mean_score_diff": 0.008578081366366286,
+    "seizure_hit_rate_diff": 0.10369955156950672
+  }
+}
