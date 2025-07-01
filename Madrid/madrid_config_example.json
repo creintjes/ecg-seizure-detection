@@ -1,0 +1,40 @@
+{
+  "use_gpu": true,
+  "enable_output": false,
+  "madrid_parameters": {
+    "m_range": {
+      "min_length": 80,
+      "max_length": 800,
+      "step_size": 80
+    },
+    "analysis_config": {
+      "top_k": 3,
+      "train_test_split_ratio": 0.5,
+      "threshold_percentile": 95
+    },
+    "algorithm_settings": {
+      "use_gpu": true,
+      "downsampling_factor": 1
+    }
+  },
+ "sampling_rate_adaptations": {
+    "125hz": {
+      "min_length": 1250,
+      "max_length": 12500,
+      "step_size": 1250,
+      "context_info": "High resolution - precise morphology analysis"
+    },
+    "32hz": {
+      "min_length": 320,
+      "max_length": 3200,
+      "step_size": 320,
+      "context_info": "Medium resolution - balanced performance/speed"
+    },
+    "8hz": {
+      "min_length": 80,
+      "max_length": 800,
+      "step_size": 80,
+      "context_info": "Low resolution - trend analysis, fast processing"
+    }
+  }
+}

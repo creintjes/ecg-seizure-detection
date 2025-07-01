@@ -1,0 +1,71 @@
+2025-06-21 17:49:14,653 - INFO - Using default seizure-only configuration
+2025-06-21 17:49:14,654 - INFO - Madrid Batch Processor initialized with config: {'use_gpu': True, 'enable_output': False, 'madrid_parameters': {'m_range': {'min_length': 80, 'max_length': 800, 'step_size': 80}, 'analysis_config': {'top_k': 5, 'train_test_split_ratio': 0.3, 'threshold_percentile': 90}, 'algorithm_settings': {'use_gpu': True, 'downsampling_factor': 1}}, 'sampling_rate_adaptations': {'125hz': {'min_length': 80, 'max_length': 800, 'step_size': 80}, '32hz': {'min_length': 20, 'max_length': 200, 'step_size': 20}, '8hz': {'min_length': 5, 'max_length': 50, 'step_size': 5}}}
+2025-06-21 17:49:14,657 - INFO - Found 5 seizure-only files to process
+2025-06-21 17:49:14,660 - INFO - Found 5 files to process
+2025-06-21 17:49:14,660 - INFO - Processing file 1/5: sub-109_run-03_seizure_21_preprocessed.pkl
+2025-06-21 17:49:14,676 - INFO - Loaded seizure-only data: sub-109_run-03_seizure_21 (115904 samples @ 125Hz)
+2025-06-21 17:49:14,677 - INFO - Running Madrid analysis on signal (length: 115904, fs: 125Hz)
+2025-06-21 18:00:52,605 - INFO - Using default seizure-only configuration
+2025-06-21 18:00:52,605 - INFO - Madrid Batch Processor initialized with config: {'use_gpu': True, 'enable_output': False, 'madrid_parameters': {'m_range': {'min_length': 80, 'max_length': 800, 'step_size': 80}, 'analysis_config': {'top_k': 5, 'train_test_split_ratio': 0.3, 'threshold_percentile': 90}, 'algorithm_settings': {'use_gpu': True, 'downsampling_factor': 1}}, 'sampling_rate_adaptations': {'125hz': {'min_length': 80, 'max_length': 800, 'step_size': 80}, '32hz': {'min_length': 20, 'max_length': 200, 'step_size': 20}, '8hz': {'min_length': 5, 'max_length': 50, 'step_size': 5}}}
+2025-06-21 18:00:52,608 - INFO - Found 5 seizure-only files to process
+2025-06-21 18:00:52,611 - INFO - Found 5 files to process
+2025-06-21 18:00:52,611 - INFO - Processing file 1/5: sub-109_run-03_seizure_21_preprocessed.pkl
+2025-06-21 18:00:52,615 - INFO - Found sampling rate in top-level data: 32Hz
+2025-06-21 18:00:52,615 - INFO - Loaded seizure-only data: sub-109_run-03_seizure_21 (115904 samples @ 32Hz)
+2025-06-21 18:00:52,615 - INFO - Running Madrid analysis on signal (length: 115904, fs: 32Hz)
+2025-06-21 18:01:51,382 - INFO - Using default seizure-only configuration
+2025-06-21 18:01:51,382 - INFO - Madrid Batch Processor initialized with config: {'use_gpu': True, 'enable_output': False, 'madrid_parameters': {'m_range': {'min_length': 80, 'max_length': 800, 'step_size': 80}, 'analysis_config': {'top_k': 5, 'train_test_split_ratio': 0.3, 'threshold_percentile': 90}, 'algorithm_settings': {'use_gpu': True, 'downsampling_factor': 1}}, 'sampling_rate_adaptations': {'125hz': {'min_length': 1250, 'max_length': 12500, 'step_size': 1250}, '32hz': {'min_length': 320, 'max_length': 3200, 'step_size': 320}, '8hz': {'min_length': 80, 'max_length': 800, 'step_size': 80}}}
+2025-06-21 18:01:51,386 - INFO - Found 5 seizure-only files to process
+2025-06-21 18:01:51,388 - INFO - Found 5 files to process
+2025-06-21 18:01:51,388 - INFO - Processing file 1/5: sub-109_run-03_seizure_21_preprocessed.pkl
+2025-06-21 18:01:51,392 - INFO - Found sampling rate in top-level data: 32Hz
+2025-06-21 18:01:51,392 - INFO - Loaded seizure-only data: sub-109_run-03_seizure_21 (115904 samples @ 32Hz)
+2025-06-21 18:01:51,392 - INFO - Running Madrid analysis on signal (length: 115904, fs: 32Hz)
+2025-06-21 18:03:26,373 - INFO - Using default seizure-only configuration
+2025-06-21 18:03:26,373 - INFO - Madrid Batch Processor initialized with config: {'use_gpu': True, 'enable_output': False, 'madrid_parameters': {'m_range': {'min_length': 80, 'max_length': 800, 'step_size': 80}, 'analysis_config': {'top_k': 5, 'train_test_split_ratio': 0.3, 'threshold_percentile': 90}, 'algorithm_settings': {'use_gpu': True, 'downsampling_factor': 1}}, 'sampling_rate_adaptations': {'125hz': {'min_length': 1250, 'max_length': 12500, 'step_size': 1250}, '32hz': {'min_length': 320, 'max_length': 3200, 'step_size': 320}, '8hz': {'min_length': 80, 'max_length': 800, 'step_size': 80}}}
+2025-06-21 18:03:26,377 - INFO - Found 5 seizure-only files to process
+2025-06-21 18:03:26,380 - INFO - Found 5 files to process
+2025-06-21 18:03:26,380 - INFO - Processing file 1/5: sub-109_run-03_seizure_21_preprocessed.pkl
+2025-06-21 18:03:26,383 - INFO - Found sampling rate in top-level data: 32Hz
+2025-06-21 18:03:26,383 - INFO - Loaded seizure-only data: sub-109_run-03_seizure_21 (115904 samples @ 32Hz)
+2025-06-21 18:03:26,383 - INFO - Running Madrid analysis on signal (length: 115904, fs: 32Hz)
+2025-06-21 18:04:16,398 - INFO - Using default seizure-only configuration
+2025-06-21 18:04:16,398 - INFO - Madrid Batch Processor initialized with config: {'use_gpu': True, 'enable_output': False, 'madrid_parameters': {'m_range': {'min_length': 80, 'max_length': 800, 'step_size': 80}, 'analysis_config': {'top_k': 5, 'train_test_split_ratio': 0.3, 'threshold_percentile': 90}, 'algorithm_settings': {'use_gpu': True, 'downsampling_factor': 1}}, 'sampling_rate_adaptations': {'125hz': {'min_length': 1250, 'max_length': 12500, 'step_size': 1250}, '32hz': {'min_length': 320, 'max_length': 3200, 'step_size': 320}, '8hz': {'min_length': 80, 'max_length': 800, 'step_size': 80}}}
+2025-06-21 18:04:16,402 - INFO - Found 5 seizure-only files to process
+2025-06-21 18:04:16,405 - INFO - Found 5 files to process
+2025-06-21 18:04:16,405 - INFO - Processing file 1/5: sub-109_run-03_seizure_21_preprocessed.pkl
+2025-06-21 18:04:16,408 - INFO - Found sampling rate in top-level data: 32Hz
+2025-06-21 18:04:16,408 - INFO - Loaded seizure-only data: sub-109_run-03_seizure_21 (115904 samples @ 32Hz)
+2025-06-21 18:04:16,409 - INFO - Running Madrid analysis on signal (length: 115904, fs: 32Hz)
+2025-06-21 18:12:12,437 - INFO - Using default seizure-only configuration
+2025-06-21 18:12:12,437 - INFO - Madrid Batch Processor initialized with config: {'use_gpu': True, 'enable_output': False, 'madrid_parameters': {'m_range': {'min_length': 80, 'max_length': 800, 'step_size': 80}, 'analysis_config': {'top_k': 5, 'train_test_split_ratio': 0.3, 'threshold_percentile': 90}, 'algorithm_settings': {'use_gpu': True, 'downsampling_factor': 1}}, 'sampling_rate_adaptations': {'125hz': {'min_length': 1250, 'max_length': 12500, 'step_size': 1250}, '32hz': {'min_length': 320, 'max_length': 3200, 'step_size': 320}, '8hz': {'min_length': 80, 'max_length': 800, 'step_size': 80}}}
+2025-06-21 18:12:12,441 - INFO - Found 5 seizure-only files to process
+2025-06-21 18:12:12,444 - INFO - Found 5 files to process
+2025-06-21 18:12:12,444 - INFO - Processing file 1/5: sub-109_run-03_seizure_21_preprocessed.pkl
+2025-06-21 18:12:12,447 - INFO - Found sampling rate in top-level data: 32Hz
+2025-06-21 18:12:12,447 - INFO - Loaded seizure-only data: sub-109_run-03_seizure_21 (115904 samples @ 32Hz)
+2025-06-21 18:12:12,448 - INFO - Running Madrid analysis on signal (length: 115904, fs: 32Hz)
+2025-06-21 18:12:58,068 - INFO - Using default seizure-only configuration
+2025-06-21 18:12:58,068 - INFO - Madrid Batch Processor initialized with config: {'use_gpu': True, 'enable_output': False, 'madrid_parameters': {'m_range': {'min_length': 80, 'max_length': 800, 'step_size': 80}, 'analysis_config': {'top_k': 5, 'train_test_split_ratio': 0.3, 'threshold_percentile': 90}, 'algorithm_settings': {'use_gpu': True, 'downsampling_factor': 1}}, 'sampling_rate_adaptations': {'125hz': {'min_length': 1250, 'max_length': 12500, 'step_size': 1250}, '32hz': {'min_length': 320, 'max_length': 3200, 'step_size': 320}, '8hz': {'min_length': 80, 'max_length': 800, 'step_size': 80}}}
+2025-06-21 18:12:58,071 - INFO - Found 5 seizure-only files to process
+2025-06-21 18:12:58,075 - INFO - Found 5 files to process
+2025-06-21 18:12:58,075 - INFO - Processing file 1/5: sub-109_run-03_seizure_21_preprocessed.pkl
+2025-06-21 18:12:58,078 - INFO - Found sampling rate in top-level data: 32Hz
+2025-06-21 18:12:58,078 - INFO - Loaded seizure-only data: sub-109_run-03_seizure_21 (115904 samples @ 32Hz)
+2025-06-21 18:12:58,078 - INFO - Running Madrid analysis on signal (length: 115904, fs: 32Hz)
+2025-06-21 18:16:32,398 - INFO - Using default seizure-only configuration
+2025-06-21 18:16:32,398 - INFO - Madrid Batch Processor initialized with config: {'use_gpu': True, 'enable_output': False, 'madrid_parameters': {'m_range': {'min_length': 80, 'max_length': 800, 'step_size': 80}, 'analysis_config': {'top_k': 5, 'train_test_split_ratio': 0.3, 'threshold_percentile': 90}, 'algorithm_settings': {'use_gpu': True, 'downsampling_factor': 1}}, 'sampling_rate_adaptations': {'125hz': {'min_length': 1250, 'max_length': 12500, 'step_size': 1250}, '32hz': {'min_length': 320, 'max_length': 3200, 'step_size': 320}, '8hz': {'min_length': 80, 'max_length': 800, 'step_size': 80}}}
+2025-06-21 18:16:32,402 - INFO - Found 5 seizure-only files to process
+2025-06-21 18:16:32,405 - INFO - Found 5 files to process
+2025-06-21 18:16:32,405 - INFO - Processing file 1/5: sub-109_run-03_seizure_21_preprocessed.pkl
+2025-06-21 18:16:32,409 - INFO - Found sampling rate in top-level data: 32Hz
+2025-06-21 18:16:32,409 - INFO - Loaded seizure-only data: sub-109_run-03_seizure_21 (115904 samples @ 32Hz)
+2025-06-21 18:16:32,409 - INFO - Running Madrid analysis on signal (length: 115904, fs: 32Hz)
+2025-06-21 18:17:57,163 - INFO - Using default seizure-only configuration
+2025-06-21 18:17:57,163 - INFO - Madrid Batch Processor initialized with config: {'use_gpu': True, 'enable_output': False, 'madrid_parameters': {'m_range': {'min_length': 80, 'max_length': 800, 'step_size': 80}, 'analysis_config': {'top_k': 5, 'train_test_split_ratio': 0.3, 'threshold_percentile': 90}, 'algorithm_settings': {'use_gpu': True, 'downsampling_factor': 1}}, 'sampling_rate_adaptations': {'125hz': {'min_length': 1250, 'max_length': 12500, 'step_size': 1250}, '32hz': {'min_length': 320, 'max_length': 3200, 'step_size': 320}, '8hz': {'min_length': 80, 'max_length': 800, 'step_size': 80}}}
+2025-06-21 18:17:57,167 - INFO - Found 5 seizure-only files to process
+2025-06-21 18:17:57,170 - INFO - Found 5 files to process
+2025-06-21 18:17:57,170 - INFO - Processing file 1/5: sub-109_run-03_seizure_21_preprocessed.pkl
+2025-06-21 18:17:57,173 - INFO - Found sampling rate in top-level data: 32Hz
+2025-06-21 18:17:57,173 - INFO - Loaded seizure-only data: sub-109_run-03_seizure_21 (115904 samples @ 32Hz)
+2025-06-21 18:17:57,174 - INFO - Running Madrid analysis on signal (length: 115904, fs: 32Hz)

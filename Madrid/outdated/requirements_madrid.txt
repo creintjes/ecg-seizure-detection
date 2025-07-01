@@ -1,0 +1,38 @@
+# MADRID Algorithm Dependencies
+# Core numerical computing and signal processing for ECG seizure detection
+
+# Essential dependencies
+numpy>=1.21.0
+scipy>=1.15.0
+matplotlib>=3.5.0
+
+# Optional GPU acceleration (uncomment and install based on your CUDA version)
+# cupy-cuda11x>=10.0.0  # For CUDA 11.x systems
+# cupy-cuda12x>=12.0.0  # For CUDA 12.x systems
+
+# Data manipulation and analysis
+pandas>=1.3.0
+
+# Machine learning and evaluation
+scikit-learn>=1.0.0
+
+# Visualization
+seaborn>=0.11.0
+
+# Time series analysis (already in project)
+stumpy>=1.10.0
+
+# Signal processing for ECG data
+pyEDFlib>=0.1.30
+
+# Jupyter notebook support (for examples)
+jupyter>=1.0.0
+ipywidgets>=7.6.0
+
+# Development utilities
+tqdm>=4.60.0
+joblib>=1.0.0
+
+# Testing
+pytest>=6.0.0
+pytest-cov>=2.12.0
