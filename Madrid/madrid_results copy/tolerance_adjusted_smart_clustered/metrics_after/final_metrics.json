@@ -1,0 +1,33 @@
+{
+  "strategy": "time_120s",
+  "before": {
+    "total_files": 400,
+    "files_with_seizures": 400,
+    "files_with_detected_seizures": 314,
+    "total_anomalies": 13651,
+    "true_positives": 5284,
+    "false_positives": 8367,
+    "sensitivity": 0.785,
+    "precision": 0.38707786975313163,
+    "false_alarm_rate": 0.6129221302468684
+  },
+  "after": {
+    "total_anomalies": 1352,
+    "true_positives": 352,
+    "false_positives": 1000,
+    "sensitivity": 0.7325,
+    "precision": 0.2603550295857988,
+    "false_alarm_rate": 0.7396449704142012,
+    "anomaly_reduction": 0.9009596366566552,
+    "fp_reduction": 0.880482849288873,
+    "sensitivity_change": -0.05249999999999999,
+    "score": 0.6935776005703204
+  },
+  "improvements": {
+    "anomaly_reduction_pct": 90.09596366566552,
+    "fp_reduction_pct": 88.0482849288873,
+    "sensitivity_change": -0.05249999999999999,
+    "precision_improvement": -0.12672284016733282,
+    "far_reduction": -0.12672284016733282
+  }
+}
