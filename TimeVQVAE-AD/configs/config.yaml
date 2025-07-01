@@ -1,9 +1,12 @@
 dataset:
+  names: SeizeIT2-ECG-TimeVQVAE-AD
+  root_dir: /home/swolf/asim_shared/preprocessed_data/downsample_freq=125,window_size=30_0,stride=15_0
+  max_files: 4
   in_channels: 1
   batch_sizes:
     stage1: 256 #512
     stage2: 128 #256 #512
-  num_workers: 0
+  num_workers: 1
   n_periods: 2  # window_size = n_periods * period_length; REF: MERLIN++
 
 exp_params:
@@ -19,8 +22,8 @@ trainer_params:
     stage1: 10000
     stage2: 50000
   max_hours:
-    stage1: 2
-    stage2: 2
+    stage1: 12
+    stage2: 12
   val_check_interval:
     stage1: 1000
     stage2: 2000
