@@ -1,0 +1,837 @@
+{
+  "analysis_metadata": {
+    "analysis_id": "madrid_sub-034_run-09_seizure_10_20250623_151715",
+    "timestamp": "2025-06-23T15:17:15.604940Z",
+    "madrid_version": "1.0.0",
+    "analysis_type": "single_file",
+    "computation_info": {
+      "execution_time_seconds": 310.4665539264679,
+      "gpu_used": true,
+      "memory_peak_mb": 0,
+      "analysis_successful": true
+    },
+    "tolerance_applied": {
+      "pre_seizure_minutes": 5.0,
+      "post_seizure_minutes": 3.0,
+      "pre_seizure_samples": 2400,
+      "post_seizure_samples": 1440,
+      "reprocessed_timestamp": "2025-07-01"
+    }
+  },
+  "input_data": {
+    "source_file": "/home/swolf/asim_shared/preprocessed_data/seizure_only/8hz_30min/downsample_8hz_context_30min/sub-034_run-09_seizure_10_preprocessed.pkl",
+    "subject_id": "sub-034",
+    "run_id": "run-09",
+    "seizure_id": "seizure_10",
+    "signal_metadata": {
+      "sampling_rate": 8,
+      "original_sampling_rate": 250,
+      "signal_length_samples": 29016,
+      "signal_duration_seconds": 3627.0,
+      "preprocessing_info": {
+        "method": "seizure_only",
+        "context_minutes": 30,
+        "filter_applied": {
+          "low_freq": 0.5,
+          "high_freq": 40,
+          "order": 4
+        },
+        "downsampling_factor": 31.25
+      }
+    }
+  },
+  "madrid_parameters": {
+    "m_range": {
+      "min_length": 80,
+      "max_length": 800,
+      "step_size": 80
+    },
+    "analysis_config": {
+      "top_k": 5,
+      "train_test_split_ratio": 0.3,
+      "threshold_percentile": 90
+    },
+    "algorithm_settings": {
+      "use_gpu": true,
+      "downsampling_factor": 1
+    }
+  },
+  "analysis_results": {
+    "anomalies": [
+      {
+        "rank": 1,
+        "m_value": 800,
+        "anomaly_score": 0.6352171712073132,
+        "location_sample": 16836,
+        "location_time_seconds": 2104.5,
+        "seizure_hit": false,
+        "normalized_score": 0.6352171712073132,
+        "confidence": 0.6352171712073132,
+        "anomaly_id": "m800_rank1_loc16836"
+      },
+      {
+        "rank": 2,
+        "m_value": 800,
+        "anomaly_score": 0.6308469964455506,
+        "location_sample": 13890,
+        "location_time_seconds": 1736.25,
+        "seizure_hit": true,
+        "normalized_score": 0.6308469964455506,
+        "confidence": 0.6308469964455506,
+        "anomaly_id": "m800_rank2_loc13890"
+      },
+      {
+        "rank": 3,
+        "m_value": 240,
+        "anomaly_score": 0.628295031145267,
+        "location_sample": 14755,
+        "location_time_seconds": 1844.375,
+        "seizure_hit": true,
+        "normalized_score": 0.628295031145267,
+        "confidence": 0.628295031145267,
+        "anomaly_id": "m240_rank3_loc14755"
+      },
+      {
+        "rank": 4,
+        "m_value": 720,
+        "anomaly_score": 0.6271651017945149,
+        "location_sample": 13970,
+        "location_time_seconds": 1746.25,
+        "seizure_hit": true,
+        "normalized_score": 0.6271651017945149,
+        "confidence": 0.6271651017945149,
+        "anomaly_id": "m720_rank4_loc13970"
+      },
+      {
+        "rank": 5,
+        "m_value": 720,
+        "anomaly_score": 0.6271640594653654,
+        "location_sample": 16885,
+        "location_time_seconds": 2110.625,
+        "seizure_hit": false,
+        "normalized_score": 0.6271640594653654,
+        "confidence": 0.6271640594653654,
+        "anomaly_id": "m720_rank5_loc16885"
+      },
+      {
+        "rank": 6,
+        "m_value": 800,
+        "anomaly_score": 0.6266317508322706,
+        "location_sample": 16586,
+        "location_time_seconds": 2073.25,
+        "seizure_hit": false,
+        "normalized_score": 0.6266317508322706,
+        "confidence": 0.6266317508322706,
+        "anomaly_id": "m800_rank6_loc16586"
+      },
+      {
+        "rank": 7,
+        "m_value": 800,
+        "anomaly_score": 0.6256339738458242,
+        "location_sample": 17119,
+        "location_time_seconds": 2139.875,
+        "seizure_hit": false,
+        "normalized_score": 0.6256339738458242,
+        "confidence": 0.6256339738458242,
+        "anomaly_id": "m800_rank7_loc17119"
+      },
+      {
+        "rank": 8,
+        "m_value": 640,
+        "anomaly_score": 0.6231332967201898,
+        "location_sample": 14050,
+        "location_time_seconds": 1756.25,
+        "seizure_hit": true,
+        "normalized_score": 0.6231332967201898,
+        "confidence": 0.6231332967201898,
+        "anomaly_id": "m640_rank8_loc14050"
+      },
+      {
+        "rank": 9,
+        "m_value": 560,
+        "anomaly_score": 0.6219411307250523,
+        "location_sample": 14130,
+        "location_time_seconds": 1766.25,
+        "seizure_hit": true,
+        "normalized_score": 0.6219411307250523,
+        "confidence": 0.6219411307250523,
+        "anomaly_id": "m560_rank9_loc14130"
+      },
+      {
+        "rank": 10,
+        "m_value": 640,
+        "anomaly_score": 0.6211207025074341,
+        "location_sample": 16985,
+        "location_time_seconds": 2123.125,
+        "seizure_hit": false,
+        "normalized_score": 0.6211207025074341,
+        "confidence": 0.6211207025074341,
+        "anomaly_id": "m640_rank10_loc16985"
+      },
+      {
+        "rank": 11,
+        "m_value": 480,
+        "anomaly_score": 0.6186747527997639,
+        "location_sample": 14210,
+        "location_time_seconds": 1776.25,
+        "seizure_hit": true,
+        "normalized_score": 0.6186747527997639,
+        "confidence": 0.6186747527997639,
+        "anomaly_id": "m480_rank11_loc14210"
+      },
+      {
+        "rank": 12,
+        "m_value": 800,
+        "anomaly_score": 0.6160975907683224,
+        "location_sample": 17398,
+        "location_time_seconds": 2174.75,
+        "seizure_hit": false,
+        "normalized_score": 0.6160975907683224,
+        "confidence": 0.6160975907683224,
+        "anomaly_id": "m800_rank12_loc17398"
+      },
+      {
+        "rank": 13,
+        "m_value": 640,
+        "anomaly_score": 0.6159816864910929,
+        "location_sample": 16790,
+        "location_time_seconds": 2098.75,
+        "seizure_hit": false,
+        "normalized_score": 0.6159816864910929,
+        "confidence": 0.6159816864910929,
+        "anomaly_id": "m640_rank13_loc16790"
+      },
+      {
+        "rank": 14,
+        "m_value": 720,
+        "anomaly_score": 0.61449676958964,
+        "location_sample": 16702,
+        "location_time_seconds": 2087.75,
+        "seizure_hit": false,
+        "normalized_score": 0.61449676958964,
+        "confidence": 0.61449676958964,
+        "anomaly_id": "m720_rank14_loc16702"
+      },
+      {
+        "rank": 15,
+        "m_value": 400,
+        "anomaly_score": 0.6133936503595776,
+        "location_sample": 14290,
+        "location_time_seconds": 1786.25,
+        "seizure_hit": true,
+        "normalized_score": 0.6133936503595776,
+        "confidence": 0.6133936503595776,
+        "anomaly_id": "m400_rank15_loc14290"
+      },
+      {
+        "rank": 16,
+        "m_value": 480,
+        "anomaly_score": 0.6132974407376814,
+        "location_sample": 14084,
+        "location_time_seconds": 1760.5,
+        "seizure_hit": true,
+        "normalized_score": 0.6132974407376814,
+        "confidence": 0.6132974407376814,
+        "anomaly_id": "m480_rank16_loc14084"
+      },
+      {
+        "rank": 17,
+        "m_value": 720,
+        "anomaly_score": 0.6122845749863568,
+        "location_sample": 13789,
+        "location_time_seconds": 1723.625,
+        "seizure_hit": true,
+        "normalized_score": 0.6122845749863568,
+        "confidence": 0.6122845749863568,
+        "anomaly_id": "m720_rank17_loc13789"
+      },
+      {
+        "rank": 18,
+        "m_value": 560,
+        "anomaly_score": 0.6112942589412107,
+        "location_sample": 16868,
+        "location_time_seconds": 2108.5,
+        "seizure_hit": false,
+        "normalized_score": 0.6112942589412107,
+        "confidence": 0.6112942589412107,
+        "anomaly_id": "m560_rank18_loc16868"
+      },
+      {
+        "rank": 19,
+        "m_value": 400,
+        "anomaly_score": 0.6104304748436055,
+        "location_sample": 14189,
+        "location_time_seconds": 1773.625,
+        "seizure_hit": true,
+        "normalized_score": 0.6104304748436055,
+        "confidence": 0.6104304748436055,
+        "anomaly_id": "m400_rank19_loc14189"
+      },
+      {
+        "rank": 20,
+        "m_value": 160,
+        "anomaly_score": 0.6102037779576445,
+        "location_sample": 14762,
+        "location_time_seconds": 1845.25,
+        "seizure_hit": true,
+        "normalized_score": 0.6102037779576445,
+        "confidence": 0.6102037779576445,
+        "anomaly_id": "m160_rank20_loc14762"
+      },
+      {
+        "rank": 21,
+        "m_value": 160,
+        "anomaly_score": 0.6098980595870845,
+        "location_sample": 14840,
+        "location_time_seconds": 1855.0,
+        "seizure_hit": true,
+        "normalized_score": 0.6098980595870845,
+        "confidence": 0.6098980595870845,
+        "anomaly_id": "m160_rank21_loc14840"
+      },
+      {
+        "rank": 22,
+        "m_value": 320,
+        "anomaly_score": 0.6092266832009023,
+        "location_sample": 14368,
+        "location_time_seconds": 1796.0,
+        "seizure_hit": true,
+        "normalized_score": 0.6092266832009023,
+        "confidence": 0.6092266832009023,
+        "anomaly_id": "m320_rank22_loc14368"
+      },
+      {
+        "rank": 23,
+        "m_value": 320,
+        "anomaly_score": 0.6089088792465587,
+        "location_sample": 14730,
+        "location_time_seconds": 1841.25,
+        "seizure_hit": true,
+        "normalized_score": 0.6089088792465587,
+        "confidence": 0.6089088792465587,
+        "anomaly_id": "m320_rank23_loc14730"
+      },
+      {
+        "rank": 24,
+        "m_value": 320,
+        "anomaly_score": 0.6088865185667846,
+        "location_sample": 14810,
+        "location_time_seconds": 1851.25,
+        "seizure_hit": true,
+        "normalized_score": 0.6088865185667846,
+        "confidence": 0.6088865185667846,
+        "anomaly_id": "m320_rank24_loc14810"
+      },
+      {
+        "rank": 25,
+        "m_value": 320,
+        "anomaly_score": 0.6088641578870104,
+        "location_sample": 14890,
+        "location_time_seconds": 1861.25,
+        "seizure_hit": true,
+        "normalized_score": 0.6088641578870104,
+        "confidence": 0.6088641578870104,
+        "anomaly_id": "m320_rank25_loc14890"
+      },
+      {
+        "rank": 26,
+        "m_value": 320,
+        "anomaly_score": 0.6088417972072363,
+        "location_sample": 14970,
+        "location_time_seconds": 1871.25,
+        "seizure_hit": true,
+        "normalized_score": 0.6088417972072363,
+        "confidence": 0.6088417972072363,
+        "anomaly_id": "m320_rank26_loc14970"
+      },
+      {
+        "rank": 27,
+        "m_value": 640,
+        "anomaly_score": 0.6087324418187209,
+        "location_sample": 13761,
+        "location_time_seconds": 1720.125,
+        "seizure_hit": true,
+        "normalized_score": 0.6087324418187209,
+        "confidence": 0.6087324418187209,
+        "anomaly_id": "m640_rank27_loc13761"
+      },
+      {
+        "rank": 28,
+        "m_value": 720,
+        "anomaly_score": 0.607019539936308,
+        "location_sample": 17135,
+        "location_time_seconds": 2141.875,
+        "seizure_hit": false,
+        "normalized_score": 0.607019539936308,
+        "confidence": 0.607019539936308,
+        "anomaly_id": "m720_rank28_loc17135"
+      },
+      {
+        "rank": 29,
+        "m_value": 240,
+        "anomaly_score": 0.6059682825681584,
+        "location_sample": 16753,
+        "location_time_seconds": 2094.125,
+        "seizure_hit": false,
+        "normalized_score": 0.6059682825681584,
+        "confidence": 0.6059682825681584,
+        "anomaly_id": "m240_rank29_loc16753"
+      },
+      {
+        "rank": 30,
+        "m_value": 240,
+        "anomaly_score": 0.6059489176514281,
+        "location_sample": 16813,
+        "location_time_seconds": 2101.625,
+        "seizure_hit": false,
+        "normalized_score": 0.6059489176514281,
+        "confidence": 0.6059489176514281,
+        "anomaly_id": "m240_rank30_loc16813"
+      },
+      {
+        "rank": 31,
+        "m_value": 480,
+        "anomaly_score": 0.6038567909065146,
+        "location_sample": 13879,
+        "location_time_seconds": 1734.875,
+        "seizure_hit": true,
+        "normalized_score": 0.6038567909065146,
+        "confidence": 0.6038567909065146,
+        "anomaly_id": "m480_rank31_loc13879"
+      },
+      {
+        "rank": 32,
+        "m_value": 560,
+        "anomaly_score": 0.6036559550556023,
+        "location_sample": 13795,
+        "location_time_seconds": 1724.375,
+        "seizure_hit": true,
+        "normalized_score": 0.6036559550556023,
+        "confidence": 0.6036559550556023,
+        "anomaly_id": "m560_rank32_loc13795"
+      },
+      {
+        "rank": 33,
+        "m_value": 640,
+        "anomaly_score": 0.6035464449243274,
+        "location_sample": 17145,
+        "location_time_seconds": 2143.125,
+        "seizure_hit": false,
+        "normalized_score": 0.6035464449243274,
+        "confidence": 0.6035464449243274,
+        "anomaly_id": "m640_rank33_loc17145"
+      },
+      {
+        "rank": 34,
+        "m_value": 560,
+        "anomaly_score": 0.6019851821875967,
+        "location_sample": 13938,
+        "location_time_seconds": 1742.25,
+        "seizure_hit": true,
+        "normalized_score": 0.6019851821875967,
+        "confidence": 0.6019851821875967,
+        "anomaly_id": "m560_rank34_loc13938"
+      },
+      {
+        "rank": 35,
+        "m_value": 400,
+        "anomaly_score": 0.60089742872111,
+        "location_sample": 14070,
+        "location_time_seconds": 1758.75,
+        "seizure_hit": true,
+        "normalized_score": 0.60089742872111,
+        "confidence": 0.60089742872111,
+        "anomaly_id": "m400_rank35_loc14070"
+      },
+      {
+        "rank": 36,
+        "m_value": 240,
+        "anomaly_score": 0.6008550553197658,
+        "location_sample": 14321,
+        "location_time_seconds": 1790.125,
+        "seizure_hit": true,
+        "normalized_score": 0.6008550553197658,
+        "confidence": 0.6008550553197658,
+        "anomaly_id": "m240_rank36_loc14321"
+      }
+    ],
+    "performance_metrics": {
+      "total_anomalies_detected": 36,
+      "threshold_used": 0.5997276893569184,
+      "analysis_successful": true,
+      "true_positives": 23,
+      "false_positives": 13,
+      "sensitivity": 23.0,
+      "precision": 0.6388888888888888
+    },
+    "multi_length_matrix": {
+      "description": "Multi-length discord table with normalized scores",
+      "shape": [
+        10,
+        29016
+      ],
+      "m_values": [
+        80,
+        160,
+        240,
+        320,
+        400,
+        480,
+        560,
+        640,
+        720,
+        800
+      ],
+      "statistics": {
+        "max_score": 0.6352171712073132,
+        "min_score": 0.5798888651686054,
+        "mean_score": 0.6167139461078831,
+        "std_score": 0.014572735344887499
+      }
+    }
+  },
+  "validation_data": {
+    "ground_truth": {
+      "seizure_present": true,
+      "seizure_regions": [
+        {
+          "onset_sample": 14400,
+          "offset_sample": 14616,
+          "onset_time_seconds": 1800.0,
+          "offset_time_seconds": 1827.0,
+          "duration_seconds": 27.0,
+          "seizure_type": "focal",
+          "confidence": 1.0
+        }
+      ],
+      "annotation_source": "seizure_only_preprocessing",
+      "annotator_id": "automated"
+    },
+    "seizure_overlap_info": [
+      {
+        "anomaly_id": "m800_rank1_loc16836",
+        "overlap_with_seizure": false,
+        "overlap_sample_start": null,
+        "overlap_sample_end": null,
+        "overlap_ratio": 0.0,
+        "distance_to_onset": null,
+        "classification": "false_positive"
+      },
+      {
+        "anomaly_id": "m800_rank2_loc13890",
+        "overlap_with_seizure": false,
+        "overlap_sample_start": 14400,
+        "overlap_sample_end": 14616,
+        "overlap_ratio": 0.0,
+        "distance_to_onset": 510,
+        "classification": "true_positive"
+      },
+      {
+        "anomaly_id": "m240_rank3_loc14755",
+        "overlap_with_seizure": true,
+        "overlap_sample_start": 14400,
+        "overlap_sample_end": 14616,
+        "overlap_ratio": 0.8,
+        "distance_to_onset": 355,
+        "classification": "true_positive"
+      },
+      {
+        "anomaly_id": "m720_rank4_loc13970",
+        "overlap_with_seizure": false,
+        "overlap_sample_start": 14400,
+        "overlap_sample_end": 14616,
+        "overlap_ratio": 0.0,
+        "distance_to_onset": 430,
+        "classification": "true_positive"
+      },
+      {
+        "anomaly_id": "m720_rank5_loc16885",
+        "overlap_with_seizure": false,
+        "overlap_sample_start": null,
+        "overlap_sample_end": null,
+        "overlap_ratio": 0.0,
+        "distance_to_onset": null,
+        "classification": "false_positive"
+      },
+      {
+        "anomaly_id": "m800_rank6_loc16586",
+        "overlap_with_seizure": false,
+        "overlap_sample_start": null,
+        "overlap_sample_end": null,
+        "overlap_ratio": 0.0,
+        "distance_to_onset": null,
+        "classification": "false_positive"
+      },
+      {
+        "anomaly_id": "m800_rank7_loc17119",
+        "overlap_with_seizure": false,
+        "overlap_sample_start": null,
+        "overlap_sample_end": null,
+        "overlap_ratio": 0.0,
+        "distance_to_onset": null,
+        "classification": "false_positive"
+      },
+      {
+        "anomaly_id": "m640_rank8_loc14050",
+        "overlap_with_seizure": false,
+        "overlap_sample_start": 14400,
+        "overlap_sample_end": 14616,
+        "overlap_ratio": 0.0,
+        "distance_to_onset": 350,
+        "classification": "true_positive"
+      },
+      {
+        "anomaly_id": "m560_rank9_loc14130",
+        "overlap_with_seizure": false,
+        "overlap_sample_start": 14400,
+        "overlap_sample_end": 14616,
+        "overlap_ratio": 0.0,
+        "distance_to_onset": 270,
+        "classification": "true_positive"
+      },
+      {
+        "anomaly_id": "m640_rank10_loc16985",
+        "overlap_with_seizure": false,
+        "overlap_sample_start": null,
+        "overlap_sample_end": null,
+        "overlap_ratio": 0.0,
+        "distance_to_onset": null,
+        "classification": "false_positive"
+      },
+      {
+        "anomaly_id": "m480_rank11_loc14210",
+        "overlap_with_seizure": true,
+        "overlap_sample_start": 14400,
+        "overlap_sample_end": 14616,
+        "overlap_ratio": 0.8,
+        "distance_to_onset": 190,
+        "classification": "true_positive"
+      },
+      {
+        "anomaly_id": "m800_rank12_loc17398",
+        "overlap_with_seizure": false,
+        "overlap_sample_start": null,
+        "overlap_sample_end": null,
+        "overlap_ratio": 0.0,
+        "distance_to_onset": null,
+        "classification": "false_positive"
+      },
+      {
+        "anomaly_id": "m640_rank13_loc16790",
+        "overlap_with_seizure": false,
+        "overlap_sample_start": null,
+        "overlap_sample_end": null,
+        "overlap_ratio": 0.0,
+        "distance_to_onset": null,
+        "classification": "false_positive"
+      },
+      {
+        "anomaly_id": "m720_rank14_loc16702",
+        "overlap_with_seizure": false,
+        "overlap_sample_start": null,
+        "overlap_sample_end": null,
+        "overlap_ratio": 0.0,
+        "distance_to_onset": null,
+        "classification": "false_positive"
+      },
+      {
+        "anomaly_id": "m400_rank15_loc14290",
+        "overlap_with_seizure": true,
+        "overlap_sample_start": 14400,
+        "overlap_sample_end": 14616,
+        "overlap_ratio": 0.8,
+        "distance_to_onset": 110,
+        "classification": "true_positive"
+      },
+      {
+        "anomaly_id": "m480_rank16_loc14084",
+        "overlap_with_seizure": false,
+        "overlap_sample_start": 14400,
+        "overlap_sample_end": 14616,
+        "overlap_ratio": 0.0,
+        "distance_to_onset": 316,
+        "classification": "true_positive"
+      },
+      {
+        "anomaly_id": "m720_rank17_loc13789",
+        "overlap_with_seizure": false,
+        "overlap_sample_start": 14400,
+        "overlap_sample_end": 14616,
+        "overlap_ratio": 0.0,
+        "distance_to_onset": 611,
+        "classification": "true_positive"
+      },
+      {
+        "anomaly_id": "m560_rank18_loc16868",
+        "overlap_with_seizure": false,
+        "overlap_sample_start": null,
+        "overlap_sample_end": null,
+        "overlap_ratio": 0.0,
+        "distance_to_onset": null,
+        "classification": "false_positive"
+      },
+      {
+        "anomaly_id": "m400_rank19_loc14189",
+        "overlap_with_seizure": true,
+        "overlap_sample_start": 14400,
+        "overlap_sample_end": 14616,
+        "overlap_ratio": 0.8,
+        "distance_to_onset": 211,
+        "classification": "true_positive"
+      },
+      {
+        "anomaly_id": "m160_rank20_loc14762",
+        "overlap_with_seizure": true,
+        "overlap_sample_start": 14400,
+        "overlap_sample_end": 14616,
+        "overlap_ratio": 0.8,
+        "distance_to_onset": 362,
+        "classification": "true_positive"
+      },
+      {
+        "anomaly_id": "m160_rank21_loc14840",
+        "overlap_with_seizure": true,
+        "overlap_sample_start": 14400,
+        "overlap_sample_end": 14616,
+        "overlap_ratio": 0.8,
+        "distance_to_onset": 440,
+        "classification": "true_positive"
+      },
+      {
+        "anomaly_id": "m320_rank22_loc14368",
+        "overlap_with_seizure": true,
+        "overlap_sample_start": 14400,
+        "overlap_sample_end": 14616,
+        "overlap_ratio": 0.8,
+        "distance_to_onset": 32,
+        "classification": "true_positive"
+      },
+      {
+        "anomaly_id": "m320_rank23_loc14730",
+        "overlap_with_seizure": true,
+        "overlap_sample_start": 14400,
+        "overlap_sample_end": 14616,
+        "overlap_ratio": 0.8,
+        "distance_to_onset": 330,
+        "classification": "true_positive"
+      },
+      {
+        "anomaly_id": "m320_rank24_loc14810",
+        "overlap_with_seizure": true,
+        "overlap_sample_start": 14400,
+        "overlap_sample_end": 14616,
+        "overlap_ratio": 0.8,
+        "distance_to_onset": 410,
+        "classification": "true_positive"
+      },
+      {
+        "anomaly_id": "m320_rank25_loc14890",
+        "overlap_with_seizure": false,
+        "overlap_sample_start": 14400,
+        "overlap_sample_end": 14616,
+        "overlap_ratio": 0.0,
+        "distance_to_onset": 490,
+        "classification": "true_positive"
+      },
+      {
+        "anomaly_id": "m320_rank26_loc14970",
+        "overlap_with_seizure": false,
+        "overlap_sample_start": 14400,
+        "overlap_sample_end": 14616,
+        "overlap_ratio": 0.0,
+        "distance_to_onset": 570,
+        "classification": "true_positive"
+      },
+      {
+        "anomaly_id": "m640_rank27_loc13761",
+        "overlap_with_seizure": false,
+        "overlap_sample_start": 14400,
+        "overlap_sample_end": 14616,
+        "overlap_ratio": 0.0,
+        "distance_to_onset": 639,
+        "classification": "true_positive"
+      },
+      {
+        "anomaly_id": "m720_rank28_loc17135",
+        "overlap_with_seizure": false,
+        "overlap_sample_start": null,
+        "overlap_sample_end": null,
+        "overlap_ratio": 0.0,
+        "distance_to_onset": null,
+        "classification": "false_positive"
+      },
+      {
+        "anomaly_id": "m240_rank29_loc16753",
+        "overlap_with_seizure": false,
+        "overlap_sample_start": null,
+        "overlap_sample_end": null,
+        "overlap_ratio": 0.0,
+        "distance_to_onset": null,
+        "classification": "false_positive"
+      },
+      {
+        "anomaly_id": "m240_rank30_loc16813",
+        "overlap_with_seizure": false,
+        "overlap_sample_start": null,
+        "overlap_sample_end": null,
+        "overlap_ratio": 0.0,
+        "distance_to_onset": null,
+        "classification": "false_positive"
+      },
+      {
+        "anomaly_id": "m480_rank31_loc13879",
+        "overlap_with_seizure": false,
+        "overlap_sample_start": 14400,
+        "overlap_sample_end": 14616,
+        "overlap_ratio": 0.0,
+        "distance_to_onset": 521,
+        "classification": "true_positive"
+      },
+      {
+        "anomaly_id": "m560_rank32_loc13795",
+        "overlap_with_seizure": false,
+        "overlap_sample_start": 14400,
+        "overlap_sample_end": 14616,
+        "overlap_ratio": 0.0,
+        "distance_to_onset": 605,
+        "classification": "true_positive"
+      },
+      {
+        "anomaly_id": "m640_rank33_loc17145",
+        "overlap_with_seizure": false,
+        "overlap_sample_start": null,
+        "overlap_sample_end": null,
+        "overlap_ratio": 0.0,
+        "distance_to_onset": null,
+        "classification": "false_positive"
+      },
+      {
+        "anomaly_id": "m560_rank34_loc13938",
+        "overlap_with_seizure": false,
+        "overlap_sample_start": 14400,
+        "overlap_sample_end": 14616,
+        "overlap_ratio": 0.0,
+        "distance_to_onset": 462,
+        "classification": "true_positive"
+      },
+      {
+        "anomaly_id": "m400_rank35_loc14070",
+        "overlap_with_seizure": false,
+        "overlap_sample_start": 14400,
+        "overlap_sample_end": 14616,
+        "overlap_ratio": 0.0,
+        "distance_to_onset": 330,
+        "classification": "true_positive"
+      },
+      {
+        "anomaly_id": "m240_rank36_loc14321",
+        "overlap_with_seizure": true,
+        "overlap_sample_start": 14400,
+        "overlap_sample_end": 14616,
+        "overlap_ratio": 0.8,
+        "distance_to_onset": 79,
+        "classification": "true_positive"
+      }
+    ]
+  }
+}
