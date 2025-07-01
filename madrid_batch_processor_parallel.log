@@ -1,0 +1,1123 @@
+2025-06-21 18:35:36,727 - MainProcess - INFO - 🚀 PARALLEL MADRID PROCESSING PLAN
+2025-06-21 18:35:36,727 - MainProcess - INFO - Files to process: 5
+2025-06-21 18:35:36,727 - MainProcess - INFO - Parallel workers: 8
+2025-06-21 18:35:36,727 - MainProcess - INFO - Estimated time: 0.6 minutes
+2025-06-21 18:35:36,727 - MainProcess - INFO - Expected speedup: 4.5x
+2025-06-21 18:35:36,727 - MainProcess - INFO - ETA: 18:36:10
+2025-06-21 18:35:36,727 - MainProcess - INFO - Using default seizure-only configuration
+2025-06-21 18:35:36,727 - MainProcess - INFO - 🔧 Initializing parallel processor with 8 workers...
+2025-06-21 18:35:36,727 - MainProcess - INFO - Parallel Madrid Processor initialized with 8 workers
+2025-06-21 18:35:36,727 - MainProcess - INFO - 🚀 Starting parallel processing...
+2025-06-21 18:35:36,730 - MainProcess - INFO - Found 5 files to process with 8 workers
+2025-06-21 18:37:58,850 - MainProcess - INFO - 🚀 PARALLEL MADRID PROCESSING PLAN
+2025-06-21 18:37:58,851 - MainProcess - INFO - Files to process: 30
+2025-06-21 18:37:58,851 - MainProcess - INFO - Parallel workers: 8
+2025-06-21 18:37:58,851 - MainProcess - INFO - Estimated time: 3.3 minutes
+2025-06-21 18:37:58,851 - MainProcess - INFO - Expected speedup: 4.5x
+2025-06-21 18:37:58,851 - MainProcess - INFO - ETA: 18:41:19
+2025-06-21 18:37:58,851 - MainProcess - INFO - Using default seizure-only configuration
+2025-06-21 18:37:58,851 - MainProcess - INFO - 🔧 Initializing parallel processor with 8 workers...
+2025-06-21 18:37:58,852 - MainProcess - INFO - Parallel Madrid Processor initialized with 8 workers
+2025-06-21 18:37:58,852 - MainProcess - INFO - 🚀 Starting parallel processing...
+2025-06-21 18:37:58,856 - MainProcess - INFO - Found 30 files to process with 8 workers
+2025-06-21 18:38:37,738 - MainProcess - INFO - 🚀 PARALLEL MADRID PROCESSING PLAN
+2025-06-21 18:38:37,739 - MainProcess - INFO - Files to process: 30
+2025-06-21 18:38:37,739 - MainProcess - INFO - Parallel workers: 8
+2025-06-21 18:38:37,739 - MainProcess - INFO - Estimated time: 3.3 minutes
+2025-06-21 18:38:37,739 - MainProcess - INFO - Expected speedup: 4.5x
+2025-06-21 18:38:37,739 - MainProcess - INFO - ETA: 18:41:58
+2025-06-21 18:38:37,739 - MainProcess - INFO - Using default seizure-only configuration
+2025-06-21 18:38:37,740 - MainProcess - INFO - 🔧 Initializing parallel processor with 8 workers...
+2025-06-21 18:38:37,740 - MainProcess - INFO - Parallel Madrid Processor initialized with 8 workers
+2025-06-21 18:38:37,741 - MainProcess - INFO - 🚀 Starting parallel processing...
+2025-06-21 18:38:37,743 - MainProcess - INFO - Found 30 files to process with 8 workers
+2025-06-22 10:49:40,137 - MainProcess - INFO - 🚀 PARALLEL MADRID PROCESSING PLAN
+2025-06-22 10:49:40,138 - MainProcess - INFO - Files to process: 2
+2025-06-22 10:49:40,139 - MainProcess - INFO - Parallel workers: 2
+2025-06-22 10:49:40,140 - MainProcess - INFO - Estimated time: 0.7 minutes
+2025-06-22 10:49:40,141 - MainProcess - INFO - Expected speedup: 1.4x
+2025-06-22 10:49:40,141 - MainProcess - INFO - ETA: 10:50:21
+2025-06-22 10:49:40,141 - MainProcess - INFO - Using default seizure-only configuration
+2025-06-22 10:49:40,142 - MainProcess - INFO - 🔧 Initializing parallel processor with 2 workers...
+2025-06-22 10:49:40,142 - MainProcess - INFO - Parallel Madrid Processor initialized with 2 workers
+2025-06-22 10:49:40,143 - MainProcess - INFO - 🚀 Starting parallel processing...
+2025-06-22 10:49:40,152 - MainProcess - INFO - Found 2 files to process with 2 workers
+2025-06-22 10:49:40,257 - ForkPoolWorker-2 - ERROR - Error processing /home/swolf/asim_shared/preprocessed_data/seizure_only/8hz_30min/downsample_8hz_context_30min/sub-051_run-02_seizure_00_preprocessed.pkl: name 'MADRID' is not defined
+2025-06-22 10:49:40,257 - ForkPoolWorker-1 - ERROR - Error processing /home/swolf/asim_shared/preprocessed_data/seizure_only/8hz_30min/downsample_8hz_context_30min/sub-109_run-03_seizure_21_preprocessed.pkl: name 'MADRID' is not defined
+2025-06-22 10:49:40,278 - MainProcess - INFO - Progress: 1/2 (50.0%) - Success: 0, Failed: 1 - ETA: 0.0min
+2025-06-22 10:49:40,279 - MainProcess - ERROR - ❌ sub-109_run-03_seizure_21_preprocessed.pkl: name 'MADRID' is not defined
+2025-06-22 10:49:40,280 - MainProcess - INFO - Progress: 2/2 (100.0%) - Success: 0, Failed: 2 - ETA: 0.0min
+2025-06-22 10:49:40,280 - MainProcess - ERROR - ❌ sub-051_run-02_seizure_00_preprocessed.pkl: name 'MADRID' is not defined
+2025-06-22 10:49:40,315 - MainProcess - INFO - 
+📊 PARALLEL PROCESSING SUMMARY
+2025-06-22 10:49:40,316 - MainProcess - INFO - Total processing time: 0.0 minutes
+2025-06-22 10:49:40,317 - MainProcess - INFO - Average time per file: 0.1 seconds
+2025-06-22 10:49:40,318 - MainProcess - INFO - Successfully processed: 0/2
+2025-06-22 10:49:40,319 - MainProcess - INFO - Failed files: 2
+2025-06-22 10:49:40,320 - MainProcess - INFO - Speedup factor: ~2x (theoretical)
+2025-06-22 10:49:40,322 - MainProcess - INFO - 
+🎉 PARALLEL PROCESSING COMPLETED!
+2025-06-22 10:49:40,326 - MainProcess - INFO - ✅ Successfully processed: 0/2 files
+2025-06-22 10:49:40,329 - MainProcess - INFO - ⏱️  Total time: 0.0 minutes
+2025-06-22 10:49:40,333 - MainProcess - INFO - ⚡ Actual speedup: 335.5x
+2025-06-22 10:49:40,336 - MainProcess - INFO - 📁 Results saved to: madrid_seizure_results_parallel
+2025-06-22 10:49:40,339 - MainProcess - INFO - 📄 Processing summary saved to: madrid_seizure_results_parallel/processing_summary.json
+2025-06-22 10:51:24,696 - MainProcess - INFO - 🚀 PARALLEL MADRID PROCESSING PLAN
+2025-06-22 10:51:24,700 - MainProcess - INFO - Files to process: 2
+2025-06-22 10:51:24,702 - MainProcess - INFO - Parallel workers: 2
+2025-06-22 10:51:24,706 - MainProcess - INFO - Estimated time: 0.7 minutes
+2025-06-22 10:51:24,709 - MainProcess - INFO - Expected speedup: 1.4x
+2025-06-22 10:51:24,712 - MainProcess - INFO - ETA: 10:52:06
+2025-06-22 10:51:24,716 - MainProcess - INFO - Using default seizure-only configuration
+2025-06-22 10:51:24,718 - MainProcess - INFO - 🔧 Initializing parallel processor with 2 workers...
+2025-06-22 10:51:24,720 - MainProcess - INFO - Parallel Madrid Processor initialized with 2 workers
+2025-06-22 10:51:24,721 - MainProcess - INFO - 🚀 Starting parallel processing...
+2025-06-22 10:51:24,727 - MainProcess - INFO - Found 2 files to process with 2 workers
+2025-06-22 11:02:49,996 - MainProcess - INFO - Progress: 1/2 (50.0%) - Success: 1, Failed: 0 - ETA: 11.4min
+2025-06-22 11:02:49,998 - MainProcess - INFO - ✓ sub-109_run-03_seizure_21_preprocessed.pkl: 29 anomalies, 0 TP, 685.1s
+2025-06-22 11:02:49,998 - MainProcess - INFO - Progress: 2/2 (100.0%) - Success: 2, Failed: 0 - ETA: 0.0min
+2025-06-22 11:02:49,999 - MainProcess - INFO - ✓ sub-051_run-02_seizure_00_preprocessed.pkl: 49 anomalies, 4 TP, 482.3s
+2025-06-22 11:02:50,038 - MainProcess - INFO - 
+📊 PARALLEL PROCESSING SUMMARY
+2025-06-22 11:02:50,038 - MainProcess - INFO - Total processing time: 11.4 minutes
+2025-06-22 11:02:50,039 - MainProcess - INFO - Average time per file: 342.7 seconds
+2025-06-22 11:02:50,039 - MainProcess - INFO - Successfully processed: 2/2
+2025-06-22 11:02:50,039 - MainProcess - INFO - Failed files: 0
+2025-06-22 11:02:50,039 - MainProcess - INFO - Speedup factor: ~2x (theoretical)
+2025-06-22 11:02:50,040 - MainProcess - INFO - 
+🎉 PARALLEL PROCESSING COMPLETED!
+2025-06-22 11:02:50,040 - MainProcess - INFO - ✅ Successfully processed: 2/2 files
+2025-06-22 11:02:50,040 - MainProcess - INFO - ⏱️  Total time: 11.4 minutes
+2025-06-22 11:02:50,040 - MainProcess - INFO - ⚡ Actual speedup: 0.1x
+2025-06-22 11:02:50,040 - MainProcess - INFO - 📁 Results saved to: madrid_seizure_results_parallel
+2025-06-22 11:02:50,042 - MainProcess - INFO - 📄 Processing summary saved to: madrid_seizure_results_parallel/processing_summary.json
+2025-06-22 11:02:50,043 - MainProcess - WARNING - ⚠️  Low speedup achieved (0.1x vs 2x theoretical)
+2025-06-22 11:02:50,043 - MainProcess - WARNING -    Consider reducing workers or checking GPU availability
+2025-06-23 08:08:56,723 - MainProcess - INFO - Progress: 1/30 (3.3%) - Success: 1, Failed: 0 - ETA: 65278.0min
+2025-06-23 08:08:56,733 - MainProcess - INFO - ✓ sub-109_run-03_seizure_21_preprocessed.pkl: 1 anomalies, 0 TP, 36003.3s
+2025-06-23 08:08:56,734 - MainProcess - INFO - Progress: 2/30 (6.7%) - Success: 2, Failed: 0 - ETA: 31513.5min
+2025-06-23 08:08:56,735 - MainProcess - INFO - ✓ sub-051_run-02_seizure_00_preprocessed.pkl: 1 anomalies, 0 TP, 35852.3s
+2025-06-23 08:08:56,735 - MainProcess - INFO - Progress: 3/30 (10.0%) - Success: 3, Failed: 0 - ETA: 20258.7min
+2025-06-23 08:08:56,736 - MainProcess - INFO - ✓ sub-039_run-04_seizure_08_preprocessed.pkl: 1 anomalies, 0 TP, 35683.6s
+2025-06-23 08:08:56,736 - MainProcess - INFO - Progress: 4/30 (13.3%) - Success: 4, Failed: 0 - ETA: 14631.3min
+2025-06-23 08:08:56,756 - MainProcess - INFO - ✓ sub-100_run-03_seizure_00_preprocessed.pkl: 1 anomalies, 0 TP, 21356.4s
+2025-06-23 08:08:56,757 - MainProcess - INFO - Progress: 5/30 (16.7%) - Success: 5, Failed: 0 - ETA: 11254.8min
+2025-06-23 08:08:56,757 - MainProcess - INFO - ✓ sub-113_run-08_seizure_01_preprocessed.pkl: 1 anomalies, 0 TP, 35770.2s
+2025-06-23 08:08:56,757 - MainProcess - INFO - Progress: 6/30 (20.0%) - Success: 6, Failed: 0 - ETA: 9003.9min
+2025-06-23 08:08:56,757 - MainProcess - INFO - ✓ sub-109_run-07_seizure_07_preprocessed.pkl: 1 anomalies, 0 TP, 35677.3s
+2025-06-23 08:08:56,757 - MainProcess - INFO - Progress: 7/30 (23.3%) - Success: 7, Failed: 0 - ETA: 7396.0min
+2025-06-23 08:08:56,757 - MainProcess - INFO - ✓ sub-003_run-06_seizure_00_preprocessed.pkl: 1 anomalies, 1 TP, 36752.2s
+2025-06-23 08:08:56,758 - MainProcess - INFO - Progress: 8/30 (26.7%) - Success: 8, Failed: 0 - ETA: 6190.2min
+2025-06-23 08:08:56,758 - MainProcess - INFO - ✓ sub-079_run-07_seizure_00_preprocessed.pkl: 1 anomalies, 0 TP, 35488.9s
+2025-06-23 08:08:56,758 - MainProcess - INFO - Progress: 9/30 (30.0%) - Success: 9, Failed: 0 - ETA: 5252.3min
+2025-06-23 08:08:56,758 - MainProcess - INFO - ✓ sub-104_run-05_seizure_00_preprocessed.pkl: 1 anomalies, 0 TP, 36409.6s
+2025-06-23 08:08:56,758 - MainProcess - INFO - Progress: 10/30 (33.3%) - Success: 10, Failed: 0 - ETA: 4501.9min
+2025-06-23 08:08:56,758 - MainProcess - INFO - ✓ sub-055_run-02_seizure_00_preprocessed.pkl: 1 anomalies, 0 TP, 7244.1s
+2025-06-23 08:08:56,758 - MainProcess - INFO - Progress: 11/30 (36.7%) - Success: 11, Failed: 0 - ETA: 3888.0min
+2025-06-23 08:08:56,758 - MainProcess - INFO - ✓ sub-087_run-13_seizure_01_preprocessed.pkl: 1 anomalies, 0 TP, 27552.8s
+2025-06-23 08:08:56,758 - MainProcess - INFO - Progress: 12/30 (40.0%) - Success: 12, Failed: 0 - ETA: 3376.4min
+2025-06-23 08:08:56,758 - MainProcess - INFO - ✓ sub-112_run-03_seizure_00_preprocessed.pkl: 1 anomalies, 0 TP, 39547.1s
+2025-06-23 08:08:56,758 - MainProcess - INFO - Progress: 13/30 (43.3%) - Success: 13, Failed: 0 - ETA: 2943.6min
+2025-06-23 08:08:56,758 - MainProcess - INFO - ✓ sub-022_run-04_seizure_00_preprocessed.pkl: 1 anomalies, 1 TP, 35988.6s
+2025-06-23 08:08:56,758 - MainProcess - INFO - Progress: 14/30 (46.7%) - Success: 14, Failed: 0 - ETA: 2572.5min
+2025-06-23 08:08:56,758 - MainProcess - INFO - ✓ sub-034_run-07_seizure_00_preprocessed.pkl: 1 anomalies, 0 TP, 34436.5s
+2025-06-23 08:08:56,758 - MainProcess - INFO - Progress: 15/30 (50.0%) - Success: 15, Failed: 0 - ETA: 2251.0min
+2025-06-23 08:08:56,758 - MainProcess - INFO - ✓ sub-036_run-01_seizure_02_preprocessed.pkl: 1 anomalies, 0 TP, 35521.1s
+2025-06-23 08:08:56,759 - MainProcess - INFO - Progress: 16/30 (53.3%) - Success: 16, Failed: 0 - ETA: 1969.6min
+2025-06-23 08:08:56,759 - MainProcess - INFO - ✓ sub-073_run-40_seizure_02_preprocessed.pkl: 1 anomalies, 1 TP, 36354.1s
+2025-06-23 08:08:56,759 - MainProcess - INFO - Progress: 17/30 (56.7%) - Success: 17, Failed: 0 - ETA: 1721.3min
+2025-06-23 08:08:56,759 - MainProcess - INFO - ✓ sub-039_run-06_seizure_15_preprocessed.pkl: 1 anomalies, 1 TP, 33506.4s
+2025-06-23 08:08:56,759 - MainProcess - INFO - Progress: 18/30 (60.0%) - Success: 18, Failed: 0 - ETA: 1500.6min
+2025-06-23 08:08:56,759 - MainProcess - INFO - ✓ sub-079_run-14_seizure_02_preprocessed.pkl: 1 anomalies, 0 TP, 19029.9s
+2025-06-23 08:08:56,759 - MainProcess - INFO - Progress: 19/30 (63.3%) - Success: 19, Failed: 0 - ETA: 1303.2min
+2025-06-23 08:08:56,759 - MainProcess - INFO - ✓ sub-072_run-22_seizure_00_preprocessed.pkl: 1 anomalies, 0 TP, 6845.8s
+2025-06-23 08:08:56,759 - MainProcess - INFO - Progress: 20/30 (66.7%) - Success: 20, Failed: 0 - ETA: 1125.5min
+2025-06-23 08:08:56,759 - MainProcess - INFO - ✓ sub-080_run-15_seizure_01_preprocessed.pkl: 1 anomalies, 0 TP, 33921.0s
+2025-06-23 08:08:56,759 - MainProcess - INFO - Progress: 21/30 (70.0%) - Success: 21, Failed: 0 - ETA: 964.7min
+2025-06-23 08:08:56,759 - MainProcess - INFO - ✓ sub-109_run-03_seizure_11_preprocessed.pkl: 1 anomalies, 1 TP, 30122.0s
+2025-06-23 08:08:56,759 - MainProcess - INFO - Progress: 22/30 (73.3%) - Success: 22, Failed: 0 - ETA: 818.5min
+2025-06-23 08:08:56,759 - MainProcess - INFO - ✓ sub-113_run-08_seizure_00_preprocessed.pkl: 1 anomalies, 0 TP, 29671.7s
+2025-06-23 08:08:56,759 - MainProcess - INFO - Progress: 23/30 (76.7%) - Success: 23, Failed: 0 - ETA: 685.1min
+2025-06-23 08:08:56,760 - MainProcess - INFO - ✓ sub-113_run-04_seizure_03_preprocessed.pkl: 1 anomalies, 0 TP, 36843.9s
+2025-06-23 08:08:56,760 - MainProcess - INFO - Progress: 24/30 (80.0%) - Success: 24, Failed: 0 - ETA: 562.7min
+2025-06-23 08:08:56,760 - MainProcess - INFO - ✓ sub-113_run-04_seizure_02_preprocessed.pkl: 1 anomalies, 0 TP, 29757.6s
+2025-06-23 08:08:56,760 - MainProcess - INFO - Progress: 25/30 (83.3%) - Success: 25, Failed: 0 - ETA: 450.2min
+2025-06-23 08:08:56,760 - MainProcess - INFO - ✓ sub-035_run-06_seizure_01_preprocessed.pkl: 1 anomalies, 0 TP, 29953.1s
+2025-06-23 08:08:56,760 - MainProcess - INFO - Progress: 26/30 (86.7%) - Success: 26, Failed: 0 - ETA: 346.3min
+2025-06-23 08:08:56,760 - MainProcess - INFO - ✓ sub-039_run-04_seizure_06_preprocessed.pkl: 1 anomalies, 0 TP, 30061.8s
+2025-06-23 08:08:56,760 - MainProcess - INFO - Progress: 27/30 (90.0%) - Success: 27, Failed: 0 - ETA: 250.1min
+2025-06-23 08:08:56,781 - MainProcess - INFO - ✓ sub-035_run-11_seizure_09_preprocessed.pkl: 1 anomalies, 0 TP, 19140.6s
+2025-06-23 08:08:56,781 - MainProcess - INFO - Progress: 28/30 (93.3%) - Success: 28, Failed: 0 - ETA: 160.8min
+2025-06-23 08:08:56,781 - MainProcess - INFO - ✓ sub-073_run-42_seizure_03_preprocessed.pkl: 1 anomalies, 1 TP, 29667.2s
+2025-06-23 08:08:56,781 - MainProcess - INFO - Progress: 29/30 (96.7%) - Success: 29, Failed: 0 - ETA: 77.6min
+2025-06-23 08:08:56,782 - MainProcess - INFO - ✓ sub-055_run-01_seizure_02_preprocessed.pkl: 1 anomalies, 0 TP, 34646.8s
+2025-06-23 08:08:56,782 - MainProcess - INFO - Progress: 30/30 (100.0%) - Success: 30, Failed: 0 - ETA: 0.0min
+2025-06-23 08:08:56,782 - MainProcess - INFO - ✓ sub-087_run-17_seizure_00_preprocessed.pkl: 1 anomalies, 1 TP, 273.4s
+2025-06-23 08:08:57,185 - MainProcess - INFO - 
+📊 PARALLEL PROCESSING SUMMARY
+2025-06-23 08:08:57,186 - MainProcess - INFO - Total processing time: 2251.0 minutes
+2025-06-23 08:08:57,186 - MainProcess - INFO - Average time per file: 4501.9 seconds
+2025-06-23 08:08:57,186 - MainProcess - INFO - Successfully processed: 30/30
+2025-06-23 08:08:57,186 - MainProcess - INFO - Failed files: 0
+2025-06-23 08:08:57,186 - MainProcess - INFO - Speedup factor: ~8x (theoretical)
+2025-06-23 08:08:57,188 - MainProcess - INFO - 
+🎉 PARALLEL PROCESSING COMPLETED!
+2025-06-23 08:08:57,188 - MainProcess - INFO - ✅ Successfully processed: 30/30 files
+2025-06-23 08:08:57,213 - MainProcess - INFO - ⏱️  Total time: 2251.0 minutes
+2025-06-23 08:08:57,214 - MainProcess - INFO - ⚡ Actual speedup: 0.0x
+2025-06-23 08:08:57,214 - MainProcess - INFO - 📁 Results saved to: madrid_seizure_results_parallel
+2025-06-23 08:08:57,217 - MainProcess - INFO - 📄 Processing summary saved to: madrid_seizure_results_parallel/processing_summary.json
+2025-06-23 08:08:57,239 - MainProcess - WARNING - ⚠️  Low speedup achieved (0.0x vs 8x theoretical)
+2025-06-23 08:08:57,239 - MainProcess - WARNING -    Consider reducing workers or checking GPU availability
+2025-06-23 09:00:11,331 - MainProcess - WARNING - 🛑 Processing interrupted by user
+2025-06-23 09:00:22,155 - MainProcess - WARNING - 🛑 Processing interrupted by user
+2025-06-23 09:01:23,900 - MainProcess - INFO - 🚀 PARALLEL MADRID PROCESSING PLAN
+2025-06-23 09:01:23,900 - MainProcess - INFO - Files to process: 40
+2025-06-23 09:01:23,901 - MainProcess - INFO - Parallel workers: 8
+2025-06-23 09:01:23,901 - MainProcess - INFO - Estimated time: 4.1 minutes
+2025-06-23 09:01:23,901 - MainProcess - INFO - Expected speedup: 4.8x
+2025-06-23 09:01:23,901 - MainProcess - INFO - ETA: 09:05:31
+2025-06-23 09:01:23,901 - MainProcess - INFO - Using default seizure-only configuration
+2025-06-23 09:01:23,901 - MainProcess - INFO - 🔧 Initializing parallel processor with 8 workers...
+2025-06-23 09:01:23,901 - MainProcess - INFO - Parallel Madrid Processor initialized with 8 workers
+2025-06-23 09:01:23,901 - MainProcess - INFO - 🚀 Starting parallel processing...
+2025-06-23 09:01:23,904 - MainProcess - INFO - Found 40 files to process with 8 workers
+2025-06-23 09:21:26,787 - MainProcess - INFO - Progress: 1/40 (2.5%) - Success: 1, Failed: 0 - ETA: 781.9min
+2025-06-23 09:21:26,788 - MainProcess - INFO - ✓ sub-109_run-03_seizure_21_preprocessed.pkl: 29 anomalies, 0 TP, 169.9s
+2025-06-23 09:21:26,788 - MainProcess - INFO - Progress: 2/40 (5.0%) - Success: 2, Failed: 0 - ETA: 380.9min
+2025-06-23 09:21:26,788 - MainProcess - INFO - ✓ sub-051_run-02_seizure_00_preprocessed.pkl: 49 anomalies, 4 TP, 120.4s
+2025-06-23 09:21:26,789 - MainProcess - INFO - Progress: 3/40 (7.5%) - Success: 3, Failed: 0 - ETA: 247.3min
+2025-06-23 09:21:26,789 - MainProcess - INFO - ✓ sub-039_run-04_seizure_08_preprocessed.pkl: 40 anomalies, 0 TP, 234.1s
+2025-06-23 09:21:26,789 - MainProcess - INFO - Progress: 4/40 (10.0%) - Success: 4, Failed: 0 - ETA: 180.4min
+2025-06-23 09:21:26,789 - MainProcess - INFO - ✓ sub-100_run-03_seizure_00_preprocessed.pkl: 34 anomalies, 3 TP, 89.2s
+2025-06-23 09:21:26,789 - MainProcess - INFO - Progress: 5/40 (12.5%) - Success: 5, Failed: 0 - ETA: 140.3min
+2025-06-23 09:21:26,789 - MainProcess - INFO - ✓ sub-113_run-08_seizure_01_preprocessed.pkl: 26 anomalies, 0 TP, 322.1s
+2025-06-23 09:21:26,790 - MainProcess - INFO - Progress: 6/40 (15.0%) - Success: 6, Failed: 0 - ETA: 113.6min
+2025-06-23 09:21:26,790 - MainProcess - INFO - ✓ sub-109_run-07_seizure_07_preprocessed.pkl: 25 anomalies, 0 TP, 288.4s
+2025-06-23 09:21:26,790 - MainProcess - INFO - Progress: 7/40 (17.5%) - Success: 7, Failed: 0 - ETA: 94.5min
+2025-06-23 09:21:26,790 - MainProcess - INFO - ✓ sub-003_run-06_seizure_00_preprocessed.pkl: 40 anomalies, 18 TP, 247.6s
+2025-06-23 09:21:26,790 - MainProcess - INFO - Progress: 8/40 (20.0%) - Success: 8, Failed: 0 - ETA: 80.2min
+2025-06-23 09:21:26,790 - MainProcess - INFO - ✓ sub-079_run-07_seizure_00_preprocessed.pkl: 42 anomalies, 8 TP, 242.5s
+2025-06-23 09:21:26,791 - MainProcess - INFO - Progress: 9/40 (22.5%) - Success: 9, Failed: 0 - ETA: 69.1min
+2025-06-23 09:21:26,791 - MainProcess - INFO - ✓ sub-104_run-05_seizure_00_preprocessed.pkl: 30 anomalies, 5 TP, 244.5s
+2025-06-23 09:21:26,791 - MainProcess - INFO - Progress: 10/40 (25.0%) - Success: 10, Failed: 0 - ETA: 60.1min
+2025-06-23 09:21:26,791 - MainProcess - INFO - ✓ sub-055_run-02_seizure_00_preprocessed.pkl: 30 anomalies, 0 TP, 72.8s
+2025-06-23 09:21:26,791 - MainProcess - INFO - Progress: 11/40 (27.5%) - Success: 11, Failed: 0 - ETA: 52.9min
+2025-06-23 09:21:26,791 - MainProcess - INFO - ✓ sub-087_run-13_seizure_01_preprocessed.pkl: 31 anomalies, 1 TP, 321.6s
+2025-06-23 09:21:26,792 - MainProcess - INFO - Progress: 12/40 (30.0%) - Success: 12, Failed: 0 - ETA: 46.8min
+2025-06-23 09:21:26,792 - MainProcess - INFO - ✓ sub-112_run-03_seizure_00_preprocessed.pkl: 30 anomalies, 6 TP, 345.3s
+2025-06-23 09:21:26,792 - MainProcess - INFO - Progress: 13/40 (32.5%) - Success: 13, Failed: 0 - ETA: 41.6min
+2025-06-23 09:21:26,792 - MainProcess - INFO - ✓ sub-022_run-04_seizure_00_preprocessed.pkl: 31 anomalies, 25 TP, 232.5s
+2025-06-23 09:21:26,792 - MainProcess - INFO - Progress: 14/40 (35.0%) - Success: 14, Failed: 0 - ETA: 37.2min
+2025-06-23 09:21:26,792 - MainProcess - INFO - ✓ sub-034_run-07_seizure_00_preprocessed.pkl: 32 anomalies, 0 TP, 162.2s
+2025-06-23 09:21:26,793 - MainProcess - INFO - Progress: 15/40 (37.5%) - Success: 15, Failed: 0 - ETA: 33.4min
+2025-06-23 09:21:26,793 - MainProcess - INFO - ✓ sub-036_run-01_seizure_02_preprocessed.pkl: 44 anomalies, 0 TP, 216.5s
+2025-06-23 09:21:26,793 - MainProcess - INFO - Progress: 16/40 (40.0%) - Success: 16, Failed: 0 - ETA: 30.1min
+2025-06-23 09:21:26,793 - MainProcess - INFO - ✓ sub-073_run-40_seizure_02_preprocessed.pkl: 45 anomalies, 42 TP, 297.9s
+2025-06-23 09:21:26,793 - MainProcess - INFO - Progress: 17/40 (42.5%) - Success: 17, Failed: 0 - ETA: 27.1min
+2025-06-23 09:21:26,793 - MainProcess - INFO - ✓ sub-039_run-06_seizure_15_preprocessed.pkl: 35 anomalies, 3 TP, 364.5s
+2025-06-23 09:21:26,794 - MainProcess - INFO - Progress: 18/40 (45.0%) - Success: 18, Failed: 0 - ETA: 24.5min
+2025-06-23 09:21:26,794 - MainProcess - INFO - ✓ sub-079_run-14_seizure_02_preprocessed.pkl: 35 anomalies, 0 TP, 192.5s
+2025-06-23 09:21:26,794 - MainProcess - INFO - Progress: 19/40 (47.5%) - Success: 19, Failed: 0 - ETA: 22.2min
+2025-06-23 09:21:26,794 - MainProcess - INFO - ✓ sub-072_run-22_seizure_00_preprocessed.pkl: 27 anomalies, 0 TP, 68.6s
+2025-06-23 09:21:26,794 - MainProcess - INFO - Progress: 20/40 (50.0%) - Success: 20, Failed: 0 - ETA: 20.0min
+2025-06-23 09:21:26,794 - MainProcess - INFO - ✓ sub-080_run-15_seizure_01_preprocessed.pkl: 33 anomalies, 22 TP, 131.6s
+2025-06-23 09:21:26,795 - MainProcess - INFO - Progress: 21/40 (52.5%) - Success: 21, Failed: 0 - ETA: 18.1min
+2025-06-23 09:21:26,795 - MainProcess - INFO - ✓ sub-109_run-03_seizure_11_preprocessed.pkl: 30 anomalies, 4 TP, 300.2s
+2025-06-23 09:21:26,795 - MainProcess - INFO - Progress: 22/40 (55.0%) - Success: 22, Failed: 0 - ETA: 16.4min
+2025-06-23 09:21:26,795 - MainProcess - INFO - ✓ sub-113_run-08_seizure_00_preprocessed.pkl: 31 anomalies, 0 TP, 115.0s
+2025-06-23 09:21:26,795 - MainProcess - INFO - Progress: 23/40 (57.5%) - Success: 23, Failed: 0 - ETA: 14.8min
+2025-06-23 09:21:26,795 - MainProcess - INFO - ✓ sub-113_run-04_seizure_03_preprocessed.pkl: 25 anomalies, 0 TP, 197.7s
+2025-06-23 09:21:26,796 - MainProcess - INFO - Progress: 24/40 (60.0%) - Success: 24, Failed: 0 - ETA: 13.4min
+2025-06-23 09:21:26,796 - MainProcess - INFO - ✓ sub-113_run-04_seizure_02_preprocessed.pkl: 29 anomalies, 0 TP, 147.2s
+2025-06-23 09:21:26,796 - MainProcess - INFO - Progress: 25/40 (62.5%) - Success: 25, Failed: 0 - ETA: 12.0min
+2025-06-23 09:21:26,796 - MainProcess - INFO - ✓ sub-035_run-06_seizure_01_preprocessed.pkl: 34 anomalies, 0 TP, 211.1s
+2025-06-23 09:21:26,796 - MainProcess - INFO - Progress: 26/40 (65.0%) - Success: 26, Failed: 0 - ETA: 10.8min
+2025-06-23 09:21:26,796 - MainProcess - INFO - ✓ sub-039_run-04_seizure_06_preprocessed.pkl: 40 anomalies, 1 TP, 142.3s
+2025-06-23 09:21:26,797 - MainProcess - INFO - Progress: 27/40 (67.5%) - Success: 27, Failed: 0 - ETA: 9.7min
+2025-06-23 09:21:26,797 - MainProcess - INFO - ✓ sub-035_run-11_seizure_09_preprocessed.pkl: 30 anomalies, 0 TP, 183.2s
+2025-06-23 09:21:26,797 - MainProcess - INFO - Progress: 28/40 (70.0%) - Success: 28, Failed: 0 - ETA: 8.6min
+2025-06-23 09:21:26,797 - MainProcess - INFO - ✓ sub-073_run-42_seizure_03_preprocessed.pkl: 43 anomalies, 35 TP, 258.0s
+2025-06-23 09:21:26,797 - MainProcess - INFO - Progress: 29/40 (72.5%) - Success: 29, Failed: 0 - ETA: 7.6min
+2025-06-23 09:21:26,797 - MainProcess - INFO - ✓ sub-055_run-01_seizure_02_preprocessed.pkl: 45 anomalies, 8 TP, 235.8s
+2025-06-23 09:21:26,797 - MainProcess - INFO - Progress: 30/40 (75.0%) - Success: 30, Failed: 0 - ETA: 6.7min
+2025-06-23 09:21:26,798 - MainProcess - INFO - ✓ sub-087_run-17_seizure_00_preprocessed.pkl: 16 anomalies, 13 TP, 6.2s
+2025-06-23 09:21:26,798 - MainProcess - INFO - Progress: 31/40 (77.5%) - Success: 31, Failed: 0 - ETA: 5.8min
+2025-06-23 09:21:26,798 - MainProcess - INFO - ✓ sub-072_run-16_seizure_01_preprocessed.pkl: 46 anomalies, 30 TP, 185.6s
+2025-06-23 09:21:26,798 - MainProcess - INFO - Progress: 32/40 (80.0%) - Success: 32, Failed: 0 - ETA: 5.0min
+2025-06-23 09:21:26,798 - MainProcess - INFO - ✓ sub-060_run-02_seizure_07_preprocessed.pkl: 50 anomalies, 1 TP, 248.4s
+2025-06-23 09:21:26,798 - MainProcess - INFO - Progress: 33/40 (82.5%) - Success: 33, Failed: 0 - ETA: 4.3min
+2025-06-23 09:21:26,799 - MainProcess - INFO - ✓ sub-115_run-52_seizure_01_preprocessed.pkl: 25 anomalies, 0 TP, 113.3s
+2025-06-23 09:21:26,799 - MainProcess - INFO - Progress: 34/40 (85.0%) - Success: 34, Failed: 0 - ETA: 3.5min
+2025-06-23 09:21:26,799 - MainProcess - INFO - ✓ sub-025_run-04_seizure_00_preprocessed.pkl: 30 anomalies, 5 TP, 223.8s
+2025-06-23 09:21:26,799 - MainProcess - INFO - Progress: 35/40 (87.5%) - Success: 35, Failed: 0 - ETA: 2.9min
+2025-06-23 09:21:26,799 - MainProcess - INFO - ✓ sub-089_run-61_seizure_00_preprocessed.pkl: 45 anomalies, 20 TP, 207.5s
+2025-06-23 09:21:26,799 - MainProcess - INFO - Progress: 36/40 (90.0%) - Success: 36, Failed: 0 - ETA: 2.2min
+2025-06-23 09:21:26,800 - MainProcess - INFO - ✓ sub-018_run-03_seizure_00_preprocessed.pkl: 29 anomalies, 18 TP, 152.5s
+2025-06-23 09:21:26,800 - MainProcess - INFO - Progress: 37/40 (92.5%) - Success: 37, Failed: 0 - ETA: 1.6min
+2025-06-23 09:21:26,800 - MainProcess - INFO - ✓ sub-039_run-04_seizure_13_preprocessed.pkl: 45 anomalies, 1 TP, 312.8s
+2025-06-23 09:21:26,800 - MainProcess - INFO - Progress: 38/40 (95.0%) - Success: 38, Failed: 0 - ETA: 1.1min
+2025-06-23 09:21:26,800 - MainProcess - INFO - ✓ sub-107_run-01_seizure_00_preprocessed.pkl: 41 anomalies, 24 TP, 150.4s
+2025-06-23 09:21:26,800 - MainProcess - INFO - Progress: 39/40 (97.5%) - Success: 39, Failed: 0 - ETA: 0.5min
+2025-06-23 09:21:26,801 - MainProcess - INFO - ✓ sub-073_run-41_seizure_04_preprocessed.pkl: 35 anomalies, 0 TP, 218.7s
+2025-06-23 09:21:26,801 - MainProcess - INFO - Progress: 40/40 (100.0%) - Success: 40, Failed: 0 - ETA: 0.0min
+2025-06-23 09:21:26,801 - MainProcess - INFO - ✓ sub-066_run-09_seizure_00_preprocessed.pkl: 30 anomalies, 11 TP, 217.8s
+2025-06-23 09:21:26,816 - MainProcess - INFO - 
+📊 PARALLEL PROCESSING SUMMARY
+2025-06-23 09:21:26,817 - MainProcess - INFO - Total processing time: 20.0 minutes
+2025-06-23 09:21:26,817 - MainProcess - INFO - Average time per file: 30.1 seconds
+2025-06-23 09:21:26,817 - MainProcess - INFO - Successfully processed: 40/40
+2025-06-23 09:21:26,817 - MainProcess - INFO - Failed files: 0
+2025-06-23 09:21:26,817 - MainProcess - INFO - Speedup factor: ~8x (theoretical)
+2025-06-23 09:21:26,817 - MainProcess - INFO - 
+🎉 PARALLEL PROCESSING COMPLETED!
+2025-06-23 09:21:26,818 - MainProcess - INFO - ✅ Successfully processed: 40/40 files
+2025-06-23 09:21:26,818 - MainProcess - INFO - ⏱️  Total time: 20.0 minutes
+2025-06-23 09:21:26,818 - MainProcess - INFO - ⚡ Actual speedup: 1.0x
+2025-06-23 09:21:26,818 - MainProcess - INFO - 📁 Results saved to: madrid_seizure_results_parallel
+2025-06-23 09:21:26,818 - MainProcess - INFO - 📄 Processing summary saved to: madrid_seizure_results_parallel/processing_summary.json
+2025-06-23 09:21:26,819 - MainProcess - WARNING - ⚠️  Low speedup achieved (1.0x vs 8x theoretical)
+2025-06-23 09:21:26,819 - MainProcess - WARNING -    Consider reducing workers or checking GPU availability
+2025-06-23 14:14:55,447 - MainProcess - INFO - 🚀 PARALLEL MADRID PROCESSING PLAN
+2025-06-23 14:14:55,447 - MainProcess - INFO - Files to process: 400
+2025-06-23 14:14:55,447 - MainProcess - INFO - Parallel workers: 8
+2025-06-23 14:14:55,447 - MainProcess - INFO - Estimated time: 32.2 minutes
+2025-06-23 14:14:55,448 - MainProcess - INFO - Expected speedup: 6.2x
+2025-06-23 14:14:55,448 - MainProcess - INFO - ETA: 14:47:10
+2025-06-23 14:14:55,448 - MainProcess - INFO - Using default seizure-only configuration
+2025-06-23 14:14:55,448 - MainProcess - INFO - 🔧 Initializing parallel processor with 8 workers...
+2025-06-23 14:14:55,448 - MainProcess - INFO - Parallel Madrid Processor initialized with 8 workers
+2025-06-23 14:14:55,448 - MainProcess - INFO - 🚀 Starting parallel processing...
+2025-06-23 14:14:55,451 - MainProcess - INFO - Found 400 files to process with 8 workers
+2025-06-23 16:28:05,068 - ForkPoolWorker-2 - ERROR - Madrid analysis failed: Time series contains constant regions that would make anomaly detection trivial. Consider: 1) Increasing min_length, 2) Adding noise, 3) Adding linear trend, 4) Removing constant sections
+2025-06-23 16:55:39,117 - ForkPoolWorker-2 - ERROR - Madrid analysis failed: Time series contains constant regions that would make anomaly detection trivial. Consider: 1) Increasing min_length, 2) Adding noise, 3) Adding linear trend, 4) Removing constant sections
+2025-06-23 17:43:17,472 - MainProcess - INFO - Progress: 1/400 (0.2%) - Success: 1, Failed: 0 - ETA: 83138.4min
+2025-06-23 17:43:17,473 - MainProcess - INFO - ✓ sub-109_run-03_seizure_21_preprocessed.pkl: 29 anomalies, 0 TP, 236.3s
+2025-06-23 17:43:17,474 - MainProcess - INFO - Progress: 2/400 (0.5%) - Success: 2, Failed: 0 - ETA: 41465.0min
+2025-06-23 17:43:17,474 - MainProcess - INFO - ✓ sub-051_run-02_seizure_00_preprocessed.pkl: 49 anomalies, 4 TP, 163.5s
+2025-06-23 17:43:17,474 - MainProcess - INFO - Progress: 3/400 (0.8%) - Success: 3, Failed: 0 - ETA: 27573.9min
+2025-06-23 17:43:17,475 - MainProcess - INFO - ✓ sub-039_run-04_seizure_08_preprocessed.pkl: 40 anomalies, 0 TP, 232.5s
+2025-06-23 17:43:17,475 - MainProcess - INFO - Progress: 4/400 (1.0%) - Success: 4, Failed: 0 - ETA: 20628.3min
+2025-06-23 17:43:17,475 - MainProcess - INFO - ✓ sub-100_run-03_seizure_00_preprocessed.pkl: 34 anomalies, 3 TP, 115.3s
+2025-06-23 17:43:17,475 - MainProcess - INFO - Progress: 5/400 (1.2%) - Success: 5, Failed: 0 - ETA: 16461.0min
+2025-06-23 17:43:17,475 - MainProcess - INFO - ✓ sub-113_run-08_seizure_01_preprocessed.pkl: 26 anomalies, 0 TP, 330.1s
+2025-06-23 17:43:17,475 - MainProcess - INFO - Progress: 6/400 (1.5%) - Success: 6, Failed: 0 - ETA: 13682.8min
+2025-06-23 17:43:17,476 - MainProcess - INFO - ✓ sub-109_run-07_seizure_07_preprocessed.pkl: 25 anomalies, 0 TP, 295.2s
+2025-06-23 17:43:17,476 - MainProcess - INFO - Progress: 7/400 (1.8%) - Success: 7, Failed: 0 - ETA: 11698.3min
+2025-06-23 17:43:17,476 - MainProcess - INFO - ✓ sub-003_run-06_seizure_00_preprocessed.pkl: 40 anomalies, 18 TP, 361.3s
+2025-06-23 17:43:17,476 - MainProcess - INFO - Progress: 8/400 (2.0%) - Success: 8, Failed: 0 - ETA: 10210.0min
+2025-06-23 17:43:17,476 - MainProcess - INFO - ✓ sub-079_run-07_seizure_00_preprocessed.pkl: 42 anomalies, 8 TP, 332.4s
+2025-06-23 17:43:17,476 - MainProcess - INFO - Progress: 9/400 (2.2%) - Success: 9, Failed: 0 - ETA: 9052.4min
+2025-06-23 17:43:17,477 - MainProcess - INFO - ✓ sub-104_run-05_seizure_00_preprocessed.pkl: 30 anomalies, 5 TP, 338.0s
+2025-06-23 17:43:17,477 - MainProcess - INFO - Progress: 10/400 (2.5%) - Success: 10, Failed: 0 - ETA: 8126.3min
+2025-06-23 17:43:17,477 - MainProcess - INFO - ✓ sub-055_run-02_seizure_00_preprocessed.pkl: 30 anomalies, 0 TP, 104.5s
+2025-06-23 17:43:17,477 - MainProcess - INFO - Progress: 11/400 (2.8%) - Success: 11, Failed: 0 - ETA: 7368.6min
+2025-06-23 17:43:17,477 - MainProcess - INFO - ✓ sub-087_run-13_seizure_01_preprocessed.pkl: 31 anomalies, 1 TP, 323.2s
+2025-06-23 17:43:17,477 - MainProcess - INFO - Progress: 12/400 (3.0%) - Success: 12, Failed: 0 - ETA: 6737.2min
+2025-06-23 17:43:17,478 - MainProcess - INFO - ✓ sub-112_run-03_seizure_00_preprocessed.pkl: 30 anomalies, 6 TP, 359.5s
+2025-06-23 17:43:17,478 - MainProcess - INFO - Progress: 13/400 (3.2%) - Success: 13, Failed: 0 - ETA: 6202.9min
+2025-06-23 17:43:17,478 - MainProcess - INFO - ✓ sub-022_run-04_seizure_00_preprocessed.pkl: 31 anomalies, 25 TP, 325.6s
+2025-06-23 17:43:17,478 - MainProcess - INFO - Progress: 14/400 (3.5%) - Success: 14, Failed: 0 - ETA: 5745.0min
+2025-06-23 17:43:17,478 - MainProcess - INFO - ✓ sub-034_run-07_seizure_00_preprocessed.pkl: 32 anomalies, 0 TP, 227.1s
+2025-06-23 17:43:17,478 - MainProcess - INFO - Progress: 15/400 (3.8%) - Success: 15, Failed: 0 - ETA: 5348.1min
+2025-06-23 17:43:17,479 - MainProcess - INFO - ✓ sub-036_run-01_seizure_02_preprocessed.pkl: 44 anomalies, 0 TP, 219.0s
+2025-06-23 17:43:17,479 - MainProcess - INFO - Progress: 16/400 (4.0%) - Success: 16, Failed: 0 - ETA: 5000.8min
+2025-06-23 17:43:17,479 - MainProcess - INFO - ✓ sub-073_run-40_seizure_02_preprocessed.pkl: 45 anomalies, 42 TP, 304.5s
+2025-06-23 17:43:17,479 - MainProcess - INFO - Progress: 17/400 (4.2%) - Success: 17, Failed: 0 - ETA: 4694.4min
+2025-06-23 17:43:17,479 - MainProcess - INFO - ✓ sub-039_run-06_seizure_15_preprocessed.pkl: 35 anomalies, 3 TP, 377.9s
+2025-06-23 17:43:17,479 - MainProcess - INFO - Progress: 18/400 (4.5%) - Success: 18, Failed: 0 - ETA: 4422.0min
+2025-06-23 17:43:17,480 - MainProcess - INFO - ✓ sub-079_run-14_seizure_02_preprocessed.pkl: 35 anomalies, 0 TP, 205.6s
+2025-06-23 17:43:17,480 - MainProcess - INFO - Progress: 19/400 (4.8%) - Success: 19, Failed: 0 - ETA: 4178.3min
+2025-06-23 17:43:17,480 - MainProcess - INFO - ✓ sub-072_run-22_seizure_00_preprocessed.pkl: 27 anomalies, 0 TP, 97.0s
+2025-06-23 17:43:17,480 - MainProcess - INFO - Progress: 20/400 (5.0%) - Success: 20, Failed: 0 - ETA: 3959.0min
+2025-06-23 17:43:17,480 - MainProcess - INFO - ✓ sub-080_run-15_seizure_01_preprocessed.pkl: 33 anomalies, 22 TP, 181.3s
+2025-06-23 17:43:17,480 - MainProcess - INFO - Progress: 21/400 (5.2%) - Success: 21, Failed: 0 - ETA: 3760.5min
+2025-06-23 17:43:17,481 - MainProcess - INFO - ✓ sub-109_run-03_seizure_11_preprocessed.pkl: 30 anomalies, 4 TP, 428.1s
+2025-06-23 17:43:17,481 - MainProcess - INFO - Progress: 22/400 (5.5%) - Success: 22, Failed: 0 - ETA: 3580.1min
+2025-06-23 17:43:17,481 - MainProcess - INFO - ✓ sub-113_run-08_seizure_00_preprocessed.pkl: 31 anomalies, 0 TP, 168.1s
+2025-06-23 17:43:17,481 - MainProcess - INFO - Progress: 23/400 (5.8%) - Success: 23, Failed: 0 - ETA: 3415.4min
+2025-06-23 17:43:17,481 - MainProcess - INFO - ✓ sub-113_run-04_seizure_03_preprocessed.pkl: 25 anomalies, 0 TP, 277.3s
+2025-06-23 17:43:17,481 - MainProcess - INFO - Progress: 24/400 (6.0%) - Success: 24, Failed: 0 - ETA: 3264.4min
+2025-06-23 17:43:17,482 - MainProcess - INFO - ✓ sub-113_run-04_seizure_02_preprocessed.pkl: 29 anomalies, 0 TP, 197.7s
+2025-06-23 17:43:17,482 - MainProcess - INFO - Progress: 25/400 (6.2%) - Success: 25, Failed: 0 - ETA: 3125.5min
+2025-06-23 17:43:17,482 - MainProcess - INFO - ✓ sub-035_run-06_seizure_01_preprocessed.pkl: 34 anomalies, 0 TP, 284.6s
+2025-06-23 17:43:17,482 - MainProcess - INFO - Progress: 26/400 (6.5%) - Success: 26, Failed: 0 - ETA: 2997.3min
+2025-06-23 17:43:17,482 - MainProcess - INFO - ✓ sub-039_run-04_seizure_06_preprocessed.pkl: 40 anomalies, 1 TP, 201.6s
+2025-06-23 17:43:17,482 - MainProcess - INFO - Progress: 27/400 (6.8%) - Success: 27, Failed: 0 - ETA: 2878.6min
+2025-06-23 17:43:17,483 - MainProcess - INFO - ✓ sub-035_run-11_seizure_09_preprocessed.pkl: 30 anomalies, 0 TP, 185.4s
+2025-06-23 17:43:17,483 - MainProcess - INFO - Progress: 28/400 (7.0%) - Success: 28, Failed: 0 - ETA: 2768.3min
+2025-06-23 17:43:17,483 - MainProcess - INFO - ✓ sub-073_run-42_seizure_03_preprocessed.pkl: 43 anomalies, 35 TP, 312.5s
+2025-06-23 17:43:17,483 - MainProcess - INFO - Progress: 29/400 (7.2%) - Success: 29, Failed: 0 - ETA: 2665.7min
+2025-06-23 17:43:17,483 - MainProcess - INFO - ✓ sub-055_run-01_seizure_02_preprocessed.pkl: 45 anomalies, 8 TP, 324.3s
+2025-06-23 17:43:17,484 - MainProcess - INFO - Progress: 30/400 (7.5%) - Success: 30, Failed: 0 - ETA: 2569.9min
+2025-06-23 17:43:17,484 - MainProcess - INFO - ✓ sub-087_run-17_seizure_00_preprocessed.pkl: 16 anomalies, 13 TP, 8.1s
+2025-06-23 17:43:17,484 - MainProcess - INFO - Progress: 31/400 (7.8%) - Success: 31, Failed: 0 - ETA: 2480.2min
+2025-06-23 17:43:17,484 - MainProcess - INFO - ✓ sub-072_run-16_seizure_01_preprocessed.pkl: 46 anomalies, 30 TP, 191.2s
+2025-06-23 17:43:17,484 - MainProcess - INFO - Progress: 32/400 (8.0%) - Success: 32, Failed: 0 - ETA: 2396.2min
+2025-06-23 17:43:17,484 - MainProcess - INFO - ✓ sub-060_run-02_seizure_07_preprocessed.pkl: 50 anomalies, 1 TP, 330.0s
+2025-06-23 17:43:17,484 - MainProcess - INFO - Progress: 33/400 (8.2%) - Success: 33, Failed: 0 - ETA: 2317.3min
+2025-06-23 17:43:17,485 - MainProcess - INFO - ✓ sub-115_run-52_seizure_01_preprocessed.pkl: 25 anomalies, 0 TP, 114.2s
+2025-06-23 17:43:17,485 - MainProcess - INFO - Progress: 34/400 (8.5%) - Success: 34, Failed: 0 - ETA: 2243.0min
+2025-06-23 17:43:17,485 - MainProcess - INFO - ✓ sub-025_run-04_seizure_00_preprocessed.pkl: 30 anomalies, 5 TP, 282.3s
+2025-06-23 17:43:17,485 - MainProcess - INFO - Progress: 35/400 (8.8%) - Success: 35, Failed: 0 - ETA: 2173.0min
+2025-06-23 17:43:17,485 - MainProcess - INFO - ✓ sub-089_run-61_seizure_00_preprocessed.pkl: 45 anomalies, 20 TP, 305.1s
+2025-06-23 17:43:17,485 - MainProcess - INFO - Progress: 36/400 (9.0%) - Success: 36, Failed: 0 - ETA: 2106.8min
+2025-06-23 17:43:17,485 - MainProcess - INFO - ✓ sub-018_run-03_seizure_00_preprocessed.pkl: 29 anomalies, 18 TP, 199.1s
+2025-06-23 17:43:17,485 - MainProcess - INFO - Progress: 37/400 (9.2%) - Success: 37, Failed: 0 - ETA: 2044.3min
+2025-06-23 17:43:17,485 - MainProcess - INFO - ✓ sub-039_run-04_seizure_13_preprocessed.pkl: 45 anomalies, 1 TP, 446.3s
+2025-06-23 17:43:17,486 - MainProcess - INFO - Progress: 38/400 (9.5%) - Success: 38, Failed: 0 - ETA: 1985.0min
+2025-06-23 17:43:17,486 - MainProcess - INFO - ✓ sub-107_run-01_seizure_00_preprocessed.pkl: 41 anomalies, 24 TP, 235.6s
+2025-06-23 17:43:17,486 - MainProcess - INFO - Progress: 39/400 (9.8%) - Success: 39, Failed: 0 - ETA: 1928.7min
+2025-06-23 17:43:17,486 - MainProcess - INFO - ✓ sub-073_run-41_seizure_04_preprocessed.pkl: 35 anomalies, 0 TP, 301.7s
+2025-06-23 17:43:17,486 - MainProcess - INFO - Progress: 40/400 (10.0%) - Success: 40, Failed: 0 - ETA: 1875.3min
+2025-06-23 17:43:17,486 - MainProcess - INFO - ✓ sub-066_run-09_seizure_00_preprocessed.pkl: 30 anomalies, 11 TP, 320.9s
+2025-06-23 17:43:17,486 - MainProcess - INFO - Progress: 41/400 (10.2%) - Success: 41, Failed: 0 - ETA: 1824.5min
+2025-06-23 17:43:17,486 - MainProcess - INFO - ✓ sub-109_run-03_seizure_15_preprocessed.pkl: 30 anomalies, 0 TP, 230.9s
+2025-06-23 17:43:17,486 - MainProcess - INFO - Progress: 42/400 (10.5%) - Success: 42, Failed: 0 - ETA: 1776.1min
+2025-06-23 17:43:17,487 - MainProcess - INFO - ✓ sub-035_run-04_seizure_00_preprocessed.pkl: 30 anomalies, 0 TP, 217.3s
+2025-06-23 17:43:17,487 - MainProcess - INFO - Progress: 43/400 (10.8%) - Success: 43, Failed: 0 - ETA: 1729.9min
+2025-06-23 17:43:17,487 - MainProcess - INFO - ✓ sub-014_run-03_seizure_00_preprocessed.pkl: 32 anomalies, 4 TP, 109.6s
+2025-06-23 17:43:17,487 - MainProcess - INFO - Progress: 44/400 (11.0%) - Success: 44, Failed: 0 - ETA: 1685.9min
+2025-06-23 17:43:17,487 - MainProcess - INFO - ✓ sub-073_run-42_seizure_02_preprocessed.pkl: 46 anomalies, 40 TP, 226.3s
+2025-06-23 17:43:17,487 - MainProcess - INFO - Progress: 45/400 (11.2%) - Success: 45, Failed: 0 - ETA: 1643.8min
+2025-06-23 17:43:17,487 - MainProcess - INFO - ✓ sub-095_run-60_seizure_00_preprocessed.pkl: 36 anomalies, 0 TP, 87.4s
+2025-06-23 17:43:17,487 - MainProcess - INFO - Progress: 46/400 (11.5%) - Success: 46, Failed: 0 - ETA: 1603.5min
+2025-06-23 17:43:17,488 - MainProcess - INFO - ✓ sub-073_run-35_seizure_00_preprocessed.pkl: 36 anomalies, 0 TP, 373.3s
+2025-06-23 17:43:17,488 - MainProcess - INFO - Progress: 47/400 (11.8%) - Success: 47, Failed: 0 - ETA: 1565.0min
+2025-06-23 17:43:17,488 - MainProcess - INFO - ✓ sub-019_run-07_seizure_00_preprocessed.pkl: 40 anomalies, 15 TP, 367.3s
+2025-06-23 17:43:17,488 - MainProcess - INFO - Progress: 48/400 (12.0%) - Success: 48, Failed: 0 - ETA: 1528.0min
+2025-06-23 17:43:17,488 - MainProcess - INFO - ✓ sub-039_run-06_seizure_03_preprocessed.pkl: 30 anomalies, 0 TP, 310.3s
+2025-06-23 17:43:17,488 - MainProcess - INFO - Progress: 49/400 (12.2%) - Success: 49, Failed: 0 - ETA: 1492.6min
+2025-06-23 17:43:17,488 - MainProcess - INFO - ✓ sub-091_run-05_seizure_00_preprocessed.pkl: 13 anomalies, 9 TP, 20.9s
+2025-06-23 17:43:17,488 - MainProcess - INFO - Progress: 50/400 (12.5%) - Success: 50, Failed: 0 - ETA: 1458.6min
+2025-06-23 17:43:17,489 - MainProcess - INFO - ✓ sub-053_run-03_seizure_00_preprocessed.pkl: 39 anomalies, 14 TP, 311.2s
+2025-06-23 17:43:17,489 - MainProcess - INFO - Progress: 51/400 (12.8%) - Success: 51, Failed: 0 - ETA: 1425.9min
+2025-06-23 17:43:17,489 - MainProcess - INFO - ✓ sub-047_run-04_seizure_08_preprocessed.pkl: 28 anomalies, 0 TP, 127.5s
+2025-06-23 17:43:17,489 - MainProcess - INFO - Progress: 52/400 (13.0%) - Success: 52, Failed: 0 - ETA: 1394.5min
+2025-06-23 17:43:17,489 - MainProcess - INFO - ✓ sub-087_run-24_seizure_00_preprocessed.pkl: 29 anomalies, 0 TP, 268.0s
+2025-06-23 17:43:17,489 - MainProcess - INFO - Progress: 53/400 (13.2%) - Success: 53, Failed: 0 - ETA: 1364.2min
+2025-06-23 17:43:17,489 - MainProcess - INFO - ✓ sub-079_run-17_seizure_00_preprocessed.pkl: 25 anomalies, 1 TP, 232.9s
+2025-06-23 17:43:17,489 - MainProcess - INFO - Progress: 54/400 (13.5%) - Success: 54, Failed: 0 - ETA: 1335.1min
+2025-06-23 17:43:17,489 - MainProcess - INFO - ✓ sub-006_run-01_seizure_00_preprocessed.pkl: 42 anomalies, 1 TP, 340.8s
+2025-06-23 17:43:17,490 - MainProcess - INFO - Progress: 55/400 (13.8%) - Success: 55, Failed: 0 - ETA: 1307.0min
+2025-06-23 17:43:17,490 - MainProcess - INFO - ✓ sub-047_run-01_seizure_03_preprocessed.pkl: 26 anomalies, 0 TP, 285.1s
+2025-06-23 17:43:17,490 - MainProcess - INFO - Progress: 56/400 (14.0%) - Success: 56, Failed: 0 - ETA: 1280.0min
+2025-06-23 17:43:17,490 - MainProcess - INFO - ✓ sub-047_run-04_seizure_12_preprocessed.pkl: 25 anomalies, 0 TP, 255.3s
+2025-06-23 17:43:17,490 - MainProcess - INFO - Progress: 57/400 (14.2%) - Success: 57, Failed: 0 - ETA: 1253.9min
+2025-06-23 17:43:17,490 - MainProcess - INFO - ✓ sub-120_run-01_seizure_00_preprocessed.pkl: 33 anomalies, 6 TP, 186.6s
+2025-06-23 17:43:17,490 - MainProcess - INFO - Progress: 58/400 (14.5%) - Success: 58, Failed: 0 - ETA: 1228.6min
+2025-06-23 17:43:17,490 - MainProcess - INFO - ✓ sub-080_run-12_seizure_00_preprocessed.pkl: 44 anomalies, 37 TP, 229.4s
+2025-06-23 17:43:17,490 - MainProcess - INFO - Progress: 59/400 (14.8%) - Success: 59, Failed: 0 - ETA: 1204.3min
+2025-06-23 17:43:17,491 - MainProcess - INFO - ✓ sub-035_run-07_seizure_12_preprocessed.pkl: 35 anomalies, 0 TP, 540.1s
+2025-06-23 17:43:17,491 - MainProcess - INFO - Progress: 60/400 (15.0%) - Success: 60, Failed: 0 - ETA: 1180.7min
+2025-06-23 17:43:17,491 - MainProcess - INFO - ✓ sub-087_run-25_seizure_00_preprocessed.pkl: 24 anomalies, 0 TP, 137.3s
+2025-06-23 17:43:17,491 - MainProcess - INFO - Progress: 61/400 (15.2%) - Success: 61, Failed: 0 - ETA: 1158.0min
+2025-06-23 17:43:17,491 - MainProcess - INFO - ✓ sub-055_run-03_seizure_00_preprocessed.pkl: 44 anomalies, 18 TP, 288.3s
+2025-06-23 17:43:17,491 - MainProcess - INFO - Progress: 62/400 (15.5%) - Success: 62, Failed: 0 - ETA: 1135.9min
+2025-06-23 17:43:17,491 - MainProcess - INFO - ✓ sub-109_run-03_seizure_04_preprocessed.pkl: 35 anomalies, 0 TP, 310.9s
+2025-06-23 17:43:17,491 - MainProcess - INFO - Progress: 63/400 (15.8%) - Success: 63, Failed: 0 - ETA: 1114.6min
+2025-06-23 17:43:17,492 - MainProcess - INFO - ✓ sub-056_run-02_seizure_00_preprocessed.pkl: 25 anomalies, 0 TP, 173.2s
+2025-06-23 17:43:17,492 - MainProcess - INFO - Progress: 64/400 (16.0%) - Success: 64, Failed: 0 - ETA: 1093.9min
+2025-06-23 17:43:17,492 - MainProcess - INFO - ✓ sub-073_run-47_seizure_02_preprocessed.pkl: 35 anomalies, 17 TP, 388.4s
+2025-06-23 17:43:17,492 - MainProcess - INFO - Progress: 65/400 (16.2%) - Success: 65, Failed: 0 - ETA: 1073.9min
+2025-06-23 17:43:17,492 - MainProcess - INFO - ✓ sub-087_run-10_seizure_00_preprocessed.pkl: 26 anomalies, 0 TP, 199.4s
+2025-06-23 17:43:17,492 - MainProcess - INFO - Progress: 66/400 (16.5%) - Success: 66, Failed: 0 - ETA: 1054.5min
+2025-06-23 17:43:17,492 - MainProcess - INFO - ✓ sub-052_run-08_seizure_00_preprocessed.pkl: 30 anomalies, 11 TP, 177.0s
+2025-06-23 17:43:17,492 - MainProcess - INFO - Progress: 67/400 (16.8%) - Success: 67, Failed: 0 - ETA: 1035.6min
+2025-06-23 17:43:17,492 - MainProcess - INFO - ✓ sub-047_run-01_seizure_00_preprocessed.pkl: 29 anomalies, 2 TP, 333.6s
+2025-06-23 17:43:17,493 - MainProcess - INFO - Progress: 68/400 (17.0%) - Success: 68, Failed: 0 - ETA: 1017.3min
+2025-06-23 17:43:17,493 - MainProcess - INFO - ✓ sub-047_run-04_seizure_09_preprocessed.pkl: 22 anomalies, 0 TP, 139.0s
+2025-06-23 17:43:17,493 - MainProcess - INFO - Progress: 69/400 (17.2%) - Success: 69, Failed: 0 - ETA: 999.6min
+2025-06-23 17:43:17,493 - MainProcess - INFO - ✓ sub-047_run-02_seizure_02_preprocessed.pkl: 25 anomalies, 0 TP, 258.9s
+2025-06-23 17:43:17,493 - MainProcess - INFO - Progress: 70/400 (17.5%) - Success: 70, Failed: 0 - ETA: 982.3min
+2025-06-23 17:43:17,493 - MainProcess - INFO - ✓ sub-077_run-06_seizure_02_preprocessed.pkl: 45 anomalies, 0 TP, 87.3s
+2025-06-23 17:43:17,493 - MainProcess - INFO - Progress: 71/400 (17.8%) - Success: 71, Failed: 0 - ETA: 965.5min
+2025-06-23 17:43:17,493 - MainProcess - INFO - ✓ sub-103_run-04_seizure_07_preprocessed.pkl: 28 anomalies, 0 TP, 223.5s
+2025-06-23 17:43:17,494 - MainProcess - INFO - Progress: 72/400 (18.0%) - Success: 72, Failed: 0 - ETA: 949.2min
+2025-06-23 17:43:17,494 - MainProcess - INFO - ✓ sub-083_run-32_seizure_00_preprocessed.pkl: 25 anomalies, 7 TP, 244.3s
+2025-06-23 17:43:17,494 - MainProcess - INFO - Progress: 73/400 (18.2%) - Success: 73, Failed: 0 - ETA: 933.4min
+2025-06-23 17:43:17,494 - MainProcess - INFO - ✓ sub-073_run-40_seizure_04_preprocessed.pkl: 49 anomalies, 20 TP, 157.2s
+2025-06-23 17:43:17,494 - MainProcess - INFO - Progress: 74/400 (18.5%) - Success: 74, Failed: 0 - ETA: 917.9min
+2025-06-23 17:43:17,494 - MainProcess - INFO - ✓ sub-080_run-05_seizure_00_preprocessed.pkl: 49 anomalies, 39 TP, 226.3s
+2025-06-23 17:43:17,494 - MainProcess - INFO - Progress: 75/400 (18.8%) - Success: 75, Failed: 0 - ETA: 902.9min
+2025-06-23 17:43:17,494 - MainProcess - INFO - ✓ sub-111_run-06_seizure_01_preprocessed.pkl: 44 anomalies, 20 TP, 274.8s
+2025-06-23 17:43:17,494 - MainProcess - INFO - Progress: 76/400 (19.0%) - Success: 76, Failed: 0 - ETA: 888.3min
+2025-06-23 17:43:17,494 - MainProcess - INFO - ✓ sub-034_run-10_seizure_01_preprocessed.pkl: 40 anomalies, 23 TP, 214.0s
+2025-06-23 17:43:17,494 - MainProcess - INFO - Progress: 77/400 (19.2%) - Success: 77, Failed: 0 - ETA: 874.1min
+2025-06-23 17:43:17,494 - MainProcess - INFO - ✓ sub-062_run-06_seizure_00_preprocessed.pkl: 40 anomalies, 13 TP, 258.5s
+2025-06-23 17:43:17,495 - MainProcess - INFO - Progress: 78/400 (19.5%) - Success: 78, Failed: 0 - ETA: 860.2min
+2025-06-23 17:43:17,495 - MainProcess - INFO - ✓ sub-080_run-15_seizure_00_preprocessed.pkl: 30 anomalies, 6 TP, 438.2s
+2025-06-23 17:43:17,495 - MainProcess - INFO - Progress: 79/400 (19.8%) - Success: 79, Failed: 0 - ETA: 846.7min
+2025-06-23 17:43:17,495 - MainProcess - INFO - ✓ sub-087_run-06_seizure_01_preprocessed.pkl: 39 anomalies, 0 TP, 258.9s
+2025-06-23 17:43:17,495 - MainProcess - INFO - Progress: 80/400 (20.0%) - Success: 80, Failed: 0 - ETA: 833.5min
+2025-06-23 17:43:17,495 - MainProcess - INFO - ✓ sub-112_run-06_seizure_01_preprocessed.pkl: 30 anomalies, 0 TP, 532.9s
+2025-06-23 17:43:17,495 - MainProcess - INFO - Progress: 81/400 (20.2%) - Success: 81, Failed: 0 - ETA: 820.6min
+2025-06-23 17:43:17,495 - MainProcess - INFO - ✓ sub-034_run-07_seizure_04_preprocessed.pkl: 42 anomalies, 17 TP, 345.9s
+2025-06-23 17:43:17,495 - MainProcess - INFO - Progress: 82/400 (20.5%) - Success: 82, Failed: 0 - ETA: 808.1min
+2025-06-23 17:43:17,495 - MainProcess - INFO - ✓ sub-047_run-07_seizure_09_preprocessed.pkl: 25 anomalies, 0 TP, 175.8s
+2025-06-23 17:43:17,495 - MainProcess - INFO - Progress: 83/400 (20.8%) - Success: 83, Failed: 0 - ETA: 795.8min
+2025-06-23 17:43:17,495 - MainProcess - INFO - ✓ sub-115_run-52_seizure_00_preprocessed.pkl: 37 anomalies, 22 TP, 302.3s
+2025-06-23 17:43:17,495 - MainProcess - INFO - Progress: 84/400 (21.0%) - Success: 84, Failed: 0 - ETA: 783.9min
+2025-06-23 17:43:17,496 - MainProcess - INFO - ✓ sub-035_run-07_seizure_06_preprocessed.pkl: 40 anomalies, 3 TP, 258.4s
+2025-06-23 17:43:17,496 - MainProcess - INFO - Progress: 85/400 (21.2%) - Success: 85, Failed: 0 - ETA: 772.2min
+2025-06-23 17:43:17,496 - MainProcess - INFO - ✓ sub-075_run-33_seizure_00_preprocessed.pkl: 38 anomalies, 36 TP, 143.9s
+2025-06-23 17:43:17,496 - MainProcess - INFO - Progress: 86/400 (21.5%) - Success: 86, Failed: 0 - ETA: 760.8min
+2025-06-23 17:43:17,496 - MainProcess - INFO - ✓ sub-024_run-01_seizure_00_preprocessed.pkl: 25 anomalies, 0 TP, 305.4s
+2025-06-23 17:43:17,496 - MainProcess - INFO - Progress: 87/400 (21.8%) - Success: 87, Failed: 0 - ETA: 749.6min
+2025-06-23 17:43:17,496 - MainProcess - INFO - ✓ sub-101_run-01_seizure_00_preprocessed.pkl: 45 anomalies, 0 TP, 147.9s
+2025-06-23 17:43:17,496 - MainProcess - INFO - Progress: 88/400 (22.0%) - Success: 88, Failed: 0 - ETA: 738.8min
+2025-06-23 17:43:17,496 - MainProcess - INFO - ✓ sub-087_run-07_seizure_00_preprocessed.pkl: 20 anomalies, 0 TP, 129.3s
+2025-06-23 17:43:17,496 - MainProcess - INFO - Progress: 89/400 (22.2%) - Success: 89, Failed: 0 - ETA: 728.1min
+2025-06-23 17:43:17,496 - MainProcess - INFO - ✓ sub-119_run-28_seizure_04_preprocessed.pkl: 35 anomalies, 0 TP, 314.0s
+2025-06-23 17:43:17,496 - MainProcess - INFO - Progress: 90/400 (22.5%) - Success: 90, Failed: 0 - ETA: 717.7min
+2025-06-23 17:43:17,496 - MainProcess - INFO - ✓ sub-015_run-03_seizure_00_preprocessed.pkl: 31 anomalies, 14 TP, 119.7s
+2025-06-23 17:43:17,497 - MainProcess - INFO - Progress: 91/400 (22.8%) - Success: 91, Failed: 0 - ETA: 707.5min
+2025-06-23 17:43:17,497 - MainProcess - INFO - ✓ sub-073_run-50_seizure_01_preprocessed.pkl: 35 anomalies, 11 TP, 372.2s
+2025-06-23 17:43:17,497 - MainProcess - INFO - Progress: 92/400 (23.0%) - Success: 92, Failed: 0 - ETA: 697.6min
+2025-06-23 17:43:17,497 - MainProcess - INFO - ✓ sub-117_run-07_seizure_03_preprocessed.pkl: 35 anomalies, 9 TP, 413.8s
+2025-06-23 17:43:17,497 - MainProcess - INFO - Progress: 93/400 (23.2%) - Success: 93, Failed: 0 - ETA: 687.8min
+2025-06-23 17:43:17,497 - MainProcess - INFO - ✓ sub-028_run-05_seizure_00_preprocessed.pkl: 35 anomalies, 0 TP, 364.5s
+2025-06-23 17:43:17,497 - MainProcess - INFO - Progress: 94/400 (23.5%) - Success: 94, Failed: 0 - ETA: 678.3min
+2025-06-23 17:43:17,497 - MainProcess - INFO - ✓ sub-002_run-10_seizure_00_preprocessed.pkl: 34 anomalies, 19 TP, 423.8s
+2025-06-23 17:43:17,497 - MainProcess - INFO - Progress: 95/400 (23.8%) - Success: 95, Failed: 0 - ETA: 669.0min
+2025-06-23 17:43:17,497 - MainProcess - INFO - ✓ sub-035_run-11_seizure_00_preprocessed.pkl: 30 anomalies, 0 TP, 355.1s
+2025-06-23 17:43:17,497 - MainProcess - INFO - Progress: 96/400 (24.0%) - Success: 96, Failed: 0 - ETA: 659.8min
+2025-06-23 17:43:17,497 - MainProcess - INFO - ✓ sub-034_run-09_seizure_09_preprocessed.pkl: 35 anomalies, 0 TP, 359.7s
+2025-06-23 17:43:17,498 - MainProcess - INFO - Progress: 97/400 (24.2%) - Success: 97, Failed: 0 - ETA: 650.9min
+2025-06-23 17:43:17,498 - MainProcess - INFO - ✓ sub-085_run-34_seizure_00_preprocessed.pkl: 9 anomalies, 8 TP, 2.0s
+2025-06-23 17:43:17,498 - MainProcess - INFO - Progress: 98/400 (24.5%) - Success: 98, Failed: 0 - ETA: 642.1min
+2025-06-23 17:43:17,498 - MainProcess - INFO - ✓ sub-039_run-06_seizure_10_preprocessed.pkl: 35 anomalies, 0 TP, 94.3s
+2025-06-23 17:43:17,498 - MainProcess - INFO - Progress: 99/400 (24.8%) - Success: 99, Failed: 0 - ETA: 633.5min
+2025-06-23 17:43:17,498 - MainProcess - INFO - ✓ sub-109_run-07_seizure_05_preprocessed.pkl: 20 anomalies, 0 TP, 508.5s
+2025-06-23 17:43:17,498 - MainProcess - INFO - Progress: 100/400 (25.0%) - Success: 100, Failed: 0 - ETA: 625.1min
+2025-06-23 17:43:17,498 - MainProcess - INFO - ✓ sub-002_run-01_seizure_01_preprocessed.pkl: 47 anomalies, 43 TP, 188.7s
+2025-06-23 17:43:17,498 - MainProcess - INFO - Progress: 101/400 (25.2%) - Success: 101, Failed: 0 - ETA: 616.9min
+2025-06-23 17:43:17,498 - MainProcess - INFO - ✓ sub-035_run-03_seizure_08_preprocessed.pkl: 25 anomalies, 0 TP, 300.9s
+2025-06-23 17:43:17,498 - MainProcess - INFO - Progress: 102/400 (25.5%) - Success: 102, Failed: 0 - ETA: 608.8min
+2025-06-23 17:43:17,498 - MainProcess - INFO - ✓ sub-082_run-11_seizure_03_preprocessed.pkl: 48 anomalies, 0 TP, 183.1s
+2025-06-23 17:43:17,498 - MainProcess - INFO - Progress: 103/400 (25.8%) - Success: 103, Failed: 0 - ETA: 600.8min
+2025-06-23 17:43:17,499 - MainProcess - INFO - ✓ sub-047_run-07_seizure_13_preprocessed.pkl: 30 anomalies, 0 TP, 394.1s
+2025-06-23 17:43:17,499 - MainProcess - INFO - Progress: 104/400 (26.0%) - Success: 104, Failed: 0 - ETA: 593.0min
+2025-06-23 17:43:17,499 - MainProcess - INFO - ✓ sub-071_run-08_seizure_00_preprocessed.pkl: 30 anomalies, 15 TP, 73.3s
+2025-06-23 17:43:17,499 - MainProcess - INFO - Progress: 105/400 (26.2%) - Success: 105, Failed: 0 - ETA: 585.4min
+2025-06-23 17:43:17,499 - MainProcess - INFO - ✓ sub-087_run-16_seizure_02_preprocessed.pkl: 36 anomalies, 1 TP, 181.8s
+2025-06-23 17:43:17,499 - MainProcess - INFO - Progress: 106/400 (26.5%) - Success: 106, Failed: 0 - ETA: 577.9min
+2025-06-23 17:43:17,499 - MainProcess - INFO - ✓ sub-119_run-28_seizure_07_preprocessed.pkl: 33 anomalies, 0 TP, 180.7s
+2025-06-23 17:43:17,499 - MainProcess - INFO - Progress: 107/400 (26.8%) - Success: 107, Failed: 0 - ETA: 570.6min
+2025-06-23 17:43:17,499 - MainProcess - INFO - ✓ sub-047_run-06_seizure_02_preprocessed.pkl: 28 anomalies, 8 TP, 243.5s
+2025-06-23 17:43:17,499 - MainProcess - INFO - Progress: 108/400 (27.0%) - Success: 108, Failed: 0 - ETA: 563.4min
+2025-06-23 17:43:17,499 - MainProcess - INFO - ✓ sub-109_run-03_seizure_23_preprocessed.pkl: 30 anomalies, 0 TP, 174.1s
+2025-06-23 17:43:17,499 - MainProcess - INFO - Progress: 109/400 (27.3%) - Success: 109, Failed: 0 - ETA: 556.3min
+2025-06-23 17:43:17,499 - MainProcess - INFO - ✓ sub-119_run-31_seizure_00_preprocessed.pkl: 35 anomalies, 0 TP, 193.6s
+2025-06-23 17:43:17,500 - MainProcess - INFO - Progress: 110/400 (27.5%) - Success: 110, Failed: 0 - ETA: 549.3min
+2025-06-23 17:43:17,500 - MainProcess - INFO - ✓ sub-073_run-51_seizure_04_preprocessed.pkl: 38 anomalies, 2 TP, 89.6s
+2025-06-23 17:43:17,500 - MainProcess - INFO - Progress: 111/400 (27.8%) - Success: 111, Failed: 0 - ETA: 542.5min
+2025-06-23 17:43:17,500 - MainProcess - INFO - ✓ sub-074_run-17_seizure_00_preprocessed.pkl: 40 anomalies, 15 TP, 303.6s
+2025-06-23 17:43:17,500 - MainProcess - INFO - Progress: 112/400 (28.0%) - Success: 112, Failed: 0 - ETA: 535.8min
+2025-06-23 17:43:17,500 - MainProcess - INFO - ✓ sub-074_run-02_seizure_01_preprocessed.pkl: 40 anomalies, 18 TP, 325.1s
+2025-06-23 17:43:17,500 - MainProcess - INFO - Progress: 113/400 (28.2%) - Success: 113, Failed: 0 - ETA: 529.2min
+2025-06-23 17:43:17,500 - MainProcess - INFO - ✓ sub-087_run-15_seizure_01_preprocessed.pkl: 30 anomalies, 6 TP, 266.6s
+2025-06-23 17:43:17,500 - MainProcess - INFO - Progress: 114/400 (28.5%) - Success: 114, Failed: 0 - ETA: 522.7min
+2025-06-23 17:43:17,500 - MainProcess - INFO - ✓ sub-089_run-80_seizure_00_preprocessed.pkl: 49 anomalies, 46 TP, 207.5s
+2025-06-23 17:43:17,500 - MainProcess - INFO - Progress: 115/400 (28.7%) - Success: 115, Failed: 0 - ETA: 516.4min
+2025-06-23 17:43:17,500 - MainProcess - INFO - ✓ sub-039_run-04_seizure_14_preprocessed.pkl: 40 anomalies, 6 TP, 273.6s
+2025-06-23 17:43:17,500 - MainProcess - INFO - Progress: 116/400 (29.0%) - Success: 116, Failed: 0 - ETA: 510.1min
+2025-06-23 17:43:17,501 - MainProcess - INFO - ✓ sub-091_run-02_seizure_00_preprocessed.pkl: 24 anomalies, 21 TP, 18.4s
+2025-06-23 17:43:17,501 - MainProcess - INFO - Progress: 117/400 (29.2%) - Success: 117, Failed: 0 - ETA: 504.0min
+2025-06-23 17:43:17,501 - MainProcess - INFO - ✓ sub-031_run-03_seizure_01_preprocessed.pkl: 40 anomalies, 11 TP, 315.0s
+2025-06-23 17:43:17,501 - MainProcess - INFO - Progress: 118/400 (29.5%) - Success: 118, Failed: 0 - ETA: 498.0min
+2025-06-23 17:43:17,501 - MainProcess - INFO - ✓ sub-079_run-12_seizure_01_preprocessed.pkl: 40 anomalies, 0 TP, 396.9s
+2025-06-23 17:43:17,501 - MainProcess - INFO - Progress: 119/400 (29.8%) - Success: 119, Failed: 0 - ETA: 492.0min
+2025-06-23 17:43:17,501 - MainProcess - INFO - ✓ sub-034_run-09_seizure_10_preprocessed.pkl: 36 anomalies, 10 TP, 310.5s
+2025-06-23 17:43:17,501 - MainProcess - INFO - Progress: 120/400 (30.0%) - Success: 120, Failed: 0 - ETA: 486.2min
+2025-06-23 17:43:17,501 - MainProcess - INFO - ✓ sub-087_run-01_seizure_00_preprocessed.pkl: 35 anomalies, 10 TP, 330.6s
+2025-06-23 17:43:17,501 - MainProcess - INFO - Progress: 121/400 (30.2%) - Success: 121, Failed: 0 - ETA: 480.5min
+2025-06-23 17:43:17,501 - MainProcess - INFO - ✓ sub-116_run-26_seizure_00_preprocessed.pkl: 35 anomalies, 7 TP, 362.3s
+2025-06-23 17:43:17,501 - MainProcess - INFO - Progress: 122/400 (30.5%) - Success: 122, Failed: 0 - ETA: 474.8min
+2025-06-23 17:43:17,501 - MainProcess - INFO - ✓ sub-032_run-05_seizure_00_preprocessed.pkl: 35 anomalies, 12 TP, 177.1s
+2025-06-23 17:43:17,502 - MainProcess - INFO - Progress: 123/400 (30.8%) - Success: 123, Failed: 0 - ETA: 469.3min
+2025-06-23 17:43:17,502 - MainProcess - INFO - ✓ sub-035_run-03_seizure_03_preprocessed.pkl: 35 anomalies, 11 TP, 322.9s
+2025-06-23 17:43:17,502 - MainProcess - INFO - Progress: 124/400 (31.0%) - Success: 124, Failed: 0 - ETA: 463.8min
+2025-06-23 17:43:17,502 - MainProcess - INFO - ✓ sub-114_run-11_seizure_00_preprocessed.pkl: 20 anomalies, 0 TP, 289.4s
+2025-06-23 17:43:17,502 - MainProcess - INFO - Progress: 125/400 (31.2%) - Success: 125, Failed: 0 - ETA: 458.4min
+2025-06-23 17:43:17,502 - MainProcess - INFO - ✓ sub-046_run-01_seizure_00_preprocessed.pkl: 32 anomalies, 0 TP, 164.2s
+2025-06-23 17:43:17,502 - MainProcess - INFO - Progress: 126/400 (31.5%) - Success: 126, Failed: 0 - ETA: 453.1min
+2025-06-23 17:43:17,502 - MainProcess - INFO - ✓ sub-099_run-01_seizure_00_preprocessed.pkl: 30 anomalies, 8 TP, 246.7s
+2025-06-23 17:43:17,502 - MainProcess - INFO - Progress: 127/400 (31.8%) - Success: 127, Failed: 0 - ETA: 447.9min
+2025-06-23 17:43:17,502 - MainProcess - INFO - ✓ sub-067_run-05_seizure_01_preprocessed.pkl: 40 anomalies, 9 TP, 287.8s
+2025-06-23 17:43:17,502 - MainProcess - INFO - Progress: 128/400 (32.0%) - Success: 128, Failed: 0 - ETA: 442.8min
+2025-06-23 17:43:17,502 - MainProcess - INFO - ✓ sub-053_run-02_seizure_00_preprocessed.pkl: 40 anomalies, 15 TP, 181.7s
+2025-06-23 17:43:17,502 - MainProcess - INFO - Progress: 129/400 (32.2%) - Success: 129, Failed: 0 - ETA: 437.7min
+2025-06-23 17:43:17,503 - MainProcess - INFO - ✓ sub-042_run-08_seizure_02_preprocessed.pkl: 49 anomalies, 2 TP, 148.8s
+2025-06-23 17:43:17,503 - MainProcess - INFO - Progress: 130/400 (32.5%) - Success: 130, Failed: 0 - ETA: 432.8min
+2025-06-23 17:43:17,503 - MainProcess - INFO - ✓ sub-087_run-18_seizure_01_preprocessed.pkl: 25 anomalies, 0 TP, 83.3s
+2025-06-23 17:43:17,503 - MainProcess - INFO - Progress: 131/400 (32.8%) - Success: 131, Failed: 0 - ETA: 427.9min
+2025-06-23 17:43:17,503 - MainProcess - INFO - ✓ sub-073_run-43_seizure_02_preprocessed.pkl: 45 anomalies, 38 TP, 297.0s
+2025-06-23 17:43:17,503 - MainProcess - INFO - Progress: 132/400 (33.0%) - Success: 132, Failed: 0 - ETA: 423.0min
+2025-06-23 17:43:17,503 - MainProcess - INFO - ✓ sub-079_run-15_seizure_00_preprocessed.pkl: 25 anomalies, 0 TP, 95.2s
+2025-06-23 17:43:17,503 - MainProcess - INFO - Progress: 133/400 (33.2%) - Success: 133, Failed: 0 - ETA: 418.3min
+2025-06-23 17:43:17,503 - MainProcess - INFO - ✓ sub-125_run-21_seizure_00_preprocessed.pkl: 30 anomalies, 25 TP, 142.1s
+2025-06-23 17:43:17,503 - MainProcess - INFO - Progress: 134/400 (33.5%) - Success: 134, Failed: 0 - ETA: 413.6min
+2025-06-23 17:43:17,503 - MainProcess - INFO - ✓ sub-072_run-17_seizure_02_preprocessed.pkl: 40 anomalies, 13 TP, 294.6s
+2025-06-23 17:43:17,503 - MainProcess - INFO - Progress: 135/400 (33.8%) - Success: 135, Failed: 0 - ETA: 409.0min
+2025-06-23 17:43:17,503 - MainProcess - INFO - ✓ sub-079_run-17_seizure_01_preprocessed.pkl: 43 anomalies, 21 TP, 244.6s
+2025-06-23 17:43:17,504 - MainProcess - INFO - Progress: 136/400 (34.0%) - Success: 136, Failed: 0 - ETA: 404.5min
+2025-06-23 17:43:17,504 - MainProcess - INFO - ✓ sub-120_run-02_seizure_03_preprocessed.pkl: 23 anomalies, 0 TP, 156.0s
+2025-06-23 17:43:17,504 - MainProcess - INFO - Progress: 137/400 (34.2%) - Success: 137, Failed: 0 - ETA: 400.0min
+2025-06-23 17:43:17,504 - MainProcess - INFO - ✓ sub-090_run-04_seizure_00_preprocessed.pkl: 43 anomalies, 25 TP, 192.7s
+2025-06-23 17:43:17,504 - MainProcess - INFO - Progress: 138/400 (34.5%) - Success: 138, Failed: 0 - ETA: 395.6min
+2025-06-23 17:43:17,504 - MainProcess - INFO - ✓ sub-047_run-07_seizure_08_preprocessed.pkl: 30 anomalies, 0 TP, 196.4s
+2025-06-23 17:43:17,504 - MainProcess - INFO - Progress: 139/400 (34.8%) - Success: 139, Failed: 0 - ETA: 391.3min
+2025-06-23 17:43:17,504 - MainProcess - INFO - ✓ sub-121_run-64_seizure_00_preprocessed.pkl: 31 anomalies, 11 TP, 152.2s
+2025-06-23 17:43:17,504 - MainProcess - INFO - Progress: 140/400 (35.0%) - Success: 140, Failed: 0 - ETA: 387.0min
+2025-06-23 17:43:17,504 - MainProcess - INFO - ✓ sub-109_run-03_seizure_16_preprocessed.pkl: 34 anomalies, 4 TP, 328.8s
+2025-06-23 17:43:17,504 - MainProcess - INFO - Progress: 141/400 (35.2%) - Success: 141, Failed: 0 - ETA: 382.7min
+2025-06-23 17:43:17,504 - MainProcess - INFO - ✓ sub-047_run-04_seizure_04_preprocessed.pkl: 28 anomalies, 0 TP, 141.7s
+2025-06-23 17:43:17,504 - MainProcess - INFO - Progress: 142/400 (35.5%) - Success: 142, Failed: 0 - ETA: 378.6min
+2025-06-23 17:43:17,504 - MainProcess - INFO - ✓ sub-079_run-01_seizure_00_preprocessed.pkl: 45 anomalies, 0 TP, 132.6s
+2025-06-23 17:43:17,504 - MainProcess - INFO - Progress: 143/400 (35.8%) - Success: 143, Failed: 0 - ETA: 374.5min
+2025-06-23 17:43:17,504 - MainProcess - INFO - ✓ sub-047_run-06_seizure_01_preprocessed.pkl: 28 anomalies, 2 TP, 280.9s
+2025-06-23 17:43:17,504 - MainProcess - INFO - Progress: 144/400 (36.0%) - Success: 144, Failed: 0 - ETA: 370.4min
+2025-06-23 17:43:17,505 - MainProcess - INFO - ✓ sub-039_run-04_seizure_18_preprocessed.pkl: 28 anomalies, 0 TP, 212.1s
+2025-06-23 17:43:17,505 - MainProcess - INFO - Progress: 145/400 (36.2%) - Success: 145, Failed: 0 - ETA: 366.4min
+2025-06-23 17:43:17,505 - MainProcess - INFO - ✓ sub-035_run-11_seizure_08_preprocessed.pkl: 38 anomalies, 0 TP, 181.9s
+2025-06-23 17:43:17,505 - MainProcess - INFO - Progress: 146/400 (36.5%) - Success: 146, Failed: 0 - ETA: 362.5min
+2025-06-23 17:43:17,505 - MainProcess - INFO - ✓ sub-034_run-04_seizure_00_preprocessed.pkl: 30 anomalies, 7 TP, 132.1s
+2025-06-23 17:43:17,505 - MainProcess - INFO - Progress: 147/400 (36.8%) - Success: 147, Failed: 0 - ETA: 358.6min
+2025-06-23 17:43:17,505 - MainProcess - INFO - ✓ sub-109_run-03_seizure_09_preprocessed.pkl: 30 anomalies, 0 TP, 385.5s
+2025-06-23 17:43:17,505 - MainProcess - INFO - Progress: 148/400 (37.0%) - Success: 148, Failed: 0 - ETA: 354.8min
+2025-06-23 17:43:17,505 - MainProcess - INFO - ✓ sub-047_run-02_seizure_10_preprocessed.pkl: 25 anomalies, 0 TP, 266.5s
+2025-06-23 17:43:17,505 - MainProcess - INFO - Progress: 149/400 (37.2%) - Success: 149, Failed: 0 - ETA: 351.0min
+2025-06-23 17:43:17,505 - MainProcess - INFO - ✓ sub-072_run-15_seizure_00_preprocessed.pkl: 36 anomalies, 0 TP, 157.8s
+2025-06-23 17:43:17,505 - MainProcess - INFO - Progress: 150/400 (37.5%) - Success: 150, Failed: 0 - ETA: 347.3min
+2025-06-23 17:43:17,505 - MainProcess - INFO - ✓ sub-015_run-01_seizure_00_preprocessed.pkl: 40 anomalies, 0 TP, 384.3s
+2025-06-23 17:43:17,505 - MainProcess - INFO - Progress: 151/400 (37.8%) - Success: 151, Failed: 0 - ETA: 343.6min
+2025-06-23 17:43:17,505 - MainProcess - INFO - ✓ sub-039_run-04_seizure_07_preprocessed.pkl: 33 anomalies, 19 TP, 108.3s
+2025-06-23 17:43:17,505 - MainProcess - INFO - Progress: 152/400 (38.0%) - Success: 152, Failed: 0 - ETA: 340.0min
+2025-06-23 17:43:17,505 - MainProcess - INFO - ✓ sub-120_run-02_seizure_01_preprocessed.pkl: 23 anomalies, 3 TP, 106.0s
+2025-06-23 17:43:17,505 - MainProcess - INFO - Progress: 153/400 (38.2%) - Success: 153, Failed: 0 - ETA: 336.4min
+2025-06-23 17:43:17,505 - MainProcess - INFO - ✓ sub-047_run-04_seizure_20_preprocessed.pkl: 25 anomalies, 2 TP, 216.7s
+2025-06-23 17:43:17,506 - MainProcess - INFO - Progress: 154/400 (38.5%) - Success: 154, Failed: 0 - ETA: 332.8min
+2025-06-23 17:43:17,506 - MainProcess - INFO - ✓ sub-119_run-28_seizure_09_preprocessed.pkl: 45 anomalies, 0 TP, 208.9s
+2025-06-23 17:43:17,506 - MainProcess - INFO - Progress: 155/400 (38.8%) - Success: 155, Failed: 0 - ETA: 329.4min
+2025-06-23 17:43:17,506 - MainProcess - INFO - ✓ sub-073_run-27_seizure_00_preprocessed.pkl: 45 anomalies, 10 TP, 229.9s
+2025-06-23 17:43:17,506 - MainProcess - INFO - Progress: 156/400 (39.0%) - Success: 156, Failed: 0 - ETA: 325.9min
+2025-06-23 17:43:17,506 - MainProcess - INFO - ✓ sub-072_run-17_seizure_04_preprocessed.pkl: 45 anomalies, 18 TP, 227.8s
+2025-06-23 17:43:17,506 - MainProcess - INFO - Progress: 157/400 (39.2%) - Success: 157, Failed: 0 - ETA: 322.5min
+2025-06-23 17:43:17,506 - MainProcess - INFO - ✓ sub-035_run-06_seizure_02_preprocessed.pkl: 28 anomalies, 0 TP, 259.4s
+2025-06-23 17:43:17,506 - MainProcess - INFO - Progress: 158/400 (39.5%) - Success: 158, Failed: 0 - ETA: 319.1min
+2025-06-23 17:43:17,506 - MainProcess - INFO - ✓ sub-047_run-07_seizure_03_preprocessed.pkl: 30 anomalies, 0 TP, 379.8s
+2025-06-23 17:43:17,506 - MainProcess - INFO - Progress: 159/400 (39.8%) - Success: 159, Failed: 0 - ETA: 315.8min
+2025-06-23 17:43:17,506 - MainProcess - INFO - ✓ sub-012_run-05_seizure_00_preprocessed.pkl: 31 anomalies, 8 TP, 185.6s
+2025-06-23 17:43:17,506 - MainProcess - INFO - Progress: 160/400 (40.0%) - Success: 160, Failed: 0 - ETA: 312.6min
+2025-06-23 17:43:17,506 - MainProcess - INFO - ✓ sub-068_run-09_seizure_00_preprocessed.pkl: 42 anomalies, 0 TP, 416.1s
+2025-06-23 17:43:17,506 - MainProcess - INFO - Progress: 161/400 (40.2%) - Success: 161, Failed: 0 - ETA: 309.3min
+2025-06-23 17:43:17,506 - MainProcess - INFO - ✓ sub-089_run-36_seizure_00_preprocessed.pkl: 48 anomalies, 34 TP, 89.4s
+2025-06-23 17:43:17,506 - MainProcess - INFO - Progress: 162/400 (40.5%) - Success: 162, Failed: 0 - ETA: 306.1min
+2025-06-23 17:43:17,506 - MainProcess - INFO - ✓ sub-084_run-09_seizure_00_preprocessed.pkl: 32 anomalies, 12 TP, 153.5s
+2025-06-23 17:43:17,506 - MainProcess - INFO - Progress: 163/400 (40.8%) - Success: 163, Failed: 0 - ETA: 303.0min
+2025-06-23 17:43:17,507 - MainProcess - INFO - ✓ sub-039_run-06_seizure_09_preprocessed.pkl: 35 anomalies, 0 TP, 168.4s
+2025-06-23 17:43:17,507 - MainProcess - INFO - Progress: 164/400 (41.0%) - Success: 164, Failed: 0 - ETA: 299.8min
+2025-06-23 17:43:17,507 - MainProcess - INFO - ✓ sub-087_run-14_seizure_01_preprocessed.pkl: 25 anomalies, 1 TP, 223.7s
+2025-06-23 17:43:17,507 - MainProcess - INFO - Progress: 165/400 (41.2%) - Success: 165, Failed: 0 - ETA: 296.8min
+2025-06-23 17:43:17,507 - MainProcess - INFO - ✓ sub-045_run-03_seizure_00_preprocessed.pkl: 25 anomalies, 0 TP, 119.5s
+2025-06-23 17:43:17,507 - MainProcess - INFO - Progress: 166/400 (41.5%) - Success: 166, Failed: 0 - ETA: 293.7min
+2025-06-23 17:43:17,507 - MainProcess - INFO - ✓ sub-073_run-52_seizure_00_preprocessed.pkl: 48 anomalies, 43 TP, 237.4s
+2025-06-23 17:43:17,507 - MainProcess - INFO - Progress: 167/400 (41.8%) - Success: 167, Failed: 0 - ETA: 290.7min
+2025-06-23 17:43:17,507 - MainProcess - INFO - ✓ sub-123_run-81_seizure_00_preprocessed.pkl: 37 anomalies, 25 TP, 111.5s
+2025-06-23 17:43:17,507 - MainProcess - INFO - Progress: 168/400 (42.0%) - Success: 168, Failed: 0 - ETA: 287.7min
+2025-06-23 17:43:17,507 - MainProcess - INFO - ✓ sub-067_run-05_seizure_00_preprocessed.pkl: 31 anomalies, 0 TP, 189.1s
+2025-06-23 17:43:17,507 - MainProcess - INFO - Progress: 169/400 (42.2%) - Success: 169, Failed: 0 - ETA: 284.8min
+2025-06-23 17:43:17,507 - MainProcess - INFO - ✓ sub-002_run-01_seizure_00_preprocessed.pkl: 35 anomalies, 0 TP, 212.2s
+2025-06-23 17:43:17,507 - MainProcess - INFO - Progress: 170/400 (42.5%) - Success: 170, Failed: 0 - ETA: 281.9min
+2025-06-23 17:43:17,507 - MainProcess - INFO - ✓ sub-055_run-01_seizure_00_preprocessed.pkl: 40 anomalies, 13 TP, 200.0s
+2025-06-23 17:43:17,507 - MainProcess - INFO - Progress: 171/400 (42.8%) - Success: 171, Failed: 0 - ETA: 279.0min
+2025-06-23 17:43:17,507 - MainProcess - INFO - ✓ sub-070_run-12_seizure_00_preprocessed.pkl: 40 anomalies, 2 TP, 354.4s
+2025-06-23 17:43:17,507 - MainProcess - INFO - Progress: 172/400 (43.0%) - Success: 172, Failed: 0 - ETA: 276.2min
+2025-06-23 17:43:17,507 - MainProcess - INFO - ✓ sub-039_run-04_seizure_20_preprocessed.pkl: 26 anomalies, 0 TP, 187.8s
+2025-06-23 17:43:17,508 - MainProcess - INFO - Progress: 173/400 (43.2%) - Success: 173, Failed: 0 - ETA: 273.4min
+2025-06-23 17:43:17,508 - MainProcess - INFO - ✓ sub-022_run-04_seizure_01_preprocessed.pkl: 45 anomalies, 18 TP, 315.3s
+2025-06-23 17:43:17,508 - MainProcess - INFO - Progress: 174/400 (43.5%) - Success: 174, Failed: 0 - ETA: 270.6min
+2025-06-23 17:43:17,508 - MainProcess - INFO - ✓ sub-001_run-08_seizure_00_preprocessed.pkl: 32 anomalies, 0 TP, 248.8s
+2025-06-23 17:43:17,508 - MainProcess - INFO - Progress: 175/400 (43.8%) - Success: 175, Failed: 0 - ETA: 267.9min
+2025-06-23 17:43:17,508 - MainProcess - INFO - ✓ sub-047_run-04_seizure_05_preprocessed.pkl: 21 anomalies, 0 TP, 86.1s
+2025-06-23 17:43:17,508 - MainProcess - INFO - Progress: 176/400 (44.0%) - Success: 176, Failed: 0 - ETA: 265.2min
+2025-06-23 17:43:17,508 - MainProcess - INFO - ✓ sub-079_run-12_seizure_00_preprocessed.pkl: 39 anomalies, 7 TP, 156.4s
+2025-06-23 17:43:17,508 - MainProcess - INFO - Progress: 177/400 (44.2%) - Success: 177, Failed: 0 - ETA: 262.5min
+2025-06-23 17:43:17,508 - MainProcess - INFO - ✓ sub-056_run-04_seizure_05_preprocessed.pkl: 45 anomalies, 0 TP, 224.0s
+2025-06-23 17:43:17,508 - MainProcess - INFO - Progress: 178/400 (44.5%) - Success: 178, Failed: 0 - ETA: 259.9min
+2025-06-23 17:43:17,508 - MainProcess - INFO - ✓ sub-073_run-48_seizure_01_preprocessed.pkl: 50 anomalies, 28 TP, 194.4s
+2025-06-23 17:43:17,508 - MainProcess - INFO - Progress: 179/400 (44.8%) - Success: 179, Failed: 0 - ETA: 257.3min
+2025-06-23 17:43:17,508 - MainProcess - INFO - ✓ sub-073_run-51_seizure_00_preprocessed.pkl: 50 anomalies, 44 TP, 106.5s
+2025-06-23 17:43:17,508 - MainProcess - INFO - Progress: 180/400 (45.0%) - Success: 180, Failed: 0 - ETA: 254.7min
+2025-06-23 17:43:17,508 - MainProcess - INFO - ✓ sub-060_run-04_seizure_01_preprocessed.pkl: 36 anomalies, 0 TP, 196.9s
+2025-06-23 17:43:17,508 - MainProcess - INFO - Progress: 181/400 (45.2%) - Success: 181, Failed: 0 - ETA: 252.1min
+2025-06-23 17:43:17,508 - MainProcess - INFO - ✓ sub-121_run-62_seizure_00_preprocessed.pkl: 43 anomalies, 0 TP, 65.6s
+2025-06-23 17:43:17,508 - MainProcess - INFO - Progress: 182/400 (45.5%) - Success: 182, Failed: 0 - ETA: 249.6min
+2025-06-23 17:43:17,509 - MainProcess - INFO - ✓ sub-072_run-16_seizure_00_preprocessed.pkl: 40 anomalies, 25 TP, 215.6s
+2025-06-23 17:43:17,509 - MainProcess - INFO - Progress: 183/400 (45.8%) - Success: 183, Failed: 0 - ETA: 247.1min
+2025-06-23 17:43:17,509 - MainProcess - INFO - ✓ sub-087_run-20_seizure_00_preprocessed.pkl: 36 anomalies, 14 TP, 186.7s
+2025-06-23 17:43:17,509 - MainProcess - INFO - Progress: 184/400 (46.0%) - Success: 184, Failed: 0 - ETA: 244.6min
+2025-06-23 17:43:17,509 - MainProcess - INFO - ✓ sub-035_run-03_seizure_11_preprocessed.pkl: 31 anomalies, 0 TP, 287.3s
+2025-06-23 17:43:17,509 - MainProcess - INFO - Progress: 185/400 (46.2%) - Success: 185, Failed: 0 - ETA: 242.2min
+2025-06-23 17:43:17,509 - MainProcess - INFO - ✓ sub-042_run-04_seizure_01_preprocessed.pkl: 48 anomalies, 6 TP, 327.7s
+2025-06-23 17:43:17,509 - MainProcess - INFO - Progress: 186/400 (46.5%) - Success: 186, Failed: 0 - ETA: 239.7min
+2025-06-23 17:43:17,509 - MainProcess - INFO - ✓ sub-114_run-02_seizure_00_preprocessed.pkl: 25 anomalies, 0 TP, 424.3s
+2025-06-23 17:43:17,509 - MainProcess - INFO - Progress: 187/400 (46.8%) - Success: 187, Failed: 0 - ETA: 237.3min
+2025-06-23 17:43:17,509 - MainProcess - INFO - ✓ sub-056_run-04_seizure_01_preprocessed.pkl: 32 anomalies, 1 TP, 254.2s
+2025-06-23 17:43:17,509 - MainProcess - INFO - Progress: 188/400 (47.0%) - Success: 188, Failed: 0 - ETA: 235.0min
+2025-06-23 17:43:17,509 - MainProcess - INFO - ✓ sub-101_run-06_seizure_00_preprocessed.pkl: 25 anomalies, 0 TP, 303.9s
+2025-06-23 17:43:17,509 - MainProcess - INFO - Progress: 189/400 (47.2%) - Success: 189, Failed: 0 - ETA: 232.6min
+2025-06-23 17:43:17,509 - MainProcess - INFO - ✓ sub-026_run-03_seizure_00_preprocessed.pkl: 30 anomalies, 0 TP, 413.1s
+2025-06-23 17:43:17,509 - MainProcess - INFO - Progress: 190/400 (47.5%) - Success: 190, Failed: 0 - ETA: 230.3min
+2025-06-23 17:43:17,509 - MainProcess - INFO - ✓ sub-039_run-06_seizure_06_preprocessed.pkl: 35 anomalies, 0 TP, 230.4s
+2025-06-23 17:43:17,509 - MainProcess - INFO - Progress: 191/400 (47.8%) - Success: 191, Failed: 0 - ETA: 228.0min
+2025-06-23 17:43:17,509 - MainProcess - INFO - ✓ sub-004_run-01_seizure_02_preprocessed.pkl: 44 anomalies, 23 TP, 234.6s
+2025-06-23 17:43:17,510 - MainProcess - INFO - Progress: 192/400 (48.0%) - Success: 192, Failed: 0 - ETA: 225.7min
+2025-06-23 17:43:17,510 - MainProcess - INFO - ✓ sub-031_run-03_seizure_00_preprocessed.pkl: 30 anomalies, 0 TP, 362.7s
+2025-06-23 17:43:17,510 - MainProcess - INFO - Progress: 193/400 (48.2%) - Success: 193, Failed: 0 - ETA: 223.5min
+2025-06-23 17:43:17,510 - MainProcess - INFO - ✓ sub-073_run-24_seizure_00_preprocessed.pkl: 35 anomalies, 10 TP, 206.2s
+2025-06-23 17:43:17,510 - MainProcess - INFO - Progress: 194/400 (48.5%) - Success: 194, Failed: 0 - ETA: 221.3min
+2025-06-23 17:43:17,510 - MainProcess - INFO - ✓ sub-015_run-06_seizure_00_preprocessed.pkl: 30 anomalies, 1 TP, 371.4s
+2025-06-23 17:43:17,510 - MainProcess - INFO - Progress: 195/400 (48.8%) - Success: 195, Failed: 0 - ETA: 219.1min
+2025-06-23 17:43:17,510 - MainProcess - INFO - ✓ sub-047_run-07_seizure_04_preprocessed.pkl: 30 anomalies, 0 TP, 349.2s
+2025-06-23 17:43:17,510 - MainProcess - INFO - Progress: 196/400 (49.0%) - Success: 196, Failed: 0 - ETA: 216.9min
+2025-06-23 17:43:17,510 - MainProcess - INFO - ✓ sub-093_run-63_seizure_00_preprocessed.pkl: 45 anomalies, 33 TP, 133.7s
+2025-06-23 17:43:17,510 - MainProcess - INFO - Progress: 197/400 (49.2%) - Success: 197, Failed: 0 - ETA: 214.7min
+2025-06-23 17:43:17,510 - MainProcess - INFO - ✓ sub-087_run-03_seizure_00_preprocessed.pkl: 35 anomalies, 0 TP, 193.9s
+2025-06-23 17:43:17,510 - MainProcess - INFO - Progress: 198/400 (49.5%) - Success: 198, Failed: 0 - ETA: 212.6min
+2025-06-23 17:43:17,510 - MainProcess - INFO - ✓ sub-069_run-33_seizure_00_preprocessed.pkl: 24 anomalies, 3 TP, 478.2s
+2025-06-23 17:43:17,510 - MainProcess - INFO - Progress: 199/400 (49.8%) - Success: 199, Failed: 0 - ETA: 210.5min
+2025-06-23 17:43:17,510 - MainProcess - INFO - ✓ sub-035_run-07_seizure_02_preprocessed.pkl: 40 anomalies, 0 TP, 269.9s
+2025-06-23 17:43:17,510 - MainProcess - INFO - Progress: 200/400 (50.0%) - Success: 200, Failed: 0 - ETA: 208.4min
+2025-06-23 17:43:17,510 - MainProcess - INFO - ✓ sub-088_run-21_seizure_00_preprocessed.pkl: 36 anomalies, 25 TP, 208.2s
+2025-06-23 17:43:17,510 - MainProcess - INFO - Progress: 201/400 (50.2%) - Success: 201, Failed: 0 - ETA: 206.3min
+2025-06-23 17:43:17,511 - MainProcess - INFO - ✓ sub-096_run-30_seizure_00_preprocessed.pkl: 38 anomalies, 0 TP, 291.7s
+2025-06-23 17:43:17,511 - MainProcess - INFO - Progress: 202/400 (50.5%) - Success: 202, Failed: 0 - ETA: 204.2min
+2025-06-23 17:43:17,511 - MainProcess - INFO - ✓ sub-039_run-09_seizure_03_preprocessed.pkl: 35 anomalies, 0 TP, 203.4s
+2025-06-23 17:43:17,511 - MainProcess - INFO - Progress: 203/400 (50.7%) - Success: 203, Failed: 0 - ETA: 202.2min
+2025-06-23 17:43:17,511 - MainProcess - INFO - ✓ sub-116_run-19_seizure_00_preprocessed.pkl: 40 anomalies, 10 TP, 348.8s
+2025-06-23 17:43:17,511 - MainProcess - INFO - Progress: 204/400 (51.0%) - Success: 204, Failed: 0 - ETA: 200.2min
+2025-06-23 17:43:17,511 - MainProcess - INFO - ✓ sub-027_run-07_seizure_00_preprocessed.pkl: 30 anomalies, 26 TP, 202.0s
+2025-06-23 17:43:17,511 - MainProcess - INFO - Progress: 205/400 (51.2%) - Success: 205, Failed: 0 - ETA: 198.2min
+2025-06-23 17:43:17,511 - MainProcess - INFO - ✓ sub-119_run-28_seizure_05_preprocessed.pkl: 34 anomalies, 4 TP, 403.9s
+2025-06-23 17:43:17,511 - MainProcess - INFO - Progress: 206/400 (51.5%) - Success: 206, Failed: 0 - ETA: 196.2min
+2025-06-23 17:43:17,511 - MainProcess - INFO - ✓ sub-079_run-09_seizure_00_preprocessed.pkl: 49 anomalies, 0 TP, 334.1s
+2025-06-23 17:43:17,511 - MainProcess - INFO - Progress: 207/400 (51.7%) - Success: 207, Failed: 0 - ETA: 194.3min
+2025-06-23 17:43:17,511 - MainProcess - INFO - ✓ sub-092_run-44_seizure_00_preprocessed.pkl: 34 anomalies, 3 TP, 83.0s
+2025-06-23 17:43:17,511 - MainProcess - INFO - Progress: 208/400 (52.0%) - Success: 208, Failed: 0 - ETA: 192.3min
+2025-06-23 17:43:17,511 - MainProcess - INFO - ✓ sub-039_run-06_seizure_14_preprocessed.pkl: 41 anomalies, 20 TP, 275.5s
+2025-06-23 17:43:17,511 - MainProcess - INFO - Progress: 209/400 (52.2%) - Success: 209, Failed: 0 - ETA: 190.4min
+2025-06-23 17:43:17,511 - MainProcess - INFO - ✓ sub-035_run-07_seizure_04_preprocessed.pkl: 35 anomalies, 7 TP, 260.2s
+2025-06-23 17:43:17,511 - MainProcess - INFO - Progress: 210/400 (52.5%) - Success: 210, Failed: 0 - ETA: 188.5min
+2025-06-23 17:43:17,511 - MainProcess - INFO - ✓ sub-073_run-39_seizure_00_preprocessed.pkl: 27 anomalies, 0 TP, 144.6s
+2025-06-23 17:43:17,512 - MainProcess - INFO - Progress: 211/400 (52.8%) - Success: 211, Failed: 0 - ETA: 186.6min
+2025-06-23 17:43:17,512 - MainProcess - INFO - ✓ sub-073_run-38_seizure_00_preprocessed.pkl: 48 anomalies, 24 TP, 233.7s
+2025-06-23 17:43:17,512 - MainProcess - INFO - Progress: 212/400 (53.0%) - Success: 212, Failed: 0 - ETA: 184.8min
+2025-06-23 17:43:17,512 - MainProcess - INFO - ✓ sub-020_run-05_seizure_00_preprocessed.pkl: 45 anomalies, 28 TP, 248.9s
+2025-06-23 17:43:17,512 - MainProcess - INFO - Progress: 213/400 (53.2%) - Success: 213, Failed: 0 - ETA: 182.9min
+2025-06-23 17:43:17,512 - MainProcess - INFO - ✓ sub-039_run-01_seizure_09_preprocessed.pkl: 33 anomalies, 0 TP, 342.8s
+2025-06-23 17:43:17,512 - MainProcess - INFO - Progress: 214/400 (53.5%) - Success: 214, Failed: 0 - ETA: 181.1min
+2025-06-23 17:43:17,512 - MainProcess - INFO - ✓ sub-070_run-14_seizure_00_preprocessed.pkl: 35 anomalies, 0 TP, 54.7s
+2025-06-23 17:43:17,512 - MainProcess - INFO - Progress: 215/400 (53.8%) - Success: 215, Failed: 0 - ETA: 179.3min
+2025-06-23 17:43:17,512 - MainProcess - INFO - ✓ sub-047_run-02_seizure_03_preprocessed.pkl: 25 anomalies, 3 TP, 258.1s
+2025-06-23 17:43:17,512 - MainProcess - INFO - Progress: 216/400 (54.0%) - Success: 216, Failed: 0 - ETA: 177.5min
+2025-06-23 17:43:17,512 - MainProcess - INFO - ✓ sub-035_run-03_seizure_12_preprocessed.pkl: 37 anomalies, 2 TP, 100.7s
+2025-06-23 17:43:17,512 - MainProcess - INFO - Progress: 217/400 (54.2%) - Success: 217, Failed: 0 - ETA: 175.7min
+2025-06-23 17:43:17,512 - MainProcess - INFO - ✓ sub-035_run-03_seizure_09_preprocessed.pkl: 25 anomalies, 0 TP, 145.8s
+2025-06-23 17:43:17,512 - MainProcess - INFO - Progress: 218/400 (54.5%) - Success: 218, Failed: 0 - ETA: 174.0min
+2025-06-23 17:43:17,512 - MainProcess - INFO - ✓ sub-087_run-13_seizure_02_preprocessed.pkl: 31 anomalies, 0 TP, 175.6s
+2025-06-23 17:43:17,512 - MainProcess - INFO - Progress: 219/400 (54.8%) - Success: 219, Failed: 0 - ETA: 172.2min
+2025-06-23 17:43:17,512 - MainProcess - INFO - ✓ sub-116_run-06_seizure_00_preprocessed.pkl: 38 anomalies, 29 TP, 216.4s
+2025-06-23 17:43:17,512 - MainProcess - INFO - Progress: 220/400 (55.0%) - Success: 220, Failed: 0 - ETA: 170.5min
+2025-06-23 17:43:17,513 - MainProcess - INFO - ✓ sub-039_run-09_seizure_05_preprocessed.pkl: 46 anomalies, 6 TP, 194.2s
+2025-06-23 17:43:17,513 - MainProcess - INFO - Progress: 221/400 (55.2%) - Success: 221, Failed: 0 - ETA: 168.8min
+2025-06-23 17:43:17,513 - MainProcess - INFO - ✓ sub-021_run-04_seizure_02_preprocessed.pkl: 40 anomalies, 25 TP, 186.4s
+2025-06-23 17:43:17,513 - MainProcess - INFO - Progress: 222/400 (55.5%) - Success: 222, Failed: 0 - ETA: 167.1min
+2025-06-23 17:43:17,513 - MainProcess - INFO - ✓ sub-072_run-12_seizure_02_preprocessed.pkl: 31 anomalies, 7 TP, 213.3s
+2025-06-23 17:43:17,513 - MainProcess - INFO - Progress: 223/400 (55.8%) - Success: 223, Failed: 0 - ETA: 165.4min
+2025-06-23 17:43:17,513 - MainProcess - INFO - ✓ sub-039_run-06_seizure_04_preprocessed.pkl: 29 anomalies, 9 TP, 269.7s
+2025-06-23 17:43:17,513 - MainProcess - INFO - Progress: 224/400 (56.0%) - Success: 224, Failed: 0 - ETA: 163.7min
+2025-06-23 17:43:17,513 - MainProcess - INFO - ✓ sub-039_run-06_seizure_05_preprocessed.pkl: 29 anomalies, 0 TP, 108.9s
+2025-06-23 17:43:17,513 - MainProcess - INFO - Progress: 225/400 (56.2%) - Success: 225, Failed: 0 - ETA: 162.1min
+2025-06-23 17:43:17,513 - MainProcess - INFO - ✓ sub-082_run-11_seizure_02_preprocessed.pkl: 30 anomalies, 0 TP, 241.0s
+2025-06-23 17:43:17,513 - MainProcess - INFO - Progress: 226/400 (56.5%) - Success: 226, Failed: 0 - ETA: 160.4min
+2025-06-23 17:43:17,513 - MainProcess - INFO - ✓ sub-052_run-07_seizure_00_preprocessed.pkl: 35 anomalies, 32 TP, 277.0s
+2025-06-23 17:43:17,513 - MainProcess - INFO - Progress: 227/400 (56.8%) - Success: 227, Failed: 0 - ETA: 158.8min
+2025-06-23 17:43:17,513 - MainProcess - INFO - ✓ sub-044_run-05_seizure_01_preprocessed.pkl: 44 anomalies, 0 TP, 297.2s
+2025-06-23 17:43:17,513 - MainProcess - INFO - Progress: 228/400 (57.0%) - Success: 228, Failed: 0 - ETA: 157.2min
+2025-06-23 17:43:17,513 - MainProcess - INFO - ✓ sub-073_run-51_seizure_03_preprocessed.pkl: 40 anomalies, 11 TP, 333.3s
+2025-06-23 17:43:17,513 - MainProcess - INFO - Progress: 229/400 (57.2%) - Success: 229, Failed: 0 - ETA: 155.6min
+2025-06-23 17:43:17,513 - MainProcess - INFO - ✓ sub-094_run-08_seizure_00_preprocessed.pkl: 25 anomalies, 11 TP, 214.9s
+2025-06-23 17:43:17,514 - MainProcess - INFO - Progress: 230/400 (57.5%) - Success: 230, Failed: 0 - ETA: 154.0min
+2025-06-23 17:43:17,514 - MainProcess - INFO - ✓ sub-030_run-03_seizure_01_preprocessed.pkl: 36 anomalies, 19 TP, 209.2s
+2025-06-23 17:43:17,514 - MainProcess - INFO - Progress: 231/400 (57.8%) - Success: 231, Failed: 0 - ETA: 152.4min
+2025-06-23 17:43:17,514 - MainProcess - INFO - ✓ sub-099_run-01_seizure_01_preprocessed.pkl: 0 anomalies, 0 TP, 0.0s
+2025-06-23 17:43:17,514 - MainProcess - INFO - Progress: 232/400 (58.0%) - Success: 232, Failed: 0 - ETA: 150.9min
+2025-06-23 17:43:17,514 - MainProcess - INFO - ✓ sub-120_run-02_seizure_04_preprocessed.pkl: 23 anomalies, 0 TP, 107.7s
+2025-06-23 17:43:17,514 - MainProcess - INFO - Progress: 233/400 (58.2%) - Success: 233, Failed: 0 - ETA: 149.3min
+2025-06-23 17:43:17,514 - MainProcess - INFO - ✓ sub-002_run-09_seizure_00_preprocessed.pkl: 35 anomalies, 7 TP, 253.4s
+2025-06-23 17:43:17,514 - MainProcess - INFO - Progress: 234/400 (58.5%) - Success: 234, Failed: 0 - ETA: 147.8min
+2025-06-23 17:43:17,514 - MainProcess - INFO - ✓ sub-067_run-05_seizure_02_preprocessed.pkl: 40 anomalies, 2 TP, 365.2s
+2025-06-23 17:43:17,514 - MainProcess - INFO - Progress: 235/400 (58.8%) - Success: 235, Failed: 0 - ETA: 146.3min
+2025-06-23 17:43:17,514 - MainProcess - INFO - ✓ sub-073_run-51_seizure_08_preprocessed.pkl: 36 anomalies, 15 TP, 114.7s
+2025-06-23 17:43:17,514 - MainProcess - INFO - Progress: 236/400 (59.0%) - Success: 236, Failed: 0 - ETA: 144.8min
+2025-06-23 17:43:17,514 - MainProcess - INFO - ✓ sub-059_run-02_seizure_01_preprocessed.pkl: 50 anomalies, 3 TP, 184.3s
+2025-06-23 17:43:17,514 - MainProcess - INFO - Progress: 237/400 (59.2%) - Success: 237, Failed: 0 - ETA: 143.3min
+2025-06-23 17:43:17,514 - MainProcess - INFO - ✓ sub-108_run-01_seizure_00_preprocessed.pkl: 25 anomalies, 0 TP, 204.5s
+2025-06-23 17:43:17,514 - MainProcess - INFO - Progress: 238/400 (59.5%) - Success: 238, Failed: 0 - ETA: 141.8min
+2025-06-23 17:43:17,514 - MainProcess - INFO - ✓ sub-115_run-09_seizure_00_preprocessed.pkl: 27 anomalies, 4 TP, 220.0s
+2025-06-23 17:43:17,514 - MainProcess - INFO - Progress: 239/400 (59.8%) - Success: 239, Failed: 0 - ETA: 140.4min
+2025-06-23 17:43:17,515 - MainProcess - INFO - ✓ sub-103_run-04_seizure_06_preprocessed.pkl: 35 anomalies, 1 TP, 243.8s
+2025-06-23 17:43:17,515 - MainProcess - INFO - Progress: 240/400 (60.0%) - Success: 240, Failed: 0 - ETA: 138.9min
+2025-06-23 17:43:17,515 - MainProcess - INFO - ✓ sub-015_run-09_seizure_00_preprocessed.pkl: 25 anomalies, 0 TP, 257.2s
+2025-06-23 17:43:17,515 - MainProcess - INFO - Progress: 241/400 (60.2%) - Success: 241, Failed: 0 - ETA: 137.5min
+2025-06-23 17:43:17,515 - MainProcess - INFO - ✓ sub-002_run-06_seizure_02_preprocessed.pkl: 27 anomalies, 22 TP, 137.5s
+2025-06-23 17:43:17,515 - MainProcess - INFO - Progress: 242/400 (60.5%) - Success: 242, Failed: 0 - ETA: 136.0min
+2025-06-23 17:43:17,515 - MainProcess - INFO - ✓ sub-077_run-04_seizure_01_preprocessed.pkl: 45 anomalies, 0 TP, 112.6s
+2025-06-23 17:43:17,515 - MainProcess - INFO - Progress: 243/400 (60.8%) - Success: 243, Failed: 0 - ETA: 134.6min
+2025-06-23 17:43:17,515 - MainProcess - INFO - ✓ sub-034_run-03_seizure_03_preprocessed.pkl: 45 anomalies, 9 TP, 186.9s
+2025-06-23 17:43:17,515 - MainProcess - INFO - Progress: 244/400 (61.0%) - Success: 244, Failed: 0 - ETA: 133.2min
+2025-06-23 17:43:17,515 - MainProcess - INFO - ✓ sub-076_run-16_seizure_00_preprocessed.pkl: 33 anomalies, 15 TP, 130.6s
+2025-06-23 17:43:17,515 - MainProcess - INFO - Progress: 245/400 (61.3%) - Success: 245, Failed: 0 - ETA: 131.8min
+2025-06-23 17:43:17,515 - MainProcess - INFO - ✓ sub-001_run-03_seizure_00_preprocessed.pkl: 40 anomalies, 3 TP, 238.1s
+2025-06-23 17:43:17,515 - MainProcess - INFO - Progress: 246/400 (61.5%) - Success: 246, Failed: 0 - ETA: 130.4min
+2025-06-23 17:43:17,515 - MainProcess - INFO - ✓ sub-087_run-23_seizure_00_preprocessed.pkl: 29 anomalies, 0 TP, 64.5s
+2025-06-23 17:43:17,515 - MainProcess - INFO - Progress: 247/400 (61.8%) - Success: 247, Failed: 0 - ETA: 129.1min
+2025-06-23 17:43:17,515 - MainProcess - INFO - ✓ sub-052_run-05_seizure_00_preprocessed.pkl: 45 anomalies, 0 TP, 116.5s
+2025-06-23 17:43:17,515 - MainProcess - INFO - Progress: 248/400 (62.0%) - Success: 248, Failed: 0 - ETA: 127.7min
+2025-06-23 17:43:17,515 - MainProcess - INFO - ✓ sub-039_run-06_seizure_08_preprocessed.pkl: 32 anomalies, 9 TP, 95.4s
+2025-06-23 17:43:17,516 - MainProcess - INFO - Progress: 249/400 (62.3%) - Success: 249, Failed: 0 - ETA: 126.4min
+2025-06-23 17:43:17,516 - MainProcess - INFO - ✓ sub-073_run-51_seizure_07_preprocessed.pkl: 29 anomalies, 11 TP, 166.0s
+2025-06-23 17:43:17,516 - MainProcess - INFO - Progress: 250/400 (62.5%) - Success: 250, Failed: 0 - ETA: 125.0min
+2025-06-23 17:43:17,516 - MainProcess - INFO - ✓ sub-035_run-09_seizure_00_preprocessed.pkl: 30 anomalies, 0 TP, 334.2s
+2025-06-23 17:43:17,516 - MainProcess - INFO - Progress: 251/400 (62.7%) - Success: 251, Failed: 0 - ETA: 123.7min
+2025-06-23 17:43:17,516 - MainProcess - INFO - ✓ sub-046_run-01_seizure_03_preprocessed.pkl: 45 anomalies, 22 TP, 276.9s
+2025-06-23 17:43:17,516 - MainProcess - INFO - Progress: 252/400 (63.0%) - Success: 252, Failed: 0 - ETA: 122.4min
+2025-06-23 17:43:17,516 - MainProcess - INFO - ✓ sub-047_run-02_seizure_04_preprocessed.pkl: 25 anomalies, 1 TP, 341.6s
+2025-06-23 17:43:17,516 - MainProcess - INFO - Progress: 253/400 (63.2%) - Success: 253, Failed: 0 - ETA: 121.1min
+2025-06-23 17:43:17,516 - MainProcess - INFO - ✓ sub-030_run-04_seizure_00_preprocessed.pkl: 47 anomalies, 24 TP, 195.3s
+2025-06-23 17:43:17,516 - MainProcess - INFO - Progress: 254/400 (63.5%) - Success: 254, Failed: 0 - ETA: 119.8min
+2025-06-23 17:43:17,516 - MainProcess - INFO - ✓ sub-002_run-09_seizure_02_preprocessed.pkl: 25 anomalies, 16 TP, 218.6s
+2025-06-23 17:43:17,516 - MainProcess - INFO - Progress: 255/400 (63.7%) - Success: 255, Failed: 0 - ETA: 118.5min
+2025-06-23 17:43:17,516 - MainProcess - INFO - ✓ sub-035_run-09_seizure_01_preprocessed.pkl: 25 anomalies, 0 TP, 186.2s
+2025-06-23 17:43:17,516 - MainProcess - INFO - Progress: 256/400 (64.0%) - Success: 256, Failed: 0 - ETA: 117.2min
+2025-06-23 17:43:17,516 - MainProcess - INFO - ✓ sub-064_run-02_seizure_00_preprocessed.pkl: 40 anomalies, 9 TP, 150.8s
+2025-06-23 17:43:17,516 - MainProcess - INFO - Progress: 257/400 (64.2%) - Success: 257, Failed: 0 - ETA: 115.9min
+2025-06-23 17:43:17,516 - MainProcess - INFO - ✓ sub-073_run-31_seizure_01_preprocessed.pkl: 46 anomalies, 34 TP, 351.5s
+2025-06-23 17:43:17,516 - MainProcess - INFO - Progress: 258/400 (64.5%) - Success: 258, Failed: 0 - ETA: 114.7min
+2025-06-23 17:43:17,517 - MainProcess - INFO - ✓ sub-109_run-03_seizure_07_preprocessed.pkl: 40 anomalies, 1 TP, 220.6s
+2025-06-23 17:43:17,517 - MainProcess - INFO - Progress: 259/400 (64.8%) - Success: 259, Failed: 0 - ETA: 113.4min
+2025-06-23 17:43:17,517 - MainProcess - INFO - ✓ sub-039_run-09_seizure_00_preprocessed.pkl: 23 anomalies, 2 TP, 268.0s
+2025-06-23 17:43:17,517 - MainProcess - INFO - Progress: 260/400 (65.0%) - Success: 260, Failed: 0 - ETA: 112.2min
+2025-06-23 17:43:17,517 - MainProcess - INFO - ✓ sub-089_run-57_seizure_00_preprocessed.pkl: 50 anomalies, 45 TP, 260.6s
+2025-06-23 17:43:17,517 - MainProcess - INFO - Progress: 261/400 (65.2%) - Success: 261, Failed: 0 - ETA: 111.0min
+2025-06-23 17:43:17,517 - MainProcess - INFO - ✓ sub-101_run-07_seizure_00_preprocessed.pkl: 35 anomalies, 0 TP, 117.9s
+2025-06-23 17:43:17,517 - MainProcess - INFO - Progress: 262/400 (65.5%) - Success: 262, Failed: 0 - ETA: 109.8min
+2025-06-23 17:43:17,517 - MainProcess - INFO - ✓ sub-047_run-07_seizure_00_preprocessed.pkl: 37 anomalies, 15 TP, 232.0s
+2025-06-23 17:43:17,517 - MainProcess - INFO - Progress: 263/400 (65.8%) - Success: 263, Failed: 0 - ETA: 108.5min
+2025-06-23 17:43:17,517 - MainProcess - INFO - ✓ sub-092_run-79_seizure_00_preprocessed.pkl: 31 anomalies, 17 TP, 104.1s
+2025-06-23 17:43:17,517 - MainProcess - INFO - Progress: 264/400 (66.0%) - Success: 264, Failed: 0 - ETA: 107.3min
+2025-06-23 17:43:17,517 - MainProcess - INFO - ✓ sub-073_run-48_seizure_04_preprocessed.pkl: 40 anomalies, 22 TP, 209.8s
+2025-06-23 17:43:17,517 - MainProcess - INFO - Progress: 265/400 (66.2%) - Success: 265, Failed: 0 - ETA: 106.1min
+2025-06-23 17:43:17,517 - MainProcess - INFO - ✓ sub-060_run-04_seizure_04_preprocessed.pkl: 38 anomalies, 9 TP, 311.6s
+2025-06-23 17:43:17,517 - MainProcess - INFO - Progress: 266/400 (66.5%) - Success: 266, Failed: 0 - ETA: 105.0min
+2025-06-23 17:43:17,517 - MainProcess - INFO - ✓ sub-039_run-06_seizure_11_preprocessed.pkl: 40 anomalies, 17 TP, 197.9s
+2025-06-23 17:43:17,517 - MainProcess - INFO - Progress: 267/400 (66.8%) - Success: 267, Failed: 0 - ETA: 103.8min
+2025-06-23 17:43:17,517 - MainProcess - INFO - ✓ sub-047_run-03_seizure_00_preprocessed.pkl: 20 anomalies, 0 TP, 263.1s
+2025-06-23 17:43:17,518 - MainProcess - INFO - Progress: 268/400 (67.0%) - Success: 268, Failed: 0 - ETA: 102.6min
+2025-06-23 17:43:17,518 - MainProcess - INFO - ✓ sub-109_run-03_seizure_27_preprocessed.pkl: 29 anomalies, 0 TP, 262.3s
+2025-06-23 17:43:17,518 - MainProcess - INFO - Progress: 269/400 (67.2%) - Success: 269, Failed: 0 - ETA: 101.5min
+2025-06-23 17:43:17,518 - MainProcess - INFO - ✓ sub-112_run-06_seizure_00_preprocessed.pkl: 30 anomalies, 0 TP, 224.1s
+2025-06-23 17:43:17,518 - MainProcess - INFO - Progress: 270/400 (67.5%) - Success: 270, Failed: 0 - ETA: 100.3min
+2025-06-23 17:43:17,518 - MainProcess - INFO - ✓ sub-120_run-03_seizure_00_preprocessed.pkl: 45 anomalies, 0 TP, 127.3s
+2025-06-23 17:43:17,518 - MainProcess - INFO - Progress: 271/400 (67.8%) - Success: 271, Failed: 0 - ETA: 99.2min
+2025-06-23 17:43:17,518 - MainProcess - INFO - ✓ sub-047_run-04_seizure_19_preprocessed.pkl: 25 anomalies, 0 TP, 218.1s
+2025-06-23 17:43:17,518 - MainProcess - INFO - Progress: 272/400 (68.0%) - Success: 272, Failed: 0 - ETA: 98.1min
+2025-06-23 17:43:17,518 - MainProcess - INFO - ✓ sub-035_run-11_seizure_11_preprocessed.pkl: 33 anomalies, 9 TP, 190.0s
+2025-06-23 17:43:17,518 - MainProcess - INFO - Progress: 273/400 (68.2%) - Success: 273, Failed: 0 - ETA: 96.9min
+2025-06-23 17:43:17,518 - MainProcess - INFO - ✓ sub-056_run-02_seizure_02_preprocessed.pkl: 30 anomalies, 0 TP, 430.3s
+2025-06-23 17:43:17,518 - MainProcess - INFO - Progress: 274/400 (68.5%) - Success: 274, Failed: 0 - ETA: 95.8min
+2025-06-23 17:43:17,518 - MainProcess - INFO - ✓ sub-072_run-19_seizure_00_preprocessed.pkl: 18 anomalies, 18 TP, 32.7s
+2025-06-23 17:43:17,518 - MainProcess - INFO - Progress: 275/400 (68.8%) - Success: 275, Failed: 0 - ETA: 94.7min
+2025-06-23 17:43:17,518 - MainProcess - INFO - ✓ sub-071_run-12_seizure_00_preprocessed.pkl: 35 anomalies, 4 TP, 269.4s
+2025-06-23 17:43:17,518 - MainProcess - INFO - Progress: 276/400 (69.0%) - Success: 276, Failed: 0 - ETA: 93.6min
+2025-06-23 17:43:17,518 - MainProcess - INFO - ✓ sub-011_run-05_seizure_00_preprocessed.pkl: 43 anomalies, 10 TP, 182.8s
+2025-06-23 17:43:17,518 - MainProcess - INFO - Progress: 277/400 (69.2%) - Success: 277, Failed: 0 - ETA: 92.5min
+2025-06-23 17:43:17,519 - MainProcess - INFO - ✓ sub-073_run-36_seizure_02_preprocessed.pkl: 40 anomalies, 17 TP, 173.1s
+2025-06-23 17:43:17,519 - MainProcess - INFO - Progress: 278/400 (69.5%) - Success: 278, Failed: 0 - ETA: 91.4min
+2025-06-23 17:43:17,519 - MainProcess - INFO - ✓ sub-041_run-01_seizure_01_preprocessed.pkl: 30 anomalies, 0 TP, 238.1s
+2025-06-23 17:43:17,519 - MainProcess - INFO - Progress: 279/400 (69.8%) - Success: 279, Failed: 0 - ETA: 90.4min
+2025-06-23 17:43:17,519 - MainProcess - INFO - ✓ sub-114_run-06_seizure_00_preprocessed.pkl: 25 anomalies, 0 TP, 360.1s
+2025-06-23 17:43:17,519 - MainProcess - INFO - Progress: 280/400 (70.0%) - Success: 280, Failed: 0 - ETA: 89.3min
+2025-06-23 17:43:17,519 - MainProcess - INFO - ✓ sub-073_run-47_seizure_01_preprocessed.pkl: 40 anomalies, 3 TP, 241.8s
+2025-06-23 17:43:17,519 - MainProcess - INFO - Progress: 281/400 (70.2%) - Success: 281, Failed: 0 - ETA: 88.2min
+2025-06-23 17:43:17,519 - MainProcess - INFO - ✓ sub-034_run-01_seizure_00_preprocessed.pkl: 45 anomalies, 25 TP, 218.8s
+2025-06-23 17:43:17,519 - MainProcess - INFO - Progress: 282/400 (70.5%) - Success: 282, Failed: 0 - ETA: 87.2min
+2025-06-23 17:43:17,519 - MainProcess - INFO - ✓ sub-010_run-08_seizure_00_preprocessed.pkl: 27 anomalies, 14 TP, 160.3s
+2025-06-23 17:43:17,519 - MainProcess - INFO - Progress: 283/400 (70.8%) - Success: 283, Failed: 0 - ETA: 86.1min
+2025-06-23 17:43:17,519 - MainProcess - INFO - ✓ sub-035_run-09_seizure_03_preprocessed.pkl: 35 anomalies, 0 TP, 358.9s
+2025-06-23 17:43:17,519 - MainProcess - INFO - Progress: 284/400 (71.0%) - Success: 284, Failed: 0 - ETA: 85.1min
+2025-06-23 17:43:17,519 - MainProcess - INFO - ✓ sub-073_run-45_seizure_00_preprocessed.pkl: 47 anomalies, 46 TP, 231.8s
+2025-06-23 17:43:17,519 - MainProcess - INFO - Progress: 285/400 (71.2%) - Success: 285, Failed: 0 - ETA: 84.1min
+2025-06-23 17:43:17,519 - MainProcess - INFO - ✓ sub-112_run-04_seizure_01_preprocessed.pkl: 30 anomalies, 12 TP, 281.2s
+2025-06-23 17:43:17,519 - MainProcess - INFO - Progress: 286/400 (71.5%) - Success: 286, Failed: 0 - ETA: 83.1min
+2025-06-23 17:43:17,519 - MainProcess - INFO - ✓ sub-034_run-03_seizure_05_preprocessed.pkl: 40 anomalies, 13 TP, 237.2s
+2025-06-23 17:43:17,520 - MainProcess - INFO - Progress: 287/400 (71.8%) - Success: 287, Failed: 0 - ETA: 82.0min
+2025-06-23 17:43:17,520 - MainProcess - INFO - ✓ sub-047_run-01_seizure_04_preprocessed.pkl: 26 anomalies, 0 TP, 245.4s
+2025-06-23 17:43:17,520 - MainProcess - INFO - Progress: 288/400 (72.0%) - Success: 288, Failed: 0 - ETA: 81.0min
+2025-06-23 17:43:17,520 - MainProcess - INFO - ✓ sub-121_run-66_seizure_00_preprocessed.pkl: 16 anomalies, 0 TP, 60.3s
+2025-06-23 17:43:17,520 - MainProcess - INFO - Progress: 289/400 (72.2%) - Success: 289, Failed: 0 - ETA: 80.0min
+2025-06-23 17:43:17,520 - MainProcess - INFO - ✓ sub-035_run-03_seizure_06_preprocessed.pkl: 32 anomalies, 2 TP, 347.4s
+2025-06-23 17:43:17,520 - MainProcess - INFO - Progress: 290/400 (72.5%) - Success: 290, Failed: 0 - ETA: 79.0min
+2025-06-23 17:43:17,520 - MainProcess - INFO - ✓ sub-087_run-15_seizure_00_preprocessed.pkl: 29 anomalies, 0 TP, 96.5s
+2025-06-23 17:43:17,520 - MainProcess - INFO - Progress: 291/400 (72.8%) - Success: 291, Failed: 0 - ETA: 78.0min
+2025-06-23 17:43:17,520 - MainProcess - INFO - ✓ sub-073_run-41_seizure_02_preprocessed.pkl: 44 anomalies, 15 TP, 247.2s
+2025-06-23 17:43:17,520 - MainProcess - INFO - Progress: 292/400 (73.0%) - Success: 292, Failed: 0 - ETA: 77.1min
+2025-06-23 17:43:17,520 - MainProcess - INFO - ✓ sub-039_run-02_seizure_00_preprocessed.pkl: 25 anomalies, 0 TP, 369.9s
+2025-06-23 17:43:17,520 - MainProcess - INFO - Progress: 293/400 (73.2%) - Success: 293, Failed: 0 - ETA: 76.1min
+2025-06-23 17:43:17,520 - MainProcess - INFO - ✓ sub-035_run-12_seizure_00_preprocessed.pkl: 32 anomalies, 2 TP, 167.0s
+2025-06-23 17:43:17,520 - MainProcess - INFO - Progress: 294/400 (73.5%) - Success: 294, Failed: 0 - ETA: 75.1min
+2025-06-23 17:43:17,520 - MainProcess - INFO - ✓ sub-040_run-04_seizure_01_preprocessed.pkl: 30 anomalies, 0 TP, 235.5s
+2025-06-23 17:43:17,520 - MainProcess - INFO - Progress: 295/400 (73.8%) - Success: 295, Failed: 0 - ETA: 74.2min
+2025-06-23 17:43:17,520 - MainProcess - INFO - ✓ sub-035_run-03_seizure_01_preprocessed.pkl: 29 anomalies, 2 TP, 492.4s
+2025-06-23 17:43:17,520 - MainProcess - INFO - Progress: 296/400 (74.0%) - Success: 296, Failed: 0 - ETA: 73.2min
+2025-06-23 17:43:17,521 - MainProcess - INFO - ✓ sub-071_run-17_seizure_00_preprocessed.pkl: 35 anomalies, 11 TP, 335.3s
+2025-06-23 17:43:17,521 - MainProcess - INFO - Progress: 297/400 (74.2%) - Success: 297, Failed: 0 - ETA: 72.3min
+2025-06-23 17:43:17,521 - MainProcess - INFO - ✓ sub-117_run-10_seizure_01_preprocessed.pkl: 40 anomalies, 3 TP, 333.8s
+2025-06-23 17:43:17,521 - MainProcess - INFO - Progress: 298/400 (74.5%) - Success: 298, Failed: 0 - ETA: 71.3min
+2025-06-23 17:43:17,521 - MainProcess - INFO - ✓ sub-060_run-04_seizure_07_preprocessed.pkl: 49 anomalies, 33 TP, 311.9s
+2025-06-23 17:43:17,521 - MainProcess - INFO - Progress: 299/400 (74.8%) - Success: 299, Failed: 0 - ETA: 70.4min
+2025-06-23 17:43:17,521 - MainProcess - INFO - ✓ sub-124_run-47_seizure_00_preprocessed.pkl: 22 anomalies, 10 TP, 121.3s
+2025-06-23 17:43:17,521 - MainProcess - INFO - Progress: 300/400 (75.0%) - Success: 300, Failed: 0 - ETA: 69.5min
+2025-06-23 17:43:17,521 - MainProcess - INFO - ✓ sub-057_run-06_seizure_00_preprocessed.pkl: 35 anomalies, 14 TP, 329.7s
+2025-06-23 17:43:17,521 - MainProcess - INFO - Progress: 301/400 (75.2%) - Success: 301, Failed: 0 - ETA: 68.5min
+2025-06-23 17:43:17,521 - MainProcess - INFO - ✓ sub-039_run-09_seizure_16_preprocessed.pkl: 25 anomalies, 0 TP, 347.4s
+2025-06-23 17:43:17,521 - MainProcess - INFO - Progress: 302/400 (75.5%) - Success: 302, Failed: 0 - ETA: 67.6min
+2025-06-23 17:43:17,521 - MainProcess - INFO - ✓ sub-034_run-09_seizure_02_preprocessed.pkl: 30 anomalies, 0 TP, 279.7s
+2025-06-23 17:43:17,521 - MainProcess - INFO - Progress: 303/400 (75.8%) - Success: 303, Failed: 0 - ETA: 66.7min
+2025-06-23 17:43:17,521 - MainProcess - INFO - ✓ sub-035_run-07_seizure_07_preprocessed.pkl: 41 anomalies, 0 TP, 124.2s
+2025-06-23 17:43:17,521 - MainProcess - INFO - Progress: 304/400 (76.0%) - Success: 304, Failed: 0 - ETA: 65.8min
+2025-06-23 17:43:17,521 - MainProcess - INFO - ✓ sub-035_run-11_seizure_06_preprocessed.pkl: 39 anomalies, 2 TP, 299.1s
+2025-06-23 17:43:17,521 - MainProcess - INFO - Progress: 305/400 (76.2%) - Success: 305, Failed: 0 - ETA: 64.9min
+2025-06-23 17:43:17,521 - MainProcess - INFO - ✓ sub-103_run-05_seizure_00_preprocessed.pkl: 31 anomalies, 0 TP, 64.9s
+2025-06-23 17:43:17,522 - MainProcess - INFO - Progress: 306/400 (76.5%) - Success: 306, Failed: 0 - ETA: 64.0min
+2025-06-23 17:43:17,522 - MainProcess - INFO - ✓ sub-035_run-03_seizure_05_preprocessed.pkl: 30 anomalies, 0 TP, 148.5s
+2025-06-23 17:43:17,522 - MainProcess - INFO - Progress: 307/400 (76.8%) - Success: 307, Failed: 0 - ETA: 63.1min
+2025-06-23 17:43:17,522 - MainProcess - INFO - ✓ sub-028_run-04_seizure_01_preprocessed.pkl: 36 anomalies, 32 TP, 213.5s
+2025-06-23 17:43:17,522 - MainProcess - INFO - Progress: 308/400 (77.0%) - Success: 308, Failed: 0 - ETA: 62.2min
+2025-06-23 17:43:17,522 - MainProcess - INFO - ✓ sub-089_run-105_seizure_00_preprocessed.pkl: 41 anomalies, 41 TP, 204.8s
+2025-06-23 17:43:17,522 - MainProcess - INFO - Progress: 309/400 (77.2%) - Success: 309, Failed: 0 - ETA: 61.4min
+2025-06-23 17:43:17,522 - MainProcess - INFO - ✓ sub-041_run-01_seizure_00_preprocessed.pkl: 29 anomalies, 0 TP, 134.4s
+2025-06-23 17:43:17,522 - MainProcess - INFO - Progress: 310/400 (77.5%) - Success: 310, Failed: 0 - ETA: 60.5min
+2025-06-23 17:43:17,522 - MainProcess - INFO - ✓ sub-074_run-02_seizure_00_preprocessed.pkl: 45 anomalies, 11 TP, 228.7s
+2025-06-23 17:43:17,522 - MainProcess - INFO - Progress: 311/400 (77.8%) - Success: 311, Failed: 0 - ETA: 59.6min
+2025-06-23 17:43:17,522 - MainProcess - INFO - ✓ sub-035_run-04_seizure_02_preprocessed.pkl: 25 anomalies, 0 TP, 62.4s
+2025-06-23 17:43:17,522 - MainProcess - INFO - Progress: 312/400 (78.0%) - Success: 312, Failed: 0 - ETA: 58.8min
+2025-06-23 17:43:17,522 - MainProcess - INFO - ✓ sub-113_run-02_seizure_00_preprocessed.pkl: 25 anomalies, 0 TP, 142.3s
+2025-06-23 17:43:17,522 - MainProcess - INFO - Progress: 313/400 (78.2%) - Success: 313, Failed: 0 - ETA: 57.9min
+2025-06-23 17:43:17,522 - MainProcess - INFO - ✓ sub-087_run-04_seizure_00_preprocessed.pkl: 17 anomalies, 1 TP, 80.8s
+2025-06-23 17:43:17,522 - MainProcess - INFO - Progress: 314/400 (78.5%) - Success: 314, Failed: 0 - ETA: 57.1min
+2025-06-23 17:43:17,522 - MainProcess - INFO - ✓ sub-090_run-03_seizure_00_preprocessed.pkl: 25 anomalies, 23 TP, 200.0s
+2025-06-23 17:43:17,522 - MainProcess - INFO - Progress: 315/400 (78.8%) - Success: 315, Failed: 0 - ETA: 56.2min
+2025-06-23 17:43:17,523 - MainProcess - INFO - ✓ sub-079_run-14_seizure_00_preprocessed.pkl: 35 anomalies, 0 TP, 241.3s
+2025-06-23 17:43:17,523 - MainProcess - INFO - Progress: 316/400 (79.0%) - Success: 316, Failed: 0 - ETA: 55.4min
+2025-06-23 17:43:17,523 - MainProcess - INFO - ✓ sub-034_run-10_seizure_00_preprocessed.pkl: 50 anomalies, 23 TP, 51.3s
+2025-06-23 17:43:17,523 - MainProcess - INFO - Progress: 317/400 (79.2%) - Success: 317, Failed: 0 - ETA: 54.6min
+2025-06-23 17:43:17,523 - MainProcess - INFO - ✓ sub-047_run-07_seizure_10_preprocessed.pkl: 20 anomalies, 0 TP, 158.7s
+2025-06-23 17:43:17,523 - MainProcess - INFO - Progress: 318/400 (79.5%) - Success: 318, Failed: 0 - ETA: 53.7min
+2025-06-23 17:43:17,523 - MainProcess - INFO - ✓ sub-121_run-80_seizure_00_preprocessed.pkl: 32 anomalies, 24 TP, 87.4s
+2025-06-23 17:43:17,523 - MainProcess - INFO - Progress: 319/400 (79.8%) - Success: 319, Failed: 0 - ETA: 52.9min
+2025-06-23 17:43:17,523 - MainProcess - INFO - ✓ sub-119_run-28_seizure_00_preprocessed.pkl: 46 anomalies, 0 TP, 123.2s
+2025-06-23 17:43:17,523 - MainProcess - INFO - Progress: 320/400 (80.0%) - Success: 320, Failed: 0 - ETA: 52.1min
+2025-06-23 17:43:17,523 - MainProcess - INFO - ✓ sub-034_run-09_seizure_07_preprocessed.pkl: 40 anomalies, 0 TP, 210.0s
+2025-06-23 17:43:17,523 - MainProcess - INFO - Progress: 321/400 (80.2%) - Success: 321, Failed: 0 - ETA: 51.3min
+2025-06-23 17:43:17,523 - MainProcess - INFO - ✓ sub-008_run-01_seizure_00_preprocessed.pkl: 45 anomalies, 30 TP, 225.9s
+2025-06-23 17:43:17,523 - MainProcess - INFO - Progress: 322/400 (80.5%) - Success: 322, Failed: 0 - ETA: 50.5min
+2025-06-23 17:43:17,523 - MainProcess - INFO - ✓ sub-109_run-03_seizure_02_preprocessed.pkl: 30 anomalies, 5 TP, 210.0s
+2025-06-23 17:43:17,523 - MainProcess - INFO - Progress: 323/400 (80.8%) - Success: 323, Failed: 0 - ETA: 49.7min
+2025-06-23 17:43:17,523 - MainProcess - INFO - ✓ sub-039_run-04_seizure_12_preprocessed.pkl: 28 anomalies, 2 TP, 140.0s
+2025-06-23 17:43:17,523 - MainProcess - INFO - Progress: 324/400 (81.0%) - Success: 324, Failed: 0 - ETA: 48.9min
+2025-06-23 17:43:17,523 - MainProcess - INFO - ✓ sub-025_run-04_seizure_01_preprocessed.pkl: 33 anomalies, 7 TP, 113.4s
+2025-06-23 17:43:17,523 - MainProcess - INFO - Progress: 325/400 (81.2%) - Success: 325, Failed: 0 - ETA: 48.1min
+2025-06-23 17:43:17,524 - MainProcess - INFO - ✓ sub-047_run-03_seizure_02_preprocessed.pkl: 20 anomalies, 2 TP, 254.9s
+2025-06-23 17:43:17,524 - MainProcess - INFO - Progress: 326/400 (81.5%) - Success: 326, Failed: 0 - ETA: 47.3min
+2025-06-23 17:43:17,524 - MainProcess - INFO - ✓ sub-047_run-04_seizure_13_preprocessed.pkl: 25 anomalies, 0 TP, 154.8s
+2025-06-23 17:43:17,524 - MainProcess - INFO - Progress: 327/400 (81.8%) - Success: 327, Failed: 0 - ETA: 46.5min
+2025-06-23 17:43:17,524 - MainProcess - INFO - ✓ sub-030_run-05_seizure_00_preprocessed.pkl: 49 anomalies, 6 TP, 87.7s
+2025-06-23 17:43:17,524 - MainProcess - INFO - Progress: 328/400 (82.0%) - Success: 328, Failed: 0 - ETA: 45.7min
+2025-06-23 17:43:17,524 - MainProcess - INFO - ✓ sub-122_run-30_seizure_00_preprocessed.pkl: 29 anomalies, 5 TP, 55.9s
+2025-06-23 17:43:17,524 - MainProcess - INFO - Progress: 329/400 (82.2%) - Success: 329, Failed: 0 - ETA: 45.0min
+2025-06-23 17:43:17,524 - MainProcess - INFO - ✓ sub-039_run-09_seizure_08_preprocessed.pkl: 40 anomalies, 8 TP, 229.0s
+2025-06-23 17:43:17,524 - MainProcess - INFO - Progress: 330/400 (82.5%) - Success: 330, Failed: 0 - ETA: 44.2min
+2025-06-23 17:43:17,524 - MainProcess - INFO - ✓ sub-108_run-01_seizure_01_preprocessed.pkl: 25 anomalies, 0 TP, 151.1s
+2025-06-23 17:43:17,524 - MainProcess - INFO - Progress: 331/400 (82.8%) - Success: 331, Failed: 0 - ETA: 43.4min
+2025-06-23 17:43:17,524 - MainProcess - INFO - ✓ sub-035_run-11_seizure_01_preprocessed.pkl: 25 anomalies, 0 TP, 241.7s
+2025-06-23 17:43:17,524 - MainProcess - INFO - Progress: 332/400 (83.0%) - Success: 332, Failed: 0 - ETA: 42.7min
+2025-06-23 17:43:17,524 - MainProcess - INFO - ✓ sub-063_run-04_seizure_01_preprocessed.pkl: 42 anomalies, 4 TP, 203.7s
+2025-06-23 17:43:17,524 - MainProcess - INFO - Progress: 333/400 (83.2%) - Success: 333, Failed: 0 - ETA: 41.9min
+2025-06-23 17:43:17,524 - MainProcess - INFO - ✓ sub-034_run-09_seizure_06_preprocessed.pkl: 45 anomalies, 0 TP, 319.7s
+2025-06-23 17:43:17,524 - MainProcess - INFO - Progress: 334/400 (83.5%) - Success: 334, Failed: 0 - ETA: 41.2min
+2025-06-23 17:43:17,524 - MainProcess - INFO - ✓ sub-077_run-06_seizure_01_preprocessed.pkl: 44 anomalies, 33 TP, 171.3s
+2025-06-23 17:43:17,525 - MainProcess - INFO - Progress: 335/400 (83.8%) - Success: 335, Failed: 0 - ETA: 40.4min
+2025-06-23 17:43:17,525 - MainProcess - INFO - ✓ sub-117_run-07_seizure_01_preprocessed.pkl: 32 anomalies, 4 TP, 194.2s
+2025-06-23 17:43:17,525 - MainProcess - INFO - Progress: 336/400 (84.0%) - Success: 336, Failed: 0 - ETA: 39.7min
+2025-06-23 17:43:17,525 - MainProcess - INFO - ✓ sub-073_run-39_seizure_03_preprocessed.pkl: 40 anomalies, 0 TP, 326.2s
+2025-06-23 17:43:17,525 - MainProcess - INFO - Progress: 337/400 (84.2%) - Success: 337, Failed: 0 - ETA: 39.0min
+2025-06-23 17:43:17,525 - MainProcess - INFO - ✓ sub-060_run-02_seizure_06_preprocessed.pkl: 27 anomalies, 0 TP, 254.1s
+2025-06-23 17:43:17,525 - MainProcess - INFO - Progress: 338/400 (84.5%) - Success: 338, Failed: 0 - ETA: 38.2min
+2025-06-23 17:43:17,525 - MainProcess - INFO - ✓ sub-009_run-09_seizure_00_preprocessed.pkl: 45 anomalies, 42 TP, 103.1s
+2025-06-23 17:43:17,525 - MainProcess - INFO - Progress: 339/400 (84.8%) - Success: 339, Failed: 0 - ETA: 37.5min
+2025-06-23 17:43:17,525 - MainProcess - INFO - ✓ sub-034_run-03_seizure_00_preprocessed.pkl: 27 anomalies, 4 TP, 198.6s
+2025-06-23 17:43:17,525 - MainProcess - INFO - Progress: 340/400 (85.0%) - Success: 340, Failed: 0 - ETA: 36.8min
+2025-06-23 17:43:17,525 - MainProcess - INFO - ✓ sub-002_run-05_seizure_00_preprocessed.pkl: 20 anomalies, 0 TP, 210.0s
+2025-06-23 17:43:17,525 - MainProcess - INFO - Progress: 341/400 (85.2%) - Success: 341, Failed: 0 - ETA: 36.1min
+2025-06-23 17:43:17,525 - MainProcess - INFO - ✓ sub-039_run-01_seizure_02_preprocessed.pkl: 29 anomalies, 0 TP, 243.2s
+2025-06-23 17:43:17,525 - MainProcess - INFO - Progress: 342/400 (85.5%) - Success: 342, Failed: 0 - ETA: 35.3min
+2025-06-23 17:43:17,525 - MainProcess - INFO - ✓ sub-035_run-11_seizure_10_preprocessed.pkl: 27 anomalies, 0 TP, 138.1s
+2025-06-23 17:43:17,525 - MainProcess - INFO - Progress: 343/400 (85.8%) - Success: 343, Failed: 0 - ETA: 34.6min
+2025-06-23 17:43:17,525 - MainProcess - INFO - ✓ sub-022_run-10_seizure_00_preprocessed.pkl: 35 anomalies, 14 TP, 138.0s
+2025-06-23 17:43:17,525 - MainProcess - INFO - Progress: 344/400 (86.0%) - Success: 344, Failed: 0 - ETA: 33.9min
+2025-06-23 17:43:17,526 - MainProcess - INFO - ✓ sub-076_run-01_seizure_00_preprocessed.pkl: 0 anomalies, 0 TP, 0.0s
+2025-06-23 17:43:17,526 - MainProcess - INFO - Progress: 345/400 (86.2%) - Success: 345, Failed: 0 - ETA: 33.2min
+2025-06-23 17:43:17,526 - MainProcess - INFO - ✓ sub-035_run-11_seizure_05_preprocessed.pkl: 40 anomalies, 0 TP, 264.9s
+2025-06-23 17:43:17,526 - MainProcess - INFO - Progress: 346/400 (86.5%) - Success: 346, Failed: 0 - ETA: 32.5min
+2025-06-23 17:43:17,526 - MainProcess - INFO - ✓ sub-047_run-03_seizure_03_preprocessed.pkl: 25 anomalies, 0 TP, 274.8s
+2025-06-23 17:43:17,526 - MainProcess - INFO - Progress: 347/400 (86.8%) - Success: 347, Failed: 0 - ETA: 31.8min
+2025-06-23 17:43:17,526 - MainProcess - INFO - ✓ sub-044_run-05_seizure_00_preprocessed.pkl: 45 anomalies, 27 TP, 278.5s
+2025-06-23 17:43:17,526 - MainProcess - INFO - Progress: 348/400 (87.0%) - Success: 348, Failed: 0 - ETA: 31.1min
+2025-06-23 17:43:17,526 - MainProcess - INFO - ✓ sub-109_run-03_seizure_03_preprocessed.pkl: 30 anomalies, 0 TP, 170.4s
+2025-06-23 17:43:17,526 - MainProcess - INFO - Progress: 349/400 (87.2%) - Success: 349, Failed: 0 - ETA: 30.4min
+2025-06-23 17:43:17,526 - MainProcess - INFO - ✓ sub-031_run-03_seizure_02_preprocessed.pkl: 35 anomalies, 0 TP, 260.9s
+2025-06-23 17:43:17,526 - MainProcess - INFO - Progress: 350/400 (87.5%) - Success: 350, Failed: 0 - ETA: 29.8min
+2025-06-23 17:43:17,526 - MainProcess - INFO - ✓ sub-047_run-02_seizure_07_preprocessed.pkl: 25 anomalies, 0 TP, 135.9s
+2025-06-23 17:43:17,526 - MainProcess - INFO - Progress: 351/400 (87.8%) - Success: 351, Failed: 0 - ETA: 29.1min
+2025-06-23 17:43:17,526 - MainProcess - INFO - ✓ sub-073_run-37_seizure_00_preprocessed.pkl: 16 anomalies, 7 TP, 260.4s
+2025-06-23 17:43:17,526 - MainProcess - INFO - Progress: 352/400 (88.0%) - Success: 352, Failed: 0 - ETA: 28.4min
+2025-06-23 17:43:17,526 - MainProcess - INFO - ✓ sub-055_run-01_seizure_04_preprocessed.pkl: 42 anomalies, 0 TP, 292.2s
+2025-06-23 17:43:17,526 - MainProcess - INFO - Progress: 353/400 (88.2%) - Success: 353, Failed: 0 - ETA: 27.7min
+2025-06-23 17:43:17,526 - MainProcess - INFO - ✓ sub-115_run-57_seizure_00_preprocessed.pkl: 30 anomalies, 14 TP, 394.4s
+2025-06-23 17:43:17,527 - MainProcess - INFO - Progress: 354/400 (88.5%) - Success: 354, Failed: 0 - ETA: 27.1min
+2025-06-23 17:43:17,527 - MainProcess - INFO - ✓ sub-039_run-08_seizure_00_preprocessed.pkl: 29 anomalies, 7 TP, 156.2s
+2025-06-23 17:43:17,527 - MainProcess - INFO - Progress: 355/400 (88.8%) - Success: 355, Failed: 0 - ETA: 26.4min
+2025-06-23 17:43:17,527 - MainProcess - INFO - ✓ sub-117_run-10_seizure_02_preprocessed.pkl: 40 anomalies, 16 TP, 166.8s
+2025-06-23 17:43:17,527 - MainProcess - INFO - Progress: 356/400 (89.0%) - Success: 356, Failed: 0 - ETA: 25.8min
+2025-06-23 17:43:17,527 - MainProcess - INFO - ✓ sub-047_run-07_seizure_07_preprocessed.pkl: 30 anomalies, 0 TP, 133.8s
+2025-06-23 17:43:17,527 - MainProcess - INFO - Progress: 357/400 (89.2%) - Success: 357, Failed: 0 - ETA: 25.1min
+2025-06-23 17:43:17,527 - MainProcess - INFO - ✓ sub-021_run-01_seizure_00_preprocessed.pkl: 34 anomalies, 28 TP, 183.0s
+2025-06-23 17:43:17,527 - MainProcess - INFO - Progress: 358/400 (89.5%) - Success: 358, Failed: 0 - ETA: 24.4min
+2025-06-23 17:43:17,527 - MainProcess - INFO - ✓ sub-047_run-02_seizure_00_preprocessed.pkl: 25 anomalies, 0 TP, 151.2s
+2025-06-23 17:43:17,527 - MainProcess - INFO - Progress: 359/400 (89.8%) - Success: 359, Failed: 0 - ETA: 23.8min
+2025-06-23 17:43:17,527 - MainProcess - INFO - ✓ sub-081_run-18_seizure_00_preprocessed.pkl: 27 anomalies, 13 TP, 110.2s
+2025-06-23 17:43:17,527 - MainProcess - INFO - Progress: 360/400 (90.0%) - Success: 360, Failed: 0 - ETA: 23.2min
+2025-06-23 17:43:17,527 - MainProcess - INFO - ✓ sub-091_run-01_seizure_00_preprocessed.pkl: 28 anomalies, 0 TP, 8.2s
+2025-06-23 17:43:17,527 - MainProcess - INFO - Progress: 361/400 (90.2%) - Success: 361, Failed: 0 - ETA: 22.5min
+2025-06-23 17:43:17,527 - MainProcess - INFO - ✓ sub-035_run-07_seizure_09_preprocessed.pkl: 40 anomalies, 0 TP, 234.7s
+2025-06-23 17:43:17,527 - MainProcess - INFO - Progress: 362/400 (90.5%) - Success: 362, Failed: 0 - ETA: 21.9min
+2025-06-23 17:43:17,527 - MainProcess - INFO - ✓ sub-047_run-04_seizure_10_preprocessed.pkl: 29 anomalies, 0 TP, 96.1s
+2025-06-23 17:43:17,527 - MainProcess - INFO - Progress: 363/400 (90.8%) - Success: 363, Failed: 0 - ETA: 21.2min
+2025-06-23 17:43:17,528 - MainProcess - INFO - ✓ sub-035_run-03_seizure_07_preprocessed.pkl: 33 anomalies, 0 TP, 190.7s
+2025-06-23 17:43:17,528 - MainProcess - INFO - Progress: 364/400 (91.0%) - Success: 364, Failed: 0 - ETA: 20.6min
+2025-06-23 17:43:17,528 - MainProcess - INFO - ✓ sub-039_run-09_seizure_09_preprocessed.pkl: 35 anomalies, 4 TP, 187.3s
+2025-06-23 17:43:17,528 - MainProcess - INFO - Progress: 365/400 (91.2%) - Success: 365, Failed: 0 - ETA: 20.0min
+2025-06-23 17:43:17,528 - MainProcess - INFO - ✓ sub-082_run-11_seizure_01_preprocessed.pkl: 40 anomalies, 8 TP, 245.0s
+2025-06-23 17:43:17,528 - MainProcess - INFO - Progress: 366/400 (91.5%) - Success: 366, Failed: 0 - ETA: 19.4min
+2025-06-23 17:43:17,528 - MainProcess - INFO - ✓ sub-073_run-36_seizure_00_preprocessed.pkl: 45 anomalies, 43 TP, 334.7s
+2025-06-23 17:43:17,528 - MainProcess - INFO - Progress: 367/400 (91.8%) - Success: 367, Failed: 0 - ETA: 18.7min
+2025-06-23 17:43:17,528 - MainProcess - INFO - ✓ sub-060_run-04_seizure_06_preprocessed.pkl: 36 anomalies, 0 TP, 259.5s
+2025-06-23 17:43:17,528 - MainProcess - INFO - Progress: 368/400 (92.0%) - Success: 368, Failed: 0 - ETA: 18.1min
+2025-06-23 17:43:17,528 - MainProcess - INFO - ✓ sub-001_run-05_seizure_00_preprocessed.pkl: 33 anomalies, 18 TP, 185.4s
+2025-06-23 17:43:17,528 - MainProcess - INFO - Progress: 369/400 (92.2%) - Success: 369, Failed: 0 - ETA: 17.5min
+2025-06-23 17:43:17,528 - MainProcess - INFO - ✓ sub-066_run-12_seizure_00_preprocessed.pkl: 34 anomalies, 4 TP, 280.5s
+2025-06-23 17:43:17,528 - MainProcess - INFO - Progress: 370/400 (92.5%) - Success: 370, Failed: 0 - ETA: 16.9min
+2025-06-23 17:43:17,528 - MainProcess - INFO - ✓ sub-103_run-04_seizure_01_preprocessed.pkl: 39 anomalies, 4 TP, 282.0s
+2025-06-23 17:43:17,528 - MainProcess - INFO - Progress: 371/400 (92.8%) - Success: 371, Failed: 0 - ETA: 16.3min
+2025-06-23 17:43:17,528 - MainProcess - INFO - ✓ sub-002_run-03_seizure_00_preprocessed.pkl: 34 anomalies, 0 TP, 257.5s
+2025-06-23 17:43:17,528 - MainProcess - INFO - Progress: 372/400 (93.0%) - Success: 372, Failed: 0 - ETA: 15.7min
+2025-06-23 17:43:17,528 - MainProcess - INFO - ✓ sub-087_run-06_seizure_02_preprocessed.pkl: 32 anomalies, 0 TP, 137.2s
+2025-06-23 17:43:17,529 - MainProcess - INFO - Progress: 373/400 (93.2%) - Success: 373, Failed: 0 - ETA: 15.1min
+2025-06-23 17:43:17,529 - MainProcess - INFO - ✓ sub-087_run-02_seizure_01_preprocessed.pkl: 29 anomalies, 0 TP, 80.8s
+2025-06-23 17:43:17,529 - MainProcess - INFO - Progress: 374/400 (93.5%) - Success: 374, Failed: 0 - ETA: 14.5min
+2025-06-23 17:43:17,529 - MainProcess - INFO - ✓ sub-068_run-05_seizure_00_preprocessed.pkl: 35 anomalies, 0 TP, 226.5s
+2025-06-23 17:43:17,529 - MainProcess - INFO - Progress: 375/400 (93.8%) - Success: 375, Failed: 0 - ETA: 13.9min
+2025-06-23 17:43:17,529 - MainProcess - INFO - ✓ sub-109_run-03_seizure_17_preprocessed.pkl: 35 anomalies, 0 TP, 204.0s
+2025-06-23 17:43:17,529 - MainProcess - INFO - Progress: 376/400 (94.0%) - Success: 376, Failed: 0 - ETA: 13.3min
+2025-06-23 17:43:17,529 - MainProcess - INFO - ✓ sub-047_run-04_seizure_16_preprocessed.pkl: 25 anomalies, 0 TP, 163.0s
+2025-06-23 17:43:17,529 - MainProcess - INFO - Progress: 377/400 (94.2%) - Success: 377, Failed: 0 - ETA: 12.7min
+2025-06-23 17:43:17,529 - MainProcess - INFO - ✓ sub-104_run-07_seizure_00_preprocessed.pkl: 24 anomalies, 8 TP, 42.2s
+2025-06-23 17:43:17,529 - MainProcess - INFO - Progress: 378/400 (94.5%) - Success: 378, Failed: 0 - ETA: 12.1min
+2025-06-23 17:43:17,529 - MainProcess - INFO - ✓ sub-109_run-07_seizure_02_preprocessed.pkl: 40 anomalies, 7 TP, 342.2s
+2025-06-23 17:43:17,529 - MainProcess - INFO - Progress: 379/400 (94.8%) - Success: 379, Failed: 0 - ETA: 11.5min
+2025-06-23 17:43:17,529 - MainProcess - INFO - ✓ sub-023_run-03_seizure_00_preprocessed.pkl: 30 anomalies, 0 TP, 511.8s
+2025-06-23 17:43:17,529 - MainProcess - INFO - Progress: 380/400 (95.0%) - Success: 380, Failed: 0 - ETA: 11.0min
+2025-06-23 17:43:17,529 - MainProcess - INFO - ✓ sub-045_run-09_seizure_00_preprocessed.pkl: 25 anomalies, 0 TP, 179.5s
+2025-06-23 17:43:17,529 - MainProcess - INFO - Progress: 381/400 (95.2%) - Success: 381, Failed: 0 - ETA: 10.4min
+2025-06-23 17:43:17,529 - MainProcess - INFO - ✓ sub-074_run-06_seizure_00_preprocessed.pkl: 40 anomalies, 10 TP, 265.6s
+2025-06-23 17:43:17,529 - MainProcess - INFO - Progress: 382/400 (95.5%) - Success: 382, Failed: 0 - ETA: 9.8min
+2025-06-23 17:43:17,529 - MainProcess - INFO - ✓ sub-056_run-03_seizure_00_preprocessed.pkl: 25 anomalies, 1 TP, 284.3s
+2025-06-23 17:43:17,530 - MainProcess - INFO - Progress: 383/400 (95.8%) - Success: 383, Failed: 0 - ETA: 9.2min
+2025-06-23 17:43:17,530 - MainProcess - INFO - ✓ sub-073_run-32_seizure_00_preprocessed.pkl: 45 anomalies, 36 TP, 256.8s
+2025-06-23 17:43:17,530 - MainProcess - INFO - Progress: 384/400 (96.0%) - Success: 384, Failed: 0 - ETA: 8.7min
+2025-06-23 17:43:17,530 - MainProcess - INFO - ✓ sub-036_run-01_seizure_01_preprocessed.pkl: 50 anomalies, 0 TP, 120.2s
+2025-06-23 17:43:17,530 - MainProcess - INFO - Progress: 385/400 (96.2%) - Success: 385, Failed: 0 - ETA: 8.1min
+2025-06-23 17:43:17,530 - MainProcess - INFO - ✓ sub-029_run-08_seizure_01_preprocessed.pkl: 43 anomalies, 14 TP, 247.1s
+2025-06-23 17:43:17,530 - MainProcess - INFO - Progress: 386/400 (96.5%) - Success: 386, Failed: 0 - ETA: 7.6min
+2025-06-23 17:43:17,530 - MainProcess - INFO - ✓ sub-056_run-03_seizure_01_preprocessed.pkl: 36 anomalies, 3 TP, 193.3s
+2025-06-23 17:43:17,530 - MainProcess - INFO - Progress: 387/400 (96.8%) - Success: 387, Failed: 0 - ETA: 7.0min
+2025-06-23 17:43:17,530 - MainProcess - INFO - ✓ sub-114_run-10_seizure_00_preprocessed.pkl: 20 anomalies, 0 TP, 277.3s
+2025-06-23 17:43:17,530 - MainProcess - INFO - Progress: 388/400 (97.0%) - Success: 388, Failed: 0 - ETA: 6.4min
+2025-06-23 17:43:17,530 - MainProcess - INFO - ✓ sub-039_run-04_seizure_10_preprocessed.pkl: 50 anomalies, 10 TP, 142.9s
+2025-06-23 17:43:17,530 - MainProcess - INFO - Progress: 389/400 (97.2%) - Success: 389, Failed: 0 - ETA: 5.9min
+2025-06-23 17:43:17,530 - MainProcess - INFO - ✓ sub-030_run-05_seizure_02_preprocessed.pkl: 50 anomalies, 19 TP, 215.0s
+2025-06-23 17:43:17,530 - MainProcess - INFO - Progress: 390/400 (97.5%) - Success: 390, Failed: 0 - ETA: 5.3min
+2025-06-23 17:43:17,530 - MainProcess - INFO - ✓ sub-072_run-12_seizure_01_preprocessed.pkl: 50 anomalies, 26 TP, 144.4s
+2025-06-23 17:43:17,530 - MainProcess - INFO - Progress: 391/400 (97.8%) - Success: 391, Failed: 0 - ETA: 4.8min
+2025-06-23 17:43:17,530 - MainProcess - INFO - ✓ sub-103_run-04_seizure_03_preprocessed.pkl: 35 anomalies, 0 TP, 368.5s
+2025-06-23 17:43:17,530 - MainProcess - INFO - Progress: 392/400 (98.0%) - Success: 392, Failed: 0 - ETA: 4.3min
+2025-06-23 17:43:17,531 - MainProcess - INFO - ✓ sub-039_run-06_seizure_00_preprocessed.pkl: 28 anomalies, 0 TP, 108.0s
+2025-06-23 17:43:17,531 - MainProcess - INFO - Progress: 393/400 (98.2%) - Success: 393, Failed: 0 - ETA: 3.7min
+2025-06-23 17:43:17,531 - MainProcess - INFO - ✓ sub-073_run-16_seizure_00_preprocessed.pkl: 39 anomalies, 1 TP, 274.4s
+2025-06-23 17:43:17,531 - MainProcess - INFO - Progress: 394/400 (98.5%) - Success: 394, Failed: 0 - ETA: 3.2min
+2025-06-23 17:43:17,531 - MainProcess - INFO - ✓ sub-109_run-07_seizure_04_preprocessed.pkl: 25 anomalies, 0 TP, 232.6s
+2025-06-23 17:43:17,531 - MainProcess - INFO - Progress: 395/400 (98.8%) - Success: 395, Failed: 0 - ETA: 2.6min
+2025-06-23 17:43:17,531 - MainProcess - INFO - ✓ sub-109_run-03_seizure_14_preprocessed.pkl: 31 anomalies, 0 TP, 225.2s
+2025-06-23 17:43:17,531 - MainProcess - INFO - Progress: 396/400 (99.0%) - Success: 396, Failed: 0 - ETA: 2.1min
+2025-06-23 17:43:17,531 - MainProcess - INFO - ✓ sub-056_run-04_seizure_03_preprocessed.pkl: 30 anomalies, 8 TP, 186.9s
+2025-06-23 17:43:17,531 - MainProcess - INFO - Progress: 397/400 (99.2%) - Success: 397, Failed: 0 - ETA: 1.6min
+2025-06-23 17:43:17,531 - MainProcess - INFO - ✓ sub-056_run-05_seizure_01_preprocessed.pkl: 40 anomalies, 2 TP, 217.0s
+2025-06-23 17:43:17,531 - MainProcess - INFO - Progress: 398/400 (99.5%) - Success: 398, Failed: 0 - ETA: 1.0min
+2025-06-23 17:43:17,531 - MainProcess - INFO - ✓ sub-029_run-10_seizure_00_preprocessed.pkl: 43 anomalies, 17 TP, 253.3s
+2025-06-23 17:43:17,531 - MainProcess - INFO - Progress: 399/400 (99.8%) - Success: 399, Failed: 0 - ETA: 0.5min
+2025-06-23 17:43:17,531 - MainProcess - INFO - ✓ sub-072_run-18_seizure_02_preprocessed.pkl: 50 anomalies, 25 TP, 224.8s
+2025-06-23 17:43:17,531 - MainProcess - INFO - Progress: 400/400 (100.0%) - Success: 400, Failed: 0 - ETA: 0.0min
+2025-06-23 17:43:17,531 - MainProcess - INFO - ✓ sub-087_run-21_seizure_00_preprocessed.pkl: 35 anomalies, 0 TP, 111.5s
+2025-06-23 17:43:17,550 - MainProcess - INFO - 
+📊 PARALLEL PROCESSING SUMMARY
+2025-06-23 17:43:17,551 - MainProcess - INFO - Total processing time: 208.4 minutes
+2025-06-23 17:43:17,551 - MainProcess - INFO - Average time per file: 31.3 seconds
+2025-06-23 17:43:17,551 - MainProcess - INFO - Successfully processed: 400/400
+2025-06-23 17:43:17,551 - MainProcess - INFO - Failed files: 0
+2025-06-23 17:43:17,551 - MainProcess - INFO - Speedup factor: ~8x (theoretical)
+2025-06-23 17:43:17,551 - MainProcess - INFO - 
+🎉 PARALLEL PROCESSING COMPLETED!
+2025-06-23 17:43:17,552 - MainProcess - INFO - ✅ Successfully processed: 400/400 files
+2025-06-23 17:43:17,552 - MainProcess - INFO - ⏱️  Total time: 208.4 minutes
+2025-06-23 17:43:17,552 - MainProcess - INFO - ⚡ Actual speedup: 1.0x
+2025-06-23 17:43:17,552 - MainProcess - INFO - 📁 Results saved to: madrid_seizure_results_parallel
+2025-06-23 17:43:17,552 - MainProcess - INFO - 📄 Processing summary saved to: madrid_seizure_results_parallel/processing_summary.json
+2025-06-23 17:43:17,552 - MainProcess - WARNING - ⚠️  Low speedup achieved (1.0x vs 8x theoretical)
+2025-06-23 17:43:17,552 - MainProcess - WARNING -    Consider reducing workers or checking GPU availability
+2025-06-24 16:27:22,393 - MainProcess - INFO - 🚀 PARALLEL MADRID PROCESSING PLAN
+2025-06-24 16:27:22,393 - MainProcess - INFO - Files to process: 400
+2025-06-24 16:27:22,393 - MainProcess - INFO - Parallel workers: 8
+2025-06-24 16:27:22,393 - MainProcess - INFO - Estimated time: 32.2 minutes
+2025-06-24 16:27:22,393 - MainProcess - INFO - Expected speedup: 6.2x
+2025-06-24 16:27:22,393 - MainProcess - INFO - ETA: 16:59:37
+2025-06-24 16:27:22,393 - MainProcess - INFO - Using default seizure-only configuration
+2025-06-24 16:27:22,393 - MainProcess - INFO - 🔧 Initializing parallel processor with 8 workers...
+2025-06-24 16:27:22,394 - MainProcess - INFO - Parallel Madrid Processor initialized with 8 workers
+2025-06-24 16:27:22,394 - MainProcess - INFO - 🚀 Starting parallel processing...
+2025-06-24 16:27:22,397 - MainProcess - INFO - Found 400 files to process with 8 workers
+2025-06-25 10:28:52,868 - ForkPoolWorker-6 - ERROR - Error processing /home/swolf/asim_shared/preprocessed_data/seizure_only/32hz_30min/downsample_32hz_context_30min/sub-080_run-05_seizure_00_preprocessed.pkl: [Errno 2] No such file or directory: 'madrid_seizure_results_parallel/madrid_results_sub-080_run-05_seizure_00_20250625_102852.json'
+2025-06-28 22:13:35,906 - ForkPoolWorker-1 - ERROR - Madrid analysis failed: Time series contains constant regions that would make anomaly detection trivial. Consider: 1) Increasing min_length, 2) Adding noise, 3) Adding linear trend, 4) Removing constant sections
+2025-06-30 14:47:05,624 - MainProcess - WARNING - 🛑 Processing interrupted by user

@@ -62,9 +62,30 @@ nohup ./filtered_download_script.sh > filtered_download.log 2>&1 &
 ➡️ Download instructions will be added soon.
 
 ## ⚙️ Installation
-
+### 1. Clone Repo
 ```bash
 git clone https://github.com/creintjes/ecg-seizure-detection.git
 cd ecg-seizure-detection
+```
+### 2. Install Requirements
+
+```bash
 pip install -r requirements.txt
+```
+### 3. Download Data:
+
+```bash
+nohup ./filtered_download_script.sh > filtered_download.log 2>&1 &
+```
+### 4. Preprocess Data:
+```bash
+nohup python3 preprocess_all_data.py > output.log 2>&1 &
+```
+Or (maybe better):
+
+```bash
+tmux
+python3 preprocess_all_data.py
+```
+
 
