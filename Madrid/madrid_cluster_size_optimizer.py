@@ -21,8 +21,13 @@ class MadridClusterSizeOptimizer:
     
     def __init__(self, clustering_results_folder: str, output_folder: str = None):
         self.clustering_results_folder = Path(clustering_results_folder)
-        self.output_folder = Path(output_folder or f"{clustering_results_folder}_size_optimized")
-        self.output_folder.mkdir(exist_ok=True)
+        if output_folder:
+            self.output_folder = Path(output_folder)
+        else:
+            # Create output folder in same directory as input
+            input_path = Path(clustering_results_folder)
+            self.output_folder = input_path.parent / f"{input_path.name}_size_optimized"
+        self.output_folder.mkdir(exist_ok=True, parents=True)
         
         # Create subfolders
         (self.output_folder / "size_analysis").mkdir(exist_ok=True)
