@@ -9,8 +9,7 @@ Usage:
     python madrid_batch_processor_parallel.py --data-dir results/preprocessed_all --output-dir madrid_results --max-files 10 --n-workers 4
     python madrid_batch_processor_parallel.py --config-file madrid_config.json --n-workers 8
 
-Author: Generated for parallel Madrid batch processing
-Date: 2025
+
 """
 
 import os
