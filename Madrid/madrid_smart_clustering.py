@@ -134,6 +134,185 @@ class SmartMadridClusteringAnalyzer:
         """Time-based clustering with different threshold (uses only location_time_seconds)."""
         return self.time_based_clustering(time_threshold)
         
+    def score_aware_clustering(self, time_threshold: float = 60.0) -> List[List[Dict]]:
+        """Score-aware clustering that prioritizes high-score anomalies."""
+        all_clusters = []
+        
+        # Group anomalies by file
+        file_groups = defaultdict(list)
+        for anomaly in self.all_anomalies:
+            file_groups[anomaly['file_id']].append(anomaly)
+        
+        # Perform clustering within each file separately
+        for file_id, file_anomalies in file_groups.items():
+            # Sort anomalies by score (descending) then by time
+            sorted_anomalies = sorted(file_anomalies, 
+                                    key=lambda x: (-x['anomaly_score'], x['location_time_seconds']))
+            
+            current_cluster = []
+            for anomaly in sorted_anomalies:
+                if not current_cluster:
+                    current_cluster = [anomaly]
+                else:
+                    # Check time distance to any anomaly in current cluster
+                    min_time_diff = min(abs(anomaly['location_time_seconds'] - 
+                                          cluster_anomaly['location_time_seconds']) 
+                                       for cluster_anomaly in current_cluster)
+                    
+                    if min_time_diff <= time_threshold:
+                        current_cluster.append(anomaly)
+                    else:
+                        if current_cluster:
+                            all_clusters.append(current_cluster)
+                        current_cluster = [anomaly]
+                        
+            # Add the last cluster from this file
+            if current_cluster:
+                all_clusters.append(current_cluster)
+        
+        return all_clusters
+        
+    def select_score_aware_representatives(self, clusters: List[List[Dict]]) -> List[Dict]:
+        """Select representatives prioritizing highest scores."""
+        representatives = []
+        
+        for i, cluster in enumerate(clusters):
+            if not cluster:
+                continue
+                
+            if len(cluster) == 1:
+                representative = cluster[0]
+            else:
+                # Select the anomaly with highest score
+                representative = max(cluster, key=lambda x: x['anomaly_score'])
+                
+            # Add cluster metadata
+            true_positives = [a for a in cluster if a.get('seizure_hit', False)]
+            representative['cluster_id'] = i
+            representative['cluster_size'] = len(cluster)
+            representative['cluster_tp_count'] = len(true_positives)
+            representative['cluster_max_score'] = max(a['anomaly_score'] for a in cluster)
+            representative['cluster_min_score'] = min(a['anomaly_score'] for a in cluster)
+            representatives.append(representative)
+            
+        return representatives
+        
+    def multi_threshold_clustering(self, primary_threshold: float, secondary_threshold: float) -> List[List[Dict]]:
+        """Multi-threshold clustering using two different time windows."""
+        all_clusters = []
+        
+        # Group anomalies by file
+        file_groups = defaultdict(list)
+        for anomaly in self.all_anomalies:
+            file_groups[anomaly['file_id']].append(anomaly)
+        
+        # Perform clustering within each file separately
+        for file_id, file_anomalies in file_groups.items():
+            # Sort anomalies within this file by time
+            sorted_anomalies = sorted(file_anomalies, key=lambda x: x['location_time_seconds'])
+            
+            # First pass: tight clustering with primary threshold
+            primary_clusters = []
+            current_cluster = []
+            
+            for anomaly in sorted_anomalies:
+                if not current_cluster:
+                    current_cluster = [anomaly]
+                else:
+                    time_diff = anomaly['location_time_seconds'] - current_cluster[-1]['location_time_seconds']
+                    if time_diff <= primary_threshold:
+                        current_cluster.append(anomaly)
+                    else:
+                        if current_cluster:
+                            primary_clusters.append(current_cluster)
+                        current_cluster = [anomaly]
+                        
+            if current_cluster:
+                primary_clusters.append(current_cluster)
+            
+            # Second pass: merge clusters if they're within secondary threshold
+            final_clusters = []
+            i = 0
+            while i < len(primary_clusters):
+                merged_cluster = primary_clusters[i][:]
+                j = i + 1
+                
+                while j < len(primary_clusters):
+                    # Check if clusters can be merged
+                    last_time_in_merged = max(a['location_time_seconds'] for a in merged_cluster)
+                    first_time_in_next = min(a['location_time_seconds'] for a in primary_clusters[j])
+                    
+                    if first_time_in_next - last_time_in_merged <= secondary_threshold:
+                        merged_cluster.extend(primary_clusters[j])
+                        primary_clusters.pop(j)
+                    else:
+                        j += 1
+                        
+                final_clusters.append(merged_cluster)
+                i += 1
+                
+            all_clusters.extend(final_clusters)
+        
+        return all_clusters
+        
+    def subject_aware_clustering(self, base_threshold: float = 90.0) -> List[List[Dict]]:
+        """Subject-aware clustering with adaptive thresholds per subject."""
+        all_clusters = []
+        
+        # Group anomalies by subject and file
+        subject_groups = defaultdict(lambda: defaultdict(list))
+        for anomaly in self.all_anomalies:
+            subject_id = anomaly['subject_id']
+            file_id = anomaly['file_id']
+            subject_groups[subject_id][file_id].append(anomaly)
+            
+        # Calculate subject-specific thresholds
+        subject_thresholds = {}
+        for subject_id, files in subject_groups.items():
+            subject_time_gaps = []
+            
+            for file_id, file_anomalies in files.items():
+                sorted_anomalies = sorted(file_anomalies, key=lambda x: x['location_time_seconds'])
+                for i in range(1, len(sorted_anomalies)):
+                    gap = sorted_anomalies[i]['location_time_seconds'] - sorted_anomalies[i-1]['location_time_seconds']
+                    subject_time_gaps.append(gap)
+                    
+            if subject_time_gaps:
+                # Use median gap time as adaptive threshold
+                subject_time_gaps.sort()
+                median_gap = subject_time_gaps[len(subject_time_gaps) // 2]
+                # Adaptive threshold: base_threshold adjusted by subject pattern
+                adaptive_factor = min(2.0, max(0.5, median_gap / base_threshold))
+                subject_thresholds[subject_id] = base_threshold * adaptive_factor
+            else:
+                subject_thresholds[subject_id] = base_threshold
+        
+        # Perform clustering with subject-specific thresholds
+        for subject_id, files in subject_groups.items():
+            threshold = subject_thresholds[subject_id]
+            
+            for file_id, file_anomalies in files.items():
+                sorted_anomalies = sorted(file_anomalies, key=lambda x: x['location_time_seconds'])
+                
+                current_cluster = []
+                for anomaly in sorted_anomalies:
+                    if not current_cluster:
+                        current_cluster = [anomaly]
+                    else:
+                        time_diff = anomaly['location_time_seconds'] - current_cluster[-1]['location_time_seconds']
+                        if time_diff <= threshold:
+                            current_cluster.append(anomaly)
+                        else:
+                            if current_cluster:
+                                all_clusters.append(current_cluster)
+                            current_cluster = [anomaly]
+                            
+                # Add the last cluster from this file
+                if current_cluster:
+                    all_clusters.append(current_cluster)
+        
+        return all_clusters
+        
     def select_smart_representatives(self, clusters: List[List[Dict]]) -> List[Dict]:
         """Select representative based on minimal time distance to all cluster members."""
         representatives = []
@@ -247,8 +426,10 @@ class SmartMadridClusteringAnalyzer:
         
         print("\nTesting clustering strategies...")
         
-        # 1. Time-based with different thresholds
-        for threshold in [15, 30, 60, 120]:
+        # 1. Comprehensive time-based clustering with extended range
+        time_thresholds = [5, 10, 15, 20, 25, 30, 35, 40, 45, 60, 75, 90, 120, 150, 180, 240, 300]
+        print(f"Testing {len(time_thresholds)} time-based configurations...")
+        for threshold in time_thresholds:
             clusters = self.time_based_clustering(threshold)
             representatives = self.select_smart_representatives(clusters)
             metrics = self.evaluate_clustering_strategy(representatives, base_metrics)
@@ -259,47 +440,130 @@ class SmartMadridClusteringAnalyzer:
                 'representatives': representatives,
                 'metrics': metrics
             }
-            print(f"Time-based ({threshold}s): {len(clusters)} clusters, score: {metrics['score']:.3f}")
+            if threshold in [5, 10, 15, 30, 60, 120, 180, 300] or threshold % 50 == 0:
+                print(f"Time-based ({threshold}s): {len(clusters)} clusters, score: {metrics['score']:.3f}")
             
-        # 2. Time-based with different thresholds (renamed from score-based)
-        for threshold in [20, 25, 35, 45]:
-            clusters = self.score_based_clustering(threshold)
+        # 2. Fine-grained time clustering (high precision range)
+        fine_thresholds = [2, 3, 6, 8, 12, 18, 22, 28, 32, 38, 42, 48, 55, 65, 85, 105]
+        print(f"Testing {len(fine_thresholds)} fine-grained time configurations...")
+        for threshold in fine_thresholds:
+            clusters = self.time_based_clustering(threshold)
             representatives = self.select_smart_representatives(clusters)
             metrics = self.evaluate_clustering_strategy(representatives, base_metrics)
-            strategies[f'time_alt_{threshold}s'] = {
-                'method': 'time_based_alt',
+            strategies[f'fine_time_{threshold}s'] = {
+                'method': 'fine_time_based',
                 'parameters': {'threshold': threshold},
                 'clusters': len(clusters),
                 'representatives': representatives,
                 'metrics': metrics
             }
-            print(f"Time-based alt ({threshold}s): {len(clusters)} clusters, score: {metrics['score']:.3f}")
+            if threshold in [2, 8, 18, 32, 55, 85]:
+                print(f"Fine time ({threshold}s): {len(clusters)} clusters, score: {metrics['score']:.3f}")
+                
+        # 3. Extended range time clustering (very large windows)
+        extended_thresholds = [360, 450, 600, 900, 1200, 1800]
+        print(f"Testing {len(extended_thresholds)} extended range configurations...")
+        for threshold in extended_thresholds:
+            clusters = self.time_based_clustering(threshold)
+            representatives = self.select_smart_representatives(clusters)
+            metrics = self.evaluate_clustering_strategy(representatives, base_metrics)
+            strategies[f'extended_time_{threshold}s'] = {
+                'method': 'extended_time_based',
+                'parameters': {'threshold': threshold},
+                'clusters': len(clusters),
+                'representatives': representatives,
+                'metrics': metrics
+            }
+            print(f"Extended time ({threshold}s): {len(clusters)} clusters, score: {metrics['score']:.3f}")
             
-        # 3. Time-based with medium threshold
-        clusters = self.file_based_clustering(30)
-        representatives = self.select_smart_representatives(clusters)
-        metrics = self.evaluate_clustering_strategy(representatives, base_metrics)
-        strategies['time_30s'] = {
-            'method': 'time_based',
-            'parameters': {'threshold': 30},
-            'clusters': len(clusters),
-            'representatives': representatives,
-            'metrics': metrics
-        }
-        print(f"Time-based (30s): {len(clusters)} clusters, score: {metrics['score']:.3f}")
-        
-        # 4. Time-based with larger threshold
-        clusters = self.hybrid_clustering(45)
-        representatives = self.select_smart_representatives(clusters)
-        metrics = self.evaluate_clustering_strategy(representatives, base_metrics)
-        strategies['time_45s'] = {
-            'method': 'time_based',
-            'parameters': {'threshold': 45},
-            'clusters': len(clusters),
-            'representatives': representatives,
-            'metrics': metrics
-        }
-        print(f"Time-based (45s): {len(clusters)} clusters, score: {metrics['score']:.3f}")
+        # 4. Adaptive time clustering (based on percentiles of time gaps)
+        print("Testing adaptive time clustering...")
+        all_time_gaps = []
+        file_groups = defaultdict(list)
+        for anomaly in self.all_anomalies:
+            file_groups[anomaly['file_id']].append(anomaly)
+            
+        for file_id, file_anomalies in file_groups.items():
+            sorted_anomalies = sorted(file_anomalies, key=lambda x: x['location_time_seconds'])
+            for i in range(1, len(sorted_anomalies)):
+                gap = sorted_anomalies[i]['location_time_seconds'] - sorted_anomalies[i-1]['location_time_seconds']
+                all_time_gaps.append(gap)
+                
+        if all_time_gaps:
+            adaptive_thresholds = []
+            all_time_gaps.sort()
+            n_gaps = len(all_time_gaps)
+            for percentile in [10, 25, 50, 75, 90, 95, 99]:
+                idx = int(percentile / 100 * (n_gaps - 1))
+                adaptive_thresholds.append(int(all_time_gaps[idx]))
+                
+            for i, threshold in enumerate(adaptive_thresholds):
+                percentile = [10, 25, 50, 75, 90, 95, 99][i] if i < 7 else 99
+                if threshold > 0:
+                    clusters = self.time_based_clustering(threshold)
+                    representatives = self.select_smart_representatives(clusters)
+                    metrics = self.evaluate_clustering_strategy(representatives, base_metrics)
+                    strategies[f'adaptive_p{percentile}_{threshold}s'] = {
+                        'method': 'adaptive_time_based',
+                        'parameters': {'threshold': threshold, 'percentile_basis': percentile},
+                        'clusters': len(clusters),
+                        'representatives': representatives,
+                        'metrics': metrics
+                    }
+                    print(f"Adaptive P{percentile} ({threshold}s): {len(clusters)} clusters, score: {metrics['score']:.3f}")
+                    
+        # 5. Score-aware clustering (prioritize high-score anomalies in clustering)
+        print("Testing score-aware clustering strategies...")
+        score_thresholds = [30, 60, 120, 180]
+        for time_threshold in score_thresholds:
+            clusters = self.score_aware_clustering(time_threshold)
+            representatives = self.select_score_aware_representatives(clusters)
+            metrics = self.evaluate_clustering_strategy(representatives, base_metrics)
+            strategies[f'score_aware_{time_threshold}s'] = {
+                'method': 'score_aware',
+                'parameters': {'threshold': time_threshold},
+                'clusters': len(clusters),
+                'representatives': representatives,
+                'metrics': metrics
+            }
+            print(f"Score-aware ({time_threshold}s): {len(clusters)} clusters, score: {metrics['score']:.3f}")
+            
+        # 6. Hybrid multi-threshold clustering
+        print("Testing hybrid multi-threshold clustering...")
+        hybrid_configs = [
+            {'primary': 60, 'secondary': 120},
+            {'primary': 30, 'secondary': 90},
+            {'primary': 45, 'secondary': 180},
+            {'primary': 90, 'secondary': 240}
+        ]
+        for config in hybrid_configs:
+            clusters = self.multi_threshold_clustering(config['primary'], config['secondary'])
+            representatives = self.select_smart_representatives(clusters)
+            metrics = self.evaluate_clustering_strategy(representatives, base_metrics)
+            strategies[f'hybrid_{config["primary"]}_{config["secondary"]}s'] = {
+                'method': 'multi_threshold',
+                'parameters': config,
+                'clusters': len(clusters),
+                'representatives': representatives,
+                'metrics': metrics
+            }
+            print(f"Hybrid ({config['primary']}/{config['secondary']}s): {len(clusters)} clusters, score: {metrics['score']:.3f}")
+            
+        # 7. Subject-aware clustering (different thresholds per subject pattern)
+        print("Testing subject-aware clustering...")
+        subject_thresholds = [45, 90, 135]
+        for threshold in subject_thresholds:
+            clusters = self.subject_aware_clustering(threshold)
+            representatives = self.select_smart_representatives(clusters)
+            metrics = self.evaluate_clustering_strategy(representatives, base_metrics)
+            strategies[f'subject_aware_{threshold}s'] = {
+                'method': 'subject_aware',
+                'parameters': {'threshold': threshold},
+                'clusters': len(clusters),
+                'representatives': representatives,
+                'metrics': metrics
+            }
+            print(f"Subject-aware ({threshold}s): {len(clusters)} clusters, score: {metrics['score']:.3f}")
         
         # Select best strategy
         best_strategy_name = max(strategies.keys(), key=lambda k: strategies[k]['metrics']['score'])

@@ -1,0 +1,44 @@
+{
+  "all": {
+    "name": "All Clusters",
+    "count": 1352,
+    "min": 1,
+    "max": 50,
+    "mean": 9.73594674556213,
+    "median": 6.0,
+    "std": 10.252357349768966,
+    "q25": 2,
+    "q75": 14,
+    "mode": 1
+  },
+  "seizure_hit": {
+    "name": "Seizure Hit Clusters",
+    "count": 352,
+    "min": 1,
+    "max": 50,
+    "mean": 14.525568181818182,
+    "median": 10.0,
+    "std": 13.07460184294204,
+    "q25": 3,
+    "q75": 24,
+    "mode": 1
+  },
+  "non_seizure_hit": {
+    "name": "Non-Seizure Hit Clusters",
+    "count": 1000,
+    "min": 1,
+    "max": 47,
+    "mean": 8.05,
+    "median": 5.0,
+    "std": 8.435440513491672,
+    "q25": 2,
+    "q75": 11,
+    "mode": 1
+  },
+  "comparison": {
+    "mean_difference": 6.475568181818181,
+    "median_difference": 5.0,
+    "seizure_hit_larger_pct": 53.40909090909091,
+    "non_seizure_hit_larger_pct": 17.599999999999998
+  }
+}
