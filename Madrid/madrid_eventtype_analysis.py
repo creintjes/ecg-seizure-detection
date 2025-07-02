@@ -333,7 +333,7 @@ class MadridEventTypeAnalyzer:
 def main():
     """Main execution function."""
     # Configuration
-    madrid_results_dir = "madrid_results copy/madrid_dir_400_examples"
+    madrid_results_dir = "Madrid/madrid_results/madrid_seizure_results_parallel_400/tolerance_adjusted"
     seizeit2_data_path = "/home/swolf/asim_shared/raw_data/ds005873-1.1.0"  
     output_dir = "Madrid/madrid_results/madrid_seizure_results_parallel_400/madrid_eventtype_analysis"
     
