@@ -32,7 +32,7 @@ import threading
 warnings.filterwarnings('ignore')
 
 # Add models directory to path
-sys.path.append(os.path.join(os.path.dirname(__file__), '.'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 try:
     from models.madrid_v2 import MADRID_V2

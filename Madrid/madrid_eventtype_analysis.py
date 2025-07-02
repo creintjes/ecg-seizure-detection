@@ -47,7 +47,7 @@ class MadridEventTypeAnalyzer:
         results = {}
         
         # Load individual seizure results
-        individual_results_dir = self.madrid_results_dir / "madrid_dir_400_examples"
+        individual_results_dir = self.madrid_results_dir 
         if individual_results_dir.exists():
             for json_file in individual_results_dir.glob("madrid_results_*.json"):
                 try:
@@ -330,9 +330,9 @@ class MadridEventTypeAnalyzer:
 def main():
     """Main execution function."""
     # Configuration
-    madrid_results_dir = "madrid_results copy/tolerance_adjusted_smart_clustered"
-    seizeit2_data_path = "../Information/Data/seizeit2-main"  # Adjust path as needed
-    output_dir = "madrid_eventtype_analysis"
+    madrid_results_dir = "Madrid/madrid_results/madrid_seizure_results_parallel_400/tolerance_adjusted"
+    seizeit2_data_path = "/home/swolf/asim_shared/raw_data/ds005873-1.1.0"  
+    output_dir = "Madrid/madrid_results/madrid_seizure_results_parallel_400/madrid_eventtype_analysis"
     
     # Initialize analyzer
     analyzer = MadridEventTypeAnalyzer(madrid_results_dir, seizeit2_data_path)

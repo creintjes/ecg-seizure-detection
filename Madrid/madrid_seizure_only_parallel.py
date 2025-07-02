@@ -40,7 +40,7 @@ def create_seizure_only_config():
             'analysis_config': {
                 'top_k': 5,  # More anomalies for seizure analysis
                 'train_test_split_ratio': 0.3,  # Less training since seizure location known
-                'threshold_percentile': 90  # Higher sensitivity
+                'threshold_percentile': 50  # Higher sensitivity
             },
             'algorithm_settings': {
                 'use_gpu': True,
