@@ -49,6 +49,7 @@ class MadridEventTypeAnalyzer:
         # Load individual seizure results
         individual_results_dir = self.madrid_results_dir 
         if individual_results_dir.exists():
+            print(f"Loading from: {individual_results_dir}")
             for json_file in individual_results_dir.glob("madrid_results_*.json"):
                 try:
                     with open(json_file, 'r') as f:
@@ -135,9 +136,11 @@ class MadridEventTypeAnalyzer:
                 has_detection = False
                 tp_count = 0
                 fp_count = 0
-                total_anomalies = len(analysis.get('ranked_anomalies', []))
+                # Check both possible field names for anomalies
+                anomalies_list = analysis.get('ranked_anomalies', []) or analysis.get('anomalies', [])
+                total_anomalies = len(anomalies_list)
                 
-                for anomaly in analysis.get('ranked_anomalies', []):
+                for anomaly in anomalies_list:
                     if anomaly.get('seizure_hit', False):
                         tp_count += 1
                         has_detection = True
@@ -330,7 +333,7 @@ class MadridEventTypeAnalyzer:
 def main():
     """Main execution function."""
     # Configuration
-    madrid_results_dir = "Madrid/madrid_results/madrid_seizure_results_parallel_400/tolerance_adjusted"
+    madrid_results_dir = "madrid_results copy/madrid_dir_400_examples"
     seizeit2_data_path = "/home/swolf/asim_shared/raw_data/ds005873-1.1.0"  
     output_dir = "Madrid/madrid_results/madrid_seizure_results_parallel_400/madrid_eventtype_analysis"
     
