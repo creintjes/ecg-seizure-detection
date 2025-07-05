@@ -490,6 +490,13 @@ class ECGPreprocessor:
                 # Calculate seizure windows count from metadata
                 n_seizure_windows = sum(1 for meta in metadata if meta.get('window_label', 0) == 1)
                 
+                # build full‐length binary mask for this channel
+                mask_full = np.zeros_like(downsampled_signal, dtype=int)
+                # annotations.events is assumed to be a list of (onset,offset) in seconds
+                for onset, offset in annotations.events:
+                   start = int(onset * new_fs)
+                   stop  = int(offset * new_fs)
+                   mask_full[start:stop] = 1
                 channel_result = {
                     'channel_name': channel_name,
                     'windows': windows,

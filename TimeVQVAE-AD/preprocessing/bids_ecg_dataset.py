@@ -42,7 +42,7 @@ class SeizeIT2ECGSequence(Dataset):
     """
 
     def __init__(self, bids_root: str, split: str, config: dict, dataset_idx: int):
-        self.window_size = set_window_size(dataset_idx, config['dataset']['n_periods'])
+        self.window_size = set_window_size(config['dataset']['root_dir'] + config['dataset']['dataset_windowed'])
         base = Path(bids_root) / f"{dataset_idx:03d}_SeizeIT2-ECG"
         ecg_files = sorted(base.glob(f"*_{split}_ecg.edf"))
 

@@ -368,13 +368,28 @@ def compute_downsample_rate(input_length: int,
 #         window_size = min_window_size
 #     return window_size
 
+from preprocessing.dataset import PreprocessedSamplesDataset
 
-def set_window_size(dataset_id, n_periods: int):
-    period_data = get_root_dir().joinpath('preprocessing', 'UCR_anomaly_dataset_periods.csv')
-    df = pd.read_csv(str(period_data))
-    single_period = int(df.query(f"dataset_idx == {dataset_id}")['period'].item())
-    return single_period * n_periods
-
+def set_window_size(data_dir: str,
+                      max_loaded_files: int = 1,
+                      train_frac: float = 0.8) -> int:
+    """
+    Load just enough of your preprocessed windows to inspect their length,
+    then return the integer window_size.
+    """
+    # instantiate the dataset in train mode
+    ds = PreprocessedSamplesDataset(
+        data_dir, 
+        max_loaded_files=max_loaded_files, 
+        kind='train', 
+        train_frac=train_frac
+    )
+    # grab the first sample
+    sample = ds[0]
+    # if test, ds[0] is (x,y), so we only want x
+    x = sample[0] if isinstance(sample, tuple) else sample
+    # x has shape (1, window_length)
+    return x.shape[-1]
 
 def compute_receptive_field(layers):
     """

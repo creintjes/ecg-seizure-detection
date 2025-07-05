@@ -28,7 +28,6 @@ class PreprocessedSamplesDataset(Dataset):
         assert kind in ('train','test','all')
         # load raw numpy windows + labels lists
         samples, labels = load_preprocessed_samples(data_dir, max_loaded_files)
-        
         # stack into tensors
         # samples: List[np.ndarray(window_length,)]
         # →  X: (n_windows, window_length)

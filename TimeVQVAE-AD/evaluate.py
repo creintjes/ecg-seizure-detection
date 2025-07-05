@@ -1,12 +1,11 @@
 from argparse import ArgumentParser
 import pickle
 import multiprocessing as mp
-
 import numpy as np
 
-from utils import get_root_dir, load_yaml_param_settings
+from utils import get_root_dir, load_yaml_param_settings, set_window_size
 from evaluation import evaluate_fn, save_final_summarized_figure
-from preprocessing.dataset import PreprocessedSamplesDataset
+
 
 # -- Multiprocessing setup for CUDA safety --
 mp.set_start_method('spawn', force=True)
@@ -14,188 +13,105 @@ Process = mp.get_context('spawn').Process
 
 def load_args():
     parser = ArgumentParser()
-    parser.add_argument(
-        '--config',
-        type=str,
-        help="Path to the config file.",
-        default=get_root_dir().joinpath('configs', 'config.yaml')
-    )
-    parser.add_argument(
-        '--dataset_ind',
-        default=[1],
-        nargs='+',
-        required=True,
-        help='e.g., 1 2 3. Indices of datasets to run experiments on.'
-    )
-    parser.add_argument(
-        '--latent_window_size_rates',
-        default=[0.1], #, 0.3, 0.5],
-        nargs='+',
-        help='Masking rates to sweep over.'
-    )
-    parser.add_argument(
-        '--rolling_window_stride_rate',
-        default=0.1,
-        type=float,
-        help='stride = rolling_window_stride_rate * window_size'
-    )
+    parser.add_argument('--config', type=str, help="Path to the config data  file.", default=get_root_dir().joinpath('configs', 'config.yaml'))
+    parser.add_argument('--dataset_ind', default=[1,], help='e.g., 1 2 3. Indices of datasets to run experiments on.', nargs='+', required=True)
+    parser.add_argument('--latent_window_size_rates', default=[0.3], nargs='+') # , 0.1, 0.5 # for testing purposes
+    parser.add_argument('--rolling_window_stride_rate', default=0.2, type=float, help='stride = rolling_window_stride_rate * window_size')
     parser.add_argument('--q', default=0.99, type=float)
-    parser.add_argument(
-        '--explainable_sampling',
-        default=False,
-        help='Slower but returns explainable samples if True.'
-    )
-    parser.add_argument(
-        '--n_explainable_samples',
-        type=int,
-        default=2,
-        help='How many explainable samples per window.'
-    )
-    parser.add_argument(
-        '--max_masking_rate_for_explainable_sampling',
-        type=float,
-        default=0.9,
-        help='Prevents complete masking during explainable sampling.'
-    )
+    parser.add_argument('--explainable_sampling', default=True, help='Note that this script will run more slowly with this option being True.')
+    parser.add_argument('--n_explainable_samples', type=int, default=2, help='how many explainable samples to get per window.')
+    parser.add_argument('--max_masking_rate_for_explainable_sampling', type=float, default=0.9, help='it prevents complete masking and ensures the minimum valid tokens to leave a minimum context for explainable sampling.')
     parser.add_argument('--device', default=0, type=int)
-    parser.add_argument(
-        '--n_workers',
-        default=4,
-        type=int,
-        help='Number of parallel processes for the rates sweep.'
-    )
+    parser.add_argument('--n_workers', default=4, type=int, help='multi-processing for latent_window_size_rate.')
     return parser.parse_args()
 
 
 def process_list_arg(arg, dtype):
-    return np.array(arg, dtype=dtype)
-
+    arg = np.array(arg, dtype=dtype)
+    return arg
 
 def process_bool_arg(arg):
     if str(arg) == 'True':
-        return True
-    if str(arg) == 'False':
-        return False
-    raise ValueError(f"Invalid boolean argument {arg!r}")
+        arg = True
+    elif str(arg) == 'False':
+        arg = False
+    else:
+        raise ValueError
+    return arg
 
 
 if __name__ == '__main__':
+    # load config
     args = load_args()
     config = load_yaml_param_settings(args.config)
 
     args.dataset_ind = process_list_arg(args.dataset_ind, int)
     args.latent_window_size_rates = process_list_arg(args.latent_window_size_rates, float)
     args.explainable_sampling = process_bool_arg(args.explainable_sampling)
-
     for idx in args.dataset_ind:
-        print(f'\n=== Dataset idx: {idx} ===')
-        dataset_idx = int(idx)
+        print(f'\nidx: {idx}')
+        idx = int(idx)
 
-        # 1) Resolve where your preprocessed files live
-        data_dir = get_root_dir().joinpath(config['dataset']['root_dir'])
-        max_files = config['dataset']['max_files']
-
-        # 2) Instantiate the train split *only* to infer window size
-        train_ds = PreprocessedSamplesDataset(
-            data_dir=str(data_dir),
-            max_loaded_files=max_files,
-            kind='train',
-            train_frac=0.8,
-        )
-        # Grab the first sample (train) to get its length
-        first = train_ds[0]
-        x = first if not isinstance(first, tuple) else first[0]
-        window_size = x.shape[-1]
-        print(f"Using inferred window_size = {window_size}")
-
-        # 3) Launch one subprocess per masking rate (batched by n_workers)
-        for start in range(0, len(args.latent_window_size_rates), args.n_workers):
-            batch_rates = args.latent_window_size_rates[start:start + args.n_workers]
-            if len(batch_rates) == 0:
+        for worker_idx in range(len(args.latent_window_size_rates)):
+            latent_window_size_rates = args.latent_window_size_rates[worker_idx*args.n_workers: (worker_idx+1)*args.n_workers]
+            if len(latent_window_size_rates) == 0:
                 break
-            
+
             procs = []
-            for wsr in batch_rates:
-                p = Process(
-                    target=evaluate_fn,
-                    args=(
-                        config,
-                        dataset_idx,
-                        float(wsr),
-                        args.rolling_window_stride_rate,
-                        args.q,
-                        args.device
-                    )
-                )
-                procs.append(p)
-                p.start()
-
-            # wait for this batch to finish
+            for wsr in latent_window_size_rates:
+            
+                proc = Process(target=evaluate_fn, args=(config, idx, wsr, args.rolling_window_stride_rate, args.q, args.device))  # make sure to put , (comma) at the end
+                procs.append(proc)
+                proc.start()
             for p in procs:
-                p.join()
+                p.join()  # make each process wait until all the other process ends.
 
-        # 4) After all rates done, aggregate their .pkl outputs
-        a_s_star = 0.0
-        joint_threshold = 0.0
+        # integrate all the joint anomaly scores across `latent_window_size_rates`
+        a_s_star = 0.
+        joint_threshold = 0.
         for wsr in args.latent_window_size_rates:
-            fname = get_root_dir().joinpath(
-                'evaluation', 'results',
-                f'{dataset_idx}-anomaly_score-latent_window_size_rate_{wsr}.pkl'
-            )
-            with open(str(fname), 'rb') as f:
+            result_fname = get_root_dir().joinpath('evaluation', 'results', f'{idx}-anomaly_score-latent_window_size_rate_{wsr}.pkl')
+            with open(str(result_fname), 'rb') as f:
                 result = pickle.load(f)
-            a_s_star += result['a_star']             # shape (n_freq, ts_len)
-            joint_threshold += result['anom_threshold']
+                a_star = result['a_star']  # (n_freq, ts_len')
+                a_s_star += a_star  # (n_freq, ts_len')
+                joint_threshold += result['anom_threshold']
 
-        # Episode‐level aggregation
-        a_bar = a_s_star.mean(axis=0)               # (ts_len,)
-        # rolling smoothing of half‐windowsize
-        a_2bar = np.zeros_like(a_bar)
-        half_ws = window_size // 2
-        for t in range(len(a_bar)):
-            lo = max(0, t - half_ws)
-            hi = min(len(a_bar), t + half_ws)
-            a_2bar[t] = a_bar[lo:hi].mean()
+        # \bar{a}_s^star
+        a_bar_s_star = a_s_star.mean(axis=0)  # (ts_len',)
 
-        a_final = (a_bar + a_2bar) / 2.0
+        # \doublebar{a}_s^star
+        window_size = set_window_size(config['dataset']['root_dir'] + config['dataset']['dataset_windowed'])
+        a_2bar_s_star = np.zeros_like(a_bar_s_star)  # (ts_len',)
+        for j in range(len(a_2bar_s_star)):
+            rng = slice(max(0, j - window_size // 2), j + window_size // 2)
+            a_2bar_s_star[j] = np.mean(a_bar_s_star[rng])
+
+        # a_final
+        a_final = (a_bar_s_star + a_2bar_s_star) / 2
+
+        # final threshold
         final_threshold = joint_threshold.mean()
         anom_ind = a_final > final_threshold
 
-        # 5) Plot & save the final summary figure & data
-        # We assume the *last* result dict still has the unscaled X_test, Y, and timesteps
-        save_final_summarized_figure(
-            dataset_idx,
-            result['X_test_unscaled'],
-            result['Y'],
-            result['timestep_rng_test'],
-            a_s_star,
-            a_bar,
-            a_2bar,
-            a_final,
-            joint_threshold,
-            final_threshold,
-            anom_ind,
-            window_size,
-            config,
-            args
-        )
+        # plot
+        save_final_summarized_figure(idx, result['X_test_unscaled'], result['Y'], result['timestep_rng_test'],
+                                     a_s_star, a_bar_s_star, a_2bar_s_star, a_final,
+                                     joint_threshold, final_threshold, anom_ind, window_size, config, args)
 
-        joint_data = {
-            'dataset_index': dataset_idx,
-            'X_test_unscaled': result['X_test_unscaled'],
-            'Y': result['Y'],
-            'a_s^*': a_s_star,
-            'bar{a}_s^*': a_bar,
-            'doublebar{a}_s^*': a_2bar,
-            'a_final': a_final,
-            'joint_threshold': joint_threshold,
-            'final_threshold': final_threshold,
-        }
-        out_fname = get_root_dir().joinpath(
-            'evaluation', 'results',
-            f'{dataset_idx}-joint_anomaly_score.pkl'
-        )
-        with open(str(out_fname), 'wb') as f:
-            pickle.dump(joint_data, f, pickle.HIGHEST_PROTOCOL)
+        # save: resulting data
+        joint_resulting_data = {'dataset_index': idx,
+                                'X_test_unscaled': result['X_test_unscaled'],  # time series
+                                'Y': result['Y'],  # label
 
-        print(f"Saved joint results to {out_fname}")
+                                'a_s^*': a_s_star,  # (n_freq, ts_len')
+                                'bar{a}_s^*': a_bar_s_star,  # (ts_len',)
+                                'doublebar{a}_s^*': a_2bar_s_star,  # (ts_len',)
+                                'a_final': a_final,  # (ts_len',)
+
+                                'joint_threshold': joint_threshold,  # (n_freq,)
+                                'final_threshold': final_threshold  # (,)
+                                }
+        saving_fname = get_root_dir().joinpath('evaluation', 'results', f'{idx}-joint_anomaly_score.pkl')
+        with open(saving_fname, 'wb') as f:
+            pickle.dump(joint_resulting_data, f, pickle.HIGHEST_PROTOCOL)

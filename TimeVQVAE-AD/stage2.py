@@ -95,7 +95,7 @@ if __name__ == '__main__':
         dataset_idx = int(idx)
 
         # resolve data directory
-        data_dir = get_root_dir().joinpath(config['dataset']['root_dir'])
+        data_dir = config['dataset']['root_dir'] + config['dataset']['dataset_windowed']
         max_files = config['dataset']['max_files']
 
         # build datasets

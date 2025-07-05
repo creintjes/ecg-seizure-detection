@@ -82,8 +82,8 @@ if __name__ == '__main__':
         dataset_idx = int(idx)
         bids_root = get_root_dir().joinpath('preprocessing', 'dataset', 'AnomalyDatasets_2021')
         # instantiate train & test Datasets
-        data_dir = config['dataset']['root_dir']
-        max_files = config['dataset']['max_files']
+        data_dir = config['dataset']['root_dir'] + config['dataset']['dataset_windowed']
+        max_files = config['dataset']['max_files'] 
         train_ds = PreprocessedSamplesDataset(
         data_dir, max_loaded_files=max_files, kind='train', train_frac=0.8
         )
