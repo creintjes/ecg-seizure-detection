@@ -189,7 +189,9 @@ class MadridWindowedBatchProcessorCore:
                 data = pickle.load(f)
             
             if not self.is_windowed_format(data):
-                logger.error(f"File {file_path} is not in windowed format")
+                # Provide detailed error information
+                error_info = self.analyze_file_format(data, file_path)
+                logger.error(f"File {file_path} is not in windowed format: {error_info}")
                 return None
             
             return self.process_windowed_data(data, file_path)
@@ -201,16 +203,111 @@ class MadridWindowedBatchProcessorCore:
     def is_windowed_format(self, data: Dict) -> bool:
         """Check if data is in windowed preprocessed format"""
         if 'channels' not in data or len(data['channels']) == 0:
+            logger.debug("No channels found in data")
             return False
         
         channel = data['channels'][0]
         
         # Check for windowed structure
         if 'windows' in channel and isinstance(channel['windows'], list):
-            if len(channel['windows']) > 1:  # Multiple windows indicate windowed format
+            # Check if preprocessing parameters indicate windowed processing
+            # Even single windows from windowed preprocessing should be accepted
+            preprocessing_params = data.get('preprocessing_params', {})
+            
+            # Method 1: If window_size and stride are specified, it's windowed format
+            if 'window_size' in preprocessing_params and 'stride' in preprocessing_params:
+                logger.debug(f"Detected windowed format from preprocessing params: window_size={preprocessing_params['window_size']}, stride={preprocessing_params['stride']}")
                 return True
+            
+            # Method 2: Legacy check: Multiple windows indicate windowed format
+            if len(channel['windows']) > 1:
+                logger.debug(f"Detected windowed format from multiple windows: {len(channel['windows'])} windows")
+                return True
+            
+            # Method 3: Check for window-related keys in preprocessing params
+            window_related_keys = ['window_size', 'stride', 'overlap', 'windowing']
+            if any(key in preprocessing_params for key in window_related_keys):
+                logger.debug(f"Detected windowed format from preprocessing keys: {[k for k in window_related_keys if k in preprocessing_params]}")
+                return True
+            
+            # Method 4: Check if this looks like output from windowed preprocessing by metadata
+            if len(channel['windows']) >= 1:
+                if 'metadata' in channel and isinstance(channel['metadata'], list):
+                    if len(channel['metadata']) > 0:
+                        meta = channel['metadata'][0]
+                        # If metadata contains window timing info, it's likely windowed format
+                        if 'start_time' in meta and 'end_time' in meta:
+                            logger.debug("Detected windowed format from metadata structure")
+                            return True
+            
+            # Method 5: Aggressive detection - if it has windows and n_windows > 1, it's probably windowed
+            if 'n_windows' in channel and channel.get('n_windows', 0) > 1:
+                logger.debug(f"Detected windowed format from n_windows field: {channel['n_windows']}")
+                return True
+            
+            # Method 6: If there are windows and the file structure suggests windowing, accept it
+            # This is for cases where preprocessing created windows but metadata is different
+            if len(channel['windows']) >= 1:
+                # If the window is significantly shorter than typical full recordings, it's likely windowed
+                if len(channel['windows']) > 0:
+                    window_length = len(channel['windows'][0])
+                    sampling_rate = channel.get('processed_fs', 32)
+                    window_duration_minutes = window_length / (sampling_rate * 60)
+                    
+                    # If window is between 1-120 minutes, likely from windowed preprocessing
+                    if 1 <= window_duration_minutes <= 120:
+                        logger.debug(f"Detected windowed format from window duration: {window_duration_minutes:.1f} minutes")
+                        return True
+            
+            logger.debug(f"File structure does not match windowed format: {len(channel['windows'])} windows, preprocessing_params={preprocessing_params}")
+        else:
+            logger.debug("No 'windows' key found in channel or windows is not a list")
         
         return False
+    
+    def analyze_file_format(self, data: Dict, file_path: str) -> str:
+        """Analyze file format and provide detailed error information"""
+        try:
+            analysis = []
+            
+            # Check top-level structure
+            if 'channels' not in data:
+                analysis.append("Missing 'channels' key")
+            elif len(data['channels']) == 0:
+                analysis.append("Empty channels list")
+            else:
+                channel = data['channels'][0]
+                
+                if 'windows' not in channel:
+                    analysis.append("Missing 'windows' key in channel")
+                elif not isinstance(channel['windows'], list):
+                    analysis.append(f"'windows' is not a list, type: {type(channel['windows'])}")
+                else:
+                    num_windows = len(channel['windows'])
+                    analysis.append(f"Found {num_windows} windows")
+                    
+                    # Check preprocessing parameters
+                    preprocessing_params = data.get('preprocessing_params', {})
+                    if not preprocessing_params:
+                        analysis.append("Missing preprocessing_params")
+                    else:
+                        window_size = preprocessing_params.get('window_size', 'Not specified')
+                        stride = preprocessing_params.get('stride', 'Not specified')
+                        analysis.append(f"Window size: {window_size}, Stride: {stride}")
+                    
+                    # Check metadata
+                    if 'metadata' in channel:
+                        if isinstance(channel['metadata'], list):
+                            analysis.append(f"Found {len(channel['metadata'])} metadata entries")
+                        else:
+                            analysis.append(f"Metadata is not a list, type: {type(channel['metadata'])}")
+                    else:
+                        analysis.append("Missing metadata")
+            
+            return "; ".join(analysis)
+            
+        except Exception as e:
+            return f"Error analyzing file format: {str(e)}"
     
     def process_windowed_data(self, data: Dict, file_path: str) -> Optional[Dict[str, Any]]:
         """Process windowed data format"""
