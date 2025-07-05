@@ -1,0 +1,854 @@
+#!/usr/bin/env python3
+"""
+Parallelized Madrid Windowed Batch Processor with JSON Output
+
+Processes windowed preprocessed ECG files (e.g., from preprocess_all_data_32hz_120sec.py)
+with Madrid algorithm in parallel. Supports various window configurations like:
+- 120sec windows with 60sec stride
+- 3600sec windows with 1800sec stride
+- Any custom window/stride configuration
+
+Usage:
+    python madrid_windowed_batch_processor_parallel.py --data-dir /path/to/windowed/data --output-dir results --n-workers 4
+    python madrid_windowed_batch_processor_parallel.py --data-dir /path/to/windowed/data --window-strategy reconstruct --train-minutes 10
+
+Key Features:
+    - Handles windowed preprocessed data with overlaps
+    - Multiple window processing strategies (individual, reconstruct, hybrid)
+    - Parallel processing with multiprocessing
+    - GPU support for Madrid algorithm
+    - Comprehensive JSON output with window-level results
+    - Configurable training time in minutes
+"""
+
+import os
+import sys
+import json
+import pickle
+import argparse
+import logging
+import time
+from datetime import datetime
+from pathlib import Path
+from typing import Dict, List, Any, Optional, Tuple
+import numpy as np
+import warnings
+from multiprocessing import Pool, Manager, cpu_count
+from functools import partial
+import queue
+import threading
+
+warnings.filterwarnings('ignore')
+
+# Add models directory to path
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+
+try:
+    from models.madrid_v2 import MADRID_V2
+    MADRID_AVAILABLE = True
+    print("✓ MADRID_V2 successfully imported")
+except ImportError as e:
+    print(f"❌ MADRID_V2 import failed: {e}")
+    MADRID_AVAILABLE = False
+    sys.exit(1)
+
+# Setup logging with thread-safe configuration
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(processName)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler('madrid_windowed_batch_processor_parallel.log'),
+        logging.StreamHandler()
+    ]
+)
+logger = logging.getLogger(__name__)
+
+def process_single_windowed_file(file_path: str, config: Dict[str, Any], output_dir: str) -> Tuple[bool, str, Dict]:
+    """
+    Process a single windowed file with Madrid analysis
+    
+    Args:
+        file_path: Path to preprocessed windowed file
+        config: Configuration dictionary
+        output_dir: Output directory for results
+        
+    Returns:
+        Tuple of (success, file_path, result_info)
+    """
+    try:
+        # Create Madrid processor for this worker
+        processor = MadridWindowedBatchProcessorCore(config)
+        
+        # Load windowed file
+        file_data = processor.load_windowed_file(file_path)
+        if file_data is None:
+            return False, file_path, {"error": "Failed to load windowed file"}
+        
+        # Run Madrid analysis on windows
+        analysis_results, performance_info = processor.analyze_windowed_data_with_madrid(
+            file_data['windows'],
+            file_data['metadata']['signal_metadata']
+        )
+        
+        # Create JSON output
+        json_output = processor.create_windowed_json_output(file_data, analysis_results, performance_info)
+        
+        # Save JSON file
+        output_filename = f"madrid_windowed_results_{file_data['metadata']['subject_id']}_{file_data['metadata']['run_id']}"
+        if file_data['metadata']['seizure_id']:
+            output_filename += f"_{file_data['metadata']['seizure_id']}"
+        output_filename += f"_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+        
+        output_path = Path(output_dir) / output_filename
+        
+        with open(output_path, 'w', encoding='utf-8') as f:
+            json.dump(json_output, f, indent=2, ensure_ascii=False)
+        
+        # Return success info
+        result_info = {
+            "output_file": str(output_path),
+            "num_windows_processed": len(file_data['windows']),
+            "total_anomalies": sum(len(result['anomalies']) for result in analysis_results['window_results']),
+            "execution_time": performance_info['total_execution_time_seconds'],
+            "window_strategy": config.get('window_strategy', 'individual')
+        }
+        
+        return True, file_path, result_info
+        
+    except Exception as e:
+        logger.error(f"Error processing windowed file {file_path}: {e}")
+        return False, file_path, {"error": str(e)}
+
+class ProgressTracker:
+    """Thread-safe progress tracker for parallel processing"""
+    
+    def __init__(self, total_files: int):
+        self.total_files = total_files
+        self.completed = 0
+        self.failed = 0
+        self.lock = threading.Lock()
+        self.start_time = time.time()
+    
+    def update(self, success: bool):
+        with self.lock:
+            if success:
+                self.completed += 1
+            else:
+                self.failed += 1
+            
+            processed = self.completed + self.failed
+            elapsed = time.time() - self.start_time
+            
+            if processed > 0:
+                avg_time = elapsed / processed
+                eta = avg_time * (self.total_files - processed)
+                
+                logger.info(f"Progress: {processed}/{self.total_files} "
+                           f"({processed/self.total_files*100:.1f}%) - "
+                           f"Success: {self.completed}, Failed: {self.failed} - "
+                           f"ETA: {eta/60:.1f}min")
+
+class MadridWindowedBatchProcessorCore:
+    """
+    Core Madrid processing functionality for windowed data
+    This handles various windowing strategies and configurations
+    """
+    
+    def __init__(self, config: Dict[str, Any]):
+        self.config = config
+        self.madrid_detector = MADRID_V2(
+            use_gpu=config.get('use_gpu', True),
+            enable_output=False  # Disable output in workers to avoid conflicts
+        )
+        
+        self.madrid_params = config.get('madrid_parameters', {
+            'm_range': {
+                'min_length': 80,
+                'max_length': 800,
+                'step_size': 80
+            },
+            'analysis_config': {
+                'top_k': 3,
+                'train_test_split_ratio': 0.5,
+                'train_minutes': 30,
+                'threshold_percentile': 95
+            },
+            'algorithm_settings': {
+                'use_gpu': True,
+                'downsampling_factor': 1
+            }
+        })
+        
+        # Window processing strategy
+        self.window_strategy = config.get('window_strategy', 'individual')  # individual, reconstruct, hybrid
+        
+    def load_windowed_file(self, file_path: str) -> Optional[Dict[str, Any]]:
+        """Load windowed preprocessed ECG file"""
+        try:
+            with open(file_path, 'rb') as f:
+                data = pickle.load(f)
+            
+            if not self.is_windowed_format(data):
+                logger.error(f"File {file_path} is not in windowed format")
+                return None
+            
+            return self.process_windowed_data(data, file_path)
+            
+        except Exception as e:
+            logger.error(f"Error loading windowed file {file_path}: {e}")
+            return None
+    
+    def is_windowed_format(self, data: Dict) -> bool:
+        """Check if data is in windowed preprocessed format"""
+        if 'channels' not in data or len(data['channels']) == 0:
+            return False
+        
+        channel = data['channels'][0]
+        
+        # Check for windowed structure
+        if 'windows' in channel and isinstance(channel['windows'], list):
+            if len(channel['windows']) > 1:  # Multiple windows indicate windowed format
+                return True
+        
+        return False
+    
+    def process_windowed_data(self, data: Dict, file_path: str) -> Optional[Dict[str, Any]]:
+        """Process windowed data format"""
+        try:
+            # Extract metadata from filename
+            filename = Path(file_path).stem
+            parts = filename.replace('_preprocessed', '').split('_')
+            
+            subject_id = parts[0] if len(parts) > 0 else "unknown"
+            run_id = parts[1] if len(parts) > 1 else "unknown"
+            seizure_id = parts[2] if len(parts) > 2 else None
+            
+            # Get first channel
+            channel_data = data["channels"][0]
+            windows = channel_data.get('windows', [])
+            labels = channel_data.get('labels', [])
+            metadata = channel_data.get('metadata', [])
+            
+            if len(windows) == 0:
+                return None
+            
+            # Extract signal metadata
+            signal_metadata = {
+                'sampling_rate': channel_data.get('processed_fs', 32),
+                'original_sampling_rate': channel_data.get('original_fs', 250),
+                'num_windows': len(windows),
+                'window_length_samples': len(windows[0]) if windows else 0,
+                'window_duration_seconds': len(windows[0]) / channel_data.get('processed_fs', 32) if windows else 0,
+                'total_duration_seconds': data.get('recording_duration', 0),
+                'preprocessing_info': data.get('preprocessing_params', {}),
+                'windowing_info': {
+                    'window_size': data.get('preprocessing_params', {}).get('window_size', 120),
+                    'stride': data.get('preprocessing_params', {}).get('stride', 60),
+                    'overlap_ratio': self.calculate_overlap_ratio(data.get('preprocessing_params', {}))
+                }
+            }
+            
+            # Extract ground truth for windowed data
+            ground_truth = self.extract_windowed_ground_truth(data, labels, signal_metadata)
+            
+            return {
+                'windows': windows,
+                'labels': labels,
+                'metadata': {
+                    'subject_id': subject_id,
+                    'run_id': run_id,
+                    'seizure_id': seizure_id,
+                    'source_file': file_path,
+                    'signal_metadata': signal_metadata
+                },
+                'ground_truth': ground_truth
+            }
+            
+        except Exception as e:
+            logger.error(f"Error processing windowed data {file_path}: {e}")
+            return None
+    
+    def calculate_overlap_ratio(self, preprocessing_params: Dict) -> float:
+        """Calculate overlap ratio from preprocessing parameters"""
+        window_size = preprocessing_params.get('window_size', 120)
+        stride = preprocessing_params.get('stride', 60)
+        
+        if window_size <= stride:
+            return 0.0
+        
+        overlap = window_size - stride
+        return overlap / window_size
+    
+    def extract_windowed_ground_truth(self, data: Dict, labels: List, signal_metadata: Dict) -> Dict:
+        """Extract ground truth for windowed data"""
+        ground_truth = {
+            'seizure_present': False,
+            'seizure_windows': [],
+            'total_windows': signal_metadata['num_windows'],
+            'annotation_source': 'windowed_preprocessing',
+            'annotator_id': 'automated'
+        }
+        
+        # Check for seizures in windows
+        seizure_windows = []
+        for i, window_labels in enumerate(labels):
+            if isinstance(window_labels, (list, np.ndarray)):
+                # Check if window contains seizure
+                if 'ictal' in window_labels or (isinstance(window_labels, np.ndarray) and np.any(window_labels == 'ictal')):
+                    seizure_windows.append({
+                        'window_index': i,
+                        'seizure_ratio': np.mean(np.array(window_labels) == 'ictal') if isinstance(window_labels, np.ndarray) else 1.0,
+                        'window_start_time': i * signal_metadata['windowing_info']['stride'],
+                        'window_duration': signal_metadata['window_duration_seconds']
+                    })
+        
+        if seizure_windows:
+            ground_truth['seizure_present'] = True
+            ground_truth['seizure_windows'] = seizure_windows
+        
+        return ground_truth
+    
+    def analyze_windowed_data_with_madrid(self, windows: List[np.ndarray], signal_metadata: Dict) -> Tuple[Dict, Dict]:
+        """Perform Madrid analysis on windowed data using specified strategy"""
+        start_time = time.time()
+        
+        try:
+            if self.window_strategy == 'individual':
+                return self.analyze_windows_individually(windows, signal_metadata, start_time)
+            elif self.window_strategy == 'reconstruct':
+                return self.analyze_reconstructed_signal(windows, signal_metadata, start_time)
+            elif self.window_strategy == 'hybrid':
+                return self.analyze_windows_hybrid(windows, signal_metadata, start_time)
+            else:
+                raise ValueError(f"Unknown window strategy: {self.window_strategy}")
+                
+        except Exception as e:
+            logger.error(f"Madrid windowed analysis failed: {e}")
+            
+            # Return error results
+            analysis_results = {
+                'window_results': [],
+                'strategy': self.window_strategy,
+                'analysis_successful': False,
+                'error_message': str(e)
+            }
+            
+            performance_info = {
+                'total_execution_time_seconds': time.time() - start_time,
+                'analysis_successful': False,
+                'error_message': str(e)
+            }
+            
+            return analysis_results, performance_info
+    
+    def analyze_windows_individually(self, windows: List[np.ndarray], signal_metadata: Dict, start_time: float) -> Tuple[Dict, Dict]:
+        """Analyze each window individually with Madrid"""
+        sampling_rate = signal_metadata['sampling_rate']
+        madrid_params = self.adapt_madrid_params_for_sampling_rate(sampling_rate)
+        
+        window_results = []
+        total_anomalies = 0
+        
+        for i, window in enumerate(windows):
+            window_start_time = time.time()
+            
+            try:
+                # Skip windows that are too short
+                if len(window) < madrid_params['max_length']:
+                    logger.warning(f"Window {i} too short ({len(window)} samples), skipping")
+                    continue
+                
+                # Remove constant regions from window
+                cleaned_window, removal_info = self.remove_constant_regions(window, madrid_params['min_length'])
+                
+                if len(cleaned_window) < madrid_params['max_length']:
+                    logger.warning(f"Window {i} too short after cleaning ({len(cleaned_window)} samples), skipping")
+                    continue
+                
+                # Calculate train_test_split for this window
+                train_test_split = self.calculate_train_test_split_for_window(cleaned_window, signal_metadata)
+                
+                # Run Madrid on window
+                multi_length_table, bsf, bsf_loc = self.madrid_detector.fit(
+                    T=cleaned_window,
+                    min_length=madrid_params['min_length'],
+                    max_length=madrid_params['max_length'],
+                    step_size=madrid_params['step_size'],
+                    train_test_split=train_test_split,
+                    factor=1
+                )
+                
+                # Get anomalies
+                anomaly_info = self.madrid_detector.get_anomaly_scores(
+                    threshold_percentile=self.madrid_params['analysis_config']['threshold_percentile']
+                )
+                anomalies = anomaly_info['anomalies']
+                
+                # Format window results
+                window_result = {
+                    'window_index': i,
+                    'window_start_time': i * signal_metadata['windowing_info']['stride'],
+                    'window_duration': signal_metadata['window_duration_seconds'],
+                    'original_length': len(window),
+                    'cleaned_length': len(cleaned_window),
+                    'constant_regions_removed': removal_info['regions_removed'],
+                    'anomalies': self.format_window_anomalies(anomalies, i, sampling_rate),
+                    'execution_time': time.time() - window_start_time,
+                    'analysis_successful': True
+                }
+                
+                window_results.append(window_result)
+                total_anomalies += len(anomalies)
+                
+            except Exception as e:
+                logger.error(f"Error analyzing window {i}: {e}")
+                window_result = {
+                    'window_index': i,
+                    'window_start_time': i * signal_metadata['windowing_info']['stride'],
+                    'analysis_successful': False,
+                    'error_message': str(e)
+                }
+                window_results.append(window_result)
+        
+        analysis_results = {
+            'window_results': window_results,
+            'strategy': 'individual',
+            'total_windows_processed': len(window_results),
+            'total_anomalies_found': total_anomalies,
+            'analysis_successful': True
+        }
+        
+        performance_info = {
+            'total_execution_time_seconds': time.time() - start_time,
+            'average_time_per_window': (time.time() - start_time) / len(windows) if windows else 0,
+            'windows_processed': len(window_results),
+            'analysis_successful': True
+        }
+        
+        return analysis_results, performance_info
+    
+    def analyze_reconstructed_signal(self, windows: List[np.ndarray], signal_metadata: Dict, start_time: float) -> Tuple[Dict, Dict]:
+        """Reconstruct signal from overlapping windows and analyze as one continuous signal"""
+        try:
+            # Reconstruct continuous signal from overlapping windows
+            reconstructed_signal = self.reconstruct_signal_from_windows(windows, signal_metadata)
+            
+            sampling_rate = signal_metadata['sampling_rate']
+            madrid_params = self.adapt_madrid_params_for_sampling_rate(sampling_rate)
+            
+            # Remove constant regions
+            cleaned_signal, removal_info = self.remove_constant_regions(reconstructed_signal, madrid_params['min_length'])
+            
+            # Calculate train_test_split
+            train_test_split = self.calculate_train_test_split_for_signal(cleaned_signal, signal_metadata)
+            
+            # Run Madrid on reconstructed signal
+            multi_length_table, bsf, bsf_loc = self.madrid_detector.fit(
+                T=cleaned_signal,
+                min_length=madrid_params['min_length'],
+                max_length=madrid_params['max_length'],
+                step_size=madrid_params['step_size'],
+                train_test_split=train_test_split,
+                factor=1
+            )
+            
+            # Get anomalies
+            anomaly_info = self.madrid_detector.get_anomaly_scores(
+                threshold_percentile=self.madrid_params['analysis_config']['threshold_percentile']
+            )
+            anomalies = anomaly_info['anomalies']
+            
+            # Map anomalies back to windows
+            window_mapped_anomalies = self.map_anomalies_to_windows(anomalies, signal_metadata, sampling_rate)
+            
+            analysis_results = {
+                'window_results': [],  # No individual window results in reconstruct mode
+                'reconstructed_signal_results': {
+                    'total_anomalies': len(anomalies),
+                    'anomalies': self.format_reconstructed_anomalies(anomalies, sampling_rate),
+                    'window_mapped_anomalies': window_mapped_anomalies,
+                    'original_length': len(reconstructed_signal),
+                    'cleaned_length': len(cleaned_signal),
+                    'constant_regions_removed': removal_info['regions_removed']
+                },
+                'strategy': 'reconstruct',
+                'total_anomalies_found': len(anomalies),
+                'analysis_successful': True
+            }
+            
+            performance_info = {
+                'total_execution_time_seconds': time.time() - start_time,
+                'reconstruction_successful': True,
+                'analysis_successful': True
+            }
+            
+            return analysis_results, performance_info
+            
+        except Exception as e:
+            logger.error(f"Error in reconstructed signal analysis: {e}")
+            raise
+    
+    def analyze_windows_hybrid(self, windows: List[np.ndarray], signal_metadata: Dict, start_time: float) -> Tuple[Dict, Dict]:
+        """Hybrid approach: analyze both individually and reconstructed"""
+        try:
+            # Run individual analysis
+            individual_results, individual_perf = self.analyze_windows_individually(windows, signal_metadata, time.time())
+            
+            # Run reconstructed analysis
+            reconstructed_results, reconstructed_perf = self.analyze_reconstructed_signal(windows, signal_metadata, time.time())
+            
+            # Combine results
+            analysis_results = {
+                'individual_results': individual_results,
+                'reconstructed_results': reconstructed_results,
+                'strategy': 'hybrid',
+                'total_anomalies_individual': individual_results['total_anomalies_found'],
+                'total_anomalies_reconstructed': reconstructed_results['total_anomalies_found'],
+                'analysis_successful': True
+            }
+            
+            performance_info = {
+                'total_execution_time_seconds': time.time() - start_time,
+                'individual_time': individual_perf['total_execution_time_seconds'],
+                'reconstructed_time': reconstructed_perf['total_execution_time_seconds'],
+                'analysis_successful': True
+            }
+            
+            return analysis_results, performance_info
+            
+        except Exception as e:
+            logger.error(f"Error in hybrid analysis: {e}")
+            raise
+    
+    def reconstruct_signal_from_windows(self, windows: List[np.ndarray], signal_metadata: Dict) -> np.ndarray:
+        """Reconstruct continuous signal from overlapping windows"""
+        if len(windows) == 0:
+            return np.array([])
+        
+        if len(windows) == 1:
+            return windows[0]
+        
+        # Get window parameters
+        window_size_samples = len(windows[0])
+        stride_seconds = signal_metadata['windowing_info']['stride']
+        sampling_rate = signal_metadata['sampling_rate']
+        stride_samples = int(stride_seconds * sampling_rate)
+        
+        # Calculate total reconstructed signal length
+        total_length = (len(windows) - 1) * stride_samples + window_size_samples
+        reconstructed_signal = np.zeros(total_length)
+        weight_matrix = np.zeros(total_length)
+        
+        # Add each window with weights
+        for i, window in enumerate(windows):
+            start_idx = i * stride_samples
+            end_idx = start_idx + len(window)
+            
+            if end_idx <= total_length:
+                reconstructed_signal[start_idx:end_idx] += window
+                weight_matrix[start_idx:end_idx] += 1
+        
+        # Normalize by weights (handle overlaps)
+        non_zero_weights = weight_matrix > 0
+        reconstructed_signal[non_zero_weights] /= weight_matrix[non_zero_weights]
+        
+        return reconstructed_signal
+    
+    def calculate_train_test_split_for_window(self, window: np.ndarray, signal_metadata: Dict) -> int:
+        """Calculate train_test_split for individual window"""
+        sampling_rate = signal_metadata['sampling_rate']
+        window_length = len(window)
+        
+        # Check if train_minutes is specified
+        if 'train_minutes' in self.madrid_params['analysis_config']:
+            train_minutes = self.madrid_params['analysis_config']['train_minutes']
+            train_samples = int(train_minutes * 60 * sampling_rate)
+            # For windows, use ratio of train time to window duration
+            window_duration_seconds = window_length / sampling_rate
+            if train_minutes * 60 >= window_duration_seconds:
+                # If train time >= window duration, use ratio approach
+                train_test_split = int(window_length * self.madrid_params['analysis_config']['train_test_split_ratio'])
+            else:
+                train_test_split = min(train_samples, window_length - 1)
+        else:
+            # Fallback to ratio-based approach
+            train_test_split = int(window_length * self.madrid_params['analysis_config']['train_test_split_ratio'])
+        
+        return max(1, min(train_test_split, window_length - 1))
+    
+    def calculate_train_test_split_for_signal(self, signal: np.ndarray, signal_metadata: Dict) -> int:
+        """Calculate train_test_split for reconstructed signal"""
+        sampling_rate = signal_metadata['sampling_rate']
+        signal_length = len(signal)
+        
+        # Check if train_minutes is specified
+        if 'train_minutes' in self.madrid_params['analysis_config']:
+            train_minutes = self.madrid_params['analysis_config']['train_minutes']
+            train_samples = int(train_minutes * 60 * sampling_rate)
+            train_test_split = min(train_samples, signal_length - 1)
+        else:
+            # Fallback to ratio-based approach
+            train_test_split = int(signal_length * self.madrid_params['analysis_config']['train_test_split_ratio'])
+        
+        return max(1, min(train_test_split, signal_length - 1))
+    
+    def format_window_anomalies(self, anomalies: List[Dict], window_index: int, sampling_rate: int) -> List[Dict]:
+        """Format anomalies for individual window"""
+        formatted_anomalies = []
+        for i, anomaly in enumerate(anomalies):
+            formatted_anomaly = {
+                'rank': i + 1,
+                'window_index': window_index,
+                'm_value': anomaly['length'],
+                'anomaly_score': float(anomaly['score']),
+                'location_sample_in_window': int(anomaly['location']) if anomaly['location'] is not None else None,
+                'location_time_in_window': float(anomaly['location'] / sampling_rate) if anomaly['location'] is not None else None,
+                'normalized_score': float(anomaly['score']),
+                'confidence': min(float(anomaly['score']), 1.0),
+                'anomaly_id': f"w{window_index}_m{anomaly['length']}_rank{i+1}_loc{anomaly['location'] if anomaly['location'] is not None else 'unknown'}"
+            }
+            formatted_anomalies.append(formatted_anomaly)
+        
+        return formatted_anomalies
+    
+    def format_reconstructed_anomalies(self, anomalies: List[Dict], sampling_rate: int) -> List[Dict]:
+        """Format anomalies for reconstructed signal"""
+        formatted_anomalies = []
+        for i, anomaly in enumerate(anomalies):
+            formatted_anomaly = {
+                'rank': i + 1,
+                'm_value': anomaly['length'],
+                'anomaly_score': float(anomaly['score']),
+                'location_sample': int(anomaly['location']) if anomaly['location'] is not None else None,
+                'location_time_seconds': float(anomaly['location'] / sampling_rate) if anomaly['location'] is not None else None,
+                'normalized_score': float(anomaly['score']),
+                'confidence': min(float(anomaly['score']), 1.0),
+                'anomaly_id': f"reconstructed_m{anomaly['length']}_rank{i+1}_loc{anomaly['location'] if anomaly['location'] is not None else 'unknown'}"
+            }
+            formatted_anomalies.append(formatted_anomaly)
+        
+        return formatted_anomalies
+    
+    def map_anomalies_to_windows(self, anomalies: List[Dict], signal_metadata: Dict, sampling_rate: int) -> List[Dict]:
+        """Map anomalies from reconstructed signal back to source windows"""
+        stride_samples = int(signal_metadata['windowing_info']['stride'] * sampling_rate)
+        window_size_samples = signal_metadata['window_length_samples']
+        
+        mapped_anomalies = []
+        for anomaly in anomalies:
+            if anomaly['location'] is not None:
+                location = anomaly['location']
+                
+                # Find which windows this anomaly could belong to
+                possible_windows = []
+                for window_idx in range(signal_metadata['num_windows']):
+                    window_start = window_idx * stride_samples
+                    window_end = window_start + window_size_samples
+                    
+                    if window_start <= location < window_end:
+                        location_in_window = location - window_start
+                        possible_windows.append({
+                            'window_index': window_idx,
+                            'location_in_window': location_in_window,
+                            'location_time_in_window': location_in_window / sampling_rate
+                        })
+                
+                mapped_anomaly = {
+                    'original_anomaly': anomaly,
+                    'possible_windows': possible_windows,
+                    'most_likely_window': possible_windows[0] if possible_windows else None
+                }
+                mapped_anomalies.append(mapped_anomaly)
+        
+        return mapped_anomalies
+    
+    def remove_constant_regions(self, signal: np.ndarray, min_length: int) -> Tuple[np.ndarray, Dict]:
+        """Remove constant regions from signal (same as in main processor)"""
+        # Simplified version - implement full logic if needed
+        return signal, {
+            'regions_removed': 0,
+            'total_samples_removed': 0,
+            'original_length': len(signal),
+            'cleaned_length': len(signal),
+            'constant_regions': []
+        }
+    
+    def adapt_madrid_params_for_sampling_rate(self, sampling_rate: int) -> Dict:
+        """Adapt Madrid parameters for sampling rate"""
+        if sampling_rate > 0: 
+            return {
+                'min_length': sampling_rate * 10,
+                'max_length': sampling_rate * 100,
+                'step_size': sampling_rate * 10
+            }
+        return {
+            'min_length': 80,
+            'max_length': 800,
+            'step_size': 80
+        }
+    
+    def create_windowed_json_output(self, file_data: Dict, analysis_results: Dict, performance_info: Dict) -> Dict:
+        """Create JSON output for windowed analysis"""
+        timestamp = datetime.now().isoformat() + 'Z'
+        metadata = file_data['metadata']
+        
+        analysis_id = f"madrid_windowed_{metadata['subject_id']}_{metadata['run_id']}"
+        if metadata['seizure_id']:
+            analysis_id += f"_{metadata['seizure_id']}"
+        analysis_id += f"_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+        
+        return {
+            'analysis_metadata': {
+                'analysis_id': analysis_id,
+                'timestamp': timestamp,
+                'madrid_version': '2.0.0',
+                'analysis_type': 'windowed_batch',
+                'window_strategy': analysis_results.get('strategy', 'unknown'),
+                'computation_info': performance_info
+            },
+            'input_data': {
+                'source_file': metadata['source_file'],
+                'subject_id': metadata['subject_id'],
+                'run_id': metadata['run_id'],
+                'seizure_id': metadata['seizure_id'],
+                'signal_metadata': metadata['signal_metadata']
+            },
+            'madrid_parameters': self.madrid_params,
+            'windowing_info': metadata['signal_metadata']['windowing_info'],
+            'analysis_results': analysis_results,
+            'validation_data': {
+                'ground_truth': file_data['ground_truth']
+            }
+        }
+
+class ParallelMadridWindowedBatchProcessor:
+    """
+    Parallel Madrid Windowed Batch Processor
+    """
+    
+    def __init__(self, config: Dict[str, Any], n_workers: int = None):
+        self.config = config
+        self.n_workers = n_workers or max(1, cpu_count() - 1)
+        
+        logger.info(f"Parallel Madrid Windowed Processor initialized with {self.n_workers} workers")
+        logger.info(f"Window strategy: {config.get('window_strategy', 'individual')}")
+    
+    def process_files(self, data_dir: str, output_dir: str, max_files: int = None) -> List[str]:
+        """Process windowed files in parallel"""
+        # Create output directory
+        Path(output_dir).mkdir(parents=True, exist_ok=True)
+        
+        # Find windowed files
+        pkl_files = list(Path(data_dir).glob("*_preprocessed.pkl"))
+        
+        if max_files:
+            pkl_files = pkl_files[:max_files]
+        
+        logger.info(f"Found {len(pkl_files)} windowed files to process with {self.n_workers} workers")
+        
+        if len(pkl_files) == 0:
+            logger.warning("No windowed files found to process")
+            return []
+        
+        # Setup progress tracking
+        progress_tracker = ProgressTracker(len(pkl_files))
+        
+        # Create partial function with fixed arguments
+        process_func = partial(process_single_windowed_file, config=self.config, output_dir=output_dir)
+        
+        processed_files = []
+        failed_files = []
+        
+        # Process files in parallel
+        start_time = time.time()
+        
+        with Pool(processes=self.n_workers) as pool:
+            # Submit all jobs
+            file_paths = [str(f) for f in pkl_files]
+            results = pool.map(process_func, file_paths)
+            
+            # Process results
+            for success, file_path, result_info in results:
+                progress_tracker.update(success)
+                
+                if success:
+                    processed_files.append(file_path)
+                    logger.info(f"✓ {Path(file_path).name}: "
+                              f"{result_info['num_windows_processed']} windows, "
+                              f"{result_info['total_anomalies']} anomalies, "
+                              f"{result_info['execution_time']:.1f}s")
+                else:
+                    failed_files.append(file_path)
+                    logger.error(f"❌ {Path(file_path).name}: {result_info.get('error', 'Unknown error')}")
+        
+        total_time = time.time() - start_time
+        
+        # Summary
+        logger.info(f"\n📊 WINDOWED PARALLEL PROCESSING SUMMARY")
+        logger.info(f"Total processing time: {total_time/60:.1f} minutes")
+        logger.info(f"Average time per file: {total_time/len(pkl_files):.1f} seconds")
+        logger.info(f"Successfully processed: {len(processed_files)}/{len(pkl_files)}")
+        logger.info(f"Failed files: {len(failed_files)}")
+        logger.info(f"Window strategy used: {self.config.get('window_strategy', 'individual')}")
+        
+        return processed_files
+
+def main():
+    """Main function for windowed parallel processing"""
+    parser = argparse.ArgumentParser(description='Parallel Madrid Windowed Batch Processor')
+    parser.add_argument('--data-dir', required=True, help='Directory containing windowed preprocessed .pkl files')
+    parser.add_argument('--output-dir', required=True, help='Directory to save JSON results')
+    parser.add_argument('--max-files', type=int, help='Maximum number of files to process')
+    parser.add_argument('--config-file', help='JSON configuration file')
+    parser.add_argument('--n-workers', type=int, help=f'Number of worker processes (default: {cpu_count()-1})')
+    parser.add_argument('--use-gpu', action='store_true', default=True, help='Use GPU acceleration')
+    parser.add_argument('--threshold-percentile', type=float, default=90, help='Anomaly threshold percentile')
+    parser.add_argument('--train-minutes', type=float, default=30, help='Minutes of data to use for training')
+    parser.add_argument('--window-strategy', choices=['individual', 'reconstruct', 'hybrid'], 
+                       default='individual', help='Window processing strategy')
+    
+    args = parser.parse_args()
+    
+    # Load configuration
+    if args.config_file and os.path.exists(args.config_file):
+        with open(args.config_file, 'r') as f:
+            config = json.load(f)
+    else:
+        # Default configuration
+        config = {
+            'use_gpu': args.use_gpu,
+            'enable_output': False,
+            'window_strategy': args.window_strategy,
+            'madrid_parameters': {
+                'm_range': {
+                    'min_length': 80,
+                    'max_length': 800,
+                    'step_size': 80
+                },
+                'analysis_config': {
+                    'top_k': 5,
+                    'train_test_split_ratio': 0.3,
+                    'train_minutes': args.train_minutes,
+                    'threshold_percentile': args.threshold_percentile
+                },
+                'algorithm_settings': {
+                    'use_gpu': args.use_gpu,
+                    'downsampling_factor': 1
+                }
+            }
+        }
+    
+    # Initialize parallel processor
+    processor = ParallelMadridWindowedBatchProcessor(config, n_workers=args.n_workers)
+    
+    # Process files
+    processed_files = processor.process_files(
+        data_dir=args.data_dir,
+        output_dir=args.output_dir,
+        max_files=args.max_files
+    )
+    
+    logger.info(f"Windowed parallel processing completed. Results saved to: {args.output_dir}")
+
+if __name__ == "__main__":
+    main()
