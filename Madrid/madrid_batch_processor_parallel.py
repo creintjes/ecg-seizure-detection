@@ -161,6 +161,7 @@ class MadridBatchProcessorCore:
             'analysis_config': {
                 'top_k': 3,
                 'train_test_split_ratio': 0.5,
+                'train_minutes': 30,
                 'threshold_percentile': 95
             },
             'algorithm_settings': {
@@ -421,6 +422,9 @@ class MadridBatchProcessorCore:
         sampling_rate = signal_metadata['sampling_rate']
         madrid_params = self.adapt_madrid_params_for_sampling_rate(sampling_rate)
         
+        # Calculate train_test_split from minutes or ratio
+        train_test_split = self.calculate_train_test_split(signal, signal_metadata)
+        
         try:
             # Run Madrid
             multi_length_table, bsf, bsf_loc = self.madrid_detector.fit(
@@ -428,7 +432,7 @@ class MadridBatchProcessorCore:
                 min_length=madrid_params['min_length'],
                 max_length=madrid_params['max_length'],
                 step_size=madrid_params['step_size'],
-                train_test_split=int(len(signal) * self.madrid_params['analysis_config']['train_test_split_ratio']),
+                train_test_split=train_test_split,
                 factor=1
             )
             
@@ -511,6 +515,23 @@ class MadridBatchProcessorCore:
             }
             
             return analysis_results, performance_info
+    
+    def calculate_train_test_split(self, signal: np.ndarray, signal_metadata: Dict) -> int:
+        """Calculate train_test_split from minutes or ratio"""
+        sampling_rate = signal_metadata['sampling_rate']
+        signal_length = len(signal)
+        
+        # Check if train_minutes is specified
+        if 'train_minutes' in self.madrid_params['analysis_config']:
+            train_minutes = self.madrid_params['analysis_config']['train_minutes']
+            train_samples = int(train_minutes * 60 * sampling_rate)
+            # Ensure we don't exceed signal length
+            train_test_split = min(train_samples, signal_length - 1)
+        else:
+            # Fallback to ratio-based approach
+            train_test_split = int(signal_length * self.madrid_params['analysis_config']['train_test_split_ratio'])
+        
+        return train_test_split
     
     def adapt_madrid_params_for_sampling_rate(self, sampling_rate: int) -> Dict:
         """Adapt Madrid parameters for sampling rate"""
@@ -692,6 +713,7 @@ def main():
     parser.add_argument('--n-workers', type=int, help=f'Number of worker processes (default: {cpu_count()-1})')
     parser.add_argument('--use-gpu', action='store_true', default=True, help='Use GPU acceleration')
     parser.add_argument('--threshold-percentile', type=float, default=90, help='Anomaly threshold percentile')
+    parser.add_argument('--train-minutes', type=float, default=30, help='Minutes of data to use for training')
     
     args = parser.parse_args()
     
@@ -713,6 +735,7 @@ def main():
                 'analysis_config': {
                     'top_k': 5,
                     'train_test_split_ratio': 0.3,
+                    'train_minutes': args.train_minutes,
                     'threshold_percentile': args.threshold_percentile
                 },
                 'algorithm_settings': {

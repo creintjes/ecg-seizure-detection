@@ -26,7 +26,7 @@ from pathlib import Path
 from multiprocessing import cpu_count
 from madrid_batch_processor_parallel import ParallelMadridBatchProcessor
 
-def create_seizure_only_config():
+def create_seizure_only_config(train_minutes=30):
     """Create optimized configuration for seizure-only data"""
     return {
         'use_gpu': True,
@@ -40,6 +40,7 @@ def create_seizure_only_config():
             'analysis_config': {
                 'top_k': 5,  # More anomalies for seizure analysis
                 'train_test_split_ratio': 0.3,  # Less training since seizure location known
+                'train_minutes': train_minutes,  # Minutes of data to use for training
                 'threshold_percentile': 50  # Higher sensitivity
             },
             'algorithm_settings': {
@@ -97,6 +98,7 @@ def main():
     parser.add_argument('--n-workers', type=int, help=f'Number of workers (default: {cpu_count()-1})')
     parser.add_argument('--config-file', help='Custom configuration file')
     parser.add_argument('--sampling-rate', type=int, choices=[8, 32, 125], help='Filter by sampling rate')
+    parser.add_argument('--train-minutes', type=float, default=30, help='Minutes of data to use for training')
     parser.add_argument('--dry-run', action='store_true', help='Show processing plan without execution')
     parser.add_argument('--verbose', action='store_true', help='Enable verbose logging')
     
@@ -162,8 +164,8 @@ def main():
             config = json.load(f)
         logger.info(f"Loaded config from {args.config_file}")
     else:
-        config = create_seizure_only_config()
-        logger.info("Using default seizure-only configuration")
+        config = create_seizure_only_config(train_minutes=args.train_minutes)
+        logger.info(f"Using default seizure-only configuration with {args.train_minutes} minutes training")
     
     # Create output directory
     output_dir = Path(args.output_dir)
