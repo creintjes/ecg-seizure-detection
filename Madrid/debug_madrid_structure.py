@@ -76,8 +76,8 @@ def main():
     """Test different possible paths."""
     possible_paths = [
         "Madrid/madrid_results/madrid_seizure_results_parallel_400/tolerance_adjusted",
-        "madrid_results copy/madrid_dir_400_examples",
-        "madrid_results copy/tolerance_adjusted_smart_clustered"
+        "Madrid/madrid_results/madrid_seizure_results_parallel_400/tolerance_adjusted_smart_clustered",
+        "madrid_results/tolerance_adjusted_smart_clustered"
     ]
     
     for path in possible_paths:

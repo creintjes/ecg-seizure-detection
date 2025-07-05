@@ -466,9 +466,9 @@ def create_default_config() -> Dict[str, Any]:
     """Create default configuration for the pipeline."""
     return {
         # Data paths
-        'cluster_results_dir': 'madrid_results copy/tolerance_adjusted_smart_clustered',
-        'madrid_results_dir': 'madrid_results copy/madrid_dir_400_examples_tolerance',
-        'raw_data_dir': None,  # Optional: path to raw ECG data
+        'cluster_results_dir': 'Madrid/madrid_results/madrid_seizure_results_parallel_400/tolerance_adjusted_smart_clustered',
+        'madrid_results_dir': 'Madrid/madrid_results/madrid_seizure_results_parallel_400/tolerance_adjusted',
+        'raw_data_dir': '/home/swolf/asim_shared/preprocessed_data/seizure_only/8hz_30min/downsample_8hz_context_30min',  # Optional: path to raw ECG data
         'output_dir': 'cluster_reduction/results',
         
         # Pipeline parameters
