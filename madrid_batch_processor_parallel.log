@@ -21,3 +21,7 @@
 2025-07-05 18:28:26,001 - ForkPoolWorker-1 - ERROR - Madrid analysis failed: Time series contains constant regions that would make anomaly detection trivial. Consider: 1) Increasing min_length, 2) Adding noise, 3) Adding linear trend, 4) Removing constant sections
 2025-07-05 18:39:41,730 - ForkPoolWorker-7 - ERROR - Madrid analysis failed: Time series contains constant regions that would make anomaly detection trivial. Consider: 1) Increasing min_length, 2) Adding noise, 3) Adding linear trend, 4) Removing constant sections
 2025-07-05 20:00:01,602 - ForkPoolWorker-7 - ERROR - Madrid analysis failed: Time series contains constant regions that would make anomaly detection trivial. Consider: 1) Increasing min_length, 2) Adding noise, 3) Adding linear trend, 4) Removing constant sections
+2025-07-05 21:35:42,990 - MainProcess - INFO - Parallel Madrid Processor initialized with 16 workers
+2025-07-05 21:35:43,032 - MainProcess - INFO - Found 2795 files to process with 16 workers
+2025-07-05 21:40:27,820 - MainProcess - INFO - Parallel Madrid Processor initialized with 16 workers
+2025-07-05 21:40:27,865 - MainProcess - INFO - Found 2795 files to process with 16 workers
