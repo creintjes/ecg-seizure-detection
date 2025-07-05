@@ -425,10 +425,24 @@ class MadridBatchProcessorCore:
         # Calculate train_test_split from minutes or ratio
         train_test_split = self.calculate_train_test_split(signal, signal_metadata)
         
+        # Remove constant regions before analysis
+        cleaned_signal, removal_info = self.remove_constant_regions(signal, madrid_params['min_length'])
+        
+        # Log constant region removal if any
+        if removal_info['regions_removed'] > 0:
+            logger.info(f"Removed {removal_info['regions_removed']} constant regions "
+                       f"({removal_info['total_samples_removed']} samples, "
+                       f"{removal_info['removal_percentage']:.1f}%)")
+            
+            # Recalculate train_test_split for cleaned signal
+            train_test_split = self.calculate_train_test_split_for_cleaned_signal(
+                cleaned_signal, signal_metadata, removal_info, train_test_split
+            )
+        
         try:
-            # Run Madrid
+            # Run Madrid on cleaned signal
             multi_length_table, bsf, bsf_loc = self.madrid_detector.fit(
-                T=signal,
+                T=cleaned_signal,
                 min_length=madrid_params['min_length'],
                 max_length=madrid_params['max_length'],
                 step_size=madrid_params['step_size'],
@@ -477,6 +491,13 @@ class MadridBatchProcessorCore:
                         'mean_score': float(np.mean(bsf[~np.isnan(bsf)])) if len(bsf[~np.isnan(bsf)]) > 0 else 0.0,
                         'std_score': float(np.std(bsf[~np.isnan(bsf)])) if len(bsf[~np.isnan(bsf)]) > 0 else 0.0
                     }
+                },
+                'signal_preprocessing': {
+                    'original_length': len(signal),
+                    'cleaned_length': len(cleaned_signal),
+                    'constant_regions_removed': removal_info['regions_removed'],
+                    'total_samples_removed': removal_info['total_samples_removed'],
+                    'removal_details': removal_info
                 }
             }
             
@@ -532,6 +553,164 @@ class MadridBatchProcessorCore:
             train_test_split = int(signal_length * self.madrid_params['analysis_config']['train_test_split_ratio'])
         
         return train_test_split
+    
+    def contains_constant_regions(self, T: np.ndarray, min_length: int) -> bool:
+        """
+        Check if time series contains constant regions that would make anomaly detection trivial
+        Based on madrid_v2.py logic
+        
+        Args:
+            T: Time series
+            min_length: Minimum subsequence length
+            
+        Returns:
+            True if constant regions exist
+        """
+        # Find consecutive identical values
+        diff_T = np.diff(T)
+        constant_starts = np.where(np.abs(diff_T) < 1e-10)[0]
+        
+        if len(constant_starts) == 0:
+            return False
+            
+        # Check for regions longer than min_length
+        consecutive_groups = np.split(constant_starts, 
+                                    np.where(np.diff(constant_starts) != 1)[0] + 1)
+        
+        max_constant_length = max(len(group) + 1 for group in consecutive_groups)
+        
+        # Also check overall variance
+        if np.var(T) < 0.2 or max_constant_length >= min_length:
+            return True
+            
+        return False
+    
+    def find_constant_regions(self, T: np.ndarray, min_length: int) -> List[Tuple[int, int]]:
+        """
+        Find all constant regions in the time series
+        
+        Args:
+            T: Time series
+            min_length: Minimum length for a region to be considered constant
+            
+        Returns:
+            List of (start_idx, end_idx) tuples for constant regions
+        """
+        # Find consecutive identical values
+        diff_T = np.diff(T)
+        constant_starts = np.where(np.abs(diff_T) < 1e-10)[0]
+        
+        if len(constant_starts) == 0:
+            return []
+        
+        # Group consecutive indices
+        consecutive_groups = np.split(constant_starts, 
+                                    np.where(np.diff(constant_starts) != 1)[0] + 1)
+        
+        constant_regions = []
+        for group in consecutive_groups:
+            if len(group) + 1 >= min_length:  # +1 because diff reduces length by 1
+                start_idx = group[0]
+                end_idx = group[-1] + 2  # +2 to include the last constant value
+                constant_regions.append((start_idx, min(end_idx, len(T))))
+        
+        return constant_regions
+    
+    def remove_constant_regions(self, signal: np.ndarray, min_length: int) -> Tuple[np.ndarray, Dict]:
+        """
+        Remove constant regions from signal instead of skipping the entire file
+        
+        Args:
+            signal: Input time series
+            min_length: Minimum length for Madrid analysis
+            
+        Returns:
+            Tuple of (cleaned_signal, removal_info)
+        """
+        # Check if signal has constant regions
+        if not self.contains_constant_regions(signal, min_length):
+            return signal, {
+                'regions_removed': 0,
+                'total_samples_removed': 0,
+                'original_length': len(signal),
+                'cleaned_length': len(signal),
+                'constant_regions': []
+            }
+        
+        # Find constant regions
+        constant_regions = self.find_constant_regions(signal, min_length)
+        
+        if not constant_regions:
+            return signal, {
+                'regions_removed': 0,
+                'total_samples_removed': 0,
+                'original_length': len(signal),
+                'cleaned_length': len(signal),
+                'constant_regions': []
+            }
+        
+        # Remove constant regions by creating segments
+        segments = []
+        last_end = 0
+        
+        for start, end in constant_regions:
+            # Add segment before constant region
+            if start > last_end:
+                segments.append(signal[last_end:start])
+            last_end = end
+        
+        # Add final segment after last constant region
+        if last_end < len(signal):
+            segments.append(signal[last_end:])
+        
+        # Concatenate segments
+        if segments:
+            cleaned_signal = np.concatenate(segments)
+        else:
+            # If entire signal is constant, create minimal signal with noise
+            cleaned_signal = np.random.randn(min_length * 2) * 0.01
+        
+        # Calculate removal statistics
+        total_samples_removed = sum(end - start for start, end in constant_regions)
+        
+        removal_info = {
+            'regions_removed': len(constant_regions),
+            'total_samples_removed': total_samples_removed,
+            'original_length': len(signal),
+            'cleaned_length': len(cleaned_signal),
+            'constant_regions': constant_regions,
+            'removal_percentage': (total_samples_removed / len(signal)) * 100
+        }
+        
+        return cleaned_signal, removal_info
+    
+    def calculate_train_test_split_for_cleaned_signal(self, cleaned_signal: np.ndarray, 
+                                                     signal_metadata: Dict, 
+                                                     removal_info: Dict, 
+                                                     original_train_test_split: int) -> int:
+        """
+        Recalculate train_test_split for cleaned signal, considering removed regions
+        
+        Args:
+            cleaned_signal: Signal after constant region removal
+            signal_metadata: Original signal metadata
+            removal_info: Information about removed regions
+            original_train_test_split: Original train/test split point
+            
+        Returns:
+            Adjusted train_test_split for cleaned signal
+        """
+        # Calculate proportion of original split point
+        original_length = removal_info['original_length']
+        split_ratio = original_train_test_split / original_length
+        
+        # Apply same ratio to cleaned signal
+        new_train_test_split = int(len(cleaned_signal) * split_ratio)
+        
+        # Ensure it's within bounds
+        new_train_test_split = max(1, min(new_train_test_split, len(cleaned_signal) - 1))
+        
+        return new_train_test_split
     
     def adapt_madrid_params_for_sampling_rate(self, sampling_rate: int) -> Dict:
         """Adapt Madrid parameters for sampling rate"""
