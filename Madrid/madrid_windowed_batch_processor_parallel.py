@@ -830,18 +830,78 @@ class ParallelMadridWindowedBatchProcessor:
         logger.info(f"Parallel Madrid Windowed Processor initialized with {self.n_workers} workers")
         logger.info(f"Window strategy: {config.get('window_strategy', 'individual')}")
     
+    def has_seizure_data(self, file_path: str) -> bool:
+        """Check if a pkl file contains seizure data"""
+        try:
+            with open(file_path, 'rb') as f:
+                data = pickle.load(f)
+            
+            # Check if any channel has seizure windows
+            if 'channels' in data and data['channels']:
+                for channel in data['channels']:
+                    # Check n_seizure_windows field
+                    if 'n_seizure_windows' in channel and channel['n_seizure_windows'] > 0:
+                        return True
+                    
+                    # Check labels for seizure activity (binary 0/1)
+                    if 'labels' in channel and channel['labels']:
+                        labels = channel['labels']
+                        if isinstance(labels, list):
+                            # Check if any label is 1 (seizure)
+                            if any(label == 1 or (isinstance(label, np.ndarray) and np.any(label == 1)) for label in labels):
+                                return True
+                        elif isinstance(labels, np.ndarray):
+                            if np.any(labels == 1):
+                                return True
+            
+            # Check total_seizures field
+            if 'total_seizures' in data and data['total_seizures'] > 0:
+                return True
+            
+            return False
+            
+        except Exception as e:
+            logger.warning(f"Error checking seizure data in {file_path}: {e}")
+            return False
+    
+    def prioritize_seizure_files(self, pkl_files: List[Path]) -> List[Path]:
+        """Sort files to prioritize those with seizure data"""
+        seizure_files = []
+        non_seizure_files = []
+        
+        logger.info("Analyzing files for seizure data...")
+        
+        for file_path in pkl_files:
+            if self.has_seizure_data(str(file_path)):
+                seizure_files.append(file_path)
+            else:
+                non_seizure_files.append(file_path)
+        
+        # Sort seizure files first, then non-seizure files
+        prioritized_files = seizure_files + non_seizure_files
+        
+        logger.info(f"File prioritization complete:")
+        logger.info(f"  • Seizure files: {len(seizure_files)}")
+        logger.info(f"  • Non-seizure files: {len(non_seizure_files)}")
+        logger.info(f"  • Total files: {len(prioritized_files)}")
+        
+        return prioritized_files
+    
     def process_files(self, data_dir: str, output_dir: str, max_files: int = None) -> List[str]:
-        """Process windowed files in parallel"""
+        """Process windowed files in parallel, prioritizing seizure files"""
         # Create output directory
         Path(output_dir).mkdir(parents=True, exist_ok=True)
         
         # Find windowed files
         pkl_files = list(Path(data_dir).glob("*_preprocessed.pkl"))
         
+        # Prioritize seizure files
+        pkl_files = self.prioritize_seizure_files(pkl_files)
+        
         if max_files:
             pkl_files = pkl_files[:max_files]
         
-        logger.info(f"Found {len(pkl_files)} windowed files to process with {self.n_workers} workers")
+        logger.info(f"Processing {len(pkl_files)} windowed files with {self.n_workers} workers")
         
         if len(pkl_files) == 0:
             logger.warning("No windowed files found to process")
