@@ -148,13 +148,66 @@ class MadridEventTypeAnalyzer:
         return 'Unclassified'
         
     def load_madrid_results(self) -> Dict[str, Any]:
-        """Load Madrid results from JSON files."""
+        """Load Madrid results - preferring clustered results if available."""
         results = {}
         
-        # Load individual seizure results
+        # First, try to load clustered results (best representatives)
+        clustered_results_file = self.madrid_results_dir / "clusters" / "best_representatives.json"
+        if clustered_results_file.exists():
+            print(f"Loading clustered results from: {clustered_results_file}")
+            try:
+                with open(clustered_results_file, 'r') as f:
+                    clustered_data = json.load(f)
+                    
+                # Process clustered representatives
+                if 'representatives' in clustered_data:
+                    representatives = clustered_data['representatives']
+                    
+                    # Group representatives by file_id to reconstruct per-file results
+                    file_groups = {}
+                    for rep in representatives:
+                        file_id = rep['file_id']
+                        if file_id not in file_groups:
+                            file_groups[file_id] = {
+                                'anomalies': [],
+                                'file_metadata': rep  # Use first rep for metadata
+                            }
+                        file_groups[file_id]['anomalies'].append(rep)
+                    
+                    # Convert back to expected format
+                    for file_id, group_data in file_groups.items():
+                        # Reconstruct the analysis_results structure
+                        analysis_results = {
+                            'ranked_anomalies': group_data['anomalies'],
+                            'anomalies': group_data['anomalies']  # Backup field name
+                        }
+                        
+                        # Create minimal result structure
+                        result_data = {
+                            'input_data': {
+                                'subject_id': file_id.split('_')[0],
+                                'run_id': file_id.split('_')[1], 
+                                'seizure_id': '_'.join(file_id.split('_')[2:]),
+                                'signal_metadata': {
+                                    'total_duration_seconds': 3600  # Default 1 hour - adjust if available
+                                }
+                            },
+                            'analysis_results': analysis_results
+                        }
+                        
+                        results[file_id] = result_data
+                        
+                    print(f"Loaded {len(results)} file results from clustered data")
+                    return results
+                    
+            except Exception as e:
+                print(f"Error loading clustered results: {e}")
+                print("Falling back to individual results...")
+        
+        # Fallback: Load individual seizure results
         individual_results_dir = self.madrid_results_dir 
         if individual_results_dir.exists():
-            print(f"Loading from: {individual_results_dir}")
+            print(f"Loading individual results from: {individual_results_dir}")
             for json_file in individual_results_dir.glob("madrid_results_*.json"):
                 try:
                     with open(json_file, 'r') as f:
