@@ -57,40 +57,118 @@ class MatrixProfile:
         
         return top_k_indices.tolist()
     
-    def has_consecutive_anomalies(indices: List[int], n: int, max_gap: int = 1) -> bool:
+    # def has_consecutive_anomalies(indices: List[int], n: int, max_gap: int = 1) -> bool:
+    #     """
+    #     Check if there are at least 'n' consecutive or closely spaced anomaly indices.
+
+    #     Parameters:
+    #     ----------
+    #     indices : List[int]
+    #         The list of anomaly indices (e.g., top-k indices from a matrix profile).
+    #     n : int
+    #         Minimum number of consecutive or closely spaced anomalies required.
+    #     max_gap : int, optional
+    #         Maximum allowed gap between indices to still be considered consecutive.
+    #         Default is 1 (i.e., strictly consecutive).
+
+    #     Returns:
+    #     -------
+    #     bool
+    #         True if there exists a group of at least 'n' consecutive or closely spaced anomaly indices.
+    #     """
+    #     if len(indices) < n:
+    #         return False
+
+    #     sorted_indices = sorted(indices)
+    #     current_count = 1
+
+    #     for i in range(1, len(sorted_indices)):
+    #         if sorted_indices[i] - sorted_indices[i - 1] <= max_gap:
+    #             current_count += 1
+    #             if current_count >= n:
+    #                 return True
+    #         else:
+    #             current_count = 1
+
+    #     return False
+# from typing import List
+# import numpy as np
+    @staticmethod
+    def mean_of_all_consecutive_anomalies(indices: List[int], n: int, max_gap: int = 1) -> List[int]:
         """
-        Check if there are at least 'n' consecutive or closely spaced anomaly indices.
+        Identifies all groups of up to 'n' consecutive or closely spaced anomaly indices
+        and returns the rounded mean of each group with size >= n.
 
         Parameters:
         ----------
         indices : List[int]
             The list of anomaly indices (e.g., top-k indices from a matrix profile).
         n : int
-            Minimum number of consecutive or closely spaced anomalies required.
+            Minimum size of consecutive or closely spaced groups to be considered.
         max_gap : int, optional
             Maximum allowed gap between indices to still be considered consecutive.
             Default is 1 (i.e., strictly consecutive).
 
         Returns:
         -------
-        bool
-            True if there exists a group of at least 'n' consecutive or closely spaced anomaly indices.
+        List[int]
+            A list of rounded means (integers) of all valid anomaly groups.
         """
         if len(indices) < n:
-            return False
+            return []
 
         sorted_indices = sorted(indices)
-        current_count = 1
+        result = []
+        group = [sorted_indices[0]]
 
         for i in range(1, len(sorted_indices)):
             if sorted_indices[i] - sorted_indices[i - 1] <= max_gap:
-                current_count += 1
-                if current_count >= n:
-                    return True
+                group.append(sorted_indices[i])
             else:
-                current_count = 1
+                if len(group) >= n:
+                    result.append(int(round(np.mean(group))))
+                group = [sorted_indices[i]]
 
-        return False
+        # Check last group
+        if len(group) >= n:
+            result.append(int(round(np.mean(group))))
+
+        return result
+
+    # def mean_of_consecutive_anomalies(indices: List[int], n: int, max_gap: int = 1) -> List[int]:
+    #     """
+    #     Returns the rounded mean of the first group of at least 'n' consecutive or closely spaced anomaly indices.
+
+    #     Parameters:
+    #     ----------
+    #     indices : List[int]
+    #         The list of anomaly indices (e.g., top-k indices from a matrix profile).
+    #     n : int
+    #         Minimum number of consecutive or closely spaced anomalies required.
+    #     max_gap : int, optional
+    #         Maximum allowed gap between indices to still be considered consecutive.
+    #         Default is 1 (i.e., strictly consecutive).
+
+    #     Returns:
+    #     -------
+    #     Optional[int]
+    #         The rounded mean of the first valid group of anomaly indices, or None if no such group is found.
+    #     """
+    #     if len(indices) < n:
+    #         return []
+
+    #     sorted_indices = sorted(indices)
+    #     current_group = [sorted_indices[0]]
+
+    #     for i in range(1, len(sorted_indices)):
+    #         if sorted_indices[i] - sorted_indices[i - 1] <= max_gap:
+    #             current_group.append(sorted_indices[i])
+    #             if len(current_group) >= n:
+    #                 return int(round(np.mean(current_group)))
+    #         else:
+    #             current_group = [sorted_indices[i]]
+
+    #     return []
 
 
     @staticmethod
