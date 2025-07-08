@@ -1,159 +1,142 @@
-"""
-Preprocess UCR-anomaly.
-The dataset archive is from (https://wu.renjie.im/research/anomaly-benchmarks-are-flawed/).
-"""
-from __future__ import annotations
-
-import copy
 import re
-from dataclasses import dataclass
+import pickle
 from pathlib import Path
-from einops import rearrange, repeat
+from dataclasses import dataclass
 
-import torch
 import numpy as np
-from torch.utils.data import Dataset, DataLoader
-from torch.distributions.multivariate_normal import MultivariateNormal
-from scipy.stats import multivariate_normal
-from scipy import interpolate
-
-from utils import get_root_dir, set_window_size
+import torch
+from torch.utils.data import Dataset
+from einops import rearrange
 
 
-# data_dir = Path(
-#     "dataset/AnomalyDatasets_2021/UCR_TimeSeriesAnomalyDatasets2021/FilesAreInHere/UCR_Anomaly_FullData/"
-# )
-data_dir = get_root_dir().joinpath('preprocessing', 'dataset', 'AnomalyDatasets_2021', 'UCR_TimeSeriesAnomalyDatasets2021', 'FilesAreInHere', 'UCR_Anomaly_FullData')
-# print(data_dir)
-
-pattern = re.compile(r"^([0-9]{3})_UCR_Anomaly_([a-zA-Z0-9]+)_([0-9]+)_([0-9]+)_([0-9]+).txt$")
-
-
-@dataclass
-class UCR_AnomalySequence:
-    name: str
-    id: int
-
-    train_start: int  # starts at 1
-    train_stop: int
-
-    anom_start: int
-    anom_stop: int
-
-    data: np.ndarray
-
-    @property
-    def train_data(self):
-        # not 100% sure about their indexing, this might be off by one
-        # assume we include both right and left index
-        return self.data[self.train_start : self.train_stop]
-
-    @property
-    def test_data(self):
-        # not 100% sure about their indexing, this might be off by one
-        # assume we include both right and left index
-        return self.data[self.train_stop:]
-
-    @property
-    def anom_data(self):
-        # not 100% sure about their indexing, this might be off by one
-        # assume we include both right and left index
-        return self.data[self.anom_start : self.anom_stop]
-
-    @classmethod
-    def create(cls, path: Path) -> UCR_AnomalySequence:
-
-        assert path.exists()
-        data = np.loadtxt(path, dtype=np.float32)
-
-        match = pattern.match(path.name)
-        assert match
-
-        id, name, train_stop, anom_start, anom_stop = match.groups()
-
-        return cls(
-            name=name,
-            id=int(id),
-            train_start=1,
-            train_stop=int(train_stop) + 1,  # +1 to make python-index easier
-            anom_start=int(anom_start),
-            anom_stop=int(anom_stop) + 1,  # +1 to make python-index easier
-            data=data,
-        )
-
-    @classmethod
-    def create_by_id(cls, id: int) -> UCR_AnomalySequence:
-        return cls.create((next(data_dir.glob(f"{id:03d}_*"))))
-
-    @classmethod
-    def create_by_name(cls, name: str) -> UCR_AnomalySequence:
-        return cls.create((next(data_dir.glob(f"*_UCR_Anomaly_{name}_*"))))
+# Match filenames like: sub-001_run-03_preprocessed.pkl
+pattern = re.compile(r"sub-(\d+)_run-(\d+)_preprocessed\.pkl$")
 
 
 def scale(x, return_scale_params: bool = False):
     """
-    instance-wise scaling.
-    global-scaling is not used because there are time series with local-mean-shifts such as "UCR_Anomaly_sddb49_20000_67950_68200.txt".
-
-    :param x: (n_convariates, window_length) or it can be (batch, n_convariates, window_length)
-    :return: scaled x
+    Instance-wise standardization.
     """
     if isinstance(x, np.ndarray):
         x = torch.from_numpy(x).float()
 
-    # centering
     mu = torch.nanmean(x, dim=-1, keepdim=True)
     x = x - mu
 
-    # var scaling
-    std = torch.std(x, dim=-1, keepdim=True)  # (n_covariates, 1)
-    min_std = 1.e-4  # to prevent numerical instability in scaling.
-    std = torch.clamp(std, min_std, None)  # same as np.clip; (n_covariates, 1)
+    std = torch.std(x, dim=-1, keepdim=True)
+    min_std = 1e-4
+    std = torch.clamp(std, min_std, None)
     x = x / std
 
     if return_scale_params:
         return x, (mu, std)
     else:
         return x
-    
 
-class UCRAnomalyDataset(Dataset):
+
+@dataclass
+class ASIMAnomalySequence:
+    subject_id: str
+    run_id: str
+    data: np.ndarray
+    labels: np.ndarray
+
+    @classmethod
+    def from_path(cls, path: Path) -> 'ASIMAnomalySequence':
+        match = pattern.match(path.name)
+        assert match, f"Filename {path.name} doesn't match expected pattern."
+        subject_id, run_id = match.groups()
+
+        with open(path, "rb") as f:
+            raw = pickle.load(f)
+
+        data = raw['channels'][0]['windows'][0]
+        labels = raw['channels'][0]['labels'][0]
+
+        assert len(data) == len(labels), "Data and labels must have the same length."
+
+        return cls(
+            subject_id=subject_id,
+            run_id=run_id,
+            data=np.array(data),
+            labels=np.array(labels)
+        )
+
+ 
+class ASIMAnomalyDataset(Dataset):
     def __init__(self,
-                 kind:str,
-                 dataset_importer: UCR_AnomalySequence,
-                 window_size:int,
-                 ):
-        assert kind in ['train', 'test']
+                 kind: str,
+                 data_dir: Path,
+                 window_size: int,
+                 stride: int = 1,
+                 sub: str = "all"):
+        assert kind in ['train', 'test'], f"Invalid kind: {kind}"
         self.kind = kind
         self.window_size = window_size
+        self.stride = stride
 
-        if kind == 'train':
-            self.X = dataset_importer.train_data[:, None]  # add channel dim; (ts_len, 1)
-        elif kind == 'test':
-            self.X = dataset_importer.test_data[:, None]  # (ts_len, 1)
-            # anomaly data
-            self.anom_start = dataset_importer.anom_start - dataset_importer.train_stop  # relative to `test_data`
-            self.anom_stop = dataset_importer.anom_stop - dataset_importer.train_stop  # relative to `test_data`
-            self.Y = np.zeros_like(self.X)[:, 0]  # (ts_len,)
-            self.Y[self.anom_start:self.anom_stop] = 1.
+        # Load relevant files
+        self.sequences = []
 
-        ts_len = self.X.shape[0]
-        self.dataset_len = (ts_len - 1) - window_size
+        if sub == "all":
+            files = sorted(data_dir.glob("sub-*_run-*_preprocessed.pkl"))
+        else:
+            files = sorted(data_dir.glob(f"sub-{sub}_run-*_preprocessed.pkl"))
 
-    def __getitem__(self, idx):
-        rng = slice(idx, idx+self.window_size)
+        for file in files:
+            self.sequences.append(ASIMAnomalySequence.from_path(file))
 
-        x = self.X[rng]  # (window_size, 1); 1 denotes channel dim.
-        x = rearrange(x, 'l c -> c l')  # (1, window_size)
-        x = torch.from_numpy(x).float()  # (1, window_size)
-        x = scale(x).float()
-        
-        if self.kind == 'train':
-            return x
-        elif self.kind == 'test':
-            y = self.Y[rng]  # (window_size,)
-            y = torch.from_numpy(y).long()  # (window_size,)
-            return x, y
+        if not self.sequences:
+            raise ValueError(f"No matching files found for sub={sub} in {data_dir}")
+
+        self.X, self.Y = self._gather_all_data()
+        self.indices = self._select_indices()
+
+    def _gather_all_data(self):
+        all_x = []
+        all_y = []
+        for seq in self.sequences:
+            x = seq.data[:, None]   # (T, 1)
+            y = seq.labels          # (T,)
+            all_x.append(x)
+            all_y.append(y)
+        return all_x, all_y
+
+    def _select_indices(self):
+        valid = []
+        for seq_idx, (x, y) in enumerate(zip(self.X, self.Y)):
+            T = len(x)
+            starts = list(range(0, T - self.window_size + 1, self.stride))
+
+            # Add final window if not already included
+            last_start = T - self.window_size
+            if starts and starts[-1] != last_start:
+                starts.append(last_start)
+
+            for i in starts:
+                window_labels = y[i:i + self.window_size]
+                if self.kind == 'train':
+                    if np.all(window_labels == 0):
+                        valid.append((seq_idx, i))
+                elif self.kind == 'test':
+                    valid.append((seq_idx, i))
+
+        return valid
 
     def __len__(self):
-        return self.dataset_len
+        return len(self.indices)
+
+    def __getitem__(self, idx):
+        seq_idx, start = self.indices[idx]
+        x = self.X[seq_idx][start:start + self.window_size]
+        y = self.Y[seq_idx][start:start + self.window_size]
+
+        x = rearrange(x, 'l c -> c l')
+        x = torch.from_numpy(x).float()
+        x = scale(x)
+
+        if self.kind == 'train':
+            return x
+        else:
+            y = torch.from_numpy(y).long()
+            return x, y

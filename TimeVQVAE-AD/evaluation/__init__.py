@@ -8,7 +8,7 @@ from argparse import ArgumentParser
 import copy
 import pickle
 import gc
-from torch import from_numpy
+from pathlib import Path
 import torch
 import torch.nn as nn
 import numpy as np
@@ -21,8 +21,9 @@ from scipy.signal import find_peaks
 from experiments.exp_stage2 import ExpStage2
 from preprocessing.preprocess import scale
 from utils import get_root_dir, set_window_size
+from preprocessing.preprocess import ASIMAnomalySequence, ASIMAnomalyDataset
 from models.stage2.maskgit import MaskGIT
-from preprocessing.dataset import PreprocessedSamplesDataset
+
 
 def load_args():
     parser = ArgumentParser()
@@ -31,32 +32,39 @@ def load_args():
     return parser.parse_args([])
 
 
+def load_data(sub_id: str, config: dict, kind: str):
+    """Load full unwindowed ASIM data for evaluation."""
+    assert kind in ['train', 'test'], f"Invalid kind: {kind}"
 
-def load_data(dataset_idx, config, kind: str):
-    data_dir = config['dataset']['root_dir'] + config['dataset']['dataset_windowed'] #get_root_dir().joinpath(
-    max_files = config['dataset']['max_files']
-    # get *all* windows and labels
-    ds = PreprocessedSamplesDataset(
-        data_dir=str(data_dir),
-        max_loaded_files=max_files,
-        kind='all',
-        train_frac=0.8
-    )
-    windows = ds.X.squeeze(1).numpy()   # shape (N_windows, window_size)
-    labels  = ds.Y.numpy()              # shape (N_windows,)
+    sr = config['dataset']['downsample_freq']
+    n_periods = config['dataset']['n_periods']
+    bpm = config['dataset']['heartbeats_per_minute']
+    stride = config['dataset']['stride']
 
-    # reconstruct continuous arrays by simple concatenation
-    ecg = windows.ravel()               # (N_windows * window_size,)
-    print("the ecgs might be overlapping")
-    print(ecg)
-    # for labels, mark every sample anomalous if its window label==1
-    mask = np.repeat(labels, ds.X.shape[-1])
+    window_size = set_window_size(sr, n_periods=n_periods, bpm=bpm)
 
-    X = from_numpy(ecg.astype(np.float32))[None, :]   # (1, ts_len)
+    data_dir = Path(config['dataset']['root_dir']) / f"downsample_freq={sr},no_windows"
+    dataset = ASIMAnomalyDataset(kind, data_dir, window_size=window_size, stride=stride, sub=sub_id)
+
+    # Reconstruct the full time series by concatenating the original sequences
+    X_all = []
+    Y_all = []
+
+    for seq in dataset.sequences:
+        x = seq.data[:, None]  # (T, 1)
+        y = seq.labels         # (T,)
+        X_all.append(x)
+        Y_all.append(y)
+
+    X = torch.from_numpy(np.concatenate(X_all, axis=0).astype(np.float32))  # (T_total, 1)
+    Y = torch.from_numpy(np.concatenate(Y_all, axis=0).astype(np.int64))    # (T_total,)
+
+    X = rearrange(X, 'l c -> c l')  # (1, T_total)
+
     if kind == 'train':
         return X
-    Y = from_numpy(mask.astype(np.int64))             # (ts_len,)
-    return X, Y
+    elif kind == 'test':
+        return X, Y
 
 
 def mask_prediction(s, height, slice_rng, maskgit:MaskGIT):
@@ -118,10 +126,8 @@ def detect(X_unscaled,
             'count': np.zeros((n_channels, ts_len)),
             'last_window_rng': None,
             }
-    print("timestep_rng", timestep_rng)
-    print("logs", logs)
     for timestep_idx, timestep in enumerate(timestep_rng):
-        if timestep_idx % int(0.3 * len(timestep_rng)) == 0:
+        if timestep_idx % int(0.1 * len(timestep_rng)) == 0:
             print(f'timestep/total_time_steps*100: {timestep}/{end_time_step} | {round(timestep / end_time_step * 100, 2)} [%]')
 
         # fetch a window at each timestep
@@ -269,7 +275,8 @@ def evaluate_fn(config,
     - latent_window_size_rate: latent_window_size = latent_window_size_rate * latent_window_size (i.e., latent width)
     """
     # load model
-    input_length = window_size = set_window_size(config['dataset']['root_dir'] + config['dataset']['dataset_windowed'])
+    input_length = window_size = set_window_size(config['dataset']['downsample_freq'], config['dataset']['n_periods'], bpm=config['dataset']['heartbeats_per_minute'])
+    print("dataset_idx", dataset_idx)
     stage2 = ExpStage2.load_from_checkpoint(os.path.join('saved_models', f'stage2-{dataset_idx}.ckpt'), 
                                             dataset_idx=dataset_idx, input_length=input_length, config=config, 
                                             map_location=f'cuda:{device}')
@@ -283,7 +290,6 @@ def evaluate_fn(config,
     # compute the anomaly score on the training set
     print('===== compute the anomaly scores of the training set... =====')
     X_train_unscaled = load_data(dataset_idx, config, 'train')  # (1, ts_len)
-    print("X_train_unscaled", X_train_unscaled)
     logs_train = detect(X_train_unscaled,
                         maskgit,
                         window_size,
@@ -291,7 +297,7 @@ def evaluate_fn(config,
                         latent_window_size,
                         compute_reconstructed_X=False,
                         device=device)
-    print("logs_train", logs_train)
+
     # anomaly threshold
     if q <= 1.0:
         anom_threshold = np.quantile(logs_train['a_star'], q=q, axis=-1)  # (n_channels H')
@@ -390,7 +396,6 @@ def evaluate_fn(config,
                       }
 
     saving_fname = get_root_dir().joinpath('evaluation', 'results', f'{dataset_idx}-anomaly_score-latent_window_size_rate_{latent_window_size_rate}.pkl')
-    print("saving_fname", saving_fname)
     with open(str(saving_fname), 'wb') as f:
         pickle.dump(resulting_data, f, pickle.HIGHEST_PROTOCOL)
 
@@ -439,15 +444,7 @@ def save_final_summarized_figure(dataset_idx, X_test_unscaled, Y, timestep_rng_t
     for j, y in enumerate(Y):
         if y == 1:
             true_anom_ind.append(j)
-    true_anom_ind = list(np.where(Y == 1)[0])
-    if len(true_anom_ind) == 0:
-        # no ground-truth anomalies in this recording → skip the zoom window
-        allowed_anom_ind_rng = (0, len(Y))
-    else:
-        # add a little padding
-        allowed_anom_ind_rng = (max(0, true_anom_ind[0] - 100),
-                                min(len(Y), true_anom_ind[-1] + 100))
-    # allowed_anom_ind_rng = (true_anom_ind[0] - 100, true_anom_ind[-1] + 100)
+    allowed_anom_ind_rng = (true_anom_ind[0] - 100, true_anom_ind[-1] + 100)
 
     # plot: compute top-k accuracies
     local_maxima_ind, _ = find_peaks(a_final, distance=100)
@@ -498,7 +495,7 @@ def save_final_summarized_figure(dataset_idx, X_test_unscaled, Y, timestep_rng_t
     # plot: explainable sampling
     if args.explainable_sampling:
         # load model
-        input_length = window_size = set_window_size(config['dataset']['root_dir'] + config['dataset']['dataset_windowed'])
+        input_length = window_size = set_window_size(dataset_idx, config['dataset']['n_periods'])
         stage2 = ExpStage2.load_from_checkpoint(os.path.join('saved_models', f'stage2-{dataset_idx}.ckpt'), 
                                                 dataset_idx=dataset_idx, input_length=input_length, config=config, 
                                                 map_location=f'cuda:{args.device}')

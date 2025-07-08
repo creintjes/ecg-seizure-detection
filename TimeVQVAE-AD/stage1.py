@@ -4,8 +4,6 @@ Stage 1: VQ training
 run `python stage1.py`
 """
 import os
-
-os.environ["PYTORCH_ENABLE_MPS_FALLBACK"] = "1"
 from argparse import ArgumentParser
 import datetime
 
@@ -16,8 +14,10 @@ from pytorch_lightning.loggers import WandbLogger
 from torch.utils.data import DataLoader
 
 from experiments.exp_stage1 import ExpStage1
-from preprocessing.dataset import PreprocessedSamplesDataset
+from preprocessing.preprocess import ASIMAnomalySequence
+from preprocessing.data_pipeline import build_data_pipeline
 from utils import get_root_dir, load_yaml_param_settings, set_window_size
+from pathlib import Path
 
 def load_args():
     parser = ArgumentParser()
@@ -47,7 +47,7 @@ def train_stage1(config: dict,
     n_trainable_params = sum(p.numel() for p in train_exp.parameters() if p.requires_grad)
     extra_config = {'dataset.idx': dataset_idx, 'n_trainable_params': n_trainable_params, 'gpu_device_ind': gpu_device_ind}
     wandb_logger = WandbLogger(project=project_name, name=None, config={**config, **extra_config})
-    print("create trainer")
+
     trainer = pl.Trainer(logger=wandb_logger,
                          enable_checkpointing=False,
                          callbacks=[LearningRateMonitor(logging_interval='step')],
@@ -59,7 +59,6 @@ def train_stage1(config: dict,
                          check_val_every_n_epoch=None,
                          max_time=datetime.timedelta(hours=config['trainer_params']['max_hours']['stage1']),
                          )
-    print("start training")
     trainer.fit(train_exp,
                 train_dataloaders=train_data_loader,
                 val_dataloaders=test_data_loader,
@@ -78,24 +77,27 @@ if __name__ == '__main__':
     args = load_args()
     config = load_yaml_param_settings(args.config)
 
+    sr = config['dataset']['downsample_freq']
+    stride = config['dataset']['stride']
+    data_dir = Path(config['dataset']['root_dir'] + f"/downsample_freq={sr},no_windows")
+    batch_size = config['dataset']['batch_sizes']['stage1']
+    num_workers = config['dataset']['num_workers']
+    n_periods = config['dataset']['n_periods']
+    heartbeats_per_minute = config['dataset']['heartbeats_per_minute']
     for idx in args.dataset_ind:
         dataset_idx = int(idx)
-        bids_root = get_root_dir().joinpath('preprocessing', 'dataset', 'AnomalyDatasets_2021')
-        # instantiate train & test Datasets
-        data_dir = config['dataset']['root_dir'] + config['dataset']['dataset_windowed']
-        max_files = config['dataset']['max_files'] 
-        train_ds = PreprocessedSamplesDataset(
-        data_dir, max_loaded_files=max_files, kind='train', train_frac=0.8
-        )
-        test_ds  = PreprocessedSamplesDataset(
-            data_dir, max_loaded_files=max_files, kind='test',  train_frac=0.8
-        )
-        window_size = train_ds[0][0].shape[-1]
-        batch_size = config['dataset']['batch_sizes']['stage1']
-        num_workers = config['dataset']['num_workers']
-        train_data_loader = DataLoader(train_ds, batch_size=batch_size,
-                                       shuffle=True,  num_workers=num_workers)
-        test_data_loader  = DataLoader(test_ds,  batch_size=batch_size,
-                                       shuffle=False, num_workers=num_workers)
+        sub = f"{dataset_idx:03d}" if str(dataset_idx) != "all" else "all"
+
+        window_size = set_window_size(sr, n_periods, bpm=heartbeats_per_minute)
+
+        train_data_loader, test_data_loader = [build_data_pipeline(batch_size,
+                                                                   data_dir,
+                                                                   sub,
+                                                                   kind,
+                                                                   window_size,
+                                                                   stride,
+                                                                   num_workers) for kind in ['train', 'test']]
         # train
-        train_stage1(config, dataset_idx, window_size, train_data_loader, test_data_loader, args.gpu_device_ind)
+        train_stage1(config, sub, window_size, train_data_loader, test_data_loader, args.gpu_device_ind)
+
+        

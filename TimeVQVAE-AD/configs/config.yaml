@@ -1,15 +1,17 @@
 dataset:
   names: SeizeIT2-ECG-TimeVQVAE-AD
   root_dir: /home/swolf/asim_shared/preprocessed_data
-  dataset_windowed: /downsample_freq=8,window_size=3600_0,stride=1800_0
-  dataset_continuous: /downsample_freq=32,no_windows
-  max_files: 10
+  downsample_freq: 8
+  stride: 1
+  # dataset_windowed: /downsample_freq=8,window_size=3600_0,stride=1800_0
+  # dataset_continuous: /downsample_freq=32,no_windows
   in_channels: 1
   batch_sizes:
-    stage1: 64 #512
+    stage1: 256 #512
     stage2: 128 #256 #512
   num_workers: 1
-  n_periods: 2  # window_size = n_periods * period_length; REF: MERLIN++
+  heartbeats_per_minute: 75 # Need to find a way of calculating the true bpm look into set_window_size() for contexts
+  n_periods: 10 # 150  # window_size = n_periods * period_length; REF: MERLIN++; How many hearth beats we want approximately in one sample
 
 exp_params:
   lr:

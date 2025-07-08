@@ -112,10 +112,10 @@ def main():
                 # Skip if file already exists
                 filename = f"{subject_id}_{run_id}_preprocessed.pkl"
                 filepath = results_path / filename
-                if filepath.exists():
-                    print(f"Skipping {subject_id} {run_id}: already preprocessed.")
-                    successful_recordings.append((subject_id, run_id))  # optional: oder ignorieren
-                    continue
+                # if filepath.exists():
+                #     print(f"Skipping {subject_id} {run_id}: already preprocessed.")
+                #     successful_recordings.append((subject_id, run_id))  # optional: oder ignorieren
+                #     continue
 
                 print(f"Processing {subject_id} {run_id}...")
                 result = preprocessor.preprocess_pipeline(data_path, subject_id, run_id)
@@ -136,10 +136,11 @@ def main():
                 else:
                     failed_recordings.append((subject_id, run_id))
                     print(f"Failed: No data or processing error")
-                    
+
             except Exception as e:
                 failed_recordings.append((subject_id, run_id))
                 print(f"Error: {str(e)}")
+            break
         
         # Progress update
         elapsed = time.time() - start_time

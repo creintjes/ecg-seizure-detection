@@ -349,47 +349,18 @@ def compute_downsample_rate(input_length: int,
     return round(input_length / (np.log2(n_fft) - 1) / downsampled_length) if input_length >= downsampled_length else 1
 
 
-# def set_window_size(train_data, min_window_size: int = 200, max_window_size_rate: float = 0.3, min_acf: float = 0.3):
-#     """
-#     :param train_data: (length,)
-#     :param min_acf: minimum ACF value
-#     :return window_size
-#     """
-#     acf_train = sm.tsa.acf(train_data, nlags=train_data.shape[0] - 1)[:train_data.shape[0] // 4]
-#     local_maxima = argrelextrema(acf_train, np.greater)[0]
-#     local_maxima = np.array([i for i in local_maxima if acf_train[i] > min_acf])
-#
-#     if len(local_maxima) > 0:
-#         cycle_length = local_maxima[acf_train[local_maxima].argmax()]
-#         window_size = 5 * cycle_length if len(local_maxima) > 0 else min_window_size
-#         max_window_size = int(max_window_size_rate * train_data.shape[0])
-#         window_size = np.clip(window_size, min_window_size, max_window_size)
-#     else:
-#         window_size = min_window_size
-#     return window_size
-
-from preprocessing.dataset import PreprocessedSamplesDataset
-
-def set_window_size(data_dir: str,
-                      max_loaded_files: int = 1,
-                      train_frac: float = 0.8) -> int:
+def set_window_size(sampling_rate: int, n_periods: int = 3, bpm: int = 75) -> int:
     """
-    Load just enough of your preprocessed windows to inspect their length,
-    then return the integer window_size.
+    Estimate window size (in samples) for a given sampling rate and heart rate.
+
+    :param sampling_rate: e.g. 8 Hz, 32 Hz
+    :param n_periods: number of heartbeat cycles to include
+    :param bpm: expected beats per minute (default: 75 bpm)
+    :return: window size in samples
     """
-    # instantiate the dataset in train mode
-    ds = PreprocessedSamplesDataset(
-        data_dir, 
-        max_loaded_files=max_loaded_files, 
-        kind='train', 
-        train_frac=train_frac
-    )
-    # grab the first sample
-    sample = ds[0]
-    # if test, ds[0] is (x,y), so we only want x
-    x = sample[0] if isinstance(sample, tuple) else sample
-    # x has shape (1, window_length)
-    return x.shape[-1]
+    seconds_per_beat = 60 / bpm
+    samples_per_beat = sampling_rate * seconds_per_beat
+    return int(round(samples_per_beat * n_periods))
 
 def compute_receptive_field(layers):
     """
