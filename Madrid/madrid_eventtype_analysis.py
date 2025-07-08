@@ -158,6 +158,24 @@ class MadridEventTypeAnalyzer:
             try:
                 with open(clustered_results_file, 'r') as f:
                     clustered_data = json.load(f)
+                
+                # Also load original files to get signal metadata (recording duration)
+                print("Loading original files to extract signal metadata...")
+                original_metadata = {}
+                original_dir = self.madrid_results_dir.parent / "madrid_dir_400_examples"  # Go back to original dir
+                if original_dir.exists():
+                    for json_file in original_dir.glob("madrid_results_*.json"):
+                        try:
+                            with open(json_file, 'r') as f:
+                                original_data = json.load(f)
+                                subject_id = original_data['input_data']['subject_id']
+                                run_id = original_data['input_data']['run_id']
+                                seizure_id = original_data['input_data']['seizure_id']
+                                file_id = f"{subject_id}_{run_id}_{seizure_id}"
+                                original_metadata[file_id] = original_data['input_data']
+                        except Exception as e:
+                            continue
+                    print(f"Loaded metadata for {len(original_metadata)} original files")
                     
                 # Process clustered representatives
                 if 'representatives' in clustered_data:
@@ -182,26 +200,31 @@ class MadridEventTypeAnalyzer:
                             'anomalies': group_data['anomalies']  # Backup field name
                         }
                         
-                        # Create minimal result structure
+                        # Get original signal metadata if available
+                        signal_metadata = {'total_duration_seconds': 3600}  # Default 1 hour
+                        if file_id in original_metadata:
+                            signal_metadata = original_metadata[file_id]['signal_metadata']
+                        
+                        # Create result structure
                         result_data = {
                             'input_data': {
                                 'subject_id': file_id.split('_')[0],
                                 'run_id': file_id.split('_')[1], 
                                 'seizure_id': '_'.join(file_id.split('_')[2:]),
-                                'signal_metadata': {
-                                    'total_duration_seconds': 3600  # Default 1 hour - adjust if available
-                                }
+                                'signal_metadata': signal_metadata
                             },
                             'analysis_results': analysis_results
                         }
                         
                         results[file_id] = result_data
                         
-                    print(f"Loaded {len(results)} file results from clustered data")
+                    print(f"✅ Loaded {len(results)} file results from clustered data")
+                    print(f"📊 Total representatives: {len(representatives)}")
+                    print(f"📁 Files with clustered data: {len(file_groups)}")
                     return results
                     
             except Exception as e:
-                print(f"Error loading clustered results: {e}")
+                print(f"❌ Error loading clustered results: {e}")
                 print("Falling back to individual results...")
         
         # Fallback: Load individual seizure results
@@ -755,10 +778,10 @@ class MadridEventTypeAnalyzer:
 
 def main():
     """Main execution function."""
-    # Configuration
-    madrid_results_dir = "Madrid/madrid_results/madrid_seizure_results_parallel_400/tolerance_adjusted"
+    # Configuration - Use clustered results directory
+    madrid_results_dir = "Madrid/madrid_results copy/tolerance_adjusted_smart_clustered"
     seizeit2_data_path = "/home/swolf/asim_shared/raw_data/ds005873-1.1.0"  
-    output_dir = "Madrid/madrid_results/madrid_seizure_results_parallel_400/madrid_eventtype_analysis"
+    output_dir = "Madrid/madrid_eventtype_analysis"
     
     # Initialize analyzer
     analyzer = MadridEventTypeAnalyzer(madrid_results_dir, seizeit2_data_path)
