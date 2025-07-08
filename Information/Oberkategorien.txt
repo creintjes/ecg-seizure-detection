@@ -1,0 +1,46 @@
+# Funktion zur Zuordnung der Hauptkategorie
+def assign_category(event_type):
+    focal_mit_moption = [
+        "sz_foc_a_m", "sz_foc_a_m_automatisms", "sz_foc_a_m_atonic", "sz_foc_a_m_clonic", 
+        "sz_foc_a_m_spasms", "sz_foc_a_m_hyperkinetic", "sz_foc_a_m_myoclonic", "sz_foc_a_m_tonic", 
+        "sz_foc_ia_m", "sz_foc_ia_m_automatisms", "sz_foc_ia_m_atonic", "sz_foc_ia_m_clonic", 
+        "sz_foc_ia_m_spasms", "sz_foc_ia_m_hyperkinetic", "sz_foc_ia_m_myoclonic", "sz_foc_ia_m_tonic",
+        "sz_foc_f2b", "sz_foc_a_um", "sz_foc_ia", "sz_foc_ua_m_hyperkinetic", "sz_foc_ua_m", "sz_foc_ua_m_tonic"
+    ]
+    focal_ohne_moption = [
+        "sz_foc_a_nm", "sz_foc_ia_nm", "sz_foc_ia_nm_autonomic", "sz_foc_ia_nm_behavior", 
+        "sz_foc_ia_nm_cognitive", "sz_foc_ia_nm_emotional", "sz_foc_ia_nm_sensory", 
+        "sz_foc_ua_nm", "sz_foc_ua_nm_autonomic", "sz_foc_ua_nm_behavior", "sz_foc_ua_nm_cognitive", 
+        "sz_foc_ua_nm_emotional", "sz_foc_ua_nm_sensory", "sz_foc_a_nm_behavior", "sz_foc_ia_um", "sz_foc_ia_um"
+    ]
+    gen_mit_moption = [
+        "sz_gen_m", "sz_gen_m_tonicClonic", "sz_gen_m_clonic", "sz_gen_m_tonic", 
+        "sz_gen_m_myoTC", "sz_gen_m_myoAtonic", "sz_gen_m_atonic", "sz_gen_m_spasms"
+    ]
+    gen_ohne_moption = [
+        "sz_gen_nm", "sz_gen_nm_typical", "sz_gen_nm_atypical", "sz_gen_nm_myoclonic", 
+        "sz_gen_nm_eyelidMyio"
+    ]
+    unknown_mit_moption = [
+        "sz_uo_m", "sz_uo_m_myoclonic", "sz_uo_m_tonicClonic", "sz_uo_m_tonicMyio", 
+        "sz_uo_m_hyperkinetic", "sz_uo_m_spasms"
+    ]
+    unknown_ohne_moption = [
+        "sz_uo_nm", "sz_uo_nm_behavior"
+    ]
+
+    # Zuordnung zu den Hauptkategorien
+    if event_type in focal_mit_moption:
+        return 'focal_mit_moption'
+    elif event_type in focal_ohne_moption:
+        return 'focal_ohne_moption'
+    elif event_type in gen_mit_moption:
+        return 'gen_mit_moption'
+    elif event_type in gen_ohne_moption:
+        return 'gen_ohne_moption'
+    elif event_type in unknown_mit_moption:
+        return 'unknown_mit_moption'
+    elif event_type in unknown_ohne_moption:
+        return 'unknown_ohne_moption'
+    else:
+        return 'unclassified'
