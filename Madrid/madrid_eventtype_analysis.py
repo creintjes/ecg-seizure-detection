@@ -218,7 +218,8 @@ class MadridEventTypeAnalyzer:
             'detected_seizures': 0,
             'true_positives': 0,
             'false_positives': 0,
-            'total_anomalies': 0
+            'total_anomalies': 0,
+            'total_recording_hours': 0.0
         })
         
         category_data = defaultdict(lambda: {
@@ -226,7 +227,8 @@ class MadridEventTypeAnalyzer:
             'detected_seizures': 0,
             'true_positives': 0,
             'false_positives': 0,
-            'total_anomalies': 0
+            'total_anomalies': 0,
+            'total_recording_hours': 0.0
         })
         
         category_v2_data = defaultdict(lambda: {
@@ -234,7 +236,8 @@ class MadridEventTypeAnalyzer:
             'detected_seizures': 0,
             'true_positives': 0,
             'false_positives': 0,
-            'total_anomalies': 0
+            'total_anomalies': 0,
+            'total_recording_hours': 0.0
         })
         
         for key, result in madrid_results.items():
@@ -253,9 +256,29 @@ class MadridEventTypeAnalyzer:
             if 'analysis_results' in result:
                 analysis = result['analysis_results']
                 
+                # Get recording duration in hours
+                recording_duration_hours = 0.0
+                if 'input_data' in result and 'signal_metadata' in result['input_data']:
+                    # Try to get duration from signal metadata
+                    signal_meta = result['input_data']['signal_metadata']
+                    if 'total_duration_seconds' in signal_meta:
+                        recording_duration_hours = signal_meta['total_duration_seconds'] / 3600.0
+                    elif 'recording_duration' in signal_meta:
+                        recording_duration_hours = signal_meta['recording_duration'] / 3600.0
+                
+                # If no duration found, try to estimate from Madrid metadata
+                if recording_duration_hours == 0.0 and 'madrid_parameters' in result:
+                    # This is a fallback - you might need to adjust based on your data structure
+                    print(f"Warning: No recording duration found for {key}, using default estimate")
+                    recording_duration_hours = 1.0  # Default 1 hour if unknown
+                
                 eventtype_data[eventtype]['total_seizures'] += 1
                 category_data[category]['total_seizures'] += 1
                 category_v2_data[category_v2]['total_seizures'] += 1
+                
+                eventtype_data[eventtype]['total_recording_hours'] += recording_duration_hours
+                category_data[category]['total_recording_hours'] += recording_duration_hours
+                category_v2_data[category_v2]['total_recording_hours'] += recording_duration_hours
                 
                 # Check if seizure was detected (has any true positives)
                 has_detection = False
@@ -320,8 +343,11 @@ class MadridEventTypeAnalyzer:
         total_predictions = data['true_positives'] + data['false_positives']
         metrics['precision'] = data['true_positives'] / total_predictions if total_predictions > 0 else 0
         
-        # False Alarm Rate = FP / (TP + FP)
-        metrics['false_alarm_rate'] = data['false_positives'] / total_predictions if total_predictions > 0 else 0
+        # False Alarm Rate = FP per hour (FA/h)
+        if data['total_recording_hours'] > 0:
+            metrics['false_alarm_rate'] = data['false_positives'] / data['total_recording_hours']
+        else:
+            metrics['false_alarm_rate'] = 0.0
         
         # Additional metrics
         metrics['total_seizures'] = data['total_seizures']
@@ -329,6 +355,7 @@ class MadridEventTypeAnalyzer:
         metrics['true_positives'] = data['true_positives']
         metrics['false_positives'] = data['false_positives']
         metrics['total_anomalies'] = data['total_anomalies']
+        metrics['total_recording_hours'] = data['total_recording_hours']
         
         return metrics
     
@@ -368,10 +395,10 @@ class MadridEventTypeAnalyzer:
         axes[0, 1].tick_params(axis='x', rotation=45)
         axes[0, 1].grid(True, alpha=0.3)
         
-        # False Alarm Rate
+        # False Alarm Rate (FA/h)
         axes[1, 0].bar(eventtypes, false_alarm_rates, alpha=0.7, color='red')
-        axes[1, 0].set_title('False Alarm Rate by EventType')
-        axes[1, 0].set_ylabel('False Alarm Rate')
+        axes[1, 0].set_title('False Alarm Rate (FA/h) by EventType')
+        axes[1, 0].set_ylabel('False Alarms per Hour')
         axes[1, 0].tick_params(axis='x', rotation=45)
         axes[1, 0].grid(True, alpha=0.3)
         
@@ -410,10 +437,10 @@ class MadridEventTypeAnalyzer:
         axes[0, 1].tick_params(axis='x', rotation=45)
         axes[0, 1].grid(True, alpha=0.3)
         
-        # False Alarm Rate
+        # False Alarm Rate (FA/h)
         axes[1, 0].bar(categories, cat_false_alarm_rates, alpha=0.7, color='red')
-        axes[1, 0].set_title('False Alarm Rate by Category')
-        axes[1, 0].set_ylabel('False Alarm Rate')
+        axes[1, 0].set_title('False Alarm Rate (FA/h) by Category')
+        axes[1, 0].set_ylabel('False Alarms per Hour')
         axes[1, 0].tick_params(axis='x', rotation=45)
         axes[1, 0].grid(True, alpha=0.3)
         
@@ -442,14 +469,14 @@ class MadridEventTypeAnalyzer:
                         xytext=(5, 5), textcoords='offset points',
                         fontsize=9, ha='left')
         
-        plt.xlabel('False Alarm Rate')
+        plt.xlabel('False Alarm Rate (FA/h)')
         plt.ylabel('Sensitivity')
-        plt.title('Madrid Performance: Sensitivity vs False Alarm Rate by EventType')
+        plt.title('Madrid Performance: Sensitivity vs False Alarm Rate (FA/h) by EventType')
         plt.grid(True, alpha=0.3)
         
         # Add ideal performance reference lines
         plt.axhline(y=0.8, color='gray', linestyle='--', alpha=0.5, label='Target Sensitivity (80%)')
-        plt.axvline(x=0.2, color='gray', linestyle='--', alpha=0.5, label='Target FAR (20%)')
+        plt.axvline(x=0.2, color='gray', linestyle='--', alpha=0.5, label='Target FAR (0.2/h)')
         plt.legend()
         
         plt.tight_layout()
@@ -470,14 +497,14 @@ class MadridEventTypeAnalyzer:
                         xytext=(5, 5), textcoords='offset points',
                         fontsize=10, ha='left')
         
-        plt.xlabel('False Alarm Rate')
+        plt.xlabel('False Alarm Rate (FA/h)')
         plt.ylabel('Sensitivity')
-        plt.title('Madrid Performance: Sensitivity vs False Alarm Rate by Category')
+        plt.title('Madrid Performance: Sensitivity vs False Alarm Rate (FA/h) by Category')
         plt.grid(True, alpha=0.3)
         
         # Add ideal performance reference lines
         plt.axhline(y=0.8, color='gray', linestyle='--', alpha=0.5, label='Target Sensitivity (80%)')
-        plt.axvline(x=0.2, color='gray', linestyle='--', alpha=0.5, label='Target FAR (20%)')
+        plt.axvline(x=0.2, color='gray', linestyle='--', alpha=0.5, label='Target FAR (0.2/h)')
         plt.legend()
         
         plt.tight_layout()
@@ -508,10 +535,10 @@ class MadridEventTypeAnalyzer:
         axes[0, 1].tick_params(axis='x', rotation=45)
         axes[0, 1].grid(True, alpha=0.3)
         
-        # False Alarm Rate
+        # False Alarm Rate (FA/h)
         axes[1, 0].bar(categories_v2, cat_v2_false_alarm_rates, alpha=0.7, color='red')
-        axes[1, 0].set_title('False Alarm Rate by Category V2')
-        axes[1, 0].set_ylabel('False Alarm Rate')
+        axes[1, 0].set_title('False Alarm Rate (FA/h) by Category V2')
+        axes[1, 0].set_ylabel('False Alarms per Hour')
         axes[1, 0].tick_params(axis='x', rotation=45)
         axes[1, 0].grid(True, alpha=0.3)
         
@@ -541,14 +568,14 @@ class MadridEventTypeAnalyzer:
                         xytext=(5, 5), textcoords='offset points',
                         fontsize=10, ha='left')
         
-        plt.xlabel('False Alarm Rate')
+        plt.xlabel('False Alarm Rate (FA/h)')
         plt.ylabel('Sensitivity')
-        plt.title('Madrid Performance: Sensitivity vs False Alarm Rate by Category V2')
+        plt.title('Madrid Performance: Sensitivity vs False Alarm Rate (FA/h) by Category V2')
         plt.grid(True, alpha=0.3)
         
         # Add ideal performance reference lines
         plt.axhline(y=0.8, color='gray', linestyle='--', alpha=0.5, label='Target Sensitivity (80%)')
-        plt.axvline(x=0.2, color='gray', linestyle='--', alpha=0.5, label='Target FAR (20%)')
+        plt.axvline(x=0.2, color='gray', linestyle='--', alpha=0.5, label='Target FAR (0.2/h)')
         plt.legend()
         
         plt.tight_layout()
@@ -583,10 +610,11 @@ class MadridEventTypeAnalyzer:
                 f.write(f"  Detected Seizures: {metrics['detected_seizures']}\n")
                 f.write(f"  Sensitivity: {metrics['sensitivity']:.3f} ({metrics['sensitivity']*100:.1f}%)\n")
                 f.write(f"  Precision: {metrics['precision']:.3f} ({metrics['precision']*100:.1f}%)\n")
-                f.write(f"  False Alarm Rate: {metrics['false_alarm_rate']:.3f} ({metrics['false_alarm_rate']*100:.1f}%)\n")
+                f.write(f"  False Alarm Rate (FA/h): {metrics['false_alarm_rate']:.3f}\n")
                 f.write(f"  True Positives: {metrics['true_positives']}\n")
                 f.write(f"  False Positives: {metrics['false_positives']}\n")
                 f.write(f"  Total Anomalies: {metrics['total_anomalies']}\n")
+                f.write(f"  Total Recording Hours: {metrics['total_recording_hours']:.1f}\n")
             
             # Summary by Category
             f.write(f"\n\nSUMMARY BY CATEGORY (V1):\n")
@@ -601,10 +629,11 @@ class MadridEventTypeAnalyzer:
                 f.write(f"  Detected Seizures: {metrics['detected_seizures']}\n")
                 f.write(f"  Sensitivity: {metrics['sensitivity']:.3f} ({metrics['sensitivity']*100:.1f}%)\n")
                 f.write(f"  Precision: {metrics['precision']:.3f} ({metrics['precision']*100:.1f}%)\n")
-                f.write(f"  False Alarm Rate: {metrics['false_alarm_rate']:.3f} ({metrics['false_alarm_rate']*100:.1f}%)\n")
+                f.write(f"  False Alarm Rate (FA/h): {metrics['false_alarm_rate']:.3f}\n")
                 f.write(f"  True Positives: {metrics['true_positives']}\n")
                 f.write(f"  False Positives: {metrics['false_positives']}\n")
                 f.write(f"  Total Anomalies: {metrics['total_anomalies']}\n")
+                f.write(f"  Total Recording Hours: {metrics['total_recording_hours']:.1f}\n")
             
             # NEW: Summary by Category V2
             f.write(f"\n\nSUMMARY BY CATEGORY (V2):\n")
@@ -619,10 +648,11 @@ class MadridEventTypeAnalyzer:
                 f.write(f"  Detected Seizures: {metrics['detected_seizures']}\n")
                 f.write(f"  Sensitivity: {metrics['sensitivity']:.3f} ({metrics['sensitivity']*100:.1f}%)\n")
                 f.write(f"  Precision: {metrics['precision']:.3f} ({metrics['precision']*100:.1f}%)\n")
-                f.write(f"  False Alarm Rate: {metrics['false_alarm_rate']:.3f} ({metrics['false_alarm_rate']*100:.1f}%)\n")
+                f.write(f"  False Alarm Rate (FA/h): {metrics['false_alarm_rate']:.3f}\n")
                 f.write(f"  True Positives: {metrics['true_positives']}\n")
                 f.write(f"  False Positives: {metrics['false_positives']}\n")
                 f.write(f"  Total Anomalies: {metrics['total_anomalies']}\n")
+                f.write(f"  Total Recording Hours: {metrics['total_recording_hours']:.1f}\n")
             
             # Overall statistics
             f.write(f"\n\nOVERALL STATISTICS:\n")
@@ -635,15 +665,18 @@ class MadridEventTypeAnalyzer:
             
             overall_sensitivity = total_detected / total_seizures if total_seizures > 0 else 0
             overall_precision = total_tp / (total_tp + total_fp) if (total_tp + total_fp) > 0 else 0
-            overall_far = total_fp / (total_tp + total_fp) if (total_tp + total_fp) > 0 else 0
+            # Calculate overall FA/h
+            total_recording_hours = sum(m['total_recording_hours'] for m in metrics_by_eventtype.values())
+            overall_far_per_hour = total_fp / total_recording_hours if total_recording_hours > 0 else 0
             
             f.write(f"Total Seizures Analyzed: {total_seizures}\n")
             f.write(f"Total EventTypes Found: {len(metrics_by_eventtype)}\n")
             f.write(f"Total Categories V1 Found: {len(metrics_by_category)}\n")
             f.write(f"Total Categories V2 Found: {len(metrics_by_category_v2)}\n")
+            f.write(f"Total Recording Hours: {total_recording_hours:.1f}\n")
             f.write(f"Overall Sensitivity: {overall_sensitivity:.3f} ({overall_sensitivity*100:.1f}%)\n")
             f.write(f"Overall Precision: {overall_precision:.3f} ({overall_precision*100:.1f}%)\n")
-            f.write(f"Overall False Alarm Rate: {overall_far:.3f} ({overall_far*100:.1f}%)\n")
+            f.write(f"Overall False Alarm Rate (FA/h): {overall_far_per_hour:.3f}\n")
             
         print(f"Report saved to {report_file}")
     
