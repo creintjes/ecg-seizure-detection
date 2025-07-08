@@ -96,6 +96,56 @@ class MadridEventTypeAnalyzer:
             return 'unknown_ohne_moption'
         else:
             return 'unclassified'
+    
+    def assign_seizure_category_v2(self, event_type: str) -> str:
+        """
+        Assign seizure category based on event type using v2 classification.
+        
+        Args:
+            event_type: Original event type string
+            
+        Returns:
+            Category string based on v2 classification
+        """
+        # Non-Seizure
+        if event_type.startswith('bckg') or event_type.startswith('impd'):
+            return 'Non-Seizure'
+        
+        # Seizure Unknown Classification (sz but not more specific)
+        if event_type == 'sz':
+            return 'Seizure Unknown Classification'
+        
+        # Focal Seizures - more granular subcategories
+        if event_type.startswith('sz_foc_'):
+            # Focal Aware
+            if event_type.startswith(('sz_foc_a_m', 'sz_foc_a_nm', 'sz_foc_a_um')):
+                return 'Focal Aware'
+            # Focal Impaired-Awareness
+            elif event_type.startswith(('sz_foc_ia_m', 'sz_foc_ia_nm', 'sz_foc_ia_um')):
+                return 'Focal Impaired-Awareness'
+            # Focal Unknown-Awareness
+            elif event_type.startswith(('sz_foc_ua_m', 'sz_foc_ua_nm', 'sz_foc_ua_um')):
+                return 'Focal Unknown-Awareness'
+            # Focal to Bilateral TC
+            elif event_type.startswith('sz_foc_f2b'):
+                return 'Focal to Bilateral TC'
+            # General Focal if no specific match
+            else:
+                return 'Focal Seizures'
+        
+        # Generalized Seizures
+        if event_type.startswith(('sz_gen_m', 'sz_gen_nm')):
+            return 'Generalized Seizures'
+        
+        # Seizures Unknown Onset
+        if event_type.startswith(('sz_uo_m', 'sz_uo_nm')):
+            return 'Seizures Unknown Onset'
+        
+        # Any other seizure type
+        if event_type.startswith('sz'):
+            return 'Other Seizures'
+        
+        return 'Unclassified'
         
     def load_madrid_results(self) -> Dict[str, Any]:
         """Load Madrid results from JSON files."""
@@ -153,15 +203,15 @@ class MadridEventTypeAnalyzer:
             print(f"Error getting eventType for {subject_id}_{run_id}_{seizure_id}: {e}")
             return 'unknown'
     
-    def calculate_metrics_by_eventtype(self, madrid_results: Dict[str, Any]) -> Tuple[Dict[str, Dict[str, float]], Dict[str, Dict[str, float]]]:
+    def calculate_metrics_by_eventtype(self, madrid_results: Dict[str, Any]) -> Tuple[Dict[str, Dict[str, float]], Dict[str, Dict[str, float]], Dict[str, Dict[str, float]]]:
         """
-        Calculate metrics (sensitivity, precision, FAR) by eventType and category.
+        Calculate metrics (sensitivity, precision, FAR) by eventType, category, and category_v2.
         
         Args:
             madrid_results: Dictionary of Madrid results
             
         Returns:
-            Tuple of (metrics_by_eventtype, metrics_by_category)
+            Tuple of (metrics_by_eventtype, metrics_by_category, metrics_by_category_v2)
         """
         eventtype_data = defaultdict(lambda: {
             'total_seizures': 0,
@@ -179,6 +229,14 @@ class MadridEventTypeAnalyzer:
             'total_anomalies': 0
         })
         
+        category_v2_data = defaultdict(lambda: {
+            'total_seizures': 0,
+            'detected_seizures': 0,
+            'true_positives': 0,
+            'false_positives': 0,
+            'total_anomalies': 0
+        })
+        
         for key, result in madrid_results.items():
             # Parse subject, run, seizure from key
             parts = key.split('_')
@@ -186,9 +244,10 @@ class MadridEventTypeAnalyzer:
             run_id = parts[1]
             seizure_id = '_'.join(parts[2:])
             
-            # Get eventType and category
+            # Get eventType and categories
             eventtype = self.get_seizure_eventtype(subject_id, run_id, seizure_id)
             category = self.assign_seizure_category(eventtype)
+            category_v2 = self.assign_seizure_category_v2(eventtype)
             
             # Extract metrics from Madrid results
             if 'analysis_results' in result:
@@ -196,6 +255,7 @@ class MadridEventTypeAnalyzer:
                 
                 eventtype_data[eventtype]['total_seizures'] += 1
                 category_data[category]['total_seizures'] += 1
+                category_v2_data[category_v2]['total_seizures'] += 1
                 
                 # Check if seizure was detected (has any true positives)
                 has_detection = False
@@ -215,6 +275,7 @@ class MadridEventTypeAnalyzer:
                 if has_detection:
                     eventtype_data[eventtype]['detected_seizures'] += 1
                     category_data[category]['detected_seizures'] += 1
+                    category_v2_data[category_v2]['detected_seizures'] += 1
                 
                 eventtype_data[eventtype]['true_positives'] += tp_count
                 eventtype_data[eventtype]['false_positives'] += fp_count
@@ -223,6 +284,10 @@ class MadridEventTypeAnalyzer:
                 category_data[category]['true_positives'] += tp_count
                 category_data[category]['false_positives'] += fp_count
                 category_data[category]['total_anomalies'] += total_anomalies
+                
+                category_v2_data[category_v2]['true_positives'] += tp_count
+                category_v2_data[category_v2]['false_positives'] += fp_count
+                category_v2_data[category_v2]['total_anomalies'] += total_anomalies
         
         # Calculate final metrics for event types
         metrics_by_eventtype = {}
@@ -235,8 +300,14 @@ class MadridEventTypeAnalyzer:
         for category, data in category_data.items():
             metrics = self._calculate_metrics_from_data(data)
             metrics_by_category[category] = metrics
+        
+        # Calculate final metrics for categories v2
+        metrics_by_category_v2 = {}
+        for category_v2, data in category_v2_data.items():
+            metrics = self._calculate_metrics_from_data(data)
+            metrics_by_category_v2[category_v2] = metrics
             
-        return metrics_by_eventtype, metrics_by_category
+        return metrics_by_eventtype, metrics_by_category, metrics_by_category_v2
     
     def _calculate_metrics_from_data(self, data: Dict) -> Dict[str, float]:
         """Helper method to calculate metrics from data dictionary."""
@@ -262,7 +333,8 @@ class MadridEventTypeAnalyzer:
         return metrics
     
     def create_visualizations(self, metrics_by_eventtype: Dict[str, Dict[str, float]], 
-                            metrics_by_category: Dict[str, Dict[str, float]], output_dir: str):
+                            metrics_by_category: Dict[str, Dict[str, float]], 
+                            metrics_by_category_v2: Dict[str, Dict[str, float]], output_dir: str):
         """Create visualizations comparing metrics across eventTypes and categories."""
         output_path = Path(output_dir)
         output_path.mkdir(exist_ok=True)
@@ -412,10 +484,82 @@ class MadridEventTypeAnalyzer:
         plt.savefig(output_path / 'madrid_sensitivity_vs_far_by_category.png', dpi=300, bbox_inches='tight')
         plt.close()
         
+        # 5. NEW: Bar plot comparing all metrics by Category V2
+        categories_v2 = list(metrics_by_category_v2.keys())
+        cat_v2_sensitivities = [metrics_by_category_v2[cat]['sensitivity'] for cat in categories_v2]
+        cat_v2_precisions = [metrics_by_category_v2[cat]['precision'] for cat in categories_v2]
+        cat_v2_false_alarm_rates = [metrics_by_category_v2[cat]['false_alarm_rate'] for cat in categories_v2]
+        cat_v2_total_seizures = [metrics_by_category_v2[cat]['total_seizures'] for cat in categories_v2]
+        
+        fig, axes = plt.subplots(2, 2, figsize=(16, 12))
+        fig.suptitle('Madrid Metrics by Seizure Category V2', fontsize=16, fontweight='bold')
+        
+        # Sensitivity
+        axes[0, 0].bar(categories_v2, cat_v2_sensitivities, alpha=0.7)
+        axes[0, 0].set_title('Sensitivity by Category V2')
+        axes[0, 0].set_ylabel('Sensitivity')
+        axes[0, 0].tick_params(axis='x', rotation=45)
+        axes[0, 0].grid(True, alpha=0.3)
+        
+        # Precision
+        axes[0, 1].bar(categories_v2, cat_v2_precisions, alpha=0.7, color='orange')
+        axes[0, 1].set_title('Precision by Category V2')
+        axes[0, 1].set_ylabel('Precision')
+        axes[0, 1].tick_params(axis='x', rotation=45)
+        axes[0, 1].grid(True, alpha=0.3)
+        
+        # False Alarm Rate
+        axes[1, 0].bar(categories_v2, cat_v2_false_alarm_rates, alpha=0.7, color='red')
+        axes[1, 0].set_title('False Alarm Rate by Category V2')
+        axes[1, 0].set_ylabel('False Alarm Rate')
+        axes[1, 0].tick_params(axis='x', rotation=45)
+        axes[1, 0].grid(True, alpha=0.3)
+        
+        # Total seizures (sample size)
+        axes[1, 1].bar(categories_v2, cat_v2_total_seizures, alpha=0.7, color='green')
+        axes[1, 1].set_title('Sample Size by Category V2')
+        axes[1, 1].set_ylabel('Number of Seizures')
+        axes[1, 1].tick_params(axis='x', rotation=45)
+        axes[1, 1].grid(True, alpha=0.3)
+        
+        plt.tight_layout()
+        plt.savefig(output_path / 'madrid_metrics_by_category_v2.png', dpi=300, bbox_inches='tight')
+        plt.close()
+        
+        # 6. NEW: Sensitivity vs False Alarm Rate scatter plot - Category V2
+        plt.figure(figsize=(12, 8))
+        
+        # Create scatter plot with point sizes based on sample size
+        cat_v2_sizes = [max(50, n * 5) for n in cat_v2_total_seizures]  # Scale point sizes
+        scatter = plt.scatter(cat_v2_false_alarm_rates, cat_v2_sensitivities, s=cat_v2_sizes, 
+                             alpha=0.7, c=range(len(categories_v2)), cmap='plasma')
+        
+        # Add labels for each point
+        for i, category_v2 in enumerate(categories_v2):
+            plt.annotate(f'{category_v2}\n(n={cat_v2_total_seizures[i]})', 
+                        (cat_v2_false_alarm_rates[i], cat_v2_sensitivities[i]),
+                        xytext=(5, 5), textcoords='offset points',
+                        fontsize=10, ha='left')
+        
+        plt.xlabel('False Alarm Rate')
+        plt.ylabel('Sensitivity')
+        plt.title('Madrid Performance: Sensitivity vs False Alarm Rate by Category V2')
+        plt.grid(True, alpha=0.3)
+        
+        # Add ideal performance reference lines
+        plt.axhline(y=0.8, color='gray', linestyle='--', alpha=0.5, label='Target Sensitivity (80%)')
+        plt.axvline(x=0.2, color='gray', linestyle='--', alpha=0.5, label='Target FAR (20%)')
+        plt.legend()
+        
+        plt.tight_layout()
+        plt.savefig(output_path / 'madrid_sensitivity_vs_far_by_category_v2.png', dpi=300, bbox_inches='tight')
+        plt.close()
+        
         print(f"Visualizations saved to {output_path}")
     
     def generate_report(self, metrics_by_eventtype: Dict[str, Dict[str, float]], 
-                       metrics_by_category: Dict[str, Dict[str, float]], output_dir: str):
+                       metrics_by_category: Dict[str, Dict[str, float]], 
+                       metrics_by_category_v2: Dict[str, Dict[str, float]], output_dir: str):
         """Generate detailed text report of metrics by eventType and category."""
         output_path = Path(output_dir)
         output_path.mkdir(exist_ok=True)
@@ -423,8 +567,8 @@ class MadridEventTypeAnalyzer:
         report_file = output_path / 'madrid_eventtype_analysis_report.txt'
         
         with open(report_file, 'w') as f:
-            f.write("Madrid Seizure Detection: Analysis by EventType and Category\n")
-            f.write("=" * 60 + "\n\n")
+            f.write("Madrid Seizure Detection: Analysis by EventType and Categories\n")
+            f.write("=" * 65 + "\n\n")
             
             # Sort by total seizures for better readability
             sorted_eventtypes = sorted(metrics_by_eventtype.items(), 
@@ -444,8 +588,8 @@ class MadridEventTypeAnalyzer:
                 f.write(f"  False Positives: {metrics['false_positives']}\n")
                 f.write(f"  Total Anomalies: {metrics['total_anomalies']}\n")
             
-            # NEW: Summary by Category
-            f.write(f"\n\nSUMMARY BY CATEGORY:\n")
+            # Summary by Category
+            f.write(f"\n\nSUMMARY BY CATEGORY (V1):\n")
             f.write("-" * 30 + "\n")
             
             sorted_categories = sorted(metrics_by_category.items(), 
@@ -453,6 +597,24 @@ class MadridEventTypeAnalyzer:
             
             for category, metrics in sorted_categories:
                 f.write(f"\nCategory: {category}\n")
+                f.write(f"  Total Seizures: {metrics['total_seizures']}\n")
+                f.write(f"  Detected Seizures: {metrics['detected_seizures']}\n")
+                f.write(f"  Sensitivity: {metrics['sensitivity']:.3f} ({metrics['sensitivity']*100:.1f}%)\n")
+                f.write(f"  Precision: {metrics['precision']:.3f} ({metrics['precision']*100:.1f}%)\n")
+                f.write(f"  False Alarm Rate: {metrics['false_alarm_rate']:.3f} ({metrics['false_alarm_rate']*100:.1f}%)\n")
+                f.write(f"  True Positives: {metrics['true_positives']}\n")
+                f.write(f"  False Positives: {metrics['false_positives']}\n")
+                f.write(f"  Total Anomalies: {metrics['total_anomalies']}\n")
+            
+            # NEW: Summary by Category V2
+            f.write(f"\n\nSUMMARY BY CATEGORY (V2):\n")
+            f.write("-" * 30 + "\n")
+            
+            sorted_categories_v2 = sorted(metrics_by_category_v2.items(), 
+                                        key=lambda x: x[1]['total_seizures'], reverse=True)
+            
+            for category_v2, metrics in sorted_categories_v2:
+                f.write(f"\nCategory V2: {category_v2}\n")
                 f.write(f"  Total Seizures: {metrics['total_seizures']}\n")
                 f.write(f"  Detected Seizures: {metrics['detected_seizures']}\n")
                 f.write(f"  Sensitivity: {metrics['sensitivity']:.3f} ({metrics['sensitivity']*100:.1f}%)\n")
@@ -477,7 +639,8 @@ class MadridEventTypeAnalyzer:
             
             f.write(f"Total Seizures Analyzed: {total_seizures}\n")
             f.write(f"Total EventTypes Found: {len(metrics_by_eventtype)}\n")
-            f.write(f"Total Categories Found: {len(metrics_by_category)}\n")
+            f.write(f"Total Categories V1 Found: {len(metrics_by_category)}\n")
+            f.write(f"Total Categories V2 Found: {len(metrics_by_category_v2)}\n")
             f.write(f"Overall Sensitivity: {overall_sensitivity:.3f} ({overall_sensitivity*100:.1f}%)\n")
             f.write(f"Overall Precision: {overall_precision:.3f} ({overall_precision*100:.1f}%)\n")
             f.write(f"Overall False Alarm Rate: {overall_far:.3f} ({overall_far*100:.1f}%)\n")
@@ -490,18 +653,19 @@ class MadridEventTypeAnalyzer:
         madrid_results = self.load_madrid_results()
         print(f"Loaded {len(madrid_results)} Madrid result files")
         
-        print("Calculating metrics by eventType and category...")
-        metrics_by_eventtype, metrics_by_category = self.calculate_metrics_by_eventtype(madrid_results)
+        print("Calculating metrics by eventType, category, and category v2...")
+        metrics_by_eventtype, metrics_by_category, metrics_by_category_v2 = self.calculate_metrics_by_eventtype(madrid_results)
         print(f"Found {len(metrics_by_eventtype)} different eventTypes")
-        print(f"Found {len(metrics_by_category)} different categories")
+        print(f"Found {len(metrics_by_category)} different categories (v1)")
+        print(f"Found {len(metrics_by_category_v2)} different categories (v2)")
         
         print("Generating visualizations...")
-        self.create_visualizations(metrics_by_eventtype, metrics_by_category, output_dir)
+        self.create_visualizations(metrics_by_eventtype, metrics_by_category, metrics_by_category_v2, output_dir)
         
         print("Generating report...")
-        self.generate_report(metrics_by_eventtype, metrics_by_category, output_dir)
+        self.generate_report(metrics_by_eventtype, metrics_by_category, metrics_by_category_v2, output_dir)
         
-        return metrics_by_eventtype, metrics_by_category
+        return metrics_by_eventtype, metrics_by_category, metrics_by_category_v2
 
 def main():
     """Main execution function."""
