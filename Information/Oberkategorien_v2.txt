@@ -1,0 +1,11 @@
+| **Oberkategorie**                  | **Enthaltene Typen (Prefix oder ID)**         |
+| ---------------------------------- | --------------------------------------------- |
+| **Non-Seizure**                    | `bckg`, `impd`                                |
+| **Seizure Unknown Classification** | `sz`                                          |
+| **Focal Seizures**                 | `sz_foc_`                                     |
+| • Focal Aware (Motor/Non-Motor)    | `sz_foc_a_m`, `sz_foc_a_nm`, `sz_foc_a_um`    |
+| • Focal Impaired-Awareness         | `sz_foc_ia_m`, `sz_foc_ia_nm`, `sz_foc_ia_um` |
+| • Focal Unknown-Awareness          | `sz_foc_ua_m`, `sz_foc_ua_nm`, `sz_foc_ua_um` |
+| • Focal to Bilateral TC            | `sz_foc_f2b`                                  |
+| **Generalized Seizures**           | `sz_gen_m`, `sz_gen_nm`                       |
+| **Seizures Unknown Onset**         | `sz_uo_m`, `sz_uo_nm`                         |
