@@ -389,21 +389,84 @@ class MadridWindowedBatchProcessorCore:
         # Check for seizures in windows
         seizure_windows = []
         for i, window_labels in enumerate(labels):
-            if isinstance(window_labels, (list, np.ndarray)):
-                # Check if window contains seizure
-                if 'ictal' in window_labels or (isinstance(window_labels, np.ndarray) and np.any(window_labels == 'ictal')):
-                    seizure_windows.append({
-                        'window_index': i,
-                        'seizure_ratio': np.mean(np.array(window_labels) == 'ictal') if isinstance(window_labels, np.ndarray) else 1.0,
-                        'window_start_time': i * signal_metadata['windowing_info']['stride'],
-                        'window_duration': signal_metadata['window_duration_seconds']
-                    })
+            has_seizure = False
+            seizure_ratio = 0.0
+            seizure_segments = []
+            
+            if isinstance(window_labels, np.ndarray):
+                # Handle sample-level labels (new format)
+                if len(window_labels) > 1:  # Sample-level array
+                    if np.any(window_labels == 1):
+                        has_seizure = True
+                        seizure_ratio = np.mean(window_labels == 1)
+                        
+                        # Extract seizure segments within the window
+                        seizure_segments = self._extract_seizure_segments_from_labels(
+                            window_labels, i, signal_metadata
+                        )
+                else:
+                    # Single value (old format compatibility)
+                    if window_labels == 1 or (hasattr(window_labels, '__iter__') and 'ictal' in window_labels):
+                        has_seizure = True
+                        seizure_ratio = 1.0
+            elif isinstance(window_labels, (list, int, str)):
+                # Handle old format compatibility
+                if window_labels == 1 or window_labels == 'ictal':
+                    has_seizure = True
+                    seizure_ratio = 1.0
+                elif isinstance(window_labels, list):
+                    if 1 in window_labels or 'ictal' in window_labels:
+                        has_seizure = True
+                        seizure_ratio = (window_labels.count(1) + window_labels.count('ictal')) / len(window_labels)
+            
+            if has_seizure:
+                seizure_windows.append({
+                    'window_index': i,
+                    'seizure_ratio': seizure_ratio,
+                    'window_start_time': i * signal_metadata['windowing_info']['stride'],
+                    'window_duration': signal_metadata['window_duration_seconds'],
+                    'seizure_segments': seizure_segments
+                })
         
         if seizure_windows:
             ground_truth['seizure_present'] = True
             ground_truth['seizure_windows'] = seizure_windows
         
         return ground_truth
+    
+    def _extract_seizure_segments_from_labels(self, window_labels: np.ndarray, window_index: int, signal_metadata: Dict) -> List[Dict]:
+        """
+        Extract seizure segments from sample-level labels within a window.
+        
+        Args:
+            window_labels: Sample-level labels for the window (0/1 array)
+            window_index: Index of the window
+            signal_metadata: Signal metadata including sampling rate and timing
+            
+        Returns:
+            List of seizure segments with precise timing information
+        """
+        segments = []
+        sampling_rate = signal_metadata['sampling_rate']
+        window_start_time = window_index * signal_metadata['windowing_info']['stride']
+        
+        # Find continuous seizure regions
+        diff = np.diff(np.concatenate(([0], window_labels, [0])))
+        seizure_starts = np.where(diff == 1)[0]
+        seizure_ends = np.where(diff == -1)[0]
+        
+        for start_idx, end_idx in zip(seizure_starts, seizure_ends):
+            segment = {
+                'start_sample_in_window': int(start_idx),
+                'end_sample_in_window': int(end_idx),
+                'start_time_absolute': float(window_start_time + start_idx / sampling_rate),
+                'end_time_absolute': float(window_start_time + end_idx / sampling_rate),
+                'duration_seconds': float((end_idx - start_idx) / sampling_rate),
+                'n_samples': int(end_idx - start_idx)
+            }
+            segments.append(segment)
+        
+        return segments
     
     def analyze_windowed_data_with_madrid(self, windows: List[np.ndarray], signal_metadata: Dict) -> Tuple[Dict, Dict]:
         """Perform Madrid analysis on windowed data using specified strategy"""
