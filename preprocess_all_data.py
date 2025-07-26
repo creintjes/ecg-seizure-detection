@@ -13,7 +13,7 @@ import numpy as np
 import sys
 
 # Add seizeit2 data classes to path
-sys.path.append(os.path.join(os.path.dirname(__file__), 'Information', 'Data', 'seizeit2-main'))
+sys.path.append(os.path.join(os.path.dirname(__file__), 'Information', 'Data', 'seizeit2_main'))
 from classes.data import Data
 from classes.annotation import Annotation
 
@@ -220,7 +220,7 @@ def main():
     # Create output directory
     results_path = Path(
         "/home/swolf/asim_shared/preprocessed_data/"
-        "downsample_freq=8,window_size=3600_0,stride=1800_0"
+        "downsample_freq=8,window_size=3600_0,stride=1800_0_new"
     )
     results_path.mkdir(parents=True, exist_ok=True)
     

@@ -8,7 +8,7 @@ from pathlib import Path
 
 import sys
 import os
-sys.path.append(os.path.join(os.path.dirname(__file__), 'Information', 'Data', 'seizeit2-main'))
+sys.path.append(os.path.join(os.path.dirname(__file__), 'Information', 'Data', 'seizeit2_main'))
 
 from classes.data import Data
 from classes.annotation import Annotation
