@@ -177,9 +177,9 @@ class ECGPreprocessor:
         signal_data: np.ndarray, 
         fs: int,
         annotations: Annotation
-    ) -> Tuple[List[np.ndarray], List[int], List[Dict]]:
+    ) -> Tuple[List[np.ndarray], List[np.ndarray], List[Dict]]:
         """
-        Create overlapping windows from signal data.
+        Create overlapping windows from signal data with sample-level seizure annotations.
         
         Args:
             signal_data: Preprocessed ECG signal
@@ -187,7 +187,10 @@ class ECGPreprocessor:
             annotations: Seizure annotations
             
         Returns:
-            Tuple of (windows, labels, metadata)
+            Tuple of (windows, sample_labels, metadata)
+            - windows: List of signal windows
+            - sample_labels: List of sample-level labels (0/1 arrays for each window)
+            - metadata: List of window metadata including summary statistics
         """
         # Calculate window parameters in samples
         window_samples = int(self.window_size * int(fs))
@@ -202,11 +205,14 @@ class ECGPreprocessor:
             return [], [], []
         
         windows = []
-        labels = []
+        sample_labels = []
         metadata = []
         
         # Extract seizure events timing
         seizure_events = annotations.events if annotations.events else []
+        
+        # Create full-signal sample-level labels first
+        full_signal_labels = self._create_sample_level_labels(signal_length, int(fs), seizure_events)
         
         for i in range(n_windows):
             start_idx = i * stride_samples
@@ -216,13 +222,18 @@ class ECGPreprocessor:
             window = signal_data[start_idx:end_idx]
             windows.append(window)
             
+            # Extract sample-level labels for this window
+            window_sample_labels = full_signal_labels[start_idx:end_idx]
+            sample_labels.append(window_sample_labels)
+            
             # Calculate window timing in seconds
             start_time = start_idx / int(fs)
             end_time = end_idx / int(fs)
             
-            # Determine label (1 for seizure, 0 for normal)
-            label = self._get_window_label(start_time, end_time, seizure_events)
-            labels.append(label)
+            # Calculate summary statistics
+            n_seizure_samples = np.sum(window_sample_labels)
+            seizure_ratio = n_seizure_samples / len(window_sample_labels)
+            window_label = 1 if n_seizure_samples > 0 else 0
             
             # Store metadata
             meta = {
@@ -230,11 +241,76 @@ class ECGPreprocessor:
                 'end_time': end_time,
                 'start_idx': start_idx,
                 'end_idx': end_idx,
-                'sampling_rate': int(fs)
+                'sampling_rate': int(fs),
+                'window_label': window_label,
+                'n_seizure_samples': int(n_seizure_samples),
+                'seizure_ratio': float(seizure_ratio),
+                'seizure_segments': self._get_seizure_segments_in_window(window_sample_labels, start_time, int(fs))
             }
             metadata.append(meta)
         
-        return windows, labels, metadata
+        return windows, sample_labels, metadata
+    
+    def _create_sample_level_labels(self, signal_length: int, fs: int, seizure_events: List[Tuple[float, float]]) -> np.ndarray:
+        """
+        Create sample-level labels for the entire signal.
+        
+        Args:
+            signal_length: Length of signal in samples
+            fs: Sampling frequency
+            seizure_events: List of (start_time, end_time) seizure events in seconds
+            
+        Returns:
+            Array of 0/1 labels for each sample
+        """
+        labels = np.zeros(signal_length, dtype=int)
+        
+        for seizure_start, seizure_end in seizure_events:
+            # Convert times to sample indices
+            start_sample = int(seizure_start * fs)
+            end_sample = int(seizure_end * fs)
+            
+            # Ensure indices are within bounds
+            start_sample = max(0, start_sample)
+            end_sample = min(signal_length, end_sample)
+            
+            if start_sample < end_sample:
+                labels[start_sample:end_sample] = 1
+        
+        return labels
+    
+    def _get_seizure_segments_in_window(self, window_labels: np.ndarray, window_start_time: float, fs: int) -> List[Dict]:
+        """
+        Extract seizure segments within a window.
+        
+        Args:
+            window_labels: Sample-level labels for the window
+            window_start_time: Start time of the window in seconds
+            fs: Sampling frequency
+            
+        Returns:
+            List of seizure segments with timing information
+        """
+        segments = []
+        
+        # Find continuous seizure regions
+        diff = np.diff(np.concatenate(([0], window_labels, [0])))
+        seizure_starts = np.where(diff == 1)[0]
+        seizure_ends = np.where(diff == -1)[0]
+        
+        for start_idx, end_idx in zip(seizure_starts, seizure_ends):
+            segment = {
+                'start_sample_in_window': int(start_idx),
+                'end_sample_in_window': int(end_idx),
+                'start_time_absolute': float(window_start_time + start_idx / fs),
+                'end_time_absolute': float(window_start_time + end_idx / fs),
+                'duration_seconds': float((end_idx - start_idx) / fs),
+                'n_samples': int(end_idx - start_idx)
+            }
+            segments.append(segment)
+        
+        return segments
+
     def _get_no_window_labels(self, length: float, frequency: int, intervals: list[list[float]]) -> np.ndarray:
         """
         Generates a 1D NumPy array of zeros with specified length and frequency.
@@ -409,15 +485,18 @@ class ECGPreprocessor:
                         downsampled_signal, new_fs, annotations
                     )
                 
+                # Calculate seizure windows count from metadata
+                n_seizure_windows = sum(1 for meta in metadata if meta.get('window_label', 0) == 1)
+                
                 channel_result = {
                     'channel_name': channel_name,
                     'windows': windows,
-                    'labels': labels,
+                    'labels': labels,  # Now contains sample-level labels (arrays) instead of binary window labels
                     'metadata': metadata,
                     'original_fs': int(fs),
                     'processed_fs': new_fs,
                     'n_windows': len(windows),
-                    'n_seizure_windows': sum(labels)
+                    'n_seizure_windows': n_seizure_windows
                 }
                 
                 processed_channels.append(channel_result)
