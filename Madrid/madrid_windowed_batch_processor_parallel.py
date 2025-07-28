@@ -950,13 +950,81 @@ class ParallelMadridWindowedBatchProcessor:
         
         return prioritized_files
     
-    def process_files(self, data_dir: str, output_dir: str, max_files: int = None) -> List[str]:
+    def filter_unprocessed_files(self, pkl_files: List[Path], existing_results_dir: str) -> List[Path]:
+        """Filter out files that already have results in the existing results directory"""
+        if not os.path.exists(existing_results_dir):
+            logger.info(f"Existing results directory {existing_results_dir} does not exist, processing all files")
+            return pkl_files
+        
+        # Find existing result files
+        existing_json_files = list(Path(existing_results_dir).glob("madrid_windowed_results_*.json"))
+        
+        # Extract processed file identifiers from existing results
+        processed_identifiers = set()
+        for json_file in existing_json_files:
+            # Extract subject_id and run_id from filename
+            # Format: madrid_windowed_results_sub-XXX_run-XX_[seizure_XX_]timestamp.json
+            filename = json_file.stem
+            parts = filename.replace('madrid_windowed_results_', '').split('_')
+            
+            if len(parts) >= 2:
+                subject_id = parts[0]
+                run_id = parts[1]
+                
+                # Check if seizure_id is present
+                seizure_id = None
+                if len(parts) >= 3 and parts[2].startswith('seizure'):
+                    seizure_id = parts[2]
+                
+                if seizure_id:
+                    identifier = f"{subject_id}_{run_id}_{seizure_id}"
+                else:
+                    identifier = f"{subject_id}_{run_id}"
+                
+                processed_identifiers.add(identifier)
+        
+        # Filter pkl files
+        unprocessed_files = []
+        skipped_count = 0
+        
+        for pkl_file in pkl_files:
+            # Extract identifier from pkl filename
+            filename = pkl_file.stem.replace('_preprocessed', '')
+            parts = filename.split('_')
+            
+            if len(parts) >= 2:
+                subject_id = parts[0]
+                run_id = parts[1]
+                seizure_id = parts[2] if len(parts) > 2 else None
+                
+                if seizure_id:
+                    identifier = f"{subject_id}_{run_id}_{seizure_id}"
+                else:
+                    identifier = f"{subject_id}_{run_id}"
+                
+                if identifier in processed_identifiers:
+                    logger.info(f"Skipping already processed file: {pkl_file.name}")
+                    skipped_count += 1
+                else:
+                    unprocessed_files.append(pkl_file)
+            else:
+                # If we can't parse the filename, include it to be safe
+                unprocessed_files.append(pkl_file)
+        
+        logger.info(f"Filtered files: {len(unprocessed_files)} to process, {skipped_count} already processed")
+        return unprocessed_files
+    
+    def process_files(self, data_dir: str, output_dir: str, existing_results_dir: str = None, max_files: int = None) -> List[str]:
         """Process windowed files in parallel, prioritizing seizure files"""
         # Create output directory
         Path(output_dir).mkdir(parents=True, exist_ok=True)
         
         # Find windowed files
         pkl_files = list(Path(data_dir).glob("*_preprocessed.pkl"))
+        
+        # Filter out already processed files if existing results directory is provided
+        if existing_results_dir:
+            pkl_files = self.filter_unprocessed_files(pkl_files, existing_results_dir)
         
         # Prioritize seizure files
         pkl_files = self.prioritize_seizure_files(pkl_files)
@@ -1018,6 +1086,7 @@ def main():
     parser = argparse.ArgumentParser(description='Parallel Madrid Windowed Batch Processor')
     parser.add_argument('--data-dir', required=True, help='Directory containing windowed preprocessed .pkl files')
     parser.add_argument('--output-dir', required=True, help='Directory to save JSON results')
+    parser.add_argument('--existing-results-dir', help='Directory containing existing results to skip already processed files')
     parser.add_argument('--max-files', type=int, help='Maximum number of files to process')
     parser.add_argument('--config-file', help='JSON configuration file')
     parser.add_argument('--n-workers', type=int, help=f'Number of worker processes (default: {cpu_count()-1})')
@@ -1065,6 +1134,7 @@ def main():
     processed_files = processor.process_files(
         data_dir=args.data_dir,
         output_dir=args.output_dir,
+        existing_results_dir=args.existing_results_dir,
         max_files=args.max_files
     )
     
