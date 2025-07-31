@@ -276,7 +276,6 @@ def evaluate_fn(config,
     """
     # load model
     input_length = window_size = set_window_size(config['dataset']['downsample_freq'], config['dataset']['n_periods'], bpm=config['dataset']['heartbeats_per_minute'])
-    print("dataset_idx", dataset_idx)
     stage2 = ExpStage2.load_from_checkpoint(os.path.join('saved_models', f'stage2-{dataset_idx}.ckpt'), 
                                             dataset_idx=dataset_idx, input_length=input_length, config=config, 
                                             map_location=f'cuda:{device}')

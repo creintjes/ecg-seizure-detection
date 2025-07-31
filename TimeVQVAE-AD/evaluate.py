@@ -16,7 +16,7 @@ def load_args():
     parser = ArgumentParser()
     parser.add_argument('--config', type=str, default=get_root_dir().joinpath('configs', 'config.yaml'))
     parser.add_argument('--dataset_ind', default=['001'], nargs='+', help='e.g., 001 002 or "all"')
-    parser.add_argument('--latent_window_size_rates', default=[0.5], nargs='+') # , 0.1, 0.3
+    parser.add_argument('--latent_window_size_rates', default=[0.1, 0.3, 0.5], nargs='+')
     parser.add_argument('--rolling_window_stride_rate', default=0.1, type=float)
     parser.add_argument('--q', default=0.99, type=float)
     parser.add_argument('--explainable_sampling', default=False)
@@ -46,7 +46,7 @@ if __name__ == '__main__':
     n_periods = config['dataset']['n_periods']
     bpm = config['dataset']['heartbeats_per_minute']
 
-    if args.dataset_ind == ['all']:
+    if args.dataset_ind == 'all':
         # load all subjects from result folder
         result_path = get_root_dir().joinpath("evaluation", "results")
         all_files = list(result_path.glob("sub-*_run-*_preprocessed.pkl"))
@@ -57,18 +57,18 @@ if __name__ == '__main__':
     for sub in subjects:
         print(f'\nEvaluating subject: {sub}')
 
-        for worker_idx in range(len(args.latent_window_size_rates)):
-            latent_window_size_rates = args.latent_window_size_rates[worker_idx * args.n_workers:(worker_idx + 1) * args.n_workers]
-            if not latent_window_size_rates.size:
-                break
+    #     for worker_idx in range(len(args.latent_window_size_rates)):
+    #         latent_window_size_rates = args.latent_window_size_rates[worker_idx * args.n_workers:(worker_idx + 1) * args.n_workers]
+    #         if not latent_window_size_rates.size:
+    #             break
 
-            procs = []
-            for wsr in latent_window_size_rates:
-                proc = Process(target=evaluate_fn, args=(config, sub, wsr, args.rolling_window_stride_rate, args.q, args.device))
-                procs.append(proc)
-                proc.start()
-            for p in procs:
-                p.join()
+    #         procs = []
+    #         for wsr in latent_window_size_rates:
+    #             proc = Process(target=evaluate_fn, args=(config, sub, wsr, args.rolling_window_stride_rate, args.q, args.device))
+    #             procs.append(proc)
+    #             proc.start()
+    #         for p in procs:
+    #             p.join()
         
         # Aggregate joint anomaly scores
         a_s_star = 0.
@@ -82,7 +82,6 @@ if __name__ == '__main__':
                 joint_threshold += result['anom_threshold']
 
         a_bar_s_star = a_s_star.mean(axis=0)
-
         # Smoothed average
         window_size = set_window_size(sr, n_periods=n_periods, bpm=bpm)
         a_2bar_s_star = np.zeros_like(a_bar_s_star)

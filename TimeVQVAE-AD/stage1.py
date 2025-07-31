@@ -24,7 +24,7 @@ def load_args():
     parser.add_argument('--config', type=str, help="Path to the config data  file.",
                         default=get_root_dir().joinpath('configs', 'config.yaml'))
     parser.add_argument('--gpu_device_ind', nargs='+', default=[0], type=int)
-    parser.add_argument('--dataset_ind', default='1', nargs='+', help='e.g., 1 2 3. Indices of datasets to run experiments on.')
+    parser.add_argument('--dataset_ind', default=None, nargs='+', help='e.g., 1 2 3. Indices of datasets to run experiments on.')
     return parser.parse_args()
 
 
@@ -69,7 +69,7 @@ def train_stage1(config: dict,
     wandb.finish()
 
     print('saving the models...')
-    trainer.save_checkpoint(os.path.join(f'saved_models', f'stage1-{dataset_idx}.ckpt'))
+    trainer.save_checkpoint(os.path.join(f'saved_models', f'stage1-{dataset_idx}{"_window" if expand_labels else "_no_window"}.ckpt'))
 
 
 if __name__ == '__main__':
@@ -78,25 +78,36 @@ if __name__ == '__main__':
     config = load_yaml_param_settings(args.config)
 
     sr = config['dataset']['downsample_freq']
-    stride = config['dataset']['stride']
     data_dir = Path(config['dataset']['root_dir'] + f"/downsample_freq={sr},no_windows")
     batch_size = config['dataset']['batch_sizes']['stage1']
     num_workers = config['dataset']['num_workers']
     n_periods = config['dataset']['n_periods']
-    heartbeats_per_minute = config['dataset']['heartbeats_per_minute']
-    for idx in args.dataset_ind:
-        dataset_idx = int(idx)
-        sub = f"{dataset_idx:03d}" if str(dataset_idx) != "all" else "all"
+    bpm = config['dataset']['heartbeats_per_minute']
+    stride = config['dataset']['stride']
+    expand_labels = config['dataset']['expand_labels']
 
-        window_size = set_window_size(sr, n_periods, bpm=heartbeats_per_minute)
-
-        train_data_loader, test_data_loader = [build_data_pipeline(batch_size,
-                                                                   data_dir,
-                                                                   sub,
-                                                                   kind,
-                                                                   window_size,
-                                                                   stride,
-                                                                   num_workers) for kind in ['train', 'test']]
+    window_size = set_window_size(sr, n_periods, bpm=bpm)
+    stride = stride if stride > 0 else int(window_size / 4)
+    if not args.dataset_ind:
+        args.dataset_ind = ["all"]
+    for dataset_idx in [x for idx in args.dataset_ind for x in idx.split(',')]:
+        sub = f"{int(dataset_idx):03d}" if str(dataset_idx) != "all" else "all"
+        checkpoint_path = os.path.join('saved_models', f'stage1-{sub}{"_window" if expand_labels else "_no_window"}.ckpt')
+        if os.path.exists(checkpoint_path):
+            print(f"Skipping training for {sub}, checkpoint already exists at {checkpoint_path}")
+            continue
+        train_data_loader, test_data_loader = [build_data_pipeline(
+                    batch_size,
+                    data_dir,
+                    sub,
+                    kind,
+                    window_size,
+                    stride,
+                    num_workers,
+                    sampling_rate=sr,
+                    expand_labels=expand_labels
+                ) for kind in ['train', 'test']
+            ]
         # train
         train_stage1(config, sub, window_size, train_data_loader, test_data_loader, args.gpu_device_ind)
 

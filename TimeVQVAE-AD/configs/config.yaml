@@ -2,16 +2,15 @@ dataset:
   names: SeizeIT2-ECG-TimeVQVAE-AD
   root_dir: /home/swolf/asim_shared/preprocessed_data
   downsample_freq: 8
-  stride: 1
-  # dataset_windowed: /downsample_freq=8,window_size=3600_0,stride=1800_0
-  # dataset_continuous: /downsample_freq=32,no_windows
+  stride: -1
   in_channels: 1
   batch_sizes:
     stage1: 256 #512
-    stage2: 128 #256 #512
-  num_workers: 1
+    stage2: 512 #256 #512
+  num_workers: 0
   heartbeats_per_minute: 75 # Need to find a way of calculating the true bpm look into set_window_size() for contexts
-  n_periods: 10 # 150  # window_size = n_periods * period_length; REF: MERLIN++; How many hearth beats we want approximately in one sample
+  n_periods: 400  # window_size = n_periods * period_length; REF: MERLIN++; How many hearth beats we want approximately in one sample
+  expand_labels: True # If True, labels are expanded to windows from pre 5 to post 3 seconds
 
 exp_params:
   lr:
@@ -34,27 +33,27 @@ trainer_params:
 
 
 encoder:
-  dim: 64
-  n_resnet_blocks: 4
-  downsampled_width: 32
+  dim: 128
+  n_resnet_blocks: 6
+  downsampled_width: 16
 
 decoder:
-  n_resnet_blocks: 4
+  n_resnet_blocks: 6
 
 VQ-VAE:
-  n_fft: 4
-  codebook_size: 64 #128
+  n_fft: 8
+  codebook_size: 256 #128
 
 
 MaskGIT:
-  choice_temperature: 4  # for masking
-  T: 20
+  choice_temperature: 2  # for masking
+  T: 25
   mask_scheduling_func: "cosine"
   prior_model:
-    hidden_dim: 128
-    depth: 4
-    heads: 4
-    attn_dim_head: 64
+    hidden_dim: 256
+    depth: 6
+    heads: 8
+    attn_dim_head: 32
     ff_mult: 4
     use_rmsnorm: True
-    dropout: 0.3
+    dropout: 0.2

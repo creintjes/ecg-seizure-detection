@@ -359,7 +359,7 @@ def set_window_size(sampling_rate: int, n_periods: int = 3, bpm: int = 75) -> in
     :return: window size in samples
     """
     seconds_per_beat = 60 / bpm
-    samples_per_beat = sampling_rate * seconds_per_beat
+    samples_per_beat = float(sampling_rate) * seconds_per_beat
     return int(round(samples_per_beat * n_periods))
 
 def compute_receptive_field(layers):

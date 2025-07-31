@@ -87,21 +87,30 @@ if __name__ == '__main__':
     num_workers = config['dataset']['num_workers']
     n_periods = config['dataset']['n_periods']
     bpm = config['dataset']['heartbeats_per_minute']
+    expand_labels = config['dataset']['expand_labels']
 
-    for idx in args.dataset_ind:
-        subject_id = f"{int(idx):03d}" if str(idx) != "all" else "all"
+    window_size = set_window_size(sr, n_periods, bpm=bpm)
+    stride = stride if stride > 0 else int(window_size / 4)
+    if not args.dataset_ind:
+        args.dataset_ind = ["all"]
+    for dataset_idx in [x for idx in args.dataset_ind for x in idx.split(',')]:
+        sub = f"{int(dataset_idx):03d}" if str(dataset_idx) != "all" else "all"
+        checkpoint_path = os.path.join('saved_models', f'stage2-{sub}{"_window" if expand_labels else "_no_window"}.ckpt')
+        if os.path.exists(checkpoint_path):
+            print(f"Skipping training for {sub}, checkpoint already exists at {checkpoint_path}")
+            continue
 
-        # Compute dynamic window size
-        window_size = set_window_size(sr, n_periods=n_periods, bpm=bpm)
+        train_data_loader, test_data_loader = [build_data_pipeline(
+                    batch_size,
+                    data_dir,
+                    sub,
+                    kind,
+                    window_size,
+                    stride,
+                    num_workers,
+                    sampling_rate=sr,
+                    expand_labels=expand_labels
+                ) for kind in ['train', 'test']
+            ]
 
-        train_loader, test_loader = [build_data_pipeline(
-            batch_size=batch_size,
-            data_dir=data_dir,
-            sub=subject_id,
-            kind=kind,
-            window_size=window_size,
-            stride=stride,
-            num_workers=num_workers
-        ) for kind in ['train', 'test']]
-
-        train_stage2(config, subject_id, window_size, train_loader, test_loader, args.gpu_device_ind)
+        train_stage2(config, sub, window_size, train_data_loader, test_data_loader, args.gpu_device_ind)

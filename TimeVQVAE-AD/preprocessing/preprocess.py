@@ -42,7 +42,14 @@ class ASIMAnomalySequence:
     labels: np.ndarray
 
     @classmethod
-    def from_path(cls, path: Path) -> 'ASIMAnomalySequence':
+    def from_path(
+        cls, 
+        path: Path, 
+        expand_labels: bool = False, 
+        sampling_rate: int = None,
+        pre_minutes: float = 5.0,
+        post_minutes: float = 3.0
+    ) -> 'ASIMAnomalySequence':
         match = pattern.match(path.name)
         assert match, f"Filename {path.name} doesn't match expected pattern."
         subject_id, run_id = match.groups()
@@ -51,16 +58,38 @@ class ASIMAnomalySequence:
             raw = pickle.load(f)
 
         data = raw['channels'][0]['windows'][0]
-        labels = raw['channels'][0]['labels'][0]
+        labels = np.array(raw['channels'][0]['labels'][0])
 
         assert len(data) == len(labels), "Data and labels must have the same length."
+
+        if expand_labels:
+            assert sampling_rate is not None, "sampling_rate must be provided if expand_labels is True"
+            labels = cls._expand_labels(
+                labels, 
+                sampling_rate, 
+                pre_minutes=pre_minutes, 
+                post_minutes=post_minutes
+            )
 
         return cls(
             subject_id=subject_id,
             run_id=run_id,
             data=np.array(data),
-            labels=np.array(labels)
+            labels=labels
         )
+
+    @staticmethod
+    def _expand_labels(labels, sampling_rate, pre_minutes=5.0, post_minutes=3.0):
+        expanded = labels.copy()
+        n = len(labels)
+        pre_samples = int(pre_minutes * 60 * sampling_rate)
+        post_samples = int(post_minutes * 60 * sampling_rate)
+        ones = np.where(labels == 1)[0]
+        for idx in ones:
+            start = max(0, idx - pre_samples)
+            end = min(n, idx + post_samples + 1)
+            expanded[start:end] = 1
+        return expanded
 
  
 class ASIMAnomalyDataset(Dataset):
@@ -69,7 +98,9 @@ class ASIMAnomalyDataset(Dataset):
                  data_dir: Path,
                  window_size: int,
                  stride: int = 1,
-                 sub: str = "all"):
+                 sub: str = "all",
+                 sampling_rate: int = None,
+                 expand_labels: bool = False):
         assert kind in ['train', 'test'], f"Invalid kind: {kind}"
         self.kind = kind
         self.window_size = window_size
@@ -84,7 +115,11 @@ class ASIMAnomalyDataset(Dataset):
             files = sorted(data_dir.glob(f"sub-{sub}_run-*_preprocessed.pkl"))
 
         for file in files:
-            self.sequences.append(ASIMAnomalySequence.from_path(file))
+            self.sequences.append(ASIMAnomalySequence.from_path(
+                file,
+                expand_labels=expand_labels,
+                sampling_rate=sampling_rate
+            ))
 
         if not self.sequences:
             raise ValueError(f"No matching files found for sub={sub} in {data_dir}")
