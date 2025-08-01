@@ -85,8 +85,6 @@ def produce_mp_results(amount_of_annomalies_per_record: int, amount_of_records:i
                 mps_list.append(pickle.load(f)[:, 0].reshape(-1, 1))
             with open(os.path.join(DIR_preprocessed, mp_filename[3:-4]+"_preprocessed.pkl"), "rb") as g:
                 label_list.append(pickle.load(g)["channels"][0]["labels"][0])
-            # print(len(mps_list[0]))
-            # print(amount_of_annomalies_per_record)
             if len(mps_list[0]) < amount_of_annomalies_per_record:
                 print(f"{subject=}, {run=}, {len(mps_list[0])=}, {amount_of_annomalies_per_record}")
                 mps_list = []
@@ -224,8 +222,6 @@ if __name__ == "__main__":
         "DIR_preprocessed": [f"/home/swolf/asim_shared/preprocessed_data/downsample_freq={downsample_freq},no_windows"],
         "MPs_path": [f"/home/swolf/asim_shared/results/MP/downsample_freq={downsample_freq},no_windows/seq_len{window_size_sec}sec"]
     }
-
-
 
         # Run grid search with saving enabled
     grid_search_results = run_grid_search(parameter_grid, produce_mp_results, save_results=True)
