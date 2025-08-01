@@ -38,11 +38,22 @@ def find_files_with_prefix(directory: str, prefix: str) -> List[Path]:
     dir_path = Path(directory)
     return [file for file in dir_path.iterdir() if file.is_file() and file.name.startswith(prefix)]
 
-def produce_mp_results(amount_of_annomalies_per_record: int, amount_of_records:int, batch_size_load :int, downsample_freq:int, max_gap_annos_in_sec:int, n_cons:int, window_size_sec:int, pre_thresh_sec:int, post_thresh_sec:int, DIR_preprocessed:str, MPs_path:str, verbose:bool):
-    mps_filenames = [filename for filename in os.listdir(MPs_path) if filename.endswith(".pkl")]
-    # removing "mp_" prefix and .pkl "suffix"
-    recs = [tuple(mp_filename[3:-4].split("_")) for mp_filename in mps_filenames][:amount_of_records]
-    
+def produce_mp_results(amount_of_annomalies_per_record: int, 
+                       batch_size_load: int,
+                       downsample_freq: int, 
+                       max_gap_annos_in_sec: int, 
+                       n_cons: int, 
+                       window_size_sec: int, 
+                       pre_thresh_sec: int, 
+                       post_thresh_sec: int, 
+                       DIR_preprocessed: str, 
+                       MPs_path: str, 
+                       recording_list_excel: str,
+                       verbose: bool):
+
+    df = pd.read_excel(recording_list_excel)
+    recs = [tuple(sr.split("_")) for sr in df["subject_run"].tolist()]
+
     mps_list = []
     label_list = []
 
@@ -201,7 +212,7 @@ if __name__ == "__main__":
     window_size_sec = 25
     # parameter_grid: Dict[str, List[Any]] = {
     #     "amount_of_annomalies_per_record": [1500, 2000, 3000, 4000],
-    #     "amount_of_records": [2795], 
+    #     "recording_list_excel": ["/home/swolf/asim_shared/filelists/test_filelist_600.xlsx"],
     #     "batch_size_load": [100],
     #     "downsample_freq": [downsample_freq],
     #     "max_gap_annos_in_sec": [1,10, 15, 20, 25, 30],
@@ -215,7 +226,7 @@ if __name__ == "__main__":
     # }
     # parameter_grid_detection_window: Dict[str, List[Any]] = {
     #     "amount_of_annomalies_per_record": [1500, 2000, 3000, 4000],
-    #     "amount_of_records": [2795], 
+    #     "recording_list_excel": ["/home/swolf/asim_shared/filelists/test_filelist_600.xlsx"],
     #     "batch_size_load": [100],
     #     "downsample_freq": [downsample_freq],
     #     "max_gap_annos_in_sec": [1,10, 15, 20, 25, 30],
@@ -229,7 +240,7 @@ if __name__ == "__main__":
     # }
     parameter_grid: Dict[str, List[Any]] = {
         "amount_of_annomalies_per_record": [1500, ],
-        "amount_of_records": [27], 
+        "recording_list_excel": ["/home/jhagenbe_sw/ASIM/ecg-seizure-detection/MatrixProfile/configs/splits/val_filelist_4.xlsx"],
         "batch_size_load": [100],
         "downsample_freq": [downsample_freq],
         "max_gap_annos_in_sec": [1,],
@@ -243,7 +254,7 @@ if __name__ == "__main__":
     }
     parameter_grid_detection_window: Dict[str, List[Any]] = {
         "amount_of_annomalies_per_record": [1500, ],
-        "amount_of_records": [27], 
+        "recording_list_excel": ["/home/jhagenbe_sw/ASIM/ecg-seizure-detection/MatrixProfile/configs/splits/val_filelist_4.xlsx"],
         "batch_size_load": [100],
         "downsample_freq": [downsample_freq],
         "max_gap_annos_in_sec": [1,],
@@ -259,4 +270,3 @@ if __name__ == "__main__":
     # Run grid search with saving enabled
     grid_search_results = run_grid_search(parameter_grid, produce_mp_results, save_results=True)
     grid_search_results = run_grid_search(parameter_grid_detection_window, produce_mp_results, save_results=True)
-
