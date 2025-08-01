@@ -148,7 +148,6 @@ def run_grid_search(param_grid: Dict[str, List[Any]],
     Returns:
         List[Dict[str, Any]]: List of parameter combinations and their results.
     """
-    excel_path = "/home/jhagenbe_sw/ASIM/ecg-seizure-detection/MatrixProfile/hp_tuning_mp_results_resp.xlsx"
     keys = list(param_grid.keys())
     combinations = list(itertools.product(*(param_grid[key] for key in keys)))
 
@@ -156,7 +155,6 @@ def run_grid_search(param_grid: Dict[str, List[Any]],
         params = dict(zip(keys, values))
         print(f"Testing combination: {params}")
         try:
-            # result = target_function(**params)
             loaded_recs, loaded_recs_resp, sensitivity, false_alarms_per_hour, resp_sensitivity, resp_false_alarms_per_hour, overview = target_function(**params)
             combined = {
                 **params,
@@ -170,15 +168,24 @@ def run_grid_search(param_grid: Dict[str, List[Any]],
             }
 
             if save_results:
+                # Excel-Pfad je nach pre_thresh_sec oder post_thresh_sec anpassen
+                detection_window_used = (
+                    "pre_thresh_sec" in params and params["pre_thresh_sec"] > 0
+                ) or (
+                    "post_thresh_sec" in params and params["post_thresh_sec"] > 0
+                )
+
+                excel_suffix = "_detection_window" if detection_window_used else ""
+                excel_path = f"/home/jhagenbe_sw/ASIM/ecg-seizure-detection/MatrixProfile/results/hp_tuning_mp_results_resp{excel_suffix}.xlsx"
+
                 df_row = pd.DataFrame([combined])
 
                 if os.path.isfile(excel_path):
-                    # Load existing Excel file and append new row
                     existing_df = pd.read_excel(excel_path)
                     df_combined = pd.concat([existing_df, df_row], ignore_index=True)
                 else:
                     df_combined = df_row
-                # Write the full DataFrame back to the file
+
                 df_combined.to_excel(excel_path, index=False)
 
 
@@ -192,14 +199,41 @@ if __name__ == "__main__":
 
     downsample_freq = 8
     window_size_sec = 25
+    # parameter_grid: Dict[str, List[Any]] = {
+    #     "amount_of_annomalies_per_record": [1500, 2000, 3000, 4000],
+    #     "amount_of_records": [2795], 
+    #     "batch_size_load": [100],
+    #     "downsample_freq": [downsample_freq],
+    #     "max_gap_annos_in_sec": [1,10, 15, 20, 25, 30],
+    #     "n_cons": [1, 3, 5, 10, 35],
+    #     "window_size_sec": [window_size_sec],
+    #     "pre_thresh_sec": [0],
+    #     "post_thresh_sec": [0],
+    #     "verbose": [False],
+    #     "DIR_preprocessed": [f"/home/swolf/asim_shared/preprocessed_data/downsample_freq={downsample_freq},no_windows"],
+    #     "MPs_path": [f"/home/swolf/asim_shared/results/MP/downsample_freq={downsample_freq},no_windows/seq_len{window_size_sec}sec"]
+    # }
+    # parameter_grid_detection_window: Dict[str, List[Any]] = {
+    #     "amount_of_annomalies_per_record": [1500, 2000, 3000, 4000],
+    #     "amount_of_records": [2795], 
+    #     "batch_size_load": [100],
+    #     "downsample_freq": [downsample_freq],
+    #     "max_gap_annos_in_sec": [1,10, 15, 20, 25, 30],
+    #     "n_cons": [1, 3, 5, 10, 35],
+    #     "window_size_sec": [window_size_sec],
+    #     "pre_thresh_sec": [60 * 5],
+    #     "post_thresh_sec": [60 * 3],
+    #     "verbose": [False],
+    #     "DIR_preprocessed": [f"/home/swolf/asim_shared/preprocessed_data/downsample_freq={downsample_freq},no_windows"],
+    #     "MPs_path": [f"/home/swolf/asim_shared/results/MP/downsample_freq={downsample_freq},no_windows/seq_len{window_size_sec}sec"]
+    # }
     parameter_grid: Dict[str, List[Any]] = {
-        "amount_of_annomalies_per_record": [1500, 2000, 3000, 4000],
-        "amount_of_records": [2795], # 2795 * 0.2 => 20% of samples
+        "amount_of_annomalies_per_record": [1500, ],
+        "amount_of_records": [27], 
         "batch_size_load": [100],
         "downsample_freq": [downsample_freq],
-        # "max_gap_annos_in_sec": [1, 2, 3, 4, 6, 8, 10],
-        "max_gap_annos_in_sec": [1,10, 15, 20, 25, 30],
-        "n_cons": [1, 3, 5, 10, 35],
+        "max_gap_annos_in_sec": [1,],
+        "n_cons": [1,],
         "window_size_sec": [window_size_sec],
         "pre_thresh_sec": [0],
         "post_thresh_sec": [0],
@@ -207,14 +241,13 @@ if __name__ == "__main__":
         "DIR_preprocessed": [f"/home/swolf/asim_shared/preprocessed_data/downsample_freq={downsample_freq},no_windows"],
         "MPs_path": [f"/home/swolf/asim_shared/results/MP/downsample_freq={downsample_freq},no_windows/seq_len{window_size_sec}sec"]
     }
-    parameter_grid_2: Dict[str, List[Any]] = {
-        "amount_of_annomalies_per_record": [1500, 2000, 3000, 4000],
-        "amount_of_records": [2795], # 2795 * 0.2 => 20% of samples
+    parameter_grid_detection_window: Dict[str, List[Any]] = {
+        "amount_of_annomalies_per_record": [1500, ],
+        "amount_of_records": [27], 
         "batch_size_load": [100],
         "downsample_freq": [downsample_freq],
-        # "max_gap_annos_in_sec": [1, 2, 3, 4, 6, 8, 10],
-        "max_gap_annos_in_sec": [1,10, 15, 20, 25, 30],
-        "n_cons": [1, 3, 5, 10, 35],
+        "max_gap_annos_in_sec": [1,],
+        "n_cons": [1, ],
         "window_size_sec": [window_size_sec],
         "pre_thresh_sec": [60 * 5],
         "post_thresh_sec": [60 * 3],
@@ -223,7 +256,7 @@ if __name__ == "__main__":
         "MPs_path": [f"/home/swolf/asim_shared/results/MP/downsample_freq={downsample_freq},no_windows/seq_len{window_size_sec}sec"]
     }
 
-        # Run grid search with saving enabled
+    # Run grid search with saving enabled
     grid_search_results = run_grid_search(parameter_grid, produce_mp_results, save_results=True)
-    grid_search_results = run_grid_search(parameter_grid_2, produce_mp_results, save_results=True)
+    grid_search_results = run_grid_search(parameter_grid_detection_window, produce_mp_results, save_results=True)
 
