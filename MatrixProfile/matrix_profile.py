@@ -6,6 +6,7 @@ import neurokit2 as nk
 import pandas as pd
 import neurokit2 as nk
 from typing import Optional
+from typing import Tuple
 
 class MatrixProfile:
     @staticmethod
@@ -36,7 +37,34 @@ class MatrixProfile:
         matrix_profile = stumpy.scrump(time_series, m=subsequence_length, percentage=percentage, pre_scrump=pre_scrump)
         return matrix_profile
 
+    def compute_multivariate_matrix_profile(features: np.ndarray, subsequence_length: int) -> Tuple[np.ndarray, np.ndarray]:
+        """
+        Compute a multivariate matrix profile using STUMPY's mstump.
 
+        Parameters:
+        ----------
+        features : np.ndarray
+            2D array of shape (n_samples, n_features), e.g. HRV features over time.
+        subsequence_length : int
+            Window size (number of feature vectors) for the matrix profile.
+
+        Returns:
+        -------
+        Tuple[np.ndarray, np.ndarray]
+            A tuple (matrix_profile, profile_indices) where:
+            - matrix_profile has shape (n_samples - m + 1, n_features)
+            - profile_indices are the indices of the nearest neighbors
+        """
+        if features.ndim != 2:
+            raise ValueError("Expected a 2D array with shape (n_samples, n_features).")
+
+        # STUMPY expects input shape: (n_features, n_samples)
+        features_T = features.T
+
+        # Compute the multivariate matrix profile
+        matrix_profile, profile_indices = stumpy.mstump(features_T, m=subsequence_length)
+
+        return matrix_profile, profile_indices
 
 
 
