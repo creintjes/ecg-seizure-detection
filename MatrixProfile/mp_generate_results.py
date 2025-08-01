@@ -147,18 +147,10 @@ def produce_mp_results(amount_of_annomalies_per_record: int,
 
 def run_grid_search(param_grid: Dict[str, List[Any]],
                     target_function: Callable[..., Dict[str, Any]],
-                    save_results: bool = False) -> List[Dict[str, Any]]:
-    """
-    Executes a grid search over all combinations of parameter values and optionally saves results to CSV.
+                    val_excel_path: str,
+                    test_excel_path: str,
+                    save_results: bool = False) -> None:
 
-    Args:
-        param_grid (Dict[str, List[Any]]): Parameter grid with possible values for each parameter.
-        target_function (Callable): The function to evaluate.
-        save_results (bool): Whether to save results to CSV.
-
-    Returns:
-        List[Dict[str, Any]]: List of parameter combinations and their results.
-    """
     keys = list(param_grid.keys())
     combinations = list(itertools.product(*(param_grid[key] for key in keys)))
 
@@ -166,31 +158,41 @@ def run_grid_search(param_grid: Dict[str, List[Any]],
         params = dict(zip(keys, values))
         print(f"Testing combination: {params}")
         try:
-            loaded_recs, loaded_recs_resp, sensitivity, false_alarms_per_hour, resp_sensitivity, resp_false_alarms_per_hour, overview = target_function(**params)
+            test_results = target_function(**params, recording_list_excel=test_excel_path)
+
+            val_results = target_function(**params, recording_list_excel=val_excel_path)
+
             combined = {
                 **params,
-                "loaded_recs": loaded_recs,
-                "loaded_recs_resp": loaded_recs_resp,
-                "sensitivity": sensitivity,
-                "false_alarms_per_hour": false_alarms_per_hour,
-                "resp_sensitivity":resp_sensitivity,
-                "resp_false_alarms_per_hour": resp_false_alarms_per_hour,
-                "overview": overview
+                # Test-metrics
+                "test_loaded_recs": test_results[0],
+                "test_loaded_recs_resp": test_results[1],
+                "test_sensitivity": test_results[2],
+                "test_false_alarms_per_hour": test_results[3],
+                "test_resp_sensitivity": test_results[4],
+                "test_resp_false_alarms_per_hour": test_results[5],
+                "test_overview": test_results[6],
+                # Val-metrics
+                "val_loaded_recs": val_results[0],
+                "val_loaded_recs_resp": val_results[1],
+                "val_sensitivity": val_results[2],
+                "val_false_alarms_per_hour": val_results[3],
+                "val_resp_sensitivity": val_results[4],
+                "val_resp_false_alarms_per_hour": val_results[5],
+                "val_overview": val_results[6]
             }
 
             if save_results:
-                # Excel-Pfad je nach pre_thresh_sec oder post_thresh_sec anpassen
+                # Dynamischer Pfad
                 detection_window_used = (
                     "pre_thresh_sec" in params and params["pre_thresh_sec"] > 0
                 ) or (
                     "post_thresh_sec" in params and params["post_thresh_sec"] > 0
                 )
-
                 excel_suffix = "_detection_window" if detection_window_used else ""
                 excel_path = f"/home/jhagenbe_sw/ASIM/ecg-seizure-detection/MatrixProfile/results/hp_tuning_mp_results_resp{excel_suffix}.xlsx"
 
                 df_row = pd.DataFrame([combined])
-
                 if os.path.isfile(excel_path):
                     existing_df = pd.read_excel(excel_path)
                     df_combined = pd.concat([existing_df, df_row], ignore_index=True)
@@ -199,10 +201,10 @@ def run_grid_search(param_grid: Dict[str, List[Any]],
 
                 df_combined.to_excel(excel_path, index=False)
 
-
         except Exception as e:
             print(f"Error with parameters {params}: {e}")
             continue
+
 
 
 if __name__ == "__main__":
@@ -210,37 +212,12 @@ if __name__ == "__main__":
 
     downsample_freq = 8
     window_size_sec = 25
-    # parameter_grid: Dict[str, List[Any]] = {
-    #     "amount_of_annomalies_per_record": [1500, 2000, 3000, 4000],
-    #     "recording_list_excel": ["/home/swolf/asim_shared/filelists/test_filelist_600.xlsx"],
-    #     "batch_size_load": [100],
-    #     "downsample_freq": [downsample_freq],
-    #     "max_gap_annos_in_sec": [1,10, 15, 20, 25, 30],
-    #     "n_cons": [1, 3, 5, 10, 35],
-    #     "window_size_sec": [window_size_sec],
-    #     "pre_thresh_sec": [0],
-    #     "post_thresh_sec": [0],
-    #     "verbose": [False],
-    #     "DIR_preprocessed": [f"/home/swolf/asim_shared/preprocessed_data/downsample_freq={downsample_freq},no_windows"],
-    #     "MPs_path": [f"/home/swolf/asim_shared/results/MP/downsample_freq={downsample_freq},no_windows/seq_len{window_size_sec}sec"]
-    # }
-    # parameter_grid_detection_window: Dict[str, List[Any]] = {
-    #     "amount_of_annomalies_per_record": [1500, 2000, 3000, 4000],
-    #     "recording_list_excel": ["/home/swolf/asim_shared/filelists/test_filelist_600.xlsx"],
-    #     "batch_size_load": [100],
-    #     "downsample_freq": [downsample_freq],
-    #     "max_gap_annos_in_sec": [1,10, 15, 20, 25, 30],
-    #     "n_cons": [1, 3, 5, 10, 35],
-    #     "window_size_sec": [window_size_sec],
-    #     "pre_thresh_sec": [60 * 5],
-    #     "post_thresh_sec": [60 * 3],
-    #     "verbose": [False],
-    #     "DIR_preprocessed": [f"/home/swolf/asim_shared/preprocessed_data/downsample_freq={downsample_freq},no_windows"],
-    #     "MPs_path": [f"/home/swolf/asim_shared/results/MP/downsample_freq={downsample_freq},no_windows/seq_len{window_size_sec}sec"]
-    # }
+
+    val_excel_path = "/home/jhagenbe_sw/ASIM/ecg-seizure-detection/MatrixProfile/configs/splits/val_filelist_4.xlsx"
+    test_excel_path = "/home/jhagenbe_sw/ASIM/ecg-seizure-detection/MatrixProfile/configs/splits/test_filelist_6.xlsx"
+
     parameter_grid: Dict[str, List[Any]] = {
         "amount_of_annomalies_per_record": [1500, ],
-        "recording_list_excel": ["/home/jhagenbe_sw/ASIM/ecg-seizure-detection/MatrixProfile/configs/splits/val_filelist_4.xlsx"],
         "batch_size_load": [100],
         "downsample_freq": [downsample_freq],
         "max_gap_annos_in_sec": [1,],
@@ -254,7 +231,6 @@ if __name__ == "__main__":
     }
     parameter_grid_detection_window: Dict[str, List[Any]] = {
         "amount_of_annomalies_per_record": [1500, ],
-        "recording_list_excel": ["/home/jhagenbe_sw/ASIM/ecg-seizure-detection/MatrixProfile/configs/splits/val_filelist_4.xlsx"],
         "batch_size_load": [100],
         "downsample_freq": [downsample_freq],
         "max_gap_annos_in_sec": [1,],
@@ -268,5 +244,44 @@ if __name__ == "__main__":
     }
 
     # Run grid search with saving enabled
-    grid_search_results = run_grid_search(parameter_grid, produce_mp_results, save_results=True)
-    grid_search_results = run_grid_search(parameter_grid_detection_window, produce_mp_results, save_results=True)
+    run_grid_search(
+        param_grid=parameter_grid,
+        target_function=produce_mp_results,
+        val_excel_path=val_excel_path,
+        test_excel_path=test_excel_path,
+        save_results=True
+    )
+    run_grid_search(
+        param_grid=parameter_grid_detection_window,
+        target_function=produce_mp_results,
+        val_excel_path=val_excel_path,
+        test_excel_path=test_excel_path,
+        save_results=True
+    )
+
+    # parameter_grid: Dict[str, List[Any]] = {
+    #     "amount_of_annomalies_per_record": [1500, 2000, 3000, 4000],
+    #     "batch_size_load": [100],
+    #     "downsample_freq": [downsample_freq],
+    #     "max_gap_annos_in_sec": [1,10, 15, 20, 25, 30],
+    #     "n_cons": [1, 3, 5, 10, 35],
+    #     "window_size_sec": [window_size_sec],
+    #     "pre_thresh_sec": [0],
+    #     "post_thresh_sec": [0],
+    #     "verbose": [False],
+    #     "DIR_preprocessed": [f"/home/swolf/asim_shared/preprocessed_data/downsample_freq={downsample_freq},no_windows"],
+    #     "MPs_path": [f"/home/swolf/asim_shared/results/MP/downsample_freq={downsample_freq},no_windows/seq_len{window_size_sec}sec"]
+    # }
+    # parameter_grid_detection_window: Dict[str, List[Any]] = {
+    #     "amount_of_annomalies_per_record": [1500, 2000, 3000, 4000],
+    #     "batch_size_load": [100],
+    #     "downsample_freq": [downsample_freq],
+    #     "max_gap_annos_in_sec": [1,10, 15, 20, 25, 30],
+    #     "n_cons": [1, 3, 5, 10, 35],
+    #     "window_size_sec": [window_size_sec],
+    #     "pre_thresh_sec": [60 * 5],
+    #     "post_thresh_sec": [60 * 3],
+    #     "verbose": [False],
+    #     "DIR_preprocessed": [f"/home/swolf/asim_shared/preprocessed_data/downsample_freq={downsample_freq},no_windows"],
+    #     "MPs_path": [f"/home/swolf/asim_shared/results/MP/downsample_freq={downsample_freq},no_windows/seq_len{window_size_sec}sec"]
+    # }
