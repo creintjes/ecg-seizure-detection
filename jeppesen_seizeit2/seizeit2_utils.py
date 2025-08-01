@@ -251,13 +251,18 @@ def validate_subject_data(subject: str) -> bool:
     try:
         recordings = get_subject_recordings(subject)
         if not recordings:
+            print(f"Debug: Keine Recordings für {subject}")
             return False
         
         # Prüfe mindestens ein Recording
         first_recording = recordings[0]
-        ecg_data, _, _ = load_ecg_data(subject, first_recording)
+        print(f"Debug: Teste Recording {first_recording}")
+        ecg_data, channel_names, fs = load_ecg_data(subject, first_recording)
         
-        return len(ecg_data) > 0 and len(ecg_data[0]) > 1000  # Mindestens 1000 Samples
+        has_data = len(ecg_data) > 0 and len(ecg_data[0]) > 1000
+        print(f"Debug: ECG-Daten: {len(ecg_data)} Kanäle, {len(ecg_data[0]) if len(ecg_data) > 0 else 0} Samples")
+        return has_data
         
-    except Exception:
+    except Exception as e:
+        print(f"Debug: Validierungsfehler für {subject}: {e}")
         return False
