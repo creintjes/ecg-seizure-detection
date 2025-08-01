@@ -50,6 +50,8 @@ def produce_mp_results(amount_of_annomalies_per_record: int,
                        MPs_path: str, 
                        recording_list_excel: str,
                        verbose: bool):
+    if not recording_list_excel:
+        return 0, 0, 0.0, 0.0, 0.0, 0.0, {}
 
     df = pd.read_excel(recording_list_excel)
     recs = [tuple(sr.split("_")) for sr in df["subject_run"].tolist()]
@@ -215,7 +217,6 @@ if __name__ == "__main__":
 
     val_excel_path = "/home/jhagenbe_sw/ASIM/ecg-seizure-detection/MatrixProfile/configs/splits/val_filelist_4.xlsx"
     test_excel_path = "/home/jhagenbe_sw/ASIM/ecg-seizure-detection/MatrixProfile/configs/splits/test_filelist_6.xlsx"
-
     parameter_grid: Dict[str, List[Any]] = {
         "amount_of_annomalies_per_record": [1500, ],
         "batch_size_load": [100],
