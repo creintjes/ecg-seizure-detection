@@ -7,6 +7,12 @@ import pandas as pd
 import neurokit2 as nk
 from typing import Optional
 from typing import Tuple
+import warnings
+from neurokit2.misc import NeuroKitWarning
+
+warnings.filterwarnings("ignore", category=NeuroKitWarning)
+warnings.filterwarnings("ignore", category=RuntimeWarning)
+
 
 class MatrixProfile:
     @staticmethod
@@ -67,28 +73,34 @@ class MatrixProfile:
         return matrix_profile, profile_indices
 
 
-
-
-    def extract_rpeaks_from_ecg(ecg_signal: np.ndarray, sampling_rate: int = 1000) -> np.ndarray:
+    def extract_rpeaks_from_ecg(ecg_signal: np.ndarray, sampling_rate: int = 256) -> np.ndarray:
         """
-        Detect R-peaks from raw ECG signal using neurokit2.
+        Detect R-peaks from raw ECG signal using robust neurokit2 cleaning and peak detection.
 
         Parameters:
         ----------
         ecg_signal : np.ndarray
-            1D ECG signal (voltage values).
+            1D ECG signal.
         sampling_rate : int
-            ECG sampling rate in Hz.
+            Sampling rate in Hz.
 
         Returns:
         -------
         np.ndarray
             Array of R-peak sample indices.
         """
-        ecg_cleaned = nk.ecg_clean(ecg_signal, sampling_rate=sampling_rate)
-        _, rpeaks = nk.ecg_peaks(ecg_cleaned, sampling_rate=sampling_rate)
-        return rpeaks["ECG_R_Peaks"]
+        if ecg_signal.ndim != 1:
+            raise ValueError("ECG signal must be 1D.")
 
+        try:
+            ecg_cleaned = nk.ecg_clean(ecg_signal, sampling_rate=sampling_rate, method="neurokit")
+            _, rpeaks = nk.ecg_peaks(ecg_cleaned, sampling_rate=sampling_rate)
+            peaks = rpeaks.get("ECG_R_Peaks", None)
+            if peaks is None or len(peaks) == 0:
+                raise RuntimeError("No R-peaks found.")
+            return peaks
+        except Exception as e:
+            raise RuntimeError(f"R-peak detection failed: {e}")
 
     def compute_rr_intervals(rpeaks: np.ndarray, sampling_rate: int = 1000) -> np.ndarray:
         """
@@ -112,42 +124,36 @@ class MatrixProfile:
 
 
     def extract_hrv_features_over_windows(rr_intervals: np.ndarray,
-                                        window_size: int = 60,
-                                        step: int = 10,
-                                        sampling_rate: int = 1000) -> np.ndarray:
+                                      window_size: int = 60,
+                                      step: int = 10,
+                                      sampling_rate: int = 256) -> np.ndarray:
         """
-        Extract HRV features for sliding windows over RR-intervals.
-
-        Parameters:
-        ----------
-        rr_intervals : np.ndarray
-            1D array of RR intervals (in ms).
-        window_size : int
-            Number of RR intervals per feature window.
-        step : int
-            Step size between windows.
-        sampling_rate : int
-            Sampling frequency for HRV estimation.
-
-        Returns:
-        -------
-        np.ndarray
-            HRV feature matrix of shape (n_windows, n_features).
+        Robust extraction of HRV features from RR intervals using hrv_time.
         """
         features = []
 
         for start in range(0, len(rr_intervals) - window_size, step):
-            rr_segment = rr_intervals[start:start + window_size]
-            rpeaks = np.cumsum(rr_segment).astype(int)
+            rr_window = rr_intervals[start:start + window_size]
+
+            # Clean window
+            if not np.isfinite(rr_window).all():
+                print(f"[{start}] ❌ non-finite values → skipping")
+                continue
+            if np.min(rr_window) < 300:
+                print(f"[{start}] ❌ RR values too small → skipping")
+                continue
 
             try:
-                hrv_df = nk.hrv(rpeaks=rpeaks, sampling_rate=sampling_rate, show=False)
-                features.append(hrv_df.values[0])
-            except Exception:
-                continue  # skip faulty windows
+                # Convert to peaks explicitly to avoid internal confusion
+                peaks = nk.intervals_to_peaks(rr_window, sampling_rate=sampling_rate)
+                hrv = nk.hrv(peaks=peaks, sampling_rate=sampling_rate, show=False)
+                if not hrv.empty:
+                    features.append(hrv.values[0])
+            except Exception as e:
+                print(f"[{start}] HRV error: {e}")
+                continue
 
         return np.array(features)
-
 
     def process_ecg_to_hrv_features(ecg_signal: np.ndarray,
                                     sampling_rate: int = 1000,
@@ -155,28 +161,18 @@ class MatrixProfile:
                                     rr_step: int = 10) -> np.ndarray:
         """
         Complete pipeline: ECG → R-peaks → RR intervals → HRV features (per window).
-
-        Parameters:
-        ----------
-        ecg_signal : np.ndarray
-            Raw ECG signal (1D, single-channel).
-        sampling_rate : int
-            Sampling frequency of the ECG signal in Hz.
-        rr_window_size : int
-            Number of RR intervals per HRV segment.
-        rr_step : int
-            Step size between RR windows.
-
-        Returns:
-        -------
-        np.ndarray
-            2D array (n_windows, n_features) with HRV features.
+        Now includes validity checks.
         """
-        rpeaks = extract_rpeaks_from_ecg(ecg_signal, sampling_rate=sampling_rate)
-        rr_intervals = compute_rr_intervals(rpeaks, sampling_rate=sampling_rate)
-        hrv_features = extract_hrv_features_over_windows(rr_intervals, rr_window_size, rr_step, sampling_rate)
-        return hrv_features
+        rpeaks = MatrixProfile.extract_rpeaks_from_ecg(ecg_signal, sampling_rate=sampling_rate)
+        print(f"Found {len(rpeaks)} R-peaks")
+        # Require at least (window_size + 1) R-peaks to form one RR window
+        if len(rpeaks) < rr_window_size + 1:
+            print(f"Warning: Only {len(rpeaks)} R-peaks found. Need at least {rr_window_size + 1} for one window.")
+            return np.empty((0,))
 
+        rr_intervals = MatrixProfile.compute_rr_intervals(rpeaks, sampling_rate=sampling_rate)
+        hrv_features = MatrixProfile.extract_hrv_features_over_windows(rr_intervals, rr_window_size, rr_step, sampling_rate)
+        return hrv_features
 
 
     def get_top_k_anomaly_indices(matrix_profile: np.ndarray, k: int) -> List[int]:
