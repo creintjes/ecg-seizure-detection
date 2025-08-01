@@ -2,6 +2,10 @@ import numpy as np
 import stumpy
 import matplotlib.pyplot as plt
 from typing import List
+import neurokit2 as nk
+import pandas as pd
+import neurokit2 as nk
+from typing import Optional
 
 class MatrixProfile:
     @staticmethod
@@ -31,6 +35,121 @@ class MatrixProfile:
         # Initialize and compute SCRUMP matrix profile
         matrix_profile = stumpy.scrump(time_series, m=subsequence_length, percentage=percentage, pre_scrump=pre_scrump)
         return matrix_profile
+
+
+
+
+
+
+    def extract_rpeaks_from_ecg(ecg_signal: np.ndarray, sampling_rate: int = 1000) -> np.ndarray:
+        """
+        Detect R-peaks from raw ECG signal using neurokit2.
+
+        Parameters:
+        ----------
+        ecg_signal : np.ndarray
+            1D ECG signal (voltage values).
+        sampling_rate : int
+            ECG sampling rate in Hz.
+
+        Returns:
+        -------
+        np.ndarray
+            Array of R-peak sample indices.
+        """
+        ecg_cleaned = nk.ecg_clean(ecg_signal, sampling_rate=sampling_rate)
+        _, rpeaks = nk.ecg_peaks(ecg_cleaned, sampling_rate=sampling_rate)
+        return rpeaks["ECG_R_Peaks"]
+
+
+    def compute_rr_intervals(rpeaks: np.ndarray, sampling_rate: int = 1000) -> np.ndarray:
+        """
+        Compute RR intervals from R-peak locations.
+
+        Parameters:
+        ----------
+        rpeaks : np.ndarray
+            Indices of detected R-peaks in the ECG signal.
+        sampling_rate : int
+            Sampling rate of ECG in Hz.
+
+        Returns:
+        -------
+        np.ndarray
+            RR intervals in milliseconds.
+        """
+        rr_samples = np.diff(rpeaks)
+        rr_ms = rr_samples * (1000.0 / sampling_rate)
+        return rr_ms
+
+
+    def extract_hrv_features_over_windows(rr_intervals: np.ndarray,
+                                        window_size: int = 60,
+                                        step: int = 10,
+                                        sampling_rate: int = 1000) -> np.ndarray:
+        """
+        Extract HRV features for sliding windows over RR-intervals.
+
+        Parameters:
+        ----------
+        rr_intervals : np.ndarray
+            1D array of RR intervals (in ms).
+        window_size : int
+            Number of RR intervals per feature window.
+        step : int
+            Step size between windows.
+        sampling_rate : int
+            Sampling frequency for HRV estimation.
+
+        Returns:
+        -------
+        np.ndarray
+            HRV feature matrix of shape (n_windows, n_features).
+        """
+        features = []
+
+        for start in range(0, len(rr_intervals) - window_size, step):
+            rr_segment = rr_intervals[start:start + window_size]
+            rpeaks = np.cumsum(rr_segment).astype(int)
+
+            try:
+                hrv_df = nk.hrv(rpeaks=rpeaks, sampling_rate=sampling_rate, show=False)
+                features.append(hrv_df.values[0])
+            except Exception:
+                continue  # skip faulty windows
+
+        return np.array(features)
+
+
+    def process_ecg_to_hrv_features(ecg_signal: np.ndarray,
+                                    sampling_rate: int = 1000,
+                                    rr_window_size: int = 60,
+                                    rr_step: int = 10) -> np.ndarray:
+        """
+        Complete pipeline: ECG → R-peaks → RR intervals → HRV features (per window).
+
+        Parameters:
+        ----------
+        ecg_signal : np.ndarray
+            Raw ECG signal (1D, single-channel).
+        sampling_rate : int
+            Sampling frequency of the ECG signal in Hz.
+        rr_window_size : int
+            Number of RR intervals per HRV segment.
+        rr_step : int
+            Step size between RR windows.
+
+        Returns:
+        -------
+        np.ndarray
+            2D array (n_windows, n_features) with HRV features.
+        """
+        rpeaks = extract_rpeaks_from_ecg(ecg_signal, sampling_rate=sampling_rate)
+        rr_intervals = compute_rr_intervals(rpeaks, sampling_rate=sampling_rate)
+        hrv_features = extract_hrv_features_over_windows(rr_intervals, rr_window_size, rr_step, sampling_rate)
+        return hrv_features
+
+
 
     def get_top_k_anomaly_indices(matrix_profile: np.ndarray, k: int) -> List[int]:
         """
