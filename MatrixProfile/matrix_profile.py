@@ -123,37 +123,69 @@ class MatrixProfile:
         return rr_ms
 
 
+    # def extract_hrv_features_over_windows(rr_intervals: np.ndarray,
+    #                                   window_size: int = 60,
+    #                                   step: int = 10,
+    #                                   sampling_rate: int = 256) -> np.ndarray:
+    #     """
+    #     Robust extraction of HRV features from RR intervals using hrv_time.
+    #     """
+    #     features = []
+
+    #     for start in range(0, len(rr_intervals) - window_size, step):
+    #         rr_window = rr_intervals[start:start + window_size]
+
+    #         # Clean window
+    #         if not np.isfinite(rr_window).all():
+    #             print(f"[{start}] ❌ non-finite values → skipping")
+    #             continue
+    #         if np.min(rr_window) < 300:
+    #             print(f"[{start}] ❌ RR values too small → skipping")
+    #             continue
+
+    #         try:
+    #             # Convert to peaks explicitly to avoid internal confusion
+    #             peaks = nk.intervals_to_peaks(rr_window, sampling_rate=sampling_rate)
+    #             hrv = nk.hrv(peaks=peaks, sampling_rate=sampling_rate, show=False)
+    #             if not hrv.empty:
+    #                 features.append(hrv.values[0])
+    #         except Exception as e:
+    #             print(f"[{start}] HRV error: {e}")
+    #             continue
+
+    #     return np.array(features)
     def extract_hrv_features_over_windows(rr_intervals: np.ndarray,
                                       window_size: int = 60,
                                       step: int = 10,
-                                      sampling_rate: int = 256) -> np.ndarray:
+                                      sampling_rate: int = 256) -> Tuple[np.ndarray, List[float]]:
         """
-        Robust extraction of HRV features from RR intervals using hrv_time.
+        Extract HRV features from RR intervals and return their timestamps (in seconds).
+        
+        Returns:
+            - HRV feature matrix: (n_windows, n_features)
+            - Time index list:    [sec_1, sec_2, ..., sec_n]
         """
         features = []
+        time_stamps = []
+
+        cumulative_time = np.cumsum(rr_intervals) / 1000.0  # in seconds
 
         for start in range(0, len(rr_intervals) - window_size, step):
             rr_window = rr_intervals[start:start + window_size]
 
-            # Clean window
-            if not np.isfinite(rr_window).all():
-                print(f"[{start}] ❌ non-finite values → skipping")
-                continue
-            if np.min(rr_window) < 300:
-                print(f"[{start}] ❌ RR values too small → skipping")
-                continue
+            # Mittelzeitpunkt in Sekunden
+            t_center = cumulative_time[start:start + window_size].mean()
 
             try:
-                # Convert to peaks explicitly to avoid internal confusion
-                peaks = nk.intervals_to_peaks(rr_window, sampling_rate=sampling_rate)
-                hrv = nk.hrv(peaks=peaks, sampling_rate=sampling_rate, show=False)
+                hrv = nk.hrv_time(rr_window, sampling_rate=sampling_rate, show=False)
                 if not hrv.empty:
                     features.append(hrv.values[0])
-            except Exception as e:
-                print(f"[{start}] HRV error: {e}")
+                    time_stamps.append(t_center)
+            except Exception:
                 continue
 
-        return np.array(features)
+        return np.array(features), time_stamps
+
 
     def process_ecg_to_hrv_features(ecg_signal: np.ndarray,
                                     sampling_rate: int = 1000,
