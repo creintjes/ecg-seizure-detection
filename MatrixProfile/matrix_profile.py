@@ -187,24 +187,82 @@ class MatrixProfile:
         return np.array(features), time_stamps
 
 
+    # def process_ecg_to_hrv_features(ecg_signal: np.ndarray,
+    #                                 sampling_rate: int = 1000,
+    #                                 rr_window_size: int = 60,
+    #                                 rr_step: int = 10) -> np.ndarray:
+    #     """
+    #     Complete pipeline: ECG → R-peaks → RR intervals → HRV features (per window).
+    #     Now includes validity checks.
+    #     """
+    #     rpeaks = MatrixProfile.extract_rpeaks_from_ecg(ecg_signal, sampling_rate=sampling_rate)
+    #     print(f"Found {len(rpeaks)} R-peaks")
+    #     # Require at least (window_size + 1) R-peaks to form one RR window
+    #     if len(rpeaks) < rr_window_size + 1:
+    #         print(f"Warning: Only {len(rpeaks)} R-peaks found. Need at least {rr_window_size + 1} for one window.")
+    #         return np.empty((0,))
+
+    #     rr_intervals = MatrixProfile.compute_rr_intervals(rpeaks, sampling_rate=sampling_rate)
+    #     hrv_features = MatrixProfile.extract_hrv_features_over_windows(rr_intervals, rr_window_size, rr_step, sampling_rate)
+    #     return hrv_features
+
+
     def process_ecg_to_hrv_features(ecg_signal: np.ndarray,
                                     sampling_rate: int = 1000,
                                     rr_window_size: int = 60,
-                                    rr_step: int = 10) -> np.ndarray:
+                                    rr_step: int = 10) -> Tuple[np.ndarray, List[float]]:
         """
-        Complete pipeline: ECG → R-peaks → RR intervals → HRV features (per window).
-        Now includes validity checks.
+        Complete pipeline: ECG → R-peaks → RR intervals → HRV features (per window),
+        including timing information for each window center.
+
+        Parameters:
+        ----------
+        ecg_signal : np.ndarray
+            Raw 1D ECG signal.
+        sampling_rate : int
+            Sampling frequency in Hz.
+        rr_window_size : int
+            Number of RR intervals per HRV feature window.
+        rr_step : int
+            Step size between windows.
+
+        Returns:
+        -------
+        Tuple[np.ndarray, List[float]]
+            - HRV feature matrix of shape (n_windows, n_features)
+            - List of center timestamps (in seconds) for each window
         """
         rpeaks = MatrixProfile.extract_rpeaks_from_ecg(ecg_signal, sampling_rate=sampling_rate)
         print(f"Found {len(rpeaks)} R-peaks")
-        # Require at least (window_size + 1) R-peaks to form one RR window
+
         if len(rpeaks) < rr_window_size + 1:
             print(f"Warning: Only {len(rpeaks)} R-peaks found. Need at least {rr_window_size + 1} for one window.")
-            return np.empty((0,))
+            return np.empty((0,)), []
 
         rr_intervals = MatrixProfile.compute_rr_intervals(rpeaks, sampling_rate=sampling_rate)
-        hrv_features = MatrixProfile.extract_hrv_features_over_windows(rr_intervals, rr_window_size, rr_step, sampling_rate)
-        return hrv_features
+
+        features = []
+        timestamps = []
+        cumulative_time = np.cumsum(rr_intervals) / 1000.0  # seconds
+
+        # We slide a window over the RR intervals to compute HRV features per segment.
+        # This loop allows us to extract features from overlapping RR windows (e.g., every 10 beats),
+        # which provides a fine-grained, temporally resolved feature time series for anomaly detection.
+        for start in range(0, len(rr_intervals) - rr_window_size, rr_step):
+            rr_window = rr_intervals[start:start + rr_window_size]
+            t_center = cumulative_time[start:start + rr_window_size].mean()
+
+            try:
+                hrv = nk.hrv_time(rr_window, sampling_rate=sampling_rate, show=False)
+                if not hrv.empty:
+                    features.append(hrv.values[0])
+                    timestamps.append(t_center)
+            except Exception as e:
+                print(f"HRV error at window {start}: {e}")
+                continue
+
+        return np.array(features), timestamps
+
 
 
     def get_top_k_anomaly_indices(matrix_profile: np.ndarray, k: int) -> List[int]:
