@@ -1,0 +1,34 @@
+2025-07-05 22:00:42,405 - MainProcess - INFO - Parallel Madrid Windowed Processor initialized with 16 workers
+2025-07-05 22:00:42,405 - MainProcess - INFO - Window strategy: individual
+2025-07-05 22:00:42,445 - MainProcess - INFO - Found 2795 windowed files to process with 16 workers
+2025-07-05 22:00:42,490 - ForkPoolWorker-1 - ERROR - File /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0/sub-092_run-16_preprocessed.pkl is not in windowed format
+2025-07-05 22:00:42,491 - ForkPoolWorker-3 - ERROR - File /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0/sub-081_run-54_preprocessed.pkl is not in windowed format
+2025-07-05 22:00:42,491 - ForkPoolWorker-6 - ERROR - File /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0/sub-085_run-11_preprocessed.pkl is not in windowed format
+2025-07-05 22:00:42,491 - ForkPoolWorker-7 - ERROR - File /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0/sub-092_run-114_preprocessed.pkl is not in windowed format
+2025-07-05 22:00:42,491 - ForkPoolWorker-8 - ERROR - File /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0/sub-123_run-18_preprocessed.pkl is not in windowed format
+2025-07-05 22:00:42,492 - ForkPoolWorker-9 - ERROR - File /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0/sub-095_run-01_preprocessed.pkl is not in windowed format
+2025-07-05 22:00:42,492 - ForkPoolWorker-11 - ERROR - File /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0/sub-083_run-43_preprocessed.pkl is not in windowed format
+2025-07-05 22:00:42,492 - ForkPoolWorker-10 - ERROR - File /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0/sub-096_run-82_preprocessed.pkl is not in windowed format
+2025-07-05 22:00:42,493 - ForkPoolWorker-13 - ERROR - File /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0/sub-089_run-105_preprocessed.pkl is not in windowed format
+2025-07-05 22:00:42,493 - ForkPoolWorker-15 - ERROR - File /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0/sub-096_run-24_preprocessed.pkl is not in windowed format
+2025-07-05 22:00:42,493 - ForkPoolWorker-14 - ERROR - File /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0/sub-096_run-05_preprocessed.pkl is not in windowed format
+2025-07-05 22:00:42,493 - ForkPoolWorker-16 - ERROR - File /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0/sub-096_run-38_preprocessed.pkl is not in windowed format
+2025-07-05 22:00:42,494 - ForkPoolWorker-6 - ERROR - File /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0/sub-081_run-39_preprocessed.pkl is not in windowed format
+2025-07-05 22:00:42,495 - ForkPoolWorker-7 - ERROR - File /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0/sub-089_run-57_preprocessed.pkl is not in windowed format
+2025-07-05 22:00:42,497 - ForkPoolWorker-8 - ERROR - File /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0/sub-121_run-85_preprocessed.pkl is not in windowed format
+2025-07-05 22:00:42,497 - ForkPoolWorker-11 - ERROR - File /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0/sub-089_run-94_preprocessed.pkl is not in windowed format
+2025-07-05 22:00:42,497 - ForkPoolWorker-9 - ERROR - File /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0/sub-089_run-70_preprocessed.pkl is not in windowed format
+2025-07-05 22:00:42,504 - ForkPoolWorker-6 - ERROR - File /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0/sub-089_run-83_preprocessed.pkl is not in windowed format
+2025-07-05 22:00:42,511 - ForkPoolWorker-8 - ERROR - File /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0/sub-124_run-70_preprocessed.pkl is not in windowed format
+2025-07-05 22:00:42,527 - ForkPoolWorker-6 - ERROR - File /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0/sub-096_run-46_preprocessed.pkl is not in windowed format
+2025-07-05 22:07:32,595 - ForkPoolWorker-15 - ERROR - File /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0/sub-092_run-74_preprocessed.pkl is not in windowed format
+2025-07-05 22:07:32,596 - ForkPoolWorker-15 - ERROR - File /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0/sub-121_run-70_preprocessed.pkl is not in windowed format
+2025-07-05 22:07:32,598 - ForkPoolWorker-15 - ERROR - File /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0/sub-088_run-27_preprocessed.pkl is not in windowed format
+2025-07-05 22:14:12,101 - MainProcess - INFO - Parallel Madrid Windowed Processor initialized with 16 workers
+2025-07-05 22:14:12,101 - MainProcess - INFO - Window strategy: individual
+2025-07-05 22:14:12,137 - MainProcess - INFO - Found 2795 windowed files to process with 16 workers
+2025-07-05 22:15:17,063 - MainProcess - INFO - Parallel Madrid Windowed Processor initialized with 16 workers
+2025-07-05 22:15:17,063 - MainProcess - INFO - Window strategy: individual
+2025-07-05 22:15:17,107 - MainProcess - INFO - Found 2795 windowed files to process with 16 workers
+2025-07-05 22:57:00,444 - ForkPoolWorker-1 - ERROR - Error analyzing window 2: Time series contains constant regions that would make anomaly detection trivial. Consider: 1) Increasing min_length, 2) Adding noise, 3) Adding linear trend, 4) Removing constant sections
+2025-07-05 22:57:00,454 - ForkPoolWorker-1 - ERROR - Error processing windowed file /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0/sub-119_run-24_preprocessed.pkl: 'anomalies'

@@ -32,6 +32,6 @@ Madrid/madrid_results copy/madrid_seizure_results_parallel_400
 madrid_results_8hz_noWindow
 cluster_reduction
 venv
-madrid_windowed_batch_processor_parallel.log
 Madrid/results_8hz_window3600_stride1800_5mintrain_old
 Madrid/results_8hz_window3600_stride1800_old
+Madrid/results_8hz_window3600_stride1800_new20min
