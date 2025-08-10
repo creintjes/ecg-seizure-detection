@@ -164,29 +164,36 @@ class FlexibleECGPreprocessor(ECGPreprocessor):
             from Information.Data.seizeit2_main.classes.annotation import Annotation
             
             recording = [subject_id, run_id]
-            data_loader = Data()
+            
+            # Load data with ECG modality (static method call)
+            data = Data.loadData(data_path, recording, modalities=['ecg'])
             annotations = Annotation.loadAnnotation(data_path, recording)
             
-            # Load data
-            data_dict = data_loader.loadData(data_path, recording)
-            
-            if data_dict is None:
-                logger.error(f"Failed to load data for {subject_id} {run_id}")
+            if not data.data:
+                logger.error(f"No ECG data found for {subject_id} {run_id}")
                 return None
             
-            # Extract recording info
-            recording_duration = data_dict.get('recording_duration', 0)
+            # Extract recording duration (calculate from data)
+            if data.data and len(data.data) > 0:
+                first_channel_length = len(data.data[0])
+                first_channel_fs = data.fs[0]
+                recording_duration = first_channel_length / first_channel_fs
+            else:
+                recording_duration = 0
+            
             logger.info(f"Processing {subject_id}_{run_id}: {recording_duration:.1f}s recording")
             
-            # Process channels
+            # Process each ECG channel (using same logic as preprocessing.py)
             processed_channels = []
             total_seizures = 0
             
-            for channel_name, channel_data in data_dict['channels'].items():
-                logger.info(f"Processing channel: {channel_name}")
+            for i, (signal_data, channel_name, fs) in enumerate(
+                zip(data.data, data.channels, data.fs)
+            ):
+                if 'ecg' not in channel_name.lower():
+                    continue
                 
-                fs = channel_data['fs']
-                signal_data = channel_data['signal']
+                logger.info(f"Processing channel: {channel_name}")
                 
                 if len(signal_data) == 0:
                     logger.warning(f"Empty signal for channel {channel_name}")
