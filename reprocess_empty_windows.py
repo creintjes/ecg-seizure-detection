@@ -137,62 +137,70 @@ class FlexibleECGPreprocessor(ECGPreprocessor):
         logger.info(f"Created {len(windows)} flexible windows")
         return windows, labels, metadata
     
-    def preprocess_pipeline(
+    def preprocess_pipeline_flexible(
         self,
         data_path: str,
-        output_dir: str = "./results/preprocessed/",
-        create_windows: bool = True
-    ) -> bool:
+        subject_id: str,
+        run_id: str,
+        output_dir: str = "./results/preprocessed/"
+    ) -> Dict:
         """
-        Override to use flexible windowing
+        Flexible preprocessing pipeline - uses same logic as original but with flexible windowing
+        
+        Args:
+            data_path: Path to SeizeIT2 dataset
+            subject_id: Subject identifier
+            run_id: Run identifier
+            output_dir: Output directory
+            
+        Returns:
+            Processed data dictionary or None if failed
         """
         try:
-            # Load data and annotations
-            seizeit2_data = SeizeIT2Data()
-            data, annotations = seizeit2_data.load_data_and_annotations(data_path)
+            logger.info(f"Loading data for {subject_id} {run_id}")
             
-            if data is None or annotations is None:
-                logger.error(f"Failed to load data or annotations from {data_path}")
-                return False
+            # Use the same data loading logic as the original preprocessing
+            from Information.Data.seizeit2_main.classes.data import Data
+            from Information.Data.seizeit2_main.classes.annotation import Annotation
             
-            # Extract metadata
-            subject_id = data.get('subject_id', 'unknown')
-            run_id = data.get('run_id', 'unknown')
-            seizure_id = data.get('seizure_id', None)
-            recording_duration = data.get('recording_duration', 0)
+            recording = [subject_id, run_id]
+            data_loader = Data()
+            annotations = Annotation.loadAnnotation(data_path, recording)
             
+            # Load data
+            data_dict = data_loader.loadData(data_path, recording)
+            
+            if data_dict is None:
+                logger.error(f"Failed to load data for {subject_id} {run_id}")
+                return None
+            
+            # Extract recording info
+            recording_duration = data_dict.get('recording_duration', 0)
             logger.info(f"Processing {subject_id}_{run_id}: {recording_duration:.1f}s recording")
             
-            # Process each channel
+            # Process channels
             processed_channels = []
             total_seizures = 0
             
-            for channel_name, channel_data in data['channels'].items():
+            for channel_name, channel_data in data_dict['channels'].items():
                 logger.info(f"Processing channel: {channel_name}")
                 
                 fs = channel_data['fs']
-                signal = channel_data['signal']
+                signal_data = channel_data['signal']
                 
-                if len(signal) == 0:
+                if len(signal_data) == 0:
                     logger.warning(f"Empty signal for channel {channel_name}")
                     continue
                 
-                # Apply bandpass filter
-                filtered_signal = self.apply_bandpass_filter(signal, int(fs))
-                
-                # Downsample
+                # Apply preprocessing steps
+                filtered_signal = self.apply_bandpass_filter(signal_data, int(fs))
                 downsampled_signal = self.downsample(filtered_signal, int(fs))
                 downsampled_fs = self.downsample_freq
                 
                 # Create flexible windows
-                if create_windows:
-                    windows, window_labels, window_metadata = self.create_flexible_windows(
-                        downsampled_signal, downsampled_fs, annotations
-                    )
-                else:
-                    windows, window_labels, window_metadata = self.create_no_windows(
-                        downsampled_signal, downsampled_fs, annotations
-                    )
+                windows, window_labels, window_metadata = self.create_flexible_windows(
+                    downsampled_signal, downsampled_fs, annotations
+                )
                 
                 # Count seizures
                 n_seizure_windows = sum(1 for meta in window_metadata if meta.get('window_label', 0) == 1)
@@ -213,9 +221,9 @@ class FlexibleECGPreprocessor(ECGPreprocessor):
             
             if not processed_channels:
                 logger.error("No channels processed successfully")
-                return False
+                return None
             
-            # Prepare output data structure
+            # Prepare output data
             output_data = {
                 'subject_id': subject_id,
                 'run_id': run_id,
@@ -235,11 +243,7 @@ class FlexibleECGPreprocessor(ECGPreprocessor):
             # Save processed data
             os.makedirs(output_dir, exist_ok=True)
             
-            output_filename = f"{subject_id}_{run_id}"
-            if seizure_id:
-                output_filename += f"_{seizure_id}"
-            output_filename += "_preprocessed.pkl"
-            
+            output_filename = f"{subject_id}_{run_id}_preprocessed.pkl"
             output_path = os.path.join(output_dir, output_filename)
             
             with open(output_path, 'wb') as f:
@@ -249,13 +253,13 @@ class FlexibleECGPreprocessor(ECGPreprocessor):
             logger.info(f"Total windows: {sum(len(ch['windows']) for ch in processed_channels)}")
             logger.info(f"Seizure windows: {total_seizures}")
             
-            return True
+            return output_data
             
         except Exception as e:
-            logger.error(f"Error in preprocessing pipeline: {e}")
+            logger.error(f"Error in flexible preprocessing pipeline: {e}")
             import traceback
             traceback.print_exc()
-            return False
+            return None
 
 def find_empty_window_files(preprocessed_dir: str) -> List[str]:
     """
@@ -308,7 +312,7 @@ def reprocess_file_with_flexible_windows(
     
     Args:
         file_path: Path to the empty preprocessed file
-        data_dir: Directory containing original data
+        data_dir: Directory containing original SeizeIT2 data
         output_dir: Output directory for reprocessed files
         preprocessor: Flexible preprocessor instance
         
@@ -329,28 +333,12 @@ def reprocess_file_with_flexible_windows(
         
         logger.info(f"Reprocessing {subject_id}_{run_id}")
         
-        # Find original data file
-        data_path = Path(data_dir)
-        original_file = None
-        
-        # Look for the original file
-        for possible_path in [
-            data_path / subject_id / f"{subject_id}_{run_id}.pkl",
-            data_path / f"{subject_id}_{run_id}.pkl",
-        ]:
-            if possible_path.exists():
-                original_file = str(possible_path)
-                break
-        
-        if not original_file:
-            logger.error(f"Cannot find original data file for {subject_id}_{run_id}")
-            return False
-        
-        # Process with flexible windowing
-        result = preprocessor.preprocess_pipeline(
-            data_path=original_file,
-            output_dir=output_dir,
-            create_windows=True  # Enable windowing with flexible approach
+        # Use the flexible preprocessing pipeline (same approach as preprocess_all_data.py)
+        result = preprocessor.preprocess_pipeline_flexible(
+            data_path=data_dir,  # Pass the SeizeIT2 dataset path
+            subject_id=subject_id,
+            run_id=run_id,
+            output_dir=output_dir
         )
         
         if result:
@@ -362,6 +350,8 @@ def reprocess_file_with_flexible_windows(
             
     except Exception as e:
         logger.error(f"Error reprocessing {file_path}: {e}")
+        import traceback
+        traceback.print_exc()
         return False
 
 def main():
