@@ -113,11 +113,8 @@ class MadridMetricsCalculator:
         num_true_positive_windows = len(true_positive_windows)
         num_false_positive_windows = len(false_positive_windows)
         
-        # Sensitivity = detected seizures / expected seizures 
-        # A seizure is "detected" if at least one TP detection exists (regardless of how many)
-        expected_seizures = 1 if seizure_present else 0
-        detected_seizures = 1 if true_positive_detections > 0 else 0
-        sensitivity = (detected_seizures / expected_seizures) if expected_seizures > 0 else 0.0
+        # Sensitivity = TP detections / total seizure windows (assuming 1 seizure per seizure window)
+        sensitivity = (true_positive_detections / num_seizure_windows) if num_seizure_windows > 0 else 0.0
         
         # False alarms per hour = FP detections / total hours
         false_alarms_per_hour = false_positive_detections
