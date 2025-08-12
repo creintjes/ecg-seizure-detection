@@ -170,26 +170,41 @@ class MadridFileLevelMetrics:
         true_positive_detections = len(seizure_detections)
         false_positive_detections = len(non_seizure_detections)
         
-        # Calculate which seizures were detected
+        # Calculate which seizures were detected using time-based overlap
         detected_seizures = []
         for seizure in individual_seizures:
-            seizure_window_indices_for_this_seizure = set(w.get('window_index') for w in seizure['windows'])
+            seizure_start = seizure['start_time_absolute']
+            seizure_end = seizure['end_time_absolute']
             
-            # Check if any detection occurred in windows belonging to this seizure
+            # Check if any detection temporally overlaps with this seizure
             seizure_detected = False
             seizure_detections_count = 0
+            overlapping_detections = []
             
-            for detection in seizure_detections:
-                if detection['window_index'] in seizure_window_indices_for_this_seizure:
+            for detection in all_detections:
+                # Calculate absolute time of the anomaly
+                window_start_time = detection.get('window_start_time', 0)
+                location_time_in_window = detection.get('location_time_in_window', 0)
+                anomaly_absolute_time = window_start_time + location_time_in_window
+                
+                # Check if anomaly time overlaps with seizure time period
+                # For point anomalies, we check if they fall within the seizure period
+                if seizure_start <= anomaly_absolute_time <= seizure_end:
                     seizure_detected = True
                     seizure_detections_count += 1
+                    overlapping_detections.append({
+                        **detection,
+                        'anomaly_absolute_time': anomaly_absolute_time,
+                        'time_from_seizure_start': anomaly_absolute_time - seizure_start
+                    })
             
             if seizure_detected:
                 detected_seizures.append({
                     'seizure_id': seizure['seizure_id'],
-                    'start_time': seizure['start_time_absolute'],
-                    'end_time': seizure['end_time_absolute'],
-                    'detection_count': seizure_detections_count
+                    'start_time': seizure_start,
+                    'end_time': seizure_end,
+                    'detection_count': seizure_detections_count,
+                    'overlapping_detections': overlapping_detections
                 })
         
         # File-level sensitivity: detected seizures / total seizures
@@ -199,12 +214,18 @@ class MadridFileLevelMetrics:
             # No seizures present, sensitivity is not applicable
             file_level_sensitivity = None
         
-        # False alarms per hour (file level)
-        false_alarms_per_hour = false_positive_detections / total_duration_hours if total_duration_hours > 0 else 0.0
+        # Recalculate true/false positives based on time-based overlap
+        # True positives: detections that temporally overlap with any seizure
+        # False positives: detections that don't temporally overlap with any seizure
+        time_based_true_positives = sum(len(ds['overlapping_detections']) for ds in detected_seizures)
+        time_based_false_positives = total_detections - time_based_true_positives
         
-        # Additional metrics
-        seizure_detection_density = true_positive_detections / len(seizure_window_indices) if seizure_window_indices else 0.0
-        detection_precision = true_positive_detections / total_detections if total_detections > 0 else 0.0
+        # False alarms per hour (file level)
+        false_alarms_per_hour = time_based_false_positives / total_duration_hours if total_duration_hours > 0 else 0.0
+        
+        # Additional metrics (updated for time-based logic)
+        seizure_detection_density = time_based_true_positives / len(seizure_window_indices) if seizure_window_indices else 0.0
+        detection_precision = time_based_true_positives / total_detections if total_detections > 0 else 0.0
         
         return {
             'file_info': {
@@ -223,8 +244,10 @@ class MadridFileLevelMetrics:
             },
             'file_level_detections': {
                 'total_detections': total_detections,
-                'true_positive_detections': true_positive_detections,
-                'false_positive_detections': false_positive_detections,
+                'time_based_true_positives': time_based_true_positives,
+                'time_based_false_positives': time_based_false_positives,
+                'window_based_true_positives': true_positive_detections,  # Keep for comparison
+                'window_based_false_positives': false_positive_detections,  # Keep for comparison
                 'seizure_detection_density': round(seizure_detection_density, 4),
                 'detection_precision': round(detection_precision, 4)
             },
@@ -275,8 +298,8 @@ class MadridFileLevelMetrics:
             summary_stats['total_files_processed'] += 1
             summary_stats['total_duration_hours'] += file_metrics['file_summary']['total_duration_hours']
             summary_stats['total_detections'] += file_metrics['file_level_detections']['total_detections']
-            summary_stats['total_seizure_detections'] += file_metrics['file_level_detections']['true_positive_detections']
-            summary_stats['total_false_alarms'] += file_metrics['file_level_detections']['false_positive_detections']
+            summary_stats['total_seizure_detections'] += file_metrics['file_level_detections']['time_based_true_positives']
+            summary_stats['total_false_alarms'] += file_metrics['file_level_detections']['time_based_false_positives']
             
             if file_metrics['file_summary']['seizure_present']:
                 summary_stats['files_with_seizures'] += 1
@@ -408,10 +431,12 @@ class MadridFileLevelMetrics:
                     for seizure in summary_info['individual_seizures']:
                         f.write(f"  {seizure['seizure_id']}: {seizure['start_time_absolute']:.1f}s - {seizure['end_time_absolute']:.1f}s ({seizure['duration_seconds']:.1f}s, {seizure['num_windows']} windows)\n")
                 
-                f.write(f"\nFILE-LEVEL DETECTIONS:\n")
+                f.write(f"\nFILE-LEVEL DETECTIONS (Time-Based Overlap):\n")
                 f.write(f"  Total Detections: {detections['total_detections']}\n")
-                f.write(f"  Seizure Detections: {detections['true_positive_detections']}\n")
-                f.write(f"  False Alarms: {detections['false_positive_detections']}\n")
+                f.write(f"  Time-Based True Positives: {detections['time_based_true_positives']}\n")
+                f.write(f"  Time-Based False Positives: {detections['time_based_false_positives']}\n")
+                f.write(f"  Window-Based TP (for comparison): {detections['window_based_true_positives']}\n")
+                f.write(f"  Window-Based FP (for comparison): {detections['window_based_false_positives']}\n")
                 f.write(f"  Seizure Detection Density: {detections['seizure_detection_density']:.4f}\n")
                 f.write(f"  Detection Precision: {detections['detection_precision']:.4f}\n")
                 
@@ -422,9 +447,17 @@ class MadridFileLevelMetrics:
                     if detected_seizures:
                         f.write(f"  Detected Seizures: {len(detected_seizures)}/{summary_info['num_seizures']}\n")
                         for det_seizure in detected_seizures:
-                            f.write(f"    {det_seizure['seizure_id']}: {det_seizure['detection_count']} detections\n")
+                            f.write(f"    {det_seizure['seizure_id']}: {det_seizure['detection_count']} time-overlapping detections\n")
+                            # Show first few overlapping detections with timing
+                            overlapping = det_seizure['overlapping_detections'][:3]  # Limit to first 3
+                            for overlap in overlapping:
+                                time_from_start = overlap['time_from_seizure_start']
+                                abs_time = overlap['anomaly_absolute_time']
+                                f.write(f"      Detection at {abs_time:.1f}s ({time_from_start:.1f}s from seizure start)\n")
+                            if len(det_seizure['overlapping_detections']) > 3:
+                                f.write(f"      ... and {len(det_seizure['overlapping_detections'])-3} more\n")
                     else:
-                        f.write(f"  No seizures detected\n")
+                        f.write(f"  No seizures detected (no temporal overlap)\n")
                 else:
                     f.write(f"  Sensitivity: N/A (no seizure present)\n")
                 f.write(f"  False Alarms/Hour: {metrics['false_alarms_per_hour']:.4f}\n")
