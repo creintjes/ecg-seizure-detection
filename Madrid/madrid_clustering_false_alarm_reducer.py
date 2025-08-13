@@ -382,9 +382,9 @@ class MadridClusteringFalseAlarmReducer:
             'representatives': representatives
         }
     
-    def process_single_file(self, filepath: Path) -> Dict[str, Any]:
-        """Process a single file through clustering analysis."""
-        print(f"Processing {filepath.name}...")
+    def process_single_file_for_strategy_evaluation(self, filepath: Path) -> Dict[str, Any]:
+        """Process a single file and evaluate all clustering strategies (Phase 1)."""
+        print(f"Evaluating strategies for {filepath.name}...")
         
         # Load result data
         result_data = self.load_result_file(filepath)
@@ -399,7 +399,6 @@ class MadridClusteringFalseAlarmReducer:
             return {
                 'file_info': base_metrics['file_info'],
                 'base_metrics': base_metrics['metrics'],
-                'best_strategy': None,
                 'strategy_results': {}
             }
         
@@ -424,28 +423,56 @@ class MadridClusteringFalseAlarmReducer:
                 **evaluation
             }
         
-        # Find best strategy based on score
-        best_strategy_name = None
-        best_score = float('-inf')
+        return {
+            'file_info': base_metrics['file_info'],
+            'base_metrics': base_metrics['metrics'],
+            'strategy_results': strategy_results
+        }
+    
+    def process_single_file_with_global_strategy(self, filepath: Path, global_strategy_name: str) -> Dict[str, Any]:
+        """Process a single file with the globally selected best strategy (Phase 2)."""
+        print(f"Applying global strategy {global_strategy_name} to {filepath.name}...")
         
-        for strategy_name, results in strategy_results.items():
-            if results['improvements']['score'] > best_score:
-                best_score = results['improvements']['score']
-                best_strategy_name = strategy_name
+        # Load result data
+        result_data = self.load_result_file(filepath)
+        if result_data is None:
+            return None
+        
+        # Calculate base metrics
+        base_metrics = self.calculate_base_metrics(result_data)
+        
+        if base_metrics['metrics']['total_anomalies'] == 0:
+            return {
+                'file_info': base_metrics['file_info'],
+                'base_metrics': base_metrics['metrics'],
+                'applied_strategy': None
+            }
+        
+        # Extract time threshold from strategy name (e.g., "time_30s" -> 30)
+        time_threshold = int(global_strategy_name.replace('time_', '').replace('s', ''))
+        anomalies = base_metrics['anomalies']
+        
+        # Apply the global strategy
+        clusters = self.time_based_clustering(anomalies, time_threshold)
+        representatives = [self.select_cluster_representative(cluster) for cluster in clusters]
+        evaluation = self.evaluate_clustering_strategy(base_metrics, representatives)
+        
+        applied_strategy = {
+            'name': global_strategy_name,
+            'time_threshold_seconds': time_threshold,
+            'num_clusters': len(clusters),
+            'cluster_sizes': [len(cluster) for cluster in clusters],
+            **evaluation
+        }
         
         return {
             'file_info': base_metrics['file_info'],
             'base_metrics': base_metrics['metrics'],
-            'best_strategy': {
-                'name': best_strategy_name,
-                'score': best_score,
-                **strategy_results[best_strategy_name]
-            } if best_strategy_name else None,
-            'strategy_results': strategy_results
+            'applied_strategy': applied_strategy
         }
     
     def process_all_files(self) -> Dict[str, Any]:
-        """Process all Madrid result files."""
+        """Process all Madrid result files with global strategy selection."""
         json_files = list(self.results_dir.glob("madrid_windowed_results_*.json"))
         
         if not json_files:
@@ -453,8 +480,10 @@ class MadridClusteringFalseAlarmReducer:
             return None
         
         print(f"Found {len(json_files)} Madrid result files")
+        print(f"\nPHASE 1: Evaluating all strategies across all files...")
         
-        all_file_results = {}
+        # Phase 1: Evaluate all strategies for all files
+        all_file_evaluations = {}
         overall_base_stats = {
             'total_files': 0,
             'total_anomalies': 0,
@@ -465,20 +494,27 @@ class MadridClusteringFalseAlarmReducer:
             'total_duration_hours': 0.0
         }
         
-        overall_best_stats = {
-            'total_anomalies': 0,
-            'total_true_positives': 0,
-            'total_false_positives': 0,
-            'total_detected_seizures': 0
-        }
+        # Collect strategy performance across all files
+        global_strategy_performance = defaultdict(lambda: {
+            'total_score': 0.0,
+            'total_anomaly_reduction': 0.0,
+            'total_fp_reduction': 0.0,
+            'total_sensitivity_change': 0.0,
+            'total_anomalies_before': 0,
+            'total_anomalies_after': 0,
+            'total_fp_before': 0,
+            'total_fp_after': 0,
+            'total_tp_after': 0,
+            'total_detected_seizures': 0,
+            'file_count': 0
+        })
         
-        # Process each file
         for json_file in sorted(json_files):
-            file_result = self.process_single_file(json_file)
+            file_result = self.process_single_file_for_strategy_evaluation(json_file)
             if file_result is None:
                 continue
             
-            all_file_results[json_file.name] = file_result
+            all_file_evaluations[json_file.name] = file_result
             
             # Update overall base stats
             base_metrics = file_result['base_metrics']
@@ -490,19 +526,97 @@ class MadridClusteringFalseAlarmReducer:
             overall_base_stats['total_detected_seizures'] += base_metrics['detected_seizures']
             overall_base_stats['total_duration_hours'] += file_result['file_info']['total_duration_hours']
             
-            # Update overall best stats
-            if file_result['best_strategy']:
-                best_metrics = file_result['best_strategy']['metrics']
-                overall_best_stats['total_anomalies'] += best_metrics['total_anomalies']
-                overall_best_stats['total_true_positives'] += best_metrics['true_positives']
-                overall_best_stats['total_false_positives'] += best_metrics['false_positives']
-                overall_best_stats['total_detected_seizures'] += best_metrics['detected_seizures']
-            else:
-                # No clustering applied
-                overall_best_stats['total_anomalies'] += base_metrics['total_anomalies']
-                overall_best_stats['total_true_positives'] += base_metrics['true_positives']
-                overall_best_stats['total_false_positives'] += base_metrics['false_positives']
-                overall_best_stats['total_detected_seizures'] += base_metrics['detected_seizures']
+            # Aggregate strategy performance across files
+            strategy_results = file_result['strategy_results']
+            for strategy_name, strategy_data in strategy_results.items():
+                perf = global_strategy_performance[strategy_name]
+                improvements = strategy_data['improvements']
+                metrics = strategy_data['metrics']
+                
+                perf['total_score'] += improvements['score']
+                perf['total_anomaly_reduction'] += improvements['anomaly_reduction']
+                perf['total_fp_reduction'] += improvements['fp_reduction']
+                perf['total_sensitivity_change'] += improvements['sensitivity_change']
+                perf['total_anomalies_before'] += base_metrics['total_anomalies']
+                perf['total_anomalies_after'] += metrics['total_anomalies']
+                perf['total_fp_before'] += base_metrics['false_positives']
+                perf['total_fp_after'] += metrics['false_positives']
+                perf['total_tp_after'] += metrics['true_positives']
+                perf['total_detected_seizures'] += metrics['detected_seizures']
+                perf['file_count'] += 1
+        
+        # Phase 2: Find globally best strategy
+        print(f"\nPHASE 2: Selecting globally best strategy...")
+        
+        best_global_strategy = None
+        best_global_score = float('-inf')
+        
+        global_strategy_summary = {}
+        for strategy_name, perf in global_strategy_performance.items():
+            if perf['file_count'] > 0:
+                # Calculate global metrics for this strategy
+                avg_score = perf['total_score'] / perf['file_count']
+                global_anomaly_reduction = ((perf['total_anomalies_before'] - perf['total_anomalies_after']) / 
+                                           perf['total_anomalies_before'] if perf['total_anomalies_before'] > 0 else 0)
+                global_fp_reduction = ((perf['total_fp_before'] - perf['total_fp_after']) / 
+                                     perf['total_fp_before'] if perf['total_fp_before'] > 0 else 0)
+                
+                # Use average score as global score
+                global_score = avg_score
+                
+                global_strategy_summary[strategy_name] = {
+                    'avg_score': avg_score,
+                    'global_score': global_score,
+                    'file_count': perf['file_count'],
+                    'global_anomaly_reduction': global_anomaly_reduction,
+                    'global_fp_reduction': global_fp_reduction,
+                    'total_anomalies_before': perf['total_anomalies_before'],
+                    'total_anomalies_after': perf['total_anomalies_after'],
+                    'total_fp_before': perf['total_fp_before'],
+                    'total_fp_after': perf['total_fp_after'],
+                    'total_tp_after': perf['total_tp_after'],
+                    'total_detected_seizures': perf['total_detected_seizures']
+                }
+                
+                if global_score > best_global_score:
+                    best_global_score = global_score
+                    best_global_strategy = strategy_name
+        
+        print(f"Selected global strategy: {best_global_strategy} (score: {best_global_score:.4f})")
+        
+        # Phase 3: Apply global strategy to all files
+        print(f"\nPHASE 3: Applying global strategy to all files...")
+        
+        final_file_results = {}
+        overall_final_stats = {
+            'total_anomalies': 0,
+            'total_true_positives': 0,
+            'total_false_positives': 0,
+            'total_detected_seizures': 0
+        }
+        
+        for json_file in sorted(json_files):
+            if json_file.name in all_file_evaluations:
+                file_result = self.process_single_file_with_global_strategy(json_file, best_global_strategy)
+                if file_result is None:
+                    continue
+                
+                final_file_results[json_file.name] = file_result
+                
+                # Update final stats
+                if file_result['applied_strategy']:
+                    final_metrics = file_result['applied_strategy']['metrics']
+                    overall_final_stats['total_anomalies'] += final_metrics['total_anomalies']
+                    overall_final_stats['total_true_positives'] += final_metrics['true_positives']
+                    overall_final_stats['total_false_positives'] += final_metrics['false_positives']
+                    overall_final_stats['total_detected_seizures'] += final_metrics['detected_seizures']
+                else:
+                    # No clustering applied
+                    base_metrics = file_result['base_metrics']
+                    overall_final_stats['total_anomalies'] += base_metrics['total_anomalies']
+                    overall_final_stats['total_true_positives'] += base_metrics['true_positives']
+                    overall_final_stats['total_false_positives'] += base_metrics['false_positives']
+                    overall_final_stats['total_detected_seizures'] += base_metrics['detected_seizures']
         
         # Calculate overall metrics
         overall_base_sensitivity = (overall_base_stats['total_detected_seizures'] / 
@@ -513,25 +627,25 @@ class MadridClusteringFalseAlarmReducer:
                                             overall_base_stats['total_duration_hours'] 
                                             if overall_base_stats['total_duration_hours'] > 0 else 0)
         
-        overall_best_sensitivity = (overall_best_stats['total_detected_seizures'] / 
-                                  overall_base_stats['total_seizures'] 
-                                  if overall_base_stats['total_seizures'] > 0 else None)
+        overall_final_sensitivity = (overall_final_stats['total_detected_seizures'] / 
+                                   overall_base_stats['total_seizures'] 
+                                   if overall_base_stats['total_seizures'] > 0 else None)
         
-        overall_best_false_alarms_per_hour = (overall_best_stats['total_false_positives'] / 
-                                            overall_base_stats['total_duration_hours'] 
-                                            if overall_base_stats['total_duration_hours'] > 0 else 0)
+        overall_final_false_alarms_per_hour = (overall_final_stats['total_false_positives'] / 
+                                             overall_base_stats['total_duration_hours'] 
+                                             if overall_base_stats['total_duration_hours'] > 0 else 0)
         
         # Calculate overall improvements
-        overall_anomaly_reduction = ((overall_base_stats['total_anomalies'] - overall_best_stats['total_anomalies']) / 
+        overall_anomaly_reduction = ((overall_base_stats['total_anomalies'] - overall_final_stats['total_anomalies']) / 
                                    overall_base_stats['total_anomalies'] 
                                    if overall_base_stats['total_anomalies'] > 0 else 0)
         
-        overall_fp_reduction = ((overall_base_stats['total_false_positives'] - overall_best_stats['total_false_positives']) / 
+        overall_fp_reduction = ((overall_base_stats['total_false_positives'] - overall_final_stats['total_false_positives']) / 
                               overall_base_stats['total_false_positives'] 
                               if overall_base_stats['total_false_positives'] > 0 else 0)
         
-        overall_sensitivity_change = ((overall_best_sensitivity - overall_base_sensitivity) 
-                                    if (overall_best_sensitivity is not None and overall_base_sensitivity is not None) else 0)
+        overall_sensitivity_change = ((overall_final_sensitivity - overall_base_sensitivity) 
+                                    if (overall_final_sensitivity is not None and overall_base_sensitivity is not None) else 0)
         
         return {
             'analysis_metadata': {
@@ -542,7 +656,13 @@ class MadridClusteringFalseAlarmReducer:
                 'detection_strategy': 'threshold' if self.threshold is not None else 'top_ranked',
                 'time_thresholds_tested': self.time_thresholds,
                 'pre_seizure_minutes': self.pre_seizure_seconds / 60.0,
-                'post_seizure_minutes': self.post_seizure_seconds / 60.0
+                'post_seizure_minutes': self.post_seizure_seconds / 60.0,
+                'global_strategy_selected': best_global_strategy,
+                'global_strategy_score': best_global_score
+            },
+            'strategy_evaluation_phase': {
+                'all_file_evaluations': all_file_evaluations,
+                'global_strategy_summary': global_strategy_summary
             },
             'overall_results': {
                 'base_metrics': {
@@ -550,10 +670,10 @@ class MadridClusteringFalseAlarmReducer:
                     'sensitivity': overall_base_sensitivity,
                     'false_alarms_per_hour': overall_base_false_alarms_per_hour
                 },
-                'best_metrics': {
-                    **overall_best_stats,
-                    'sensitivity': overall_best_sensitivity,
-                    'false_alarms_per_hour': overall_best_false_alarms_per_hour
+                'final_metrics': {
+                    **overall_final_stats,
+                    'sensitivity': overall_final_sensitivity,
+                    'false_alarms_per_hour': overall_final_false_alarms_per_hour
                 },
                 'improvements': {
                     'anomaly_reduction': overall_anomaly_reduction,
@@ -561,7 +681,7 @@ class MadridClusteringFalseAlarmReducer:
                     'sensitivity_change': overall_sensitivity_change
                 }
             },
-            'individual_results': all_file_results
+            'individual_results': final_file_results
         }
     
     def save_results(self, results: Dict[str, Any]):
@@ -580,41 +700,46 @@ class MadridClusteringFalseAlarmReducer:
             json.dump(base_metrics_summary, f, indent=2)
         print(f"Base metrics saved to: {base_metrics_path}")
         
-        # 2. Save strategy comparison
-        strategy_comparison_path = self.output_dir / "strategy_comparison" / f"comparison_{timestamp}.json"
+        # 2. Save strategy comparison (now includes global strategy evaluation)
+        strategy_comparison_path = self.output_dir / "strategy_comparison" / f"global_strategy_comparison_{timestamp}.json"
         with open(strategy_comparison_path, 'w') as f:
             json.dump(results, f, indent=2)
-        print(f"Strategy comparison saved to: {strategy_comparison_path}")
+        print(f"Global strategy comparison saved to: {strategy_comparison_path}")
         
-        # 3. Save best representatives
+        # 3. Save best representatives (from global strategy)
         all_representatives = []
+        global_strategy = results['analysis_metadata']['global_strategy_selected']
+        
         for file_name, file_result in results['individual_results'].items():
-            if file_result['best_strategy'] and 'representatives' in file_result['best_strategy']:
-                for rep in file_result['best_strategy']['representatives']:
+            if file_result['applied_strategy'] and 'representatives' in file_result['applied_strategy']:
+                for rep in file_result['applied_strategy']['representatives']:
                     rep_with_file = {
                         'file': file_name,
                         'subject_id': file_result['file_info']['subject_id'],
                         'run_id': file_result['file_info']['run_id'],
+                        'global_strategy_applied': global_strategy,
                         **rep
                     }
                     all_representatives.append(rep_with_file)
         
         best_representatives = {
             'calculation_timestamp': results['analysis_metadata']['calculation_timestamp'],
+            'global_strategy_applied': global_strategy,
             'total_representatives': len(all_representatives),
             'representatives': all_representatives
         }
         
-        representatives_path = self.output_dir / "clusters" / f"best_representatives_{timestamp}.json"
+        representatives_path = self.output_dir / "clusters" / f"global_best_representatives_{timestamp}.json"
         with open(representatives_path, 'w') as f:
             json.dump(best_representatives, f, indent=2)
-        print(f"Best representatives saved to: {representatives_path}")
+        print(f"Global best representatives saved to: {representatives_path}")
         
-        # 4. Save final metrics (after clustering)
+        # 4. Save final metrics (after global clustering)
         final_metrics = {
             'calculation_timestamp': results['analysis_metadata']['calculation_timestamp'],
+            'global_strategy_selected': global_strategy,
             'before_clustering': results['overall_results']['base_metrics'],
-            'after_clustering': results['overall_results']['best_metrics'],
+            'after_clustering': results['overall_results']['final_metrics'],
             'improvements': results['overall_results']['improvements']
         }
         
@@ -629,18 +754,32 @@ class MadridClusteringFalseAlarmReducer:
     def print_console_summary(self, results: Dict[str, Any]):
         """Print summary to console."""
         base = results['overall_results']['base_metrics']
-        best = results['overall_results']['best_metrics']
+        final = results['overall_results']['final_metrics']
         improvements = results['overall_results']['improvements']
+        global_strategy = results['analysis_metadata']['global_strategy_selected']
+        global_score = results['analysis_metadata']['global_strategy_score']
         
-        print(f"\n{'='*60}")
-        print("CLUSTERING-BASED FALSE ALARM REDUCTION SUMMARY")
-        print(f"{'='*60}")
+        print(f"\n{'='*70}")
+        print("GLOBAL CLUSTERING-BASED FALSE ALARM REDUCTION SUMMARY")
+        print(f"{'='*70}")
         
         print(f"Files processed: {base['total_files']}")
         print(f"Total duration: {base['total_duration_hours']:.2f} hours")
         print(f"Detection strategy: {results['analysis_metadata']['detection_strategy']}")
         if results['analysis_metadata']['threshold_used'] is not None:
             print(f"Threshold used: {results['analysis_metadata']['threshold_used']}")
+        
+        print(f"\nGLOBAL STRATEGY SELECTED: {global_strategy}")
+        print(f"Global strategy score: {global_score:.4f}")
+        
+        # Show top 3 strategies for comparison
+        strategy_summary = results['strategy_evaluation_phase']['global_strategy_summary']
+        sorted_strategies = sorted(strategy_summary.items(), key=lambda x: x[1]['global_score'], reverse=True)
+        print(f"\nTOP 3 STRATEGIES EVALUATED:")
+        for i, (strategy_name, strategy_data) in enumerate(sorted_strategies[:3], 1):
+            print(f"  {i}. {strategy_name}: score {strategy_data['global_score']:.4f}, "
+                  f"anomaly reduction {strategy_data['global_anomaly_reduction']:.4f}, "
+                  f"FP reduction {strategy_data['global_fp_reduction']:.4f}")
         
         print(f"\nBEFORE CLUSTERING:")
         print(f"  Total anomalies: {base['total_anomalies']}")
@@ -650,13 +789,13 @@ class MadridClusteringFalseAlarmReducer:
             print(f"  Sensitivity: {base['sensitivity']:.4f} ({base['sensitivity']*100:.2f}%)")
         print(f"  False alarms/hour: {base['false_alarms_per_hour']:.4f}")
         
-        print(f"\nAFTER CLUSTERING (BEST STRATEGIES):")
-        print(f"  Total anomalies: {best['total_anomalies']}")
-        print(f"  True positives: {best['total_true_positives']}")
-        print(f"  False positives: {best['total_false_positives']}")
-        if best['sensitivity'] is not None:
-            print(f"  Sensitivity: {best['sensitivity']:.4f} ({best['sensitivity']*100:.2f}%)")
-        print(f"  False alarms/hour: {best['false_alarms_per_hour']:.4f}")
+        print(f"\nAFTER GLOBAL CLUSTERING ({global_strategy}):")
+        print(f"  Total anomalies: {final['total_anomalies']}")
+        print(f"  True positives: {final['total_true_positives']}")
+        print(f"  False positives: {final['total_false_positives']}")
+        if final['sensitivity'] is not None:
+            print(f"  Sensitivity: {final['sensitivity']:.4f} ({final['sensitivity']*100:.2f}%)")
+        print(f"  False alarms/hour: {final['false_alarms_per_hour']:.4f}")
         
         print(f"\nIMPROVEMENTS:")
         print(f"  Anomaly reduction: {improvements['anomaly_reduction']:.4f} ({improvements['anomaly_reduction']*100:.2f}%)")
@@ -664,7 +803,7 @@ class MadridClusteringFalseAlarmReducer:
         print(f"  Sensitivity change: {improvements['sensitivity_change']:+.4f}")
         
         print(f"\nOUTPUT DIRECTORY: {self.output_dir}")
-        print(f"{'='*60}")
+        print(f"{'='*70}")
 
 
 def main():
