@@ -8,19 +8,7 @@ from matrix_profile import MatrixProfile
 from typing import List, Tuple
 import warnings
 warnings.filterwarnings("ignore", category=DeprecationWarning)
-
-
 import os
-# # Add parent directory (../) to sys.path
-# project_root = Path().resolve().parent
-# if str(project_root) not in sys.path:
-#     sys.path.insert(0, str(project_root))
-# # from data_helpers import load_one_preprocessed_sample
-# sys.path.append(os.path.join(os.path.dirname(__file__), 'Information', 'Data', 'seizeit2-main'))
-
-# from classes.data import Data
-# from classes.annotation import Annotation
-# Get absolute path to seizeit2-main (from this script's directory)
 seizeit2_main_path = Path(__file__).resolve().parent / '..' / 'Information' / 'Data' / 'seizeit2-main'
 seizeit2_main_path = seizeit2_main_path.resolve()
 
@@ -138,11 +126,18 @@ def MatProfDemo()-> None:
     )
     results_path.mkdir(parents=True, exist_ok=True)
 
-    data, _ = load_data(data_path=data_path, subject_id="sub-089", run_id="run-97")
+    data, annotations = load_data(data_path=data_path, subject_id="sub-012", run_id="run-03")
     # data = data[0]
     # print(data.shape)
     # print(len(data))
     print(data)
+    print(annotations.events)
+    gt_intervals = annotations.events
+    if not gt_intervals:
+        return
+    # annomaly_indices = [int(idx) for idx in annomaly_indices]
+    # print(annomaly_indices)
+    # return
     data_ecg = None
     for i, (channel_data, channel_name, fs) in enumerate(
                 zip(data.data, data.channels, data.fs)
@@ -157,12 +152,27 @@ def MatProfDemo()-> None:
     frequency = int(data.fs[0])
     print(data_ecg.shape)
     # return
-    features = MatrixProfile.process_ecg_to_hrv_features(data_ecg, sampling_rate=frequency)
+    features, timestamps = MatrixProfile.process_ecg_to_hrv_features(data_ecg, sampling_rate=frequency)
     print("Feature shape:", features.shape)
-    mp, indices = MatrixProfile.compute_multivariate_matrix_profile(features, subsequence_length=subsequence_length)
+    anomalies, tp, fp, mp = MatrixProfile.detect_anomalies_from_hrv_features(
+        features,
+        timestamps,
+        subsequence_length=20,
+        ground_truth_intervals=gt_intervals,
+        sampling_rate=256,
+        top_k_percent=10.0
+    )
 
-    save_one_mp(mp=mp, folder=results_path, run_name="sub-089_run-97")
-    print(f'Ended MP calc at {datetime.now().strftime("%d.%m.%Y, %H:%M")}')
+    print(f"Anomalien (Samples): {anomalies}")
+    print(f" Treffer: {tp}, Falsch: {fp}")
+
+    print(f"Top 10% Anomalien (Samples): {anomalies}")
+
+    # mp, indices = MatrixProfile.compute_multivariate_matrix_profile(features, subsequence_length=subsequence_length)
+
+    # save_one_mp(mp=mp, folder=results_path, run_name="sub-089_run-97")
+    print(f'Ended MP calc at {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}')
+
     
 
 
