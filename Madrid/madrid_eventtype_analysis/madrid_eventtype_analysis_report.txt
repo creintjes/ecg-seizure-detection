@@ -1,0 +1,344 @@
+Madrid Seizure Detection: Analysis by EventType and Categories
+=================================================================
+
+SUMMARY BY EVENTTYPE:
+------------------------------
+
+EventType: sz_foc_ia_nm
+  Total Seizures: 78
+  Detected Seizures: 54
+  Sensitivity: 0.692 (69.2%)
+  Precision: 0.210 (21.0%)
+  False Alarm Rate (FA/h): 3.078
+  True Positives: 63
+  False Positives: 237
+  Total Anomalies: 300
+  Total Recording Hours: 77.0
+
+EventType: sz_foc_a_m_hyperkinetic
+  Total Seizures: 76
+  Detected Seizures: 52
+  Sensitivity: 0.684 (68.4%)
+  Precision: 0.247 (24.7%)
+  False Alarm Rate (FA/h): 2.800
+  True Positives: 69
+  False Positives: 210
+  Total Anomalies: 279
+  Total Recording Hours: 75.0
+
+EventType: sz_foc_ia_m_hyperkinetic
+  Total Seizures: 53
+  Detected Seizures: 44
+  Sensitivity: 0.830 (83.0%)
+  Precision: 0.298 (29.8%)
+  False Alarm Rate (FA/h): 2.400
+  True Positives: 51
+  False Positives: 120
+  Total Anomalies: 171
+  Total Recording Hours: 50.0
+
+EventType: sz_foc_f2b
+  Total Seizures: 28
+  Detected Seizures: 23
+  Sensitivity: 0.821 (82.1%)
+  Precision: 0.362 (36.2%)
+  False Alarm Rate (FA/h): 2.040
+  True Positives: 29
+  False Positives: 51
+  Total Anomalies: 80
+  Total Recording Hours: 25.0
+
+EventType: sz_foc_ia_m_automatisms
+  Total Seizures: 27
+  Detected Seizures: 25
+  Sensitivity: 0.926 (92.6%)
+  Precision: 0.346 (34.6%)
+  False Alarm Rate (FA/h): 1.889
+  True Positives: 27
+  False Positives: 51
+  Total Anomalies: 78
+  Total Recording Hours: 27.0
+
+EventType: sz_foc_a_nm
+  Total Seizures: 22
+  Detected Seizures: 19
+  Sensitivity: 0.864 (86.4%)
+  Precision: 0.348 (34.8%)
+  False Alarm Rate (FA/h): 2.045
+  True Positives: 24
+  False Positives: 45
+  Total Anomalies: 69
+  Total Recording Hours: 22.0
+
+EventType: sz_foc_a_nm_behavior
+  Total Seizures: 20
+  Detected Seizures: 11
+  Sensitivity: 0.550 (55.0%)
+  Precision: 0.211 (21.1%)
+  False Alarm Rate (FA/h): 2.800
+  True Positives: 15
+  False Positives: 56
+  Total Anomalies: 71
+  Total Recording Hours: 20.0
+
+EventType: sz_foc_a_um
+  Total Seizures: 20
+  Detected Seizures: 12
+  Sensitivity: 0.600 (60.0%)
+  Precision: 0.203 (20.3%)
+  False Alarm Rate (FA/h): 2.550
+  True Positives: 13
+  False Positives: 51
+  Total Anomalies: 64
+  Total Recording Hours: 20.0
+
+EventType: sz_foc_ia
+  Total Seizures: 16
+  Detected Seizures: 7
+  Sensitivity: 0.438 (43.8%)
+  Precision: 0.186 (18.6%)
+  False Alarm Rate (FA/h): 2.188
+  True Positives: 8
+  False Positives: 35
+  Total Anomalies: 43
+  Total Recording Hours: 16.0
+
+EventType: sz_foc_ua_nm
+  Total Seizures: 16
+  Detected Seizures: 12
+  Sensitivity: 0.750 (75.0%)
+  Precision: 0.262 (26.2%)
+  False Alarm Rate (FA/h): 2.812
+  True Positives: 16
+  False Positives: 45
+  Total Anomalies: 61
+  Total Recording Hours: 16.0
+
+EventType: sz_foc_ua_um
+  Total Seizures: 15
+  Detected Seizures: 12
+  Sensitivity: 0.800 (80.0%)
+  Precision: 0.250 (25.0%)
+  False Alarm Rate (FA/h): 2.600
+  True Positives: 13
+  False Positives: 39
+  Total Anomalies: 52
+  Total Recording Hours: 15.0
+
+EventType: sz_foc_ia_m_tonic
+  Total Seizures: 9
+  Detected Seizures: 7
+  Sensitivity: 0.778 (77.8%)
+  Precision: 0.267 (26.7%)
+  False Alarm Rate (FA/h): 2.444
+  True Positives: 8
+  False Positives: 22
+  Total Anomalies: 30
+  Total Recording Hours: 9.0
+
+EventType: sz_foc_ua_nm_behavior
+  Total Seizures: 8
+  Detected Seizures: 6
+  Sensitivity: 0.750 (75.0%)
+  Precision: 0.233 (23.3%)
+  False Alarm Rate (FA/h): 2.875
+  True Positives: 7
+  False Positives: 23
+  Total Anomalies: 30
+  Total Recording Hours: 8.0
+
+EventType: sz_foc_ia_um
+  Total Seizures: 3
+  Detected Seizures: 3
+  Sensitivity: 1.000 (100.0%)
+  Precision: 1.000 (100.0%)
+  False Alarm Rate (FA/h): 0.000
+  True Positives: 3
+  False Positives: 0
+  Total Anomalies: 3
+  Total Recording Hours: 3.0
+
+EventType: sz_foc_ua_m_hyperkinetic
+  Total Seizures: 2
+  Detected Seizures: 2
+  Sensitivity: 1.000 (100.0%)
+  Precision: 0.400 (40.0%)
+  False Alarm Rate (FA/h): 1.500
+  True Positives: 2
+  False Positives: 3
+  Total Anomalies: 5
+  Total Recording Hours: 2.0
+
+EventType: sz_foc_a_m_automatisms
+  Total Seizures: 2
+  Detected Seizures: 1
+  Sensitivity: 0.500 (50.0%)
+  Precision: 0.167 (16.7%)
+  False Alarm Rate (FA/h): 2.500
+  True Positives: 1
+  False Positives: 5
+  Total Anomalies: 6
+  Total Recording Hours: 2.0
+
+EventType: sz_foc_ua_m
+  Total Seizures: 1
+  Detected Seizures: 1
+  Sensitivity: 1.000 (100.0%)
+  Precision: 0.250 (25.0%)
+  False Alarm Rate (FA/h): 3.000
+  True Positives: 1
+  False Positives: 3
+  Total Anomalies: 4
+  Total Recording Hours: 1.0
+
+EventType: sz_uo_nm
+  Total Seizures: 1
+  Detected Seizures: 1
+  Sensitivity: 1.000 (100.0%)
+  Precision: 0.333 (33.3%)
+  False Alarm Rate (FA/h): 2.000
+  True Positives: 1
+  False Positives: 2
+  Total Anomalies: 3
+  Total Recording Hours: 1.0
+
+EventType: sz_foc_ia_nm_behavior
+  Total Seizures: 1
+  Detected Seizures: 1
+  Sensitivity: 1.000 (100.0%)
+  Precision: 0.333 (33.3%)
+  False Alarm Rate (FA/h): 2.000
+  True Positives: 1
+  False Positives: 2
+  Total Anomalies: 3
+  Total Recording Hours: 1.0
+
+
+SUMMARY BY CATEGORY (V1):
+------------------------------
+
+Category: focal_mit_moption
+  Total Seizures: 234
+  Detected Seizures: 174
+  Sensitivity: 0.744 (74.4%)
+  Precision: 0.275 (27.5%)
+  False Alarm Rate (FA/h): 2.427
+  True Positives: 209
+  False Positives: 551
+  Total Anomalies: 760
+  Total Recording Hours: 227.0
+
+Category: focal_ohne_moption
+  Total Seizures: 148
+  Detected Seizures: 106
+  Sensitivity: 0.716 (71.6%)
+  Precision: 0.240 (24.0%)
+  False Alarm Rate (FA/h): 2.776
+  True Positives: 129
+  False Positives: 408
+  Total Anomalies: 537
+  Total Recording Hours: 147.0
+
+Category: unclassified
+  Total Seizures: 15
+  Detected Seizures: 12
+  Sensitivity: 0.800 (80.0%)
+  Precision: 0.250 (25.0%)
+  False Alarm Rate (FA/h): 2.600
+  True Positives: 13
+  False Positives: 39
+  Total Anomalies: 52
+  Total Recording Hours: 15.0
+
+Category: unknown_ohne_moption
+  Total Seizures: 1
+  Detected Seizures: 1
+  Sensitivity: 1.000 (100.0%)
+  Precision: 0.333 (33.3%)
+  False Alarm Rate (FA/h): 2.000
+  True Positives: 1
+  False Positives: 2
+  Total Anomalies: 3
+  Total Recording Hours: 1.0
+
+
+SUMMARY BY CATEGORY (V2):
+------------------------------
+
+Category V2: Focal Impaired-Awareness
+  Total Seizures: 171
+  Detected Seizures: 134
+  Sensitivity: 0.784 (78.4%)
+  Precision: 0.262 (26.2%)
+  False Alarm Rate (FA/h): 2.587
+  True Positives: 153
+  False Positives: 432
+  Total Anomalies: 585
+  Total Recording Hours: 167.0
+
+Category V2: Focal Aware
+  Total Seizures: 140
+  Detected Seizures: 95
+  Sensitivity: 0.679 (67.9%)
+  Precision: 0.249 (24.9%)
+  False Alarm Rate (FA/h): 2.640
+  True Positives: 122
+  False Positives: 367
+  Total Anomalies: 489
+  Total Recording Hours: 139.0
+
+Category V2: Focal Unknown-Awareness
+  Total Seizures: 42
+  Detected Seizures: 33
+  Sensitivity: 0.786 (78.6%)
+  Precision: 0.257 (25.7%)
+  False Alarm Rate (FA/h): 2.690
+  True Positives: 39
+  False Positives: 113
+  Total Anomalies: 152
+  Total Recording Hours: 42.0
+
+Category V2: Focal to Bilateral TC
+  Total Seizures: 28
+  Detected Seizures: 23
+  Sensitivity: 0.821 (82.1%)
+  Precision: 0.362 (36.2%)
+  False Alarm Rate (FA/h): 2.040
+  True Positives: 29
+  False Positives: 51
+  Total Anomalies: 80
+  Total Recording Hours: 25.0
+
+Category V2: Focal Seizures
+  Total Seizures: 16
+  Detected Seizures: 7
+  Sensitivity: 0.438 (43.8%)
+  Precision: 0.186 (18.6%)
+  False Alarm Rate (FA/h): 2.188
+  True Positives: 8
+  False Positives: 35
+  Total Anomalies: 43
+  Total Recording Hours: 16.0
+
+Category V2: Seizures Unknown Onset
+  Total Seizures: 1
+  Detected Seizures: 1
+  Sensitivity: 1.000 (100.0%)
+  Precision: 0.333 (33.3%)
+  False Alarm Rate (FA/h): 2.000
+  True Positives: 1
+  False Positives: 2
+  Total Anomalies: 3
+  Total Recording Hours: 1.0
+
+
+OVERALL STATISTICS:
+--------------------
+Total Seizures Analyzed: 398
+Total EventTypes Found: 19
+Total Categories V1 Found: 4
+Total Categories V2 Found: 6
+Total Recording Hours: 390.0
+Overall Sensitivity: 0.736 (73.6%)
+Overall Precision: 0.260 (26.0%)
+Overall False Alarm Rate (FA/h): 2.564

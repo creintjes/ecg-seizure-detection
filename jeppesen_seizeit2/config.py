@@ -7,7 +7,7 @@ from pathlib import Path
 
 # === DATENPFADE ===
 # WICHTIG: Diesen Pfad an Ihre lokale SeizeIT2 Installation anpassen!
-SEIZEIT2_DATA_PATH = Path("/path/to/seizeit2/bids")  # <- HIER ANPASSEN
+SEIZEIT2_DATA_PATH = Path("/home/swolf/asim_shared/raw_data/ds005873-1.1.0")  # <- HIER ANPASSEN
 
 # Ausgabeordner für Ergebnisse
 RESULTS_DIR = Path(__file__).parent / "results"
