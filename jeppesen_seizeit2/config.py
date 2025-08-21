@@ -7,7 +7,7 @@ from pathlib import Path
 
 # === DATENPFADE ===
 # WICHTIG: Diesen Pfad an Ihre lokale SeizeIT2 Installation anpassen!
-SEIZEIT2_DATA_PATH = Path("/home/creintj2_sw/ecg-seizure-detection/jeppesen_seizeit2/example_data")  # <- HIER ANPASSEN
+SEIZEIT2_DATA_PATH = Path("/home/swolf/asim_shared/raw_data/ds005873-1.1.0")    #"/home/creintj2_sw/ecg-seizure-detection/jeppesen_seizeit2/example_data")  # <- HIER ANPASSEN
 
 # Ausgabeordner für Ergebnisse
 RESULTS_DIR = Path(__file__).parent / "results"
