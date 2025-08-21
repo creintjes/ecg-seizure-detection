@@ -29,6 +29,11 @@ REFRACTORY_PERIOD_MINUTES = 3  # Refraktäre Periode nach Vorhersage
 # === PARALLELVERARBEITUNG ===
 MAX_WORKERS = 5  # Anzahl paralleler Prozesse
 
+# === CHECKPOINT KONFIGURATION ===
+ENABLE_CHECKPOINTS = True  # Aktiviert Checkpoint-Funktionalität
+CHECKPOINT_BATCH_SIZE = 3  # Anzahl Subjects pro Batch vor Checkpoint-Speicherung
+SUBJECT_TIMEOUT_MINUTES = 60  # Timeout pro Subject in Minuten
+
 # === ELGENDI R-PEAK DETECTION PARAMETER ===
 ELGENDI_PARAMS = {
     'low': 8,           # Untere Grenzfrequenz (Hz)
