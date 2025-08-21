@@ -31,7 +31,7 @@ def get_subject_recordings(subject: str) -> List[str]:
     Returns:
         List[str]: Liste der Run-IDs (z.B. ['run-01', 'run-02', ...])
     """
-    subject_path = SEIZEIT2_DATA_PATH / subject / 'ses-01' / 'eeg'
+    subject_path = SEIZEIT2_DATA_PATH / subject / 'ses-01' / 'ecg'
     if not subject_path.exists():
         return []
     
