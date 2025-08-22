@@ -1,14 +1,12 @@
 import numpy as np
 import stumpy
 import matplotlib.pyplot as plt
-from typing import List
 import neurokit2 as nk
 import pandas as pd
 import neurokit2 as nk
-from typing import Optional, Tuple, List
+from typing import Optional, Tuple, List, Dict
 import warnings
 from neurokit2.misc import NeuroKitWarning
-
 warnings.filterwarnings("ignore", category=NeuroKitWarning)
 warnings.filterwarnings("ignore", category=RuntimeWarning)
 
@@ -409,3 +407,224 @@ class MatrixProfile:
         fig.text(0.01, 0.01, "Matrixprofile (small = similar, large = potential outlier)", fontsize=8, color="gray")
         fig.tight_layout()
         plt.show()
+
+
+
+    @staticmethod
+    def _bandpower_fft(
+        x: np.ndarray,
+        fs: int,
+        bands_hz: Dict[str, Tuple[float, float]],
+        use_hann: bool = True
+    ) -> Dict[str, float]:
+        """
+        Compute (mean) band power per predefined band using a simple FFT periodogram.
+
+        Parameters
+        ----------
+        x : np.ndarray
+            1D windowed signal (time domain), dtype will be cast to float64.
+        fs : int
+            Sampling rate in Hz.
+        bands_hz : Dict[str, Tuple[float, float]]
+            Mapping of band name to (low_hz, high_hz).
+        use_hann : bool
+            If True, apply a Hann window to reduce spectral leakage.
+
+        Returns
+        -------
+        Dict[str, float]
+            Dictionary with mean power per band (keys = band names).
+        """
+        # ensure float64 for numerical stability
+        x = np.asarray(x, dtype=np.float64)
+
+        # optional windowing
+        if use_hann:
+            w = np.hanning(len(x))
+            xw = x * w
+            # normalize for window power loss
+            # (mean-square of Hann is 0.5)
+            scale = 1.0 / np.sqrt(0.5)
+            xw = xw * scale
+        else:
+            xw = x
+
+        # real FFT
+        X = np.fft.rfft(xw, n=len(xw))
+        freqs = np.fft.rfftfreq(len(xw), d=1.0 / fs)
+
+        # simple periodogram: power spectral density ~ |X|^2 / (fs * N)
+        N = len(xw)
+        psd = (np.abs(X) ** 2) / (fs * N)
+
+        out: Dict[str, float] = {}
+        for name, (f_lo, f_hi) in bands_hz.items():
+            # boolean mask for frequency bins within the band
+            m = (freqs >= f_lo) & (freqs < f_hi)
+            if not np.any(m):
+                out[name] = 0.0
+            else:
+                # mean power density within band (robust, scale-invariant to bin count)
+                out[name] = float(np.mean(psd[m]))
+        return out
+
+    @staticmethod
+    def compute_ecg_window_features(
+        ecg: np.ndarray,
+        sampling_rate: int,
+        window_size_sec: float = 5.0,
+        step_size_sec: float = 2.5,
+        feature_names: Optional[List[str]] = None,
+        min_freq_hz: float = 0.5,
+        max_freq_hz: float = 40.0
+    ) -> Tuple[np.ndarray, List[float]]:
+        """
+        Extract light‑weight ECG features per sliding window for multivariate matrix profiling.
+
+        This is intentionally computationally cheaper than HRV-based pipelines and
+        reproduces the EEG-like feature set on ECG:
+        ["std", "min", "max", "line_length", "rms", "total_power",
+         "mean_delta_power", "mean_theta_power", "mean_alpha_power", "mean_beta_power"]
+
+        Notes
+        -----
+        * Frequency bands are kept as in EEG (delta/theta/alpha/beta).
+          On ECG, most energy sits below ~40 Hz; we still compute these bands
+          as requested for compatibility with your downstream code.
+        * Uses NumPy-only real FFT (rfft) with optional Hann windowing.
+
+        Parameters
+        ----------
+        ecg : np.ndarray
+            1D ECG signal (time domain). Will be cast to float64.
+        sampling_rate : int
+            Sampling frequency in Hz.
+        window_size_sec : float
+            Window size in seconds.
+        step_size_sec : float
+            Step size between consecutive windows in seconds.
+        feature_names : Optional[List[str]]
+            Subset or order of features to compute. If None, defaults to the full set
+            listed above.
+        min_freq_hz : float
+            Lower bound for total power integration (to ignore DC drift).
+        max_freq_hz : float
+            Upper bound for total power integration (anti-alias guard).
+
+        Returns
+        -------
+        Tuple[np.ndarray, List[float]]
+            - features: 2D array of shape (n_windows, n_features), dtype float64
+            - timestamps: list of center times (in seconds) for each window
+
+        dtypes
+        ------
+        ecg: float64 (internally cast)
+        features: float64
+        timestamps: float64 (returned as Python floats in a list)
+
+        Examples
+        --------
+        >>> feats, ts = MatrixProfile.compute_ecg_window_features(ecg, sampling_rate=256, window_size_sec=5, step_size_sec=2.5)
+        >>> mp, idx = MatrixProfile.compute_multivariate_matrix_profile(feats, subsequence_length=20)
+        """
+        # --- validate & defaults ---
+        x = np.asarray(ecg, dtype=np.float64)
+        if x.ndim != 1:
+            raise ValueError("ECG signal must be 1D.")
+        if sampling_rate <= 0:
+            raise ValueError("sampling_rate must be positive.")
+
+        default_features: List[str] = [
+            "std", "min", "max", "line_length", "rms",
+            "total_power", "mean_delta_power", "mean_theta_power",
+            "mean_alpha_power", "mean_beta_power"
+        ]
+        feats_to_compute = feature_names if feature_names is not None else default_features
+
+        # EEG-like bands (in Hz), kept for compatibility with your feature list
+        bands = {
+            "delta": (0.5, 4.0),
+            "theta": (4.0, 8.0),
+            "alpha": (8.0, 13.0),
+            "beta":  (13.0, 30.0),
+        }
+
+        win = int(round(window_size_sec * sampling_rate))
+        step = int(round(step_size_sec * sampling_rate))
+        if win < 2 or step < 1:
+            raise ValueError("Window/step too small for given sampling_rate.")
+
+        # Precompute frequency grid for total power bounds
+        # (we will reuse the FFT per window and integrate over [min_freq_hz, max_freq_hz])
+        timestamps: List[float] = []
+        rows: List[List[float]] = []
+
+        # iterate windows
+        for start in range(0, len(x) - win + 1, step):
+            seg = x[start:start + win]
+
+            # Basic time-domain features (fast, O(N))
+            seg_std = float(np.std(seg, ddof=0)) if "std" in feats_to_compute else None
+            seg_min = float(np.min(seg)) if "min" in feats_to_compute else None
+            seg_max = float(np.max(seg)) if "max" in feats_to_compute else None
+            # Line length: sum of absolute first differences (captures roughness)
+            seg_ll = float(np.sum(np.abs(np.diff(seg)))) if "line_length" in feats_to_compute else None
+            # RMS: root mean square amplitude
+            seg_rms = float(np.sqrt(np.mean(seg ** 2))) if "rms" in feats_to_compute else None
+
+            # Frequency-domain features via FFT (single rFFT per window)
+            # Apply Hann in the bandpower helper (with normalization)
+            bp = MatrixProfile._bandpower_fft(seg, fs=sampling_rate, bands_hz={
+                # We will compute total power separately with [min_freq_hz, max_freq_hz]
+                "delta": bands["delta"],
+                "theta": bands["theta"],
+                "alpha": bands["alpha"],
+                "beta":  bands["beta"],
+            }, use_hann=True)
+
+            # For total power, integrate over [min_freq_hz, max_freq_hz]
+            # by reusing the same FFT computation once more to extract PSD bins
+            # (This keeps code explicit and readable.)
+            X = np.fft.rfft(np.hanning(len(seg)) * seg / np.sqrt(0.5))
+            freqs = np.fft.rfftfreq(len(seg), d=1.0 / sampling_rate)
+            psd = (np.abs(X) ** 2) / (sampling_rate * len(seg))
+            m_total = (freqs >= min_freq_hz) & (freqs <= min_freq_hz if max_freq_hz <= min_freq_hz else (freqs <= max_freq_hz))
+            total_power = float(np.mean(psd[m_total])) if "total_power" in feats_to_compute and np.any(m_total) else None
+
+            # Build row in requested order
+            row: List[float] = []
+            for name in feats_to_compute:
+                if name == "std":
+                    row.append(seg_std if seg_std is not None else 0.0)
+                elif name == "min":
+                    row.append(seg_min if seg_min is not None else 0.0)
+                elif name == "max":
+                    row.append(seg_max if seg_max is not None else 0.0)
+                elif name == "line_length":
+                    row.append(seg_ll if seg_ll is not None else 0.0)
+                elif name == "rms":
+                    row.append(seg_rms if seg_rms is not None else 0.0)
+                elif name == "total_power":
+                    row.append(total_power if total_power is not None else 0.0)
+                elif name == "mean_delta_power":
+                    row.append(float(bp.get("delta", 0.0)))
+                elif name == "mean_theta_power":
+                    row.append(float(bp.get("theta", 0.0)))
+                elif name == "mean_alpha_power":
+                    row.append(float(bp.get("alpha", 0.0)))
+                elif name == "mean_beta_power":
+                    row.append(float(bp.get("beta", 0.0)))
+                else:
+                    # Unknown feature name -> 0.0 placeholder (keeps shape stable)
+                    row.append(0.0)
+
+            rows.append(row)
+
+            # center timestamp of the window (seconds)
+            t_center = (start + win / 2.0) / float(sampling_rate)
+            timestamps.append(float(t_center))
+
+        features = np.asarray(rows, dtype=np.float64)
+        return features, timestamps
