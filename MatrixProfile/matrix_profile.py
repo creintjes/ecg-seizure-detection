@@ -5,8 +5,7 @@ from typing import List
 import neurokit2 as nk
 import pandas as pd
 import neurokit2 as nk
-from typing import Optional
-from typing import Tuple
+from typing import Optional, Tuple, List
 import warnings
 from neurokit2.misc import NeuroKitWarning
 
