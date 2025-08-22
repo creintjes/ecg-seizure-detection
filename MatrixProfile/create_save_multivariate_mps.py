@@ -8,6 +8,13 @@ from matrix_profile import MatrixProfile
 from typing import List, Tuple
 import warnings
 warnings.filterwarnings("ignore", category=DeprecationWarning)
+# Determine project root as the parent of 'pa' folder (adjust according to your structure)
+project_root = Path(__file__).resolve().parent.parent  # If g.py is in pa/test, parent.parent ist pa/
+
+if str(project_root) not in sys.path:
+    sys.path.insert(0, str(project_root))
+from utils.metrics import compute_sensitivity_false_alarm_rate_timing_tolerance
+
 import os
 seizeit2_main_path = Path(__file__).resolve().parent / '..' / 'Information' / 'Data' / 'seizeit2-main'
 seizeit2_main_path = seizeit2_main_path.resolve()
@@ -104,6 +111,34 @@ def save_one_mp(mp:np.ndarray, folder:str, run_name:str):
     with open(filename, "wb") as f:
         pickle.dump(mp, f)
 
+def _build_downsampled_labels(length_samples: int,
+                              fs: int,
+                              gt_intervals: list[list[int]],
+                              downsample_freq: int) -> np.ndarray:
+    """
+    Build a downsampled binary label sequence from ground-truth sample intervals.
+    """
+    duration_sec = length_samples / float(fs)
+    L = int(round(duration_sec * downsample_freq))
+    labels = np.zeros(L, dtype=np.int8)
+
+    scale = downsample_freq / float(fs)
+    for start_samp, end_samp in gt_intervals:
+        ds_start = max(0, int(np.floor(start_samp * scale)))
+        ds_end   = min(L - 1, int(np.ceil(end_samp * scale)))
+        if ds_end >= ds_start:
+            labels[ds_start:ds_end + 1] = 1
+    return labels
+
+
+def _map_anomaly_seconds_to_downsample_indices(times_sec: list[float],
+                                               downsample_freq: int) -> list[int]:
+    """
+    Map anomaly timestamps (seconds) to integer indices on a downsampled grid.
+    """
+    return [int(round(t * downsample_freq)) for t in times_sec]
+
+
 def MatProfDemo()-> None:
     print(f'Started MP calc at {datetime.now().strftime("%d.%m.%Y, %H:%M")}')
     
@@ -152,29 +187,115 @@ def MatProfDemo()-> None:
     frequency = int(data.fs[0])
     print(data_ecg.shape)
     # return
-    features, timestamps = MatrixProfile.process_ecg_to_hrv_features(data_ecg, sampling_rate=frequency)
-    print("Feature shape:", features.shape)
-    anomalies, tp, fp, mp = MatrixProfile.detect_anomalies_from_hrv_features(
-        features,
-        timestamps,
-        subsequence_length=20,
-        ground_truth_intervals=gt_intervals,
-        sampling_rate=256,
-        top_k_percent=10.0
-    )
+    # features, timestamps = MatrixProfile.process_ecg_to_hrv_features(data_ecg, sampling_rate=frequency)
+    # print("Feature shape:", features.shape)
+    # anomalies, tp, fp, mp = MatrixProfile.detect_anomalies_from_hrv_features(
+        # features,
+        # timestamps,
+        # subsequence_length=20,
+        # ground_truth_intervals=gt_intervals,
+        # sampling_rate=256,
+        # top_k_percent=10.0
+    # )
 
-    print(f"Anomalien (Samples): {anomalies}")
-    print(f" Treffer: {tp}, Falsch: {fp}")
 
-    print(f"Top 10% Anomalien (Samples): {anomalies}")
+    # Toggle here: HRV features (slow) vs. lightweight FFT features (fast)
+    use_lightweight_features: bool = True  
 
-    # mp, indices = MatrixProfile.compute_multivariate_matrix_profile(features, subsequence_length=subsequence_length)
+    if use_lightweight_features:
+        feature_list = [
+            "std", "min", "max", "line_length", "rms",
+            "total_power", "mean_delta_power", "mean_theta_power",
+            "mean_alpha_power", "mean_beta_power"
+        ]
 
-    # save_one_mp(mp=mp, folder=results_path, run_name="sub-089_run-97")
+        features, timestamps = MatrixProfile.compute_ecg_window_features(
+            ecg=data_ecg,
+            sampling_rate=frequency,
+            window_size_sec=5.0,
+            step_size_sec=2.5,
+            feature_names=feature_list,
+            min_freq_hz=0.5,
+            max_freq_hz=40.0
+        )
+        print("Lightweight feature shape:", features.shape)
+
+        mp, nn_idx = MatrixProfile.compute_multivariate_matrix_profile(
+            features=features,
+            subsequence_length=20
+        )
+
+        # Use mean MP across feature dimensions as anomaly score
+        mp_mean: np.ndarray = mp.mean(axis=0)
+
+        # Pick top-k (10%) anomalies in feature-index space
+        k: int = max(1, int(0.10 * len(mp_mean)))
+        anomaly_feature_indices: list[int] = MatrixProfile.get_top_k_anomaly_indices(mp_mean, k=k)
+
+        # Map feature-index → time (sec) using subsequence center
+        m: int = 20  # must match subsequence_length used in mstump
+        anomaly_times_sec: list[float] = []
+        for i in anomaly_feature_indices:
+            j = min(i + m // 2, len(timestamps) - 1)  # center of the subsequence
+            anomaly_times_sec.append(float(timestamps[j]))
+
+        # Map seconds → downsampled detection indices
+        detection_indices_down: list[int] = _map_anomaly_seconds_to_downsample_indices(
+            times_sec=anomaly_times_sec,
+            downsample_freq=downsample_freq
+        )
+
+        # Optional: de-duplicate very close hits
+        detection_indices_down = sorted(set(detection_indices_down))
+
+        # Build downsampled label sequence from GT intervals
+        label_ds: np.ndarray = _build_downsampled_labels(
+            length_samples=len(data_ecg),
+            fs=frequency,
+            gt_intervals=gt_intervals,
+            downsample_freq=downsample_freq
+        )
+
+        # Prepare inputs for the metrics function
+        label_list: list[np.ndarray] = [label_ds]
+        anomaly_indices_cons: list[list[int]] = [detection_indices_down]
+
+        # Timing tolerance (in seconds)
+        pre_thresh_sec: int = 10
+        post_thresh_sec: int = 10
+
+        # Compute TP/FP (plus hours, total_events) with timing tolerance
+        true_positives, false_positives, hours, total_events = compute_sensitivity_false_alarm_rate_timing_tolerance(
+            label_sequences=label_list,
+            detection_indices=anomaly_indices_cons,
+            lower=pre_thresh_sec,
+            upper=post_thresh_sec,
+            frequency=downsample_freq
+        )
+
+    else:
+        features, timestamps = MatrixProfile.process_ecg_to_hrv_features(
+            data_ecg,
+            sampling_rate=frequency
+        )
+        print("HRV feature shape:", features.shape)
+
+        anomalies, tp, fp, mp = MatrixProfile.detect_anomalies_from_hrv_features(
+            features,
+            timestamps,
+            subsequence_length=20,
+            ground_truth_intervals=gt_intervals,
+            sampling_rate=256,
+            top_k_percent=10.0
+        )
+
+    print(f"Anomalien (Feature-Idx): {anomaly_feature_indices if use_lightweight_features else anomalies}")
+    if use_lightweight_features:
+        print(f"Detections (downsample idx): {anomaly_indices_cons[0]}")
+        print(f"TP: {true_positives}, FP: {false_positives}, hours: {hours:.2f}, total_events: {total_events}")
+    else:
+        print(f"TP: {tp}, FP: {fp}")
     print(f'Ended MP calc at {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}')
-
-    
-
 
 if __name__ == "__main__":
     MatProfDemo()    
