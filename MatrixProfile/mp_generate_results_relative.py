@@ -354,17 +354,17 @@ if __name__ == "__main__":
     downsample_freq = 8
     window_size_sec = 25
 
-    val_excel_path = "/home/jhagenbe_sw/ASIM/ecg-seizure-detection/MatrixProfile/configs/splits/val_files_200.xlsx"
-    test_excel_path = "/home/jhagenbe_sw/ASIM/ecg-seizure-detection/MatrixProfile/configs/splits/test_files_300.xlsx"
+    val_excel_path = "/home/jhagenbe_sw/ASIM/ecg-seizure-detection/MatrixProfile/configs/splits/by_subject_range_val_files_2042.xlsx"
+    test_excel_path = "/home/jhagenbe_sw/ASIM/ecg-seizure-detection/MatrixProfile/configs/splits/by_subject_range_test_files_753.xlsx"
 
     # Try different anomaly ratios: 1%, 2%, 5%
     parameter_grid_relative = {
         "amount_of_annomalies_per_record": [1500],  # Legacy fallback, will be ignored if anomaly_ratio is set
-        "anomaly_ratio": [0.02,],        # Relative anomaly ratios
+        "anomaly_ratio": [0.01, 0.02, 0.04, 0.06],        # Relative anomaly ratios
         "batch_size_load": [100],
         "downsample_freq": [downsample_freq],
-        "max_gap_annos_in_sec": [1],
-        "n_cons": [1],
+        "max_gap_annos_in_sec": [0.2, 1, 5, 10, 20, 30],
+        "n_cons": [1, 3, 5, 10, 35],
         "window_size_sec": [window_size_sec],
         "pre_thresh_sec": [0],
         "post_thresh_sec": [0],
@@ -374,11 +374,11 @@ if __name__ == "__main__":
     }
     parameter_grid_detection_window_relative = {
         "amount_of_annomalies_per_record": [1500],  # Legacy fallback
-        "anomaly_ratio": [0.02,],
+        "anomaly_ratio": [0.01, 0.02, 0.04, 0.06],
         "batch_size_load": [100],
         "downsample_freq": [downsample_freq],
-        "max_gap_annos_in_sec": [1],
-        "n_cons": [1],
+        "max_gap_annos_in_sec": [0.2, 1, 5, 10, 20, 30],
+        "n_cons": [1, 3, 5, 10, 35],
         "window_size_sec": [window_size_sec],
         "pre_thresh_sec": [60 * 5],
         "post_thresh_sec": [60 * 3],
