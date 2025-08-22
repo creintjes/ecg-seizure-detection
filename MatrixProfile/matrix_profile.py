@@ -401,7 +401,72 @@ class MatrixProfile:
 
         return np.array(features, dtype=np.float64), timestamps
 
+    def detect_anomalies_from_hrv_features(
+        features: np.ndarray,
+        timestamps: List[float],
+        subsequence_length: int,
+        ground_truth_intervals: Optional[List[List[float]]] = None,
+        sampling_rate: int = 256,
+        top_k_percent: float = 5.0
+    ) -> Tuple[List[int], int, int, np.ndarray]:
+        """
+        Detect anomalies in HRV feature space using multivariate matrix profiling
+        and compare detected anomalies to annotated seizure intervals.
 
+        Parameters:
+        ----------
+        features : np.ndarray
+            HRV feature matrix (n_windows, n_features)
+        timestamps : List[float]
+            List of center timestamps (in seconds) for each HRV window
+        subsequence_length : int
+            Window size (in HRV steps) for matrix profile
+        ground_truth_intervals : Optional[List[List[float]]]
+            List of [start_sample, end_sample] intervals (256 Hz) indicating seizure events
+        sampling_rate : int
+            Sampling rate of original EKG signal
+        top_k_percent : float
+            Percentage of top anomalies to consider (e.g., 5.0 for top 5%)
+
+        Returns:
+        -------
+        Tuple:
+            - List of anomaly sample indices (int)
+            - Number of true positives (within any GT interval)
+            - Number of false positives (outside all GT intervals)
+            - Matrix profile mean (np.ndarray)
+        """
+        if features.shape[0] < subsequence_length + 1:
+            raise ValueError("Not enough feature vectors for given subsequence_length.")
+
+        # Compute matrix profile
+        matrix_profile, _ = stumpy.mstump(features.T, m=subsequence_length)
+        profile_mean = matrix_profile.mean(axis=0)
+
+        n_scores = len(profile_mean)
+        top_k = max(1, int(np.floor(top_k_percent / 100 * n_scores)))
+
+        top_indices = np.argsort(profile_mean)[-top_k:][::-1]
+
+        # Project anomaly positions to original EKG sample domain (256Hz)
+        anomaly_sample_indices = [
+            int(timestamps[i + subsequence_length // 2] * sampling_rate)
+            for i in top_indices
+            if (i + subsequence_length // 2) < len(timestamps)
+        ]
+
+        # Evaluate anomaly matches
+        tp = 0
+        fp = 0
+        if ground_truth_intervals is not None:
+            for idx in anomaly_sample_indices:
+                matched = any(start <= idx <= end for start, end in ground_truth_intervals)
+                if matched:
+                    tp += 1
+                else:
+                    fp += 1
+
+        return anomaly_sample_indices, tp, fp, profile_mean
 
     def get_top_k_anomaly_indices(matrix_profile: np.ndarray, k: int) -> List[int]:
         """
