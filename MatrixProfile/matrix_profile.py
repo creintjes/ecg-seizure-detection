@@ -154,37 +154,99 @@ class MatrixProfile:
     #             continue
 
     #     return np.array(features)
-    def extract_hrv_features_over_windows(rr_intervals: np.ndarray,
-                                      window_size: int = 60,
-                                      step: int = 10,
-                                      sampling_rate: int = 256) -> Tuple[np.ndarray, List[float]]:
-        """
-        Extract HRV features from RR intervals and return their timestamps (in seconds).
+    # def extract_hrv_features_over_windows(rr_intervals: np.ndarray,
+    #                                   window_size: int = 60,
+    #                                   step: int = 10,
+    #                                   sampling_rate: int = 256) -> Tuple[np.ndarray, List[float]]:
+    #     """
+    #     Extract HRV features from RR intervals and return their timestamps (in seconds).
         
+    #     Returns:
+    #         - HRV feature matrix: (n_windows, n_features)
+    #         - Time index list:    [sec_1, sec_2, ..., sec_n]
+    #     """
+    #     features = []
+    #     time_stamps = []
+
+    #     cumulative_time = np.cumsum(rr_intervals) / 1000.0  # in seconds
+
+    #     for start in range(0, len(rr_intervals) - window_size, step):
+    #         rr_window = rr_intervals[start:start + window_size]
+
+    #         # Mittelzeitpunkt in Sekunden
+    #         t_center = cumulative_time[start:start + window_size].mean()
+
+    #         try:
+    #             # Erzeuge künstliche R-Peak-Zeitpunkte aus kumulierter RR-Summe (in ms → samples)
+    #             peak_positions_ms = np.cumsum(rr_window)  # in ms
+    #             peak_positions_samples = np.round(peak_positions_ms * sampling_rate / 1000).astype(int)
+
+    #             # Sicherstellen, dass Indizes strikt monoton sind
+    #             if np.any(np.diff(peak_positions_samples) <= 0):
+    #                 raise ValueError(f"Non-monotonic synthetic R-peaks at window")
+
+    #             hrv = nk.hrv(peaks=peak_positions_samples, sampling_rate=sampling_rate, show=False)
+
+    #             if not hrv.empty:
+    #                 features.append(hrv.values[0])
+    #                 time_stamps.append(t_center)
+    #         except Exception:
+    #             continue
+
+    #     return np.array(features), time_stamps
+
+    def extract_hrv_features_from_peaks(
+        rpeaks: np.ndarray,
+        window_size: int = 60,
+        step: int = 10,
+        sampling_rate: int = 256
+    ) -> Tuple[np.ndarray, List[float]]:
+        """
+        Robustly extract HRV features from sliding windows of R-peak indices.
+
+        Args:
+            rpeaks (np.ndarray): Array of R-peak indices (sample positions).
+            window_size (int): Number of R-peaks per window.
+            step (int): Step size for the sliding window.
+            sampling_rate (int): ECG sampling rate in Hz.
+
         Returns:
-            - HRV feature matrix: (n_windows, n_features)
-            - Time index list:    [sec_1, sec_2, ..., sec_n]
+            Tuple[np.ndarray, List[float]]:
+                - HRV feature matrix of shape (n_windows, n_features)
+                - List of center timestamps (in seconds) for each window
         """
         features = []
-        time_stamps = []
+        timestamps = []
 
-        cumulative_time = np.cumsum(rr_intervals) / 1000.0  # in seconds
+        for start in range(0, len(rpeaks) - window_size, step):
+            window_peaks = rpeaks[start:start + window_size]
 
-        for start in range(0, len(rr_intervals) - window_size, step):
-            rr_window = rr_intervals[start:start + window_size]
+            # Ensure window is strictly monotonically increasing (valid R-peaks)
+            if len(window_peaks) < 2 or np.any(np.diff(window_peaks) <= 0):
+                print(f"[{start}] ❌ Invalid R-peaks in window → skipping")
+                continue
 
-            # Mittelzeitpunkt in Sekunden
-            t_center = cumulative_time[start:start + window_size].mean()
+            # Convert R-peak indices to RR intervals (ms)
+            rr_window = np.diff(window_peaks) * (1000.0 / sampling_rate)  # dtype: float64
+
+            # Calculate center time in seconds
+            t_center = np.mean(window_peaks) / sampling_rate
 
             try:
+                # Calculate HRV features from RR intervals
                 hrv = nk.hrv_time(rr_window, sampling_rate=sampling_rate, show=False)
                 if not hrv.empty:
                     features.append(hrv.values[0])
-                    time_stamps.append(t_center)
-            except Exception:
+                    timestamps.append(t_center)
+            except Exception as e:
+                print(f"[{start}] HRV error: {e}")
                 continue
 
-        return np.array(features), time_stamps
+        return np.array(features, dtype=np.float64), timestamps
+
+
+
+
 
 
     # def process_ecg_to_hrv_features(ecg_signal: np.ndarray,
