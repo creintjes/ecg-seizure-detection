@@ -101,6 +101,7 @@ class MatrixProfile:
         except Exception as e:
             raise RuntimeError(f"R-peak detection failed: {e}")
 
+    @staticmethod
     def compute_rr_intervals(rpeaks: np.ndarray, sampling_rate: int = 1000) -> np.ndarray:
         """
         Compute RR intervals from R-peak locations.
@@ -120,79 +121,6 @@ class MatrixProfile:
         rr_samples = np.diff(rpeaks)
         rr_ms = rr_samples * (1000.0 / sampling_rate)
         return rr_ms.astype(np.float64)
-
-
-    # def extract_hrv_features_over_windows(rr_intervals: np.ndarray,
-    #                                   window_size: int = 60,
-    #                                   step: int = 10,
-    #                                   sampling_rate: int = 256) -> np.ndarray:
-    #     """
-    #     Robust extraction of HRV features from RR intervals using hrv_time.
-    #     """
-    #     features = []
-
-    #     for start in range(0, len(rr_intervals) - window_size, step):
-    #         rr_window = rr_intervals[start:start + window_size]
-
-    #         # Clean window
-    #         if not np.isfinite(rr_window).all():
-    #             print(f"[{start}] ❌ non-finite values → skipping")
-    #             continue
-    #         if np.min(rr_window) < 300:
-    #             print(f"[{start}] ❌ RR values too small → skipping")
-    #             continue
-
-    #         try:
-    #             # Convert to peaks explicitly to avoid internal confusion
-    #             peaks = nk.intervals_to_peaks(rr_window, sampling_rate=sampling_rate)
-    #             hrv = nk.hrv(peaks=peaks, sampling_rate=sampling_rate, show=False)
-    #             if not hrv.empty:
-    #                 features.append(hrv.values[0])
-    #         except Exception as e:
-    #             print(f"[{start}] HRV error: {e}")
-    #             continue
-
-    #     return np.array(features)
-    # def extract_hrv_features_over_windows(rr_intervals: np.ndarray,
-    #                                   window_size: int = 60,
-    #                                   step: int = 10,
-    #                                   sampling_rate: int = 256) -> Tuple[np.ndarray, List[float]]:
-    #     """
-    #     Extract HRV features from RR intervals and return their timestamps (in seconds).
-        
-    #     Returns:
-    #         - HRV feature matrix: (n_windows, n_features)
-    #         - Time index list:    [sec_1, sec_2, ..., sec_n]
-    #     """
-    #     features = []
-    #     time_stamps = []
-
-    #     cumulative_time = np.cumsum(rr_intervals) / 1000.0  # in seconds
-
-    #     for start in range(0, len(rr_intervals) - window_size, step):
-    #         rr_window = rr_intervals[start:start + window_size]
-
-    #         # Mittelzeitpunkt in Sekunden
-    #         t_center = cumulative_time[start:start + window_size].mean()
-
-    #         try:
-    #             # Erzeuge künstliche R-Peak-Zeitpunkte aus kumulierter RR-Summe (in ms → samples)
-    #             peak_positions_ms = np.cumsum(rr_window)  # in ms
-    #             peak_positions_samples = np.round(peak_positions_ms * sampling_rate / 1000).astype(int)
-
-    #             # Sicherstellen, dass Indizes strikt monoton sind
-    #             if np.any(np.diff(peak_positions_samples) <= 0):
-    #                 raise ValueError(f"Non-monotonic synthetic R-peaks at window")
-
-    #             hrv = nk.hrv(peaks=peak_positions_samples, sampling_rate=sampling_rate, show=False)
-
-    #             if not hrv.empty:
-    #                 features.append(hrv.values[0])
-    #                 time_stamps.append(t_center)
-    #         except Exception:
-    #             continue
-
-    #     return np.array(features), time_stamps
 
     def extract_hrv_features_from_peaks(
         rpeaks: np.ndarray,
@@ -243,86 +171,6 @@ class MatrixProfile:
 
         return np.array(features, dtype=np.float64), timestamps
 
-
-
-
-
-
-    # def process_ecg_to_hrv_features(ecg_signal: np.ndarray,
-    #                                 sampling_rate: int = 1000,
-    #                                 rr_window_size: int = 60,
-    #                                 rr_step: int = 10) -> np.ndarray:
-    #     """
-    #     Complete pipeline: ECG → R-peaks → RR intervals → HRV features (per window).
-    #     Now includes validity checks.
-    #     """
-    #     rpeaks = MatrixProfile.extract_rpeaks_from_ecg(ecg_signal, sampling_rate=sampling_rate)
-    #     print(f"Found {len(rpeaks)} R-peaks")
-    #     # Require at least (window_size + 1) R-peaks to form one RR window
-    #     if len(rpeaks) < rr_window_size + 1:
-    #         print(f"Warning: Only {len(rpeaks)} R-peaks found. Need at least {rr_window_size + 1} for one window.")
-    #         return np.empty((0,))
-
-    #     rr_intervals = MatrixProfile.compute_rr_intervals(rpeaks, sampling_rate=sampling_rate)
-    #     hrv_features = MatrixProfile.extract_hrv_features_over_windows(rr_intervals, rr_window_size, rr_step, sampling_rate)
-    #     return hrv_features
-
-
-    # def process_ecg_to_hrv_features(ecg_signal: np.ndarray,
-    #                                 sampling_rate: int = 1000,
-    #                                 rr_window_size: int = 60,
-    #                                 rr_step: int = 10) -> Tuple[np.ndarray, List[float]]:
-    #     """
-    #     Complete pipeline: ECG → R-peaks → RR intervals → HRV features (per window),
-    #     including timing information for each window center.
-
-    #     Parameters:
-    #     ----------
-    #     ecg_signal : np.ndarray
-    #         Raw 1D ECG signal.
-    #     sampling_rate : int
-    #         Sampling frequency in Hz.
-    #     rr_window_size : int
-    #         Number of RR intervals per HRV feature window.
-    #     rr_step : int
-    #         Step size between windows.
-
-    #     Returns:
-    #     -------
-    #     Tuple[np.ndarray, List[float]]
-    #         - HRV feature matrix of shape (n_windows, n_features)
-    #         - List of center timestamps (in seconds) for each window
-    #     """
-    #     rpeaks = MatrixProfile.extract_rpeaks_from_ecg(ecg_signal, sampling_rate=sampling_rate)
-    #     print(f"Found {len(rpeaks)} R-peaks")
-
-    #     if len(rpeaks) < rr_window_size + 1:
-    #         print(f"Warning: Only {len(rpeaks)} R-peaks found. Need at least {rr_window_size + 1} for one window.")
-    #         return np.empty((0,)), []
-
-    #     rr_intervals = MatrixProfile.compute_rr_intervals(rpeaks, sampling_rate=sampling_rate)
-
-    #     features = []
-    #     timestamps = []
-    #     cumulative_time = np.cumsum(rr_intervals) / 1000.0  # seconds
-
-    #     # We slide a window over the RR intervals to compute HRV features per segment.
-    #     # This loop allows us to extract features from overlapping RR windows (e.g., every 10 beats),
-    #     # which provides a fine-grained, temporally resolved feature time series for anomaly detection.
-    #     for start in range(0, len(rr_intervals) - rr_window_size, rr_step):
-    #         rr_window = rr_intervals[start:start + rr_window_size]
-    #         t_center = cumulative_time[start:start + rr_window_size].mean()
-
-    #         try:
-    #             hrv = nk.hrv_time(rr_window, sampling_rate=sampling_rate, show=False)
-    #             if not hrv.empty:
-    #                 features.append(hrv.values[0])
-    #                 timestamps.append(t_center)
-    #         except Exception as e:
-    #             print(f"HRV error at window {start}: {e}")
-    #             continue
-
-    #     return np.array(features), timestamps
     def process_ecg_to_hrv_features(
         ecg_signal: np.ndarray,
         sampling_rate: int = 1000,
@@ -365,9 +213,6 @@ class MatrixProfile:
         timestamps = []
         cumulative_time = np.cumsum(rr_intervals) / 1000.0  # seconds
 
-        # We slide a window over the RR intervals to compute HRV features per segment.
-        # This loop allows us to extract features from overlapping RR windows (e.g., every 10 beats),
-        # which provides a fine-grained, temporally resolved feature time series for anomaly detection.
         for start in range(0, len(rr_intervals) - rr_window_size, rr_step):
             rr_window = rr_intervals[start:start + rr_window_size]
 
