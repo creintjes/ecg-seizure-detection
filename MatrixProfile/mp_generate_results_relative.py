@@ -387,17 +387,46 @@ if __name__ == "__main__":
         "MPs_path": [f"/home/swolf/asim_shared/results/MP/downsample_freq={downsample_freq},no_windows/seq_len{window_size_sec}sec"]
     }
 
-    run_grid_search(
-        param_grid=parameter_grid_relative,
-        target_function=produce_mp_results,
-        val_excel_path=val_excel_path,
-        test_excel_path=test_excel_path,
-        save_results=True
-    )
-    run_grid_search(
-        param_grid=parameter_grid_detection_window_relative,
-        target_function=produce_mp_results,
-        val_excel_path=val_excel_path,
-        test_excel_path=test_excel_path,
-        save_results=True
-    )
+    # run_grid_search(
+    #     param_grid=parameter_grid_relative,
+    #     target_function=produce_mp_results,
+    #     val_excel_path=val_excel_path,
+    #     test_excel_path=test_excel_path,
+    #     save_results=True
+    # )
+    # run_grid_search(
+    #     param_grid=parameter_grid_detection_window_relative,
+    #     target_function=produce_mp_results,
+    #     val_excel_path=val_excel_path,
+    #     test_excel_path=test_excel_path,
+    #     save_results=True
+    # )
+    from concurrent.futures import ThreadPoolExecutor
+
+
+
+    # Run both grid searches in parallel threads
+    with ThreadPoolExecutor(max_workers=2) as executor:
+        futures = [
+            executor.submit(
+                run_grid_search,
+                parameter_grid_relative,
+                produce_mp_results,
+                val_excel_path,
+                test_excel_path,
+                True,
+            ),
+            executor.submit(
+                run_grid_search,
+                parameter_grid_detection_window_relative,
+                produce_mp_results,
+                val_excel_path,
+                test_excel_path,
+                True,
+            ),
+        ]
+
+        # Warten bis beide fertig sind (und Exceptions ggf. auslösen)
+        for f in futures:
+            f.result()
+
