@@ -75,6 +75,6 @@ if __name__ == "__main__":
     create_val_test_split(
         mps_path="/home/swolf/asim_shared/results/MP/downsample_freq=8,no_windows/seq_len25sec",
         output_dir="/home/jhagenbe_sw/ASIM/ecg-seizure-detection/MatrixProfile/configs/splits",
-        total_records=10,
+        total_records=500,
         test_ratio=0.6
     )
