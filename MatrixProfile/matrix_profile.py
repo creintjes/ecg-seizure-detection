@@ -269,38 +269,97 @@ class MatrixProfile:
     #     return hrv_features
 
 
-    def process_ecg_to_hrv_features(ecg_signal: np.ndarray,
-                                    sampling_rate: int = 1000,
-                                    rr_window_size: int = 60,
-                                    rr_step: int = 10) -> Tuple[np.ndarray, List[float]]:
+    # def process_ecg_to_hrv_features(ecg_signal: np.ndarray,
+    #                                 sampling_rate: int = 1000,
+    #                                 rr_window_size: int = 60,
+    #                                 rr_step: int = 10) -> Tuple[np.ndarray, List[float]]:
+    #     """
+    #     Complete pipeline: ECG → R-peaks → RR intervals → HRV features (per window),
+    #     including timing information for each window center.
+
+    #     Parameters:
+    #     ----------
+    #     ecg_signal : np.ndarray
+    #         Raw 1D ECG signal.
+    #     sampling_rate : int
+    #         Sampling frequency in Hz.
+    #     rr_window_size : int
+    #         Number of RR intervals per HRV feature window.
+    #     rr_step : int
+    #         Step size between windows.
+
+    #     Returns:
+    #     -------
+    #     Tuple[np.ndarray, List[float]]
+    #         - HRV feature matrix of shape (n_windows, n_features)
+    #         - List of center timestamps (in seconds) for each window
+    #     """
+    #     rpeaks = MatrixProfile.extract_rpeaks_from_ecg(ecg_signal, sampling_rate=sampling_rate)
+    #     print(f"Found {len(rpeaks)} R-peaks")
+
+    #     if len(rpeaks) < rr_window_size + 1:
+    #         print(f"Warning: Only {len(rpeaks)} R-peaks found. Need at least {rr_window_size + 1} for one window.")
+    #         return np.empty((0,)), []
+
+    #     rr_intervals = MatrixProfile.compute_rr_intervals(rpeaks, sampling_rate=sampling_rate)
+
+    #     features = []
+    #     timestamps = []
+    #     cumulative_time = np.cumsum(rr_intervals) / 1000.0  # seconds
+
+    #     # We slide a window over the RR intervals to compute HRV features per segment.
+    #     # This loop allows us to extract features from overlapping RR windows (e.g., every 10 beats),
+    #     # which provides a fine-grained, temporally resolved feature time series for anomaly detection.
+    #     for start in range(0, len(rr_intervals) - rr_window_size, rr_step):
+    #         rr_window = rr_intervals[start:start + rr_window_size]
+    #         t_center = cumulative_time[start:start + rr_window_size].mean()
+
+    #         try:
+    #             hrv = nk.hrv_time(rr_window, sampling_rate=sampling_rate, show=False)
+    #             if not hrv.empty:
+    #                 features.append(hrv.values[0])
+    #                 timestamps.append(t_center)
+    #         except Exception as e:
+    #             print(f"HRV error at window {start}: {e}")
+    #             continue
+
+    #     return np.array(features), timestamps
+    def process_ecg_to_hrv_features(
+        ecg_signal: np.ndarray,
+        sampling_rate: int = 1000,
+        rr_window_size: int = 60,
+        rr_step: int = 10
+    ) -> tuple[np.ndarray, list[float]]:
         """
         Complete pipeline: ECG → R-peaks → RR intervals → HRV features (per window),
-        including timing information for each window center.
+        robust for all NeuroKit2 versions by using synthetic peaks from RRIs.
 
-        Parameters:
+        Parameters
         ----------
         ecg_signal : np.ndarray
             Raw 1D ECG signal.
         sampling_rate : int
-            Sampling frequency in Hz.
+            Sampling frequency in Hz (of your ECG data!).
         rr_window_size : int
             Number of RR intervals per HRV feature window.
         rr_step : int
             Step size between windows.
 
-        Returns:
+        Returns
         -------
-        Tuple[np.ndarray, List[float]]
+        tuple[np.ndarray, list[float]]
             - HRV feature matrix of shape (n_windows, n_features)
             - List of center timestamps (in seconds) for each window
         """
+        # Step 1: Find R-peaks in the ECG signal
         rpeaks = MatrixProfile.extract_rpeaks_from_ecg(ecg_signal, sampling_rate=sampling_rate)
         print(f"Found {len(rpeaks)} R-peaks")
 
         if len(rpeaks) < rr_window_size + 1:
             print(f"Warning: Only {len(rpeaks)} R-peaks found. Need at least {rr_window_size + 1} for one window.")
-            return np.empty((0,)), []
+            return np.empty((0,), dtype=np.float64), []
 
+        # Step 2: Compute RR intervals in milliseconds
         rr_intervals = MatrixProfile.compute_rr_intervals(rpeaks, sampling_rate=sampling_rate)
 
         features = []
@@ -312,10 +371,27 @@ class MatrixProfile:
         # which provides a fine-grained, temporally resolved feature time series for anomaly detection.
         for start in range(0, len(rr_intervals) - rr_window_size, rr_step):
             rr_window = rr_intervals[start:start + rr_window_size]
+
+            # Debug output for inspection
+            # print(f"[{start}] RR-Window: {rr_window[:5]} ... {rr_window[-5:]}, min={rr_window.min()}, max={rr_window.max()}, dtype={rr_window.dtype}")
+
+            # Plausibility check for RR intervals
+            if not np.isfinite(rr_window).all():
+                print(f"[{start}] Non-finite RRIs → skipping")
+                continue
+            if np.min(rr_window) < 300 or np.max(rr_window) > 2000:
+                print(f"[{start}] RR interval out of physiological range (min={np.min(rr_window)}, max={np.max(rr_window)}) → skipping")
+                continue
+
             t_center = cumulative_time[start:start + rr_window_size].mean()
 
             try:
-                hrv = nk.hrv_time(rr_window, sampling_rate=sampling_rate, show=False)
+                # Convert RRIs (ms) into synthetic peak indices (sampling_rate=1000 needed for ms units)
+                synthetic_peaks = nk.intervals_to_peaks(rr_window, sampling_rate=1000)
+                # Build dict for nk.hrv (expects key "ECG_R_Peaks")
+                peaks_dict = {"ECG_R_Peaks": synthetic_peaks}
+                # Calculate HRV features from synthetic peaks (always with sampling_rate=1000 for ms!)
+                hrv = nk.hrv(peaks=peaks_dict, sampling_rate=1000, show=False)
                 if not hrv.empty:
                     features.append(hrv.values[0])
                     timestamps.append(t_center)
@@ -323,7 +399,7 @@ class MatrixProfile:
                 print(f"HRV error at window {start}: {e}")
                 continue
 
-        return np.array(features), timestamps
+        return np.array(features, dtype=np.float64), timestamps
 
 
 
