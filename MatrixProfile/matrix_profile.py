@@ -106,21 +106,21 @@ class MatrixProfile:
         """
         Compute RR intervals from R-peak locations.
 
-        Parameters:
+        Parameters
         ----------
         rpeaks : np.ndarray
             Indices of detected R-peaks in the ECG signal.
         sampling_rate : int
             Sampling rate of ECG in Hz.
 
-        Returns:
+        Returns
         -------
         np.ndarray
             RR intervals in milliseconds.
         """
         rr_samples = np.diff(rpeaks)
         rr_ms = rr_samples * (1000.0 / sampling_rate)
-        return rr_ms
+        return rr_ms.astype(np.float64)
 
 
     # def extract_hrv_features_over_windows(rr_intervals: np.ndarray,
