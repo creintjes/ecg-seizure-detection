@@ -153,15 +153,16 @@ def produce_mp_results(
                 suffix = "_detection_window"
             rf_xlsx_path = f"/home/jhagenbe_sw/ASIM/ecg-seizure-detection/MatrixProfile/rf_train_data/rf_train_samples{suffix}.xlsx"
 
-            append_rf_samples_to_xlsx(
-                mp=mp_loaded,
-                labels=label_list[0],
-                anomaly_indices=anomaly_indices_cons[0],
-                subject=subject,
-                run=run,
-                downsample_freq=downsample_freq,
-                out_path=rf_xlsx_path
-            )
+            if False: #Set to True to create RF samples. NOTE: This can create a very large file - do not use in grid search
+                append_rf_samples_to_xlsx(
+                    mp=mp_loaded,
+                    labels=label_list[0],
+                    anomaly_indices=anomaly_indices_cons[0],
+                    subject=subject,
+                    run=run,
+                    downsample_freq=downsample_freq,
+                    out_path=rf_xlsx_path
+                )
 
 
             true_positives, false_positives, hours, total_events = compute_sensitivity_false_alarm_rate_timing_tolerance(
