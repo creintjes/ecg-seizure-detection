@@ -10,7 +10,7 @@ from pathlib import Path
 SEIZEIT2_DATA_PATH = Path("/home/swolf/asim_shared/raw_data/ds005873-1.1.0")    #"/home/creintj2_sw/ecg-seizure-detection/jeppesen_seizeit2/example_data")  # <- HIER ANPASSEN
 
 # Ausgabeordner für Ergebnisse
-RESULTS_DIR = Path(__file__).parent / "results"
+RESULTS_DIR = Path("/home/creintj2_sw/jeppesen/ecg-seizure-detection/jeppesen_seizeit2/results_full") 
 RESULTS_DIR.mkdir(exist_ok=True)
 
 # === VERARBEITUNGSPARAMETER ===
@@ -27,11 +27,11 @@ WINDOW_LENGTHS = [50, 100]  # CSI/ModCSI/HR-diff Window-Größen
 REFRACTORY_PERIOD_MINUTES = 3  # Refraktäre Periode nach Vorhersage
 
 # === PARALLELVERARBEITUNG ===
-MAX_WORKERS = 5  # Anzahl paralleler Prozesse
+MAX_WORKERS = 10  # Anzahl paralleler Prozesse
 
 # === CHECKPOINT KONFIGURATION ===
 ENABLE_CHECKPOINTS = True  # Aktiviert Checkpoint-Funktionalität
-CHECKPOINT_BATCH_SIZE = 3  # Anzahl Subjects pro Batch vor Checkpoint-Speicherung
+CHECKPOINT_BATCH_SIZE = 5  # Anzahl Subjects pro Batch vor Checkpoint-Speicherung
 SUBJECT_TIMEOUT_MINUTES = 60  # Timeout pro Subject in Minuten
 
 # === ELGENDI R-PEAK DETECTION PARAMETER ===
