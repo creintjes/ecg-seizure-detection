@@ -147,7 +147,7 @@ def detect(X_unscaled,
             'last_window_rng': None,
             }
     for timestep_idx, timestep in enumerate(timestep_rng):
-        if timestep_idx % int(0.1 * len(timestep_rng)) == 0:
+        if timestep_idx % int(0.05 * len(timestep_rng)) == 0:
             print(f'timestep/total_time_steps*100: {timestep}/{end_time_step} | {round(timestep / end_time_step * 100, 2)} [%]')
 
         # fetch a window at each timestep
@@ -297,7 +297,7 @@ def evaluate_fn(config,
     # load model
     expand_labels = config['dataset']['expand_labels']
     input_length = window_size = set_window_size(config['dataset']['downsample_freq'], config['dataset']['n_periods'], bpm=config['dataset']['heartbeats_per_minute'])
-    stage2 = ExpStage2.load_from_checkpoint(os.path.join('saved_models', f'stage2-{dataset_idx}{"_window" if expand_labels else "_no_window"}.ckpt'), 
+    stage2 = ExpStage2.load_from_checkpoint(os.path.join('saved_models', f'stage2-all{"_window" if expand_labels else "_no_window"}.ckpt'), 
                                             dataset_idx=dataset_idx, input_length=input_length, config=config, 
                                             map_location=f'cuda:{device}')
     maskgit = stage2.maskgit
@@ -529,7 +529,7 @@ def save_final_summarized_figure(dataset_idx, X_test_unscaled, Y, timestep_rng_t
         input_length = window_size = set_window_size(dataset_idx, config['dataset']['n_periods'])
 
         stage2 = ExpStage2.load_from_checkpoint(
-            os.path.join('saved_models', f'stage2-{dataset_idx}{"_window" if config["dataset"]["expand_labels"] else "_no_window"}.ckpt'),
+            os.path.join('saved_models', f'stage2-all{"_window" if config["dataset"]["expand_labels"] else "_no_window"}.ckpt'),
             dataset_idx=dataset_idx,
             input_length=input_length,
             config=config,
