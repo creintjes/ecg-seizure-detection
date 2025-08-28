@@ -24,7 +24,7 @@ def load_args():
     parser.add_argument('--config', type=str, help="Path to the config file.",
                         default=get_root_dir().joinpath('configs', 'config.yaml'))
     parser.add_argument('--gpu_device_ind', nargs='+', default=[0], type=int)
-    parser.add_argument('--dataset_ind', default='1', nargs='+',
+    parser.add_argument('--dataset_ind', default=None, nargs='+',
                         help='e.g., 001 or all. Subject indices (as string or "all") to run experiments on.')
     return parser.parse_args()
 
@@ -70,7 +70,7 @@ def train_stage2(config: dict,
     trainer.fit(train_exp, train_dataloaders=train_data_loader, val_dataloaders=test_data_loader)
 
     print("Saving model...")
-    trainer.save_checkpoint(os.path.join('saved_models', f'stage2-{subject_id}.ckpt'))
+    trainer.save_checkpoint(os.path.join('saved_models', f'stage2-{subject_id}{"_window" if expand_labels else "_no_window"}.ckpt'))
 
     wandb.finish()
 
@@ -90,7 +90,6 @@ if __name__ == '__main__':
     expand_labels = config['dataset']['expand_labels']
 
     window_size = set_window_size(sr, n_periods, bpm=bpm)
-    stride = stride if stride > 0 else int(window_size / 4)
     if not args.dataset_ind:
         args.dataset_ind = ["all"]
     for dataset_idx in [x for idx in args.dataset_ind for x in idx.split(',')]:
@@ -109,7 +108,9 @@ if __name__ == '__main__':
                     stride,
                     num_workers,
                     sampling_rate=sr,
-                    expand_labels=expand_labels
+                    expand_labels=expand_labels,
+                    n_periods=n_periods,
+                    bpm=bpm
                 ) for kind in ['train', 'test']
             ]
 

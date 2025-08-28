@@ -1,0 +1,33 @@
+{
+  "strategy": "adaptive_p90_3155s",
+  "before": {
+    "total_files": 1,
+    "files_with_seizures": 1,
+    "files_with_detected_seizures": 1,
+    "total_anomalies": 312,
+    "true_positives": 3,
+    "false_positives": 309,
+    "sensitivity": 1.0,
+    "precision": 0.009615384615384616,
+    "false_alarm_rate": 0.9903846153846154
+  },
+  "after": {
+    "total_anomalies": 33,
+    "true_positives": 1,
+    "false_positives": 32,
+    "sensitivity": 1.0,
+    "precision": 0.030303030303030304,
+    "false_alarm_rate": 0.9696969696969697,
+    "anomaly_reduction": 0.8942307692307693,
+    "fp_reduction": 0.8964401294498382,
+    "sensitivity_change": 0.0,
+    "score": 0.8061333084391336
+  },
+  "improvements": {
+    "anomaly_reduction_pct": 89.42307692307693,
+    "fp_reduction_pct": 89.64401294498381,
+    "sensitivity_change": 0.0,
+    "precision_improvement": 0.020687645687645688,
+    "far_reduction": 0.020687645687645695
+  }
+}

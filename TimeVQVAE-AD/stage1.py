@@ -14,7 +14,6 @@ from pytorch_lightning.loggers import WandbLogger
 from torch.utils.data import DataLoader
 
 from experiments.exp_stage1 import ExpStage1
-from preprocessing.preprocess import ASIMAnomalySequence
 from preprocessing.data_pipeline import build_data_pipeline
 from utils import get_root_dir, load_yaml_param_settings, set_window_size
 from pathlib import Path
@@ -87,7 +86,6 @@ if __name__ == '__main__':
     expand_labels = config['dataset']['expand_labels']
 
     window_size = set_window_size(sr, n_periods, bpm=bpm)
-    stride = stride if stride > 0 else int(window_size / 4)
     if not args.dataset_ind:
         args.dataset_ind = ["all"]
     for dataset_idx in [x for idx in args.dataset_ind for x in idx.split(',')]:
@@ -105,7 +103,9 @@ if __name__ == '__main__':
                     stride,
                     num_workers,
                     sampling_rate=sr,
-                    expand_labels=expand_labels
+                    expand_labels=expand_labels,
+                    n_periods=n_periods,
+                    bpm=bpm
                 ) for kind in ['train', 'test']
             ]
         # train

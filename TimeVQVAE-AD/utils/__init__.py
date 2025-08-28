@@ -349,18 +349,15 @@ def compute_downsample_rate(input_length: int,
     return round(input_length / (np.log2(n_fft) - 1) / downsampled_length) if input_length >= downsampled_length else 1
 
 
-def set_window_size(sampling_rate: int, n_periods: int = 3, bpm: int = 75) -> int:
-    """
-    Estimate window size (in samples) for a given sampling rate and heart rate.
-
-    :param sampling_rate: e.g. 8 Hz, 32 Hz
-    :param n_periods: number of heartbeat cycles to include
-    :param bpm: expected beats per minute (default: 75 bpm)
-    :return: window size in samples
-    """
-    seconds_per_beat = 60 / bpm
-    samples_per_beat = float(sampling_rate) * seconds_per_beat
-    return int(round(samples_per_beat * n_periods))
+def set_window_size(sampling_rate: int, n_periods: int = 120, bpm: int = 75) -> int:
+    """n_periods ≈ number of beats in the window."""
+    seconds_per_beat = 60.0 / max(bpm, 30)
+    samples_per_beat = sampling_rate * seconds_per_beat
+    win = int(round(samples_per_beat * n_periods))
+    # keep within 32 s .. 160 s unless explicitly overridden
+    min_s, max_s = 32, 160
+    win = max(int(min_s * sampling_rate), min(win, int(max_s * sampling_rate)))
+    return win
 
 def compute_receptive_field(layers):
     """

@@ -1,0 +1,11 @@
+{
+  "total_files": 1,
+  "files_with_seizures": 1,
+  "files_with_detected_seizures": 1,
+  "total_anomalies": 81,
+  "true_positives": 1,
+  "false_positives": 80,
+  "sensitivity": 1.0,
+  "precision": 0.012345679012345678,
+  "false_alarm_rate": 0.9876543209876543
+}

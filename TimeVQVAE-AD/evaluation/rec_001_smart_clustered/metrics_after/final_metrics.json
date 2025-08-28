@@ -1,0 +1,33 @@
+{
+  "strategy": "extended_time_1800s",
+  "before": {
+    "total_files": 1,
+    "files_with_seizures": 1,
+    "files_with_detected_seizures": 1,
+    "total_anomalies": 81,
+    "true_positives": 1,
+    "false_positives": 80,
+    "sensitivity": 1.0,
+    "precision": 0.012345679012345678,
+    "false_alarm_rate": 0.9876543209876543
+  },
+  "after": {
+    "total_anomalies": 37,
+    "true_positives": 1,
+    "false_positives": 36,
+    "sensitivity": 1.0,
+    "precision": 0.02702702702702703,
+    "false_alarm_rate": 0.972972972972973,
+    "anomaly_reduction": 0.5432098765432098,
+    "fp_reduction": 0.55,
+    "sensitivity_change": 0.0,
+    "score": 0.49296296296296294
+  },
+  "improvements": {
+    "anomaly_reduction_pct": 54.32098765432099,
+    "fp_reduction_pct": 55.00000000000001,
+    "sensitivity_change": 0.0,
+    "precision_improvement": 0.01468134801468135,
+    "far_reduction": 0.01468134801468124
+  }
+}

@@ -8,6 +8,7 @@ from argparse import ArgumentParser
 import copy
 import pickle
 import gc
+import re
 from pathlib import Path
 import torch
 import torch.nn as nn
@@ -39,23 +40,42 @@ def load_data(sub_id: str, config: dict, kind: str):
     sr = config['dataset']['downsample_freq']
     n_periods = config['dataset']['n_periods']
     bpm = config['dataset']['heartbeats_per_minute']
-    stride = config['dataset']['stride']
-
-    window_size = set_window_size(sr, n_periods=n_periods, bpm=bpm)
+    expand_labels = config['dataset']['expand_labels']
 
     data_dir = Path(config['dataset']['root_dir']) / f"downsample_freq={sr},no_windows"
-    dataset = ASIMAnomalyDataset(kind, data_dir, window_size=window_size, stride=stride, sub=sub_id)
+    
+    # Load sequences directly from files to reconstruct full time series
+    if sub_id == "all":
+        all_files = list(data_dir.glob("sub-*_run-*_preprocessed.pkl"))
+        # Exclude training subjects 001-096
+        train_re = re.compile(r"^sub-(0(?:0[1-9]|[1-8][0-9]|9[0-6]))_run-(\d+)_preprocessed\.pkl$")
+        file_paths = sorted(f for f in all_files if not train_re.match(f.name))
+    else:
+        file_paths = sorted(data_dir.glob(f"sub-{sub_id}_run-*_preprocessed.pkl"))
 
-    # Reconstruct the full time series by concatenating the original sequences
+    if not file_paths:
+        raise ValueError(f"No matching files found for sub={sub_id} in {data_dir}")
+
+    # Reconstruct the full time series by loading raw sequences
     X_all = []
     Y_all = []
 
-    for seq in dataset.sequences:
-        x = seq.data[:, None]  # (T, 1)
-        y = seq.labels         # (T,)
+    for file_path in file_paths:
+        # Load sequence directly using ASIMAnomalySequence
+        sequence = ASIMAnomalySequence.from_path(
+            file_path,
+            expand_labels=expand_labels,
+            sampling_rate=sr,
+            pre_minutes=5.0,
+            post_minutes=3.0
+        )
+        
+        x = sequence.data[:, None]  # (T, 1)
+        y = sequence.labels         # (T,)
         X_all.append(x)
         Y_all.append(y)
 
+    # Concatenate all sequences
     X = torch.from_numpy(np.concatenate(X_all, axis=0).astype(np.float32))  # (T_total, 1)
     Y = torch.from_numpy(np.concatenate(Y_all, axis=0).astype(np.int64))    # (T_total,)
 
@@ -275,8 +295,9 @@ def evaluate_fn(config,
     - latent_window_size_rate: latent_window_size = latent_window_size_rate * latent_window_size (i.e., latent width)
     """
     # load model
+    expand_labels = config['dataset']['expand_labels']
     input_length = window_size = set_window_size(config['dataset']['downsample_freq'], config['dataset']['n_periods'], bpm=config['dataset']['heartbeats_per_minute'])
-    stage2 = ExpStage2.load_from_checkpoint(os.path.join('saved_models', f'stage2-{dataset_idx}.ckpt'), 
+    stage2 = ExpStage2.load_from_checkpoint(os.path.join('saved_models', f'stage2-{dataset_idx}{"_window" if expand_labels else "_no_window"}.ckpt'), 
                                             dataset_idx=dataset_idx, input_length=input_length, config=config, 
                                             map_location=f'cuda:{device}')
     maskgit = stage2.maskgit
@@ -328,7 +349,8 @@ def evaluate_fn(config,
     anom_threshold = anom_threshold[0]  # univariate time series; (n_freq,)
 
     # ================================ plot ================================
-    n_rows = 6
+    # Calculate n_rows dynamically: 1 (X_test) + 1 (imshow) + n_freq (individual plots) + 1 (reconstruction)
+    n_rows = 3 + a_star.shape[0]  # 3 fixed plots + number of frequency bands
     fig, axes = plt.subplots(n_rows, 1, figsize=(25, 1.5 * n_rows))
     fontsize= 15
 
@@ -393,8 +415,13 @@ def evaluate_fn(config,
                       'timestep_rng_test': logs_test['timestep_rng'],
                       'anom_threshold': anom_threshold,  # (n_freq,)
                       }
-
-    saving_fname = get_root_dir().joinpath('evaluation', 'results', f'{dataset_idx}-anomaly_score-latent_window_size_rate_{latent_window_size_rate}.pkl')
+    # Update save path to include window suffix
+    window_suffix = "_window" if config["dataset"]["expand_labels"] else "_no_window"
+    saving_fname = get_root_dir().joinpath(
+        'evaluation', 
+        'results', 
+        f'{dataset_idx}{window_suffix}-anomaly_score-latent_window_size_rate_{latent_window_size_rate}.pkl'
+    )
     with open(str(saving_fname), 'wb') as f:
         pickle.dump(resulting_data, f, pickle.HIGHEST_PROTOCOL)
 
@@ -403,7 +430,12 @@ def save_final_summarized_figure(dataset_idx, X_test_unscaled, Y, timestep_rng_t
                                  a_s_star, a_bar_s_star, a_2bar_s_star, a_final,
                                  joint_threshold, final_threshold, anom_ind,
                                  window_size, config, args):
-    n_rows = 9
+    # Calculate n_rows dynamically based on a_s_star shape and explainable sampling
+    base_plots = 5  # X_test, imshow, bar_a_s_star, doublebar_a_s_star, a_final
+    n_freq_plots = a_s_star.shape[0]  # number of frequency bands
+    explainable_plots = 1 if hasattr(args, 'explainable_sampling') and args.explainable_sampling else 0
+    n_rows = base_plots + n_freq_plots + explainable_plots
+    
     fig, axes = plt.subplots(n_rows, 1, figsize=(25, 1.5 * n_rows))
     fontsize= 15
 
@@ -495,9 +527,14 @@ def save_final_summarized_figure(dataset_idx, X_test_unscaled, Y, timestep_rng_t
     if args.explainable_sampling:
         # load model
         input_length = window_size = set_window_size(dataset_idx, config['dataset']['n_periods'])
-        stage2 = ExpStage2.load_from_checkpoint(os.path.join('saved_models', f'stage2-{dataset_idx}.ckpt'), 
-                                                dataset_idx=dataset_idx, input_length=input_length, config=config, 
-                                                map_location=f'cuda:{args.device}')
+
+        stage2 = ExpStage2.load_from_checkpoint(
+            os.path.join('saved_models', f'stage2-{dataset_idx}{"_window" if config["dataset"]["expand_labels"] else "_no_window"}.ckpt'),
+            dataset_idx=dataset_idx,
+            input_length=input_length,
+            config=config,
+            map_location=f'cuda:{args.device}'
+        )
         maskgit = stage2.maskgit
         maskgit.eval()
 
@@ -508,7 +545,7 @@ def save_final_summarized_figure(dataset_idx, X_test_unscaled, Y, timestep_rng_t
             window_rng = slice(timestep, timestep + window_size)
             x_unscaled = X_test_unscaled[window_rng]  # (window_size,)
             mu = np.nanmean(x_unscaled, axis=-1, keepdims=True)  # (1,)
-            sigma = np.nanstd(x_unscaled, axis=-1, keepdims=True)  # (1,)
+            sigma = np.std(x_unscaled, axis=-1, keepdims=True)  # (1,)
             min_std = 1.e-4  # to prevent numerical instability in scaling.
             sigma = np.clip(sigma, min_std, None)
             x = (x_unscaled - mu) / sigma  # (window_size,)

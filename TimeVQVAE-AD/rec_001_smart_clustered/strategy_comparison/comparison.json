@@ -1,0 +1,1111 @@
+{
+  "base_metrics": {
+    "total_files": 1,
+    "files_with_seizures": 1,
+    "files_with_detected_seizures": 1,
+    "total_anomalies": 312,
+    "true_positives": 3,
+    "false_positives": 309,
+    "sensitivity": 1.0,
+    "precision": 0.009615384615384616,
+    "false_alarm_rate": 0.9903846153846154
+  },
+  "strategies_tested": 57,
+  "best_strategy": "adaptive_p90_3155s",
+  "strategy_results": {
+    "time_5s": {
+      "method": "time_based",
+      "parameters": {
+        "threshold": 5
+      },
+      "clusters": 229,
+      "metrics": {
+        "total_anomalies": 229,
+        "true_positives": 2,
+        "false_positives": 227,
+        "sensitivity": 1.0,
+        "precision": 0.008733624454148471,
+        "false_alarm_rate": 0.9912663755458515,
+        "anomaly_reduction": 0.266025641025641,
+        "fp_reduction": 0.26537216828478966,
+        "sensitivity_change": 0.0,
+        "score": 0.23903099327856608
+      }
+    },
+    "time_10s": {
+      "method": "time_based",
+      "parameters": {
+        "threshold": 10
+      },
+      "clusters": 196,
+      "metrics": {
+        "total_anomalies": 196,
+        "true_positives": 2,
+        "false_positives": 194,
+        "sensitivity": 1.0,
+        "precision": 0.01020408163265306,
+        "false_alarm_rate": 0.9897959183673469,
+        "anomaly_reduction": 0.3717948717948718,
+        "fp_reduction": 0.37216828478964403,
+        "sensitivity_change": 0.0,
+        "score": 0.33483943241224795
+      }
+    },
+    "time_15s": {
+      "method": "time_based",
+      "parameters": {
+        "threshold": 15
+      },
+      "clusters": 196,
+      "metrics": {
+        "total_anomalies": 196,
+        "true_positives": 2,
+        "false_positives": 194,
+        "sensitivity": 1.0,
+        "precision": 0.01020408163265306,
+        "false_alarm_rate": 0.9897959183673469,
+        "anomaly_reduction": 0.3717948717948718,
+        "fp_reduction": 0.37216828478964403,
+        "sensitivity_change": 0.0,
+        "score": 0.33483943241224795
+      }
+    },
+    "time_20s": {
+      "method": "time_based",
+      "parameters": {
+        "threshold": 20
+      },
+      "clusters": 193,
+      "metrics": {
+        "total_anomalies": 193,
+        "true_positives": 2,
+        "false_positives": 191,
+        "sensitivity": 1.0,
+        "precision": 0.010362694300518135,
+        "false_alarm_rate": 0.9896373056994818,
+        "anomaly_reduction": 0.3814102564102564,
+        "fp_reduction": 0.3818770226537217,
+        "sensitivity_change": 0.0,
+        "score": 0.3435492905153099
+      }
+    },
+    "time_25s": {
+      "method": "time_based",
+      "parameters": {
+        "threshold": 25
+      },
+      "clusters": 189,
+      "metrics": {
+        "total_anomalies": 189,
+        "true_positives": 2,
+        "false_positives": 187,
+        "sensitivity": 1.0,
+        "precision": 0.010582010582010581,
+        "false_alarm_rate": 0.9894179894179894,
+        "anomaly_reduction": 0.3942307692307692,
+        "fp_reduction": 0.3948220064724919,
+        "sensitivity_change": 0.0,
+        "score": 0.3551624346527259
+      }
+    },
+    "time_30s": {
+      "method": "time_based",
+      "parameters": {
+        "threshold": 30
+      },
+      "clusters": 188,
+      "metrics": {
+        "total_anomalies": 188,
+        "true_positives": 2,
+        "false_positives": 186,
+        "sensitivity": 1.0,
+        "precision": 0.010638297872340425,
+        "false_alarm_rate": 0.9893617021276596,
+        "anomaly_reduction": 0.3974358974358974,
+        "fp_reduction": 0.39805825242718446,
+        "sensitivity_change": 0.0,
+        "score": 0.35806572068707987
+      }
+    },
+    "time_35s": {
+      "method": "time_based",
+      "parameters": {
+        "threshold": 35
+      },
+      "clusters": 185,
+      "metrics": {
+        "total_anomalies": 185,
+        "true_positives": 2,
+        "false_positives": 183,
+        "sensitivity": 1.0,
+        "precision": 0.010810810810810811,
+        "false_alarm_rate": 0.9891891891891892,
+        "anomaly_reduction": 0.40705128205128205,
+        "fp_reduction": 0.4077669902912621,
+        "sensitivity_change": 0.0,
+        "score": 0.3667755787901419
+      }
+    },
+    "time_40s": {
+      "method": "time_based",
+      "parameters": {
+        "threshold": 40
+      },
+      "clusters": 185,
+      "metrics": {
+        "total_anomalies": 185,
+        "true_positives": 2,
+        "false_positives": 183,
+        "sensitivity": 1.0,
+        "precision": 0.010810810810810811,
+        "false_alarm_rate": 0.9891891891891892,
+        "anomaly_reduction": 0.40705128205128205,
+        "fp_reduction": 0.4077669902912621,
+        "sensitivity_change": 0.0,
+        "score": 0.3667755787901419
+      }
+    },
+    "time_45s": {
+      "method": "time_based",
+      "parameters": {
+        "threshold": 45
+      },
+      "clusters": 184,
+      "metrics": {
+        "total_anomalies": 184,
+        "true_positives": 2,
+        "false_positives": 182,
+        "sensitivity": 1.0,
+        "precision": 0.010869565217391304,
+        "false_alarm_rate": 0.9891304347826086,
+        "anomaly_reduction": 0.41025641025641024,
+        "fp_reduction": 0.4110032362459547,
+        "sensitivity_change": 0.0,
+        "score": 0.36967886482449586
+      }
+    },
+    "time_60s": {
+      "method": "time_based",
+      "parameters": {
+        "threshold": 60
+      },
+      "clusters": 182,
+      "metrics": {
+        "total_anomalies": 182,
+        "true_positives": 2,
+        "false_positives": 180,
+        "sensitivity": 1.0,
+        "precision": 0.01098901098901099,
+        "false_alarm_rate": 0.989010989010989,
+        "anomaly_reduction": 0.4166666666666667,
+        "fp_reduction": 0.4174757281553398,
+        "sensitivity_change": 0.0,
+        "score": 0.37548543689320385
+      }
+    },
+    "time_75s": {
+      "method": "time_based",
+      "parameters": {
+        "threshold": 75
+      },
+      "clusters": 179,
+      "metrics": {
+        "total_anomalies": 179,
+        "true_positives": 2,
+        "false_positives": 177,
+        "sensitivity": 1.0,
+        "precision": 0.0111731843575419,
+        "false_alarm_rate": 0.9888268156424581,
+        "anomaly_reduction": 0.42628205128205127,
+        "fp_reduction": 0.42718446601941745,
+        "sensitivity_change": 0.0,
+        "score": 0.3841952949962658
+      }
+    },
+    "time_90s": {
+      "method": "time_based",
+      "parameters": {
+        "threshold": 90
+      },
+      "clusters": 178,
+      "metrics": {
+        "total_anomalies": 178,
+        "true_positives": 2,
+        "false_positives": 176,
+        "sensitivity": 1.0,
+        "precision": 0.011235955056179775,
+        "false_alarm_rate": 0.9887640449438202,
+        "anomaly_reduction": 0.42948717948717946,
+        "fp_reduction": 0.43042071197411,
+        "sensitivity_change": 0.0,
+        "score": 0.38709858103061984
+      }
+    },
+    "time_120s": {
+      "method": "time_based",
+      "parameters": {
+        "threshold": 120
+      },
+      "clusters": 169,
+      "metrics": {
+        "total_anomalies": 169,
+        "true_positives": 2,
+        "false_positives": 167,
+        "sensitivity": 1.0,
+        "precision": 0.011834319526627219,
+        "false_alarm_rate": 0.9881656804733728,
+        "anomaly_reduction": 0.4583333333333333,
+        "fp_reduction": 0.459546925566343,
+        "sensitivity_change": 0.0,
+        "score": 0.41322815533980584
+      }
+    },
+    "time_150s": {
+      "method": "time_based",
+      "parameters": {
+        "threshold": 150
+      },
+      "clusters": 163,
+      "metrics": {
+        "total_anomalies": 163,
+        "true_positives": 2,
+        "false_positives": 161,
+        "sensitivity": 1.0,
+        "precision": 0.012269938650306749,
+        "false_alarm_rate": 0.9877300613496932,
+        "anomaly_reduction": 0.4775641025641026,
+        "fp_reduction": 0.47896440129449835,
+        "sensitivity_change": 0.0,
+        "score": 0.43064787154592976
+      }
+    },
+    "time_180s": {
+      "method": "time_based",
+      "parameters": {
+        "threshold": 180
+      },
+      "clusters": 160,
+      "metrics": {
+        "total_anomalies": 160,
+        "true_positives": 2,
+        "false_positives": 158,
+        "sensitivity": 1.0,
+        "precision": 0.0125,
+        "false_alarm_rate": 0.9875,
+        "anomaly_reduction": 0.48717948717948717,
+        "fp_reduction": 0.4886731391585761,
+        "sensitivity_change": 0.0,
+        "score": 0.4393577296489918
+      }
+    },
+    "time_240s": {
+      "method": "time_based",
+      "parameters": {
+        "threshold": 240
+      },
+      "clusters": 147,
+      "metrics": {
+        "total_anomalies": 147,
+        "true_positives": 1,
+        "false_positives": 146,
+        "sensitivity": 1.0,
+        "precision": 0.006802721088435374,
+        "false_alarm_rate": 0.9931972789115646,
+        "anomaly_reduction": 0.5288461538461539,
+        "fp_reduction": 0.5275080906148867,
+        "sensitivity_change": 0.0,
+        "score": 0.47515870052277814
+      }
+    },
+    "time_300s": {
+      "method": "time_based",
+      "parameters": {
+        "threshold": 300
+      },
+      "clusters": 140,
+      "metrics": {
+        "total_anomalies": 140,
+        "true_positives": 1,
+        "false_positives": 139,
+        "sensitivity": 1.0,
+        "precision": 0.007142857142857143,
+        "false_alarm_rate": 0.9928571428571429,
+        "anomaly_reduction": 0.5512820512820513,
+        "fp_reduction": 0.5501618122977346,
+        "sensitivity_change": 0.0,
+        "score": 0.4954817027632562
+      }
+    },
+    "fine_time_2s": {
+      "method": "fine_time_based",
+      "parameters": {
+        "threshold": 2
+      },
+      "clusters": 278,
+      "metrics": {
+        "total_anomalies": 278,
+        "true_positives": 3,
+        "false_positives": 275,
+        "sensitivity": 1.0,
+        "precision": 0.01079136690647482,
+        "false_alarm_rate": 0.9892086330935251,
+        "anomaly_reduction": 0.10897435897435898,
+        "fp_reduction": 0.11003236245954692,
+        "sensitivity_change": 0.0,
+        "score": 0.09871172516803584
+      }
+    },
+    "fine_time_3s": {
+      "method": "fine_time_based",
+      "parameters": {
+        "threshold": 3
+      },
+      "clusters": 275,
+      "metrics": {
+        "total_anomalies": 275,
+        "true_positives": 3,
+        "false_positives": 272,
+        "sensitivity": 1.0,
+        "precision": 0.01090909090909091,
+        "false_alarm_rate": 0.9890909090909091,
+        "anomaly_reduction": 0.11858974358974358,
+        "fp_reduction": 0.11974110032362459,
+        "sensitivity_change": 0.0,
+        "score": 0.10742158327109783
+      }
+    },
+    "fine_time_6s": {
+      "method": "fine_time_based",
+      "parameters": {
+        "threshold": 6
+      },
+      "clusters": 229,
+      "metrics": {
+        "total_anomalies": 229,
+        "true_positives": 2,
+        "false_positives": 227,
+        "sensitivity": 1.0,
+        "precision": 0.008733624454148471,
+        "false_alarm_rate": 0.9912663755458515,
+        "anomaly_reduction": 0.266025641025641,
+        "fp_reduction": 0.26537216828478966,
+        "sensitivity_change": 0.0,
+        "score": 0.23903099327856608
+      }
+    },
+    "fine_time_8s": {
+      "method": "fine_time_based",
+      "parameters": {
+        "threshold": 8
+      },
+      "clusters": 216,
+      "metrics": {
+        "total_anomalies": 216,
+        "true_positives": 2,
+        "false_positives": 214,
+        "sensitivity": 1.0,
+        "precision": 0.009259259259259259,
+        "false_alarm_rate": 0.9907407407407407,
+        "anomaly_reduction": 0.3076923076923077,
+        "fp_reduction": 0.3074433656957929,
+        "sensitivity_change": 0.0,
+        "score": 0.27677371172516807
+      }
+    },
+    "fine_time_12s": {
+      "method": "fine_time_based",
+      "parameters": {
+        "threshold": 12
+      },
+      "clusters": 196,
+      "metrics": {
+        "total_anomalies": 196,
+        "true_positives": 2,
+        "false_positives": 194,
+        "sensitivity": 1.0,
+        "precision": 0.01020408163265306,
+        "false_alarm_rate": 0.9897959183673469,
+        "anomaly_reduction": 0.3717948717948718,
+        "fp_reduction": 0.37216828478964403,
+        "sensitivity_change": 0.0,
+        "score": 0.33483943241224795
+      }
+    },
+    "fine_time_18s": {
+      "method": "fine_time_based",
+      "parameters": {
+        "threshold": 18
+      },
+      "clusters": 193,
+      "metrics": {
+        "total_anomalies": 193,
+        "true_positives": 2,
+        "false_positives": 191,
+        "sensitivity": 1.0,
+        "precision": 0.010362694300518135,
+        "false_alarm_rate": 0.9896373056994818,
+        "anomaly_reduction": 0.3814102564102564,
+        "fp_reduction": 0.3818770226537217,
+        "sensitivity_change": 0.0,
+        "score": 0.3435492905153099
+      }
+    },
+    "fine_time_22s": {
+      "method": "fine_time_based",
+      "parameters": {
+        "threshold": 22
+      },
+      "clusters": 192,
+      "metrics": {
+        "total_anomalies": 192,
+        "true_positives": 2,
+        "false_positives": 190,
+        "sensitivity": 1.0,
+        "precision": 0.010416666666666666,
+        "false_alarm_rate": 0.9895833333333334,
+        "anomaly_reduction": 0.38461538461538464,
+        "fp_reduction": 0.3851132686084142,
+        "sensitivity_change": 0.0,
+        "score": 0.3464525765496639
+      }
+    },
+    "fine_time_28s": {
+      "method": "fine_time_based",
+      "parameters": {
+        "threshold": 28
+      },
+      "clusters": 189,
+      "metrics": {
+        "total_anomalies": 189,
+        "true_positives": 2,
+        "false_positives": 187,
+        "sensitivity": 1.0,
+        "precision": 0.010582010582010581,
+        "false_alarm_rate": 0.9894179894179894,
+        "anomaly_reduction": 0.3942307692307692,
+        "fp_reduction": 0.3948220064724919,
+        "sensitivity_change": 0.0,
+        "score": 0.3551624346527259
+      }
+    },
+    "fine_time_32s": {
+      "method": "fine_time_based",
+      "parameters": {
+        "threshold": 32
+      },
+      "clusters": 187,
+      "metrics": {
+        "total_anomalies": 187,
+        "true_positives": 2,
+        "false_positives": 185,
+        "sensitivity": 1.0,
+        "precision": 0.0106951871657754,
+        "false_alarm_rate": 0.9893048128342246,
+        "anomaly_reduction": 0.40064102564102566,
+        "fp_reduction": 0.40129449838187703,
+        "sensitivity_change": 0.0,
+        "score": 0.3609690067214339
+      }
+    },
+    "fine_time_38s": {
+      "method": "fine_time_based",
+      "parameters": {
+        "threshold": 38
+      },
+      "clusters": 185,
+      "metrics": {
+        "total_anomalies": 185,
+        "true_positives": 2,
+        "false_positives": 183,
+        "sensitivity": 1.0,
+        "precision": 0.010810810810810811,
+        "false_alarm_rate": 0.9891891891891892,
+        "anomaly_reduction": 0.40705128205128205,
+        "fp_reduction": 0.4077669902912621,
+        "sensitivity_change": 0.0,
+        "score": 0.3667755787901419
+      }
+    },
+    "fine_time_42s": {
+      "method": "fine_time_based",
+      "parameters": {
+        "threshold": 42
+      },
+      "clusters": 184,
+      "metrics": {
+        "total_anomalies": 184,
+        "true_positives": 2,
+        "false_positives": 182,
+        "sensitivity": 1.0,
+        "precision": 0.010869565217391304,
+        "false_alarm_rate": 0.9891304347826086,
+        "anomaly_reduction": 0.41025641025641024,
+        "fp_reduction": 0.4110032362459547,
+        "sensitivity_change": 0.0,
+        "score": 0.36967886482449586
+      }
+    },
+    "fine_time_48s": {
+      "method": "fine_time_based",
+      "parameters": {
+        "threshold": 48
+      },
+      "clusters": 184,
+      "metrics": {
+        "total_anomalies": 184,
+        "true_positives": 2,
+        "false_positives": 182,
+        "sensitivity": 1.0,
+        "precision": 0.010869565217391304,
+        "false_alarm_rate": 0.9891304347826086,
+        "anomaly_reduction": 0.41025641025641024,
+        "fp_reduction": 0.4110032362459547,
+        "sensitivity_change": 0.0,
+        "score": 0.36967886482449586
+      }
+    },
+    "fine_time_55s": {
+      "method": "fine_time_based",
+      "parameters": {
+        "threshold": 55
+      },
+      "clusters": 183,
+      "metrics": {
+        "total_anomalies": 183,
+        "true_positives": 2,
+        "false_positives": 181,
+        "sensitivity": 1.0,
+        "precision": 0.01092896174863388,
+        "false_alarm_rate": 0.9890710382513661,
+        "anomaly_reduction": 0.41346153846153844,
+        "fp_reduction": 0.41423948220064727,
+        "sensitivity_change": 0.0,
+        "score": 0.3725821508588499
+      }
+    },
+    "fine_time_65s": {
+      "method": "fine_time_based",
+      "parameters": {
+        "threshold": 65
+      },
+      "clusters": 180,
+      "metrics": {
+        "total_anomalies": 180,
+        "true_positives": 2,
+        "false_positives": 178,
+        "sensitivity": 1.0,
+        "precision": 0.011111111111111112,
+        "false_alarm_rate": 0.9888888888888889,
+        "anomaly_reduction": 0.4230769230769231,
+        "fp_reduction": 0.42394822006472493,
+        "sensitivity_change": 0.0,
+        "score": 0.38129200896191184
+      }
+    },
+    "fine_time_85s": {
+      "method": "fine_time_based",
+      "parameters": {
+        "threshold": 85
+      },
+      "clusters": 179,
+      "metrics": {
+        "total_anomalies": 179,
+        "true_positives": 2,
+        "false_positives": 177,
+        "sensitivity": 1.0,
+        "precision": 0.0111731843575419,
+        "false_alarm_rate": 0.9888268156424581,
+        "anomaly_reduction": 0.42628205128205127,
+        "fp_reduction": 0.42718446601941745,
+        "sensitivity_change": 0.0,
+        "score": 0.3841952949962658
+      }
+    },
+    "fine_time_105s": {
+      "method": "fine_time_based",
+      "parameters": {
+        "threshold": 105
+      },
+      "clusters": 174,
+      "metrics": {
+        "total_anomalies": 174,
+        "true_positives": 2,
+        "false_positives": 172,
+        "sensitivity": 1.0,
+        "precision": 0.011494252873563218,
+        "false_alarm_rate": 0.9885057471264368,
+        "anomaly_reduction": 0.4423076923076923,
+        "fp_reduction": 0.44336569579288027,
+        "sensitivity_change": 0.0,
+        "score": 0.3987117251680359
+      }
+    },
+    "extended_time_360s": {
+      "method": "extended_time_based",
+      "parameters": {
+        "threshold": 360
+      },
+      "clusters": 136,
+      "metrics": {
+        "total_anomalies": 136,
+        "true_positives": 1,
+        "false_positives": 135,
+        "sensitivity": 1.0,
+        "precision": 0.007352941176470588,
+        "false_alarm_rate": 0.9926470588235294,
+        "anomaly_reduction": 0.5641025641025641,
+        "fp_reduction": 0.5631067961165048,
+        "sensitivity_change": 0.0,
+        "score": 0.5070948469006721
+      }
+    },
+    "extended_time_450s": {
+      "method": "extended_time_based",
+      "parameters": {
+        "threshold": 450
+      },
+      "clusters": 124,
+      "metrics": {
+        "total_anomalies": 124,
+        "true_positives": 1,
+        "false_positives": 123,
+        "sensitivity": 1.0,
+        "precision": 0.008064516129032258,
+        "false_alarm_rate": 0.9919354838709677,
+        "anomaly_reduction": 0.6025641025641025,
+        "fp_reduction": 0.6019417475728155,
+        "sensitivity_change": 0.0,
+        "score": 0.54193427931292
+      }
+    },
+    "extended_time_600s": {
+      "method": "extended_time_based",
+      "parameters": {
+        "threshold": 600
+      },
+      "clusters": 105,
+      "metrics": {
+        "total_anomalies": 105,
+        "true_positives": 1,
+        "false_positives": 104,
+        "sensitivity": 1.0,
+        "precision": 0.009523809523809525,
+        "false_alarm_rate": 0.9904761904761905,
+        "anomaly_reduction": 0.6634615384615384,
+        "fp_reduction": 0.6634304207119741,
+        "sensitivity_change": 0.0,
+        "score": 0.597096713965646
+      }
+    },
+    "extended_time_900s": {
+      "method": "extended_time_based",
+      "parameters": {
+        "threshold": 900
+      },
+      "clusters": 86,
+      "metrics": {
+        "total_anomalies": 86,
+        "true_positives": 1,
+        "false_positives": 85,
+        "sensitivity": 1.0,
+        "precision": 0.011627906976744186,
+        "false_alarm_rate": 0.9883720930232558,
+        "anomaly_reduction": 0.7243589743589743,
+        "fp_reduction": 0.7249190938511327,
+        "sensitivity_change": 0.0,
+        "score": 0.6522591486183719
+      }
+    },
+    "extended_time_1200s": {
+      "method": "extended_time_based",
+      "parameters": {
+        "threshold": 1200
+      },
+      "clusters": 76,
+      "metrics": {
+        "total_anomalies": 76,
+        "true_positives": 1,
+        "false_positives": 75,
+        "sensitivity": 1.0,
+        "precision": 0.013157894736842105,
+        "false_alarm_rate": 0.9868421052631579,
+        "anomaly_reduction": 0.7564102564102564,
+        "fp_reduction": 0.7572815533980582,
+        "sensitivity_change": 0.0,
+        "score": 0.6812920089619119
+      }
+    },
+    "extended_time_1800s": {
+      "method": "extended_time_based",
+      "parameters": {
+        "threshold": 1800
+      },
+      "clusters": 53,
+      "metrics": {
+        "total_anomalies": 53,
+        "true_positives": 1,
+        "false_positives": 52,
+        "sensitivity": 1.0,
+        "precision": 0.018867924528301886,
+        "false_alarm_rate": 0.9811320754716981,
+        "anomaly_reduction": 0.8301282051282052,
+        "fp_reduction": 0.8317152103559871,
+        "sensitivity_change": 0.0,
+        "score": 0.7480675877520537
+      }
+    },
+    "adaptive_p10_1s": {
+      "method": "adaptive_time_based",
+      "parameters": {
+        "threshold": 1,
+        "percentile_basis": 10
+      },
+      "clusters": 312,
+      "metrics": {
+        "total_anomalies": 312,
+        "true_positives": 3,
+        "false_positives": 309,
+        "sensitivity": 1.0,
+        "precision": 0.009615384615384616,
+        "false_alarm_rate": 0.9903846153846154,
+        "anomaly_reduction": 0.0,
+        "fp_reduction": 0.0,
+        "sensitivity_change": 0.0,
+        "score": 0.0
+      }
+    },
+    "adaptive_p25_5s": {
+      "method": "adaptive_time_based",
+      "parameters": {
+        "threshold": 5,
+        "percentile_basis": 25
+      },
+      "clusters": 229,
+      "metrics": {
+        "total_anomalies": 229,
+        "true_positives": 2,
+        "false_positives": 227,
+        "sensitivity": 1.0,
+        "precision": 0.008733624454148471,
+        "false_alarm_rate": 0.9912663755458515,
+        "anomaly_reduction": 0.266025641025641,
+        "fp_reduction": 0.26537216828478966,
+        "sensitivity_change": 0.0,
+        "score": 0.23903099327856608
+      }
+    },
+    "adaptive_p50_193s": {
+      "method": "adaptive_time_based",
+      "parameters": {
+        "threshold": 193,
+        "percentile_basis": 50
+      },
+      "clusters": 157,
+      "metrics": {
+        "total_anomalies": 157,
+        "true_positives": 1,
+        "false_positives": 156,
+        "sensitivity": 1.0,
+        "precision": 0.006369426751592357,
+        "false_alarm_rate": 0.9936305732484076,
+        "anomaly_reduction": 0.4967948717948718,
+        "fp_reduction": 0.49514563106796117,
+        "sensitivity_change": 0.0,
+        "score": 0.4461258401792382
+      }
+    },
+    "adaptive_p75_1174s": {
+      "method": "adaptive_time_based",
+      "parameters": {
+        "threshold": 1174,
+        "percentile_basis": 75
+      },
+      "clusters": 80,
+      "metrics": {
+        "total_anomalies": 80,
+        "true_positives": 1,
+        "false_positives": 79,
+        "sensitivity": 1.0,
+        "precision": 0.0125,
+        "false_alarm_rate": 0.9875,
+        "anomaly_reduction": 0.7435897435897436,
+        "fp_reduction": 0.7443365695792881,
+        "sensitivity_change": 0.0,
+        "score": 0.6696788648244959
+      }
+    },
+    "adaptive_p90_3155s": {
+      "method": "adaptive_time_based",
+      "parameters": {
+        "threshold": 3155,
+        "percentile_basis": 90
+      },
+      "clusters": 33,
+      "metrics": {
+        "total_anomalies": 33,
+        "true_positives": 1,
+        "false_positives": 32,
+        "sensitivity": 1.0,
+        "precision": 0.030303030303030304,
+        "false_alarm_rate": 0.9696969696969697,
+        "anomaly_reduction": 0.8942307692307693,
+        "fp_reduction": 0.8964401294498382,
+        "sensitivity_change": 0.0,
+        "score": 0.8061333084391336
+      }
+    },
+    "adaptive_p95_5295s": {
+      "method": "adaptive_time_based",
+      "parameters": {
+        "threshold": 5295,
+        "percentile_basis": 95
+      },
+      "clusters": 18,
+      "metrics": {
+        "total_anomalies": 18,
+        "true_positives": 0,
+        "false_positives": 18,
+        "sensitivity": 0.0,
+        "precision": 0.0,
+        "false_alarm_rate": 1.0,
+        "anomaly_reduction": 0.9423076923076923,
+        "fp_reduction": 0.941747572815534,
+        "sensitivity_change": -1.0,
+        "score": -1.152259148618372
+      }
+    },
+    "adaptive_p99_12562s": {
+      "method": "adaptive_time_based",
+      "parameters": {
+        "threshold": 12562,
+        "percentile_basis": 99
+      },
+      "clusters": 6,
+      "metrics": {
+        "total_anomalies": 6,
+        "true_positives": 0,
+        "false_positives": 6,
+        "sensitivity": 0.0,
+        "precision": 0.0,
+        "false_alarm_rate": 1.0,
+        "anomaly_reduction": 0.9807692307692307,
+        "fp_reduction": 0.9805825242718447,
+        "sensitivity_change": -1.0,
+        "score": -1.1174197162061241
+      }
+    },
+    "score_aware_30s": {
+      "method": "score_aware",
+      "parameters": {
+        "threshold": 30
+      },
+      "clusters": 310,
+      "metrics": {
+        "total_anomalies": 310,
+        "true_positives": 3,
+        "false_positives": 307,
+        "sensitivity": 1.0,
+        "precision": 0.00967741935483871,
+        "false_alarm_rate": 0.9903225806451613,
+        "anomaly_reduction": 0.00641025641025641,
+        "fp_reduction": 0.006472491909385114,
+        "sensitivity_change": 0.0,
+        "score": 0.005806572068707991
+      }
+    },
+    "score_aware_60s": {
+      "method": "score_aware",
+      "parameters": {
+        "threshold": 60
+      },
+      "clusters": 310,
+      "metrics": {
+        "total_anomalies": 310,
+        "true_positives": 3,
+        "false_positives": 307,
+        "sensitivity": 1.0,
+        "precision": 0.00967741935483871,
+        "false_alarm_rate": 0.9903225806451613,
+        "anomaly_reduction": 0.00641025641025641,
+        "fp_reduction": 0.006472491909385114,
+        "sensitivity_change": 0.0,
+        "score": 0.005806572068707991
+      }
+    },
+    "score_aware_120s": {
+      "method": "score_aware",
+      "parameters": {
+        "threshold": 120
+      },
+      "clusters": 309,
+      "metrics": {
+        "total_anomalies": 309,
+        "true_positives": 3,
+        "false_positives": 306,
+        "sensitivity": 1.0,
+        "precision": 0.009708737864077669,
+        "false_alarm_rate": 0.9902912621359223,
+        "anomaly_reduction": 0.009615384615384616,
+        "fp_reduction": 0.009708737864077669,
+        "sensitivity_change": 0.0,
+        "score": 0.008709858103061987
+      }
+    },
+    "score_aware_180s": {
+      "method": "score_aware",
+      "parameters": {
+        "threshold": 180
+      },
+      "clusters": 309,
+      "metrics": {
+        "total_anomalies": 309,
+        "true_positives": 3,
+        "false_positives": 306,
+        "sensitivity": 1.0,
+        "precision": 0.009708737864077669,
+        "false_alarm_rate": 0.9902912621359223,
+        "anomaly_reduction": 0.009615384615384616,
+        "fp_reduction": 0.009708737864077669,
+        "sensitivity_change": 0.0,
+        "score": 0.008709858103061987
+      }
+    },
+    "hybrid_60_120s": {
+      "method": "multi_threshold",
+      "parameters": {
+        "primary": 60,
+        "secondary": 120
+      },
+      "clusters": 169,
+      "metrics": {
+        "total_anomalies": 169,
+        "true_positives": 2,
+        "false_positives": 167,
+        "sensitivity": 1.0,
+        "precision": 0.011834319526627219,
+        "false_alarm_rate": 0.9881656804733728,
+        "anomaly_reduction": 0.4583333333333333,
+        "fp_reduction": 0.459546925566343,
+        "sensitivity_change": 0.0,
+        "score": 0.41322815533980584
+      }
+    },
+    "hybrid_30_90s": {
+      "method": "multi_threshold",
+      "parameters": {
+        "primary": 30,
+        "secondary": 90
+      },
+      "clusters": 178,
+      "metrics": {
+        "total_anomalies": 178,
+        "true_positives": 2,
+        "false_positives": 176,
+        "sensitivity": 1.0,
+        "precision": 0.011235955056179775,
+        "false_alarm_rate": 0.9887640449438202,
+        "anomaly_reduction": 0.42948717948717946,
+        "fp_reduction": 0.43042071197411,
+        "sensitivity_change": 0.0,
+        "score": 0.38709858103061984
+      }
+    },
+    "hybrid_45_180s": {
+      "method": "multi_threshold",
+      "parameters": {
+        "primary": 45,
+        "secondary": 180
+      },
+      "clusters": 160,
+      "metrics": {
+        "total_anomalies": 160,
+        "true_positives": 2,
+        "false_positives": 158,
+        "sensitivity": 1.0,
+        "precision": 0.0125,
+        "false_alarm_rate": 0.9875,
+        "anomaly_reduction": 0.48717948717948717,
+        "fp_reduction": 0.4886731391585761,
+        "sensitivity_change": 0.0,
+        "score": 0.4393577296489918
+      }
+    },
+    "hybrid_90_240s": {
+      "method": "multi_threshold",
+      "parameters": {
+        "primary": 90,
+        "secondary": 240
+      },
+      "clusters": 147,
+      "metrics": {
+        "total_anomalies": 147,
+        "true_positives": 1,
+        "false_positives": 146,
+        "sensitivity": 1.0,
+        "precision": 0.006802721088435374,
+        "false_alarm_rate": 0.9931972789115646,
+        "anomaly_reduction": 0.5288461538461539,
+        "fp_reduction": 0.5275080906148867,
+        "sensitivity_change": 0.0,
+        "score": 0.47515870052277814
+      }
+    },
+    "subject_aware_45s": {
+      "method": "subject_aware",
+      "parameters": {
+        "threshold": 45
+      },
+      "clusters": 178,
+      "metrics": {
+        "total_anomalies": 178,
+        "true_positives": 2,
+        "false_positives": 176,
+        "sensitivity": 1.0,
+        "precision": 0.011235955056179775,
+        "false_alarm_rate": 0.9887640449438202,
+        "anomaly_reduction": 0.42948717948717946,
+        "fp_reduction": 0.43042071197411,
+        "sensitivity_change": 0.0,
+        "score": 0.38709858103061984
+      }
+    },
+    "subject_aware_90s": {
+      "method": "subject_aware",
+      "parameters": {
+        "threshold": 90
+      },
+      "clusters": 160,
+      "metrics": {
+        "total_anomalies": 160,
+        "true_positives": 2,
+        "false_positives": 158,
+        "sensitivity": 1.0,
+        "precision": 0.0125,
+        "false_alarm_rate": 0.9875,
+        "anomaly_reduction": 0.48717948717948717,
+        "fp_reduction": 0.4886731391585761,
+        "sensitivity_change": 0.0,
+        "score": 0.4393577296489918
+      }
+    },
+    "subject_aware_135s": {
+      "method": "subject_aware",
+      "parameters": {
+        "threshold": 135
+      },
+      "clusters": 155,
+      "metrics": {
+        "total_anomalies": 155,
+        "true_positives": 1,
+        "false_positives": 154,
+        "sensitivity": 1.0,
+        "precision": 0.0064516129032258064,
+        "false_alarm_rate": 0.9935483870967742,
+        "anomaly_reduction": 0.5032051282051282,
+        "fp_reduction": 0.5016181229773463,
+        "sensitivity_change": 0.0,
+        "score": 0.4519324122479462
+      }
+    }
+  }
+}

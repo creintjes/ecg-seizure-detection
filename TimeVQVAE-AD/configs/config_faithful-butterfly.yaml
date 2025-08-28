@@ -1,3 +1,4 @@
+# config_faithful-butterfly.yaml
 dataset:
   names: SeizeIT2-ECG-TimeVQVAE-AD
   root_dir: /home/swolf/asim_shared/preprocessed_data
@@ -5,12 +6,12 @@ dataset:
   stride: -1
   in_channels: 1
   batch_sizes:
-    stage1: 1792
-    stage2: 576
+    stage1: 256
+    stage2: 48
   num_workers: 0
   heartbeats_per_minute: 75
   n_periods: 120
-  expand_labels: False
+  expand_labels: True
 
 exp_params:
   lr:
@@ -20,11 +21,11 @@ exp_params:
 
 trainer_params:
   max_steps:
-    stage1: 10000000000
-    stage2: 10000000000
+    stage1: 15000
+    stage2: 70000
   max_hours:
-    stage1: 48
-    stage2: 48
+    stage1: 1
+    stage2: 12
   val_check_interval:
     stage1: 1000
     stage2: 1000
@@ -47,8 +48,8 @@ MaskGIT:
   mask_scheduling_func: "cosine"
   prior_model:
     hidden_dim: 384
-    depth: 8
-    heads: 6
+    depth: 12
+    heads: 12
     attn_dim_head: 32
     ff_mult: 4
     use_rmsnorm: True
