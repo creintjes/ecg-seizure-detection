@@ -401,18 +401,6 @@ class MadridClusteredThresholdTradeoffAnalyzer:
         ax1.set_xlim(left=0)
         ax1.set_ylim(0, 1)
         
-        # Add some threshold annotations for key points
-        if len(results) > 0:
-            # Find some interesting points to annotate
-            max_sens_idx = np.argmax(sensitivities)
-            min_fa_idx = np.argmin([fa for fa in false_alarms_per_hour if fa > 0] or [0])
-            
-            if sensitivities[max_sens_idx] > 0:
-                ax1.annotate(f'Max Sens: {sensitivities[max_sens_idx]:.3f}\nFA/h: {false_alarms_per_hour[max_sens_idx]:.3f}\nThreshold: {thresholds[max_sens_idx]:.4f}',
-                           xy=(false_alarms_per_hour[max_sens_idx], sensitivities[max_sens_idx]),
-                           xytext=(10, 10), textcoords='offset points',
-                           bbox=dict(boxstyle='round,pad=0.3', facecolor='yellow', alpha=0.7),
-                           fontsize=8)
         
         # Plot 2: Total detections before vs after clustering
         ax2.plot(thresholds, total_detections_before, 'r.-', label='Before Clustering', linewidth=2, markersize=4)
