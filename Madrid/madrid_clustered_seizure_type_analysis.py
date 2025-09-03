@@ -574,26 +574,8 @@ class MadridClusteredSeizureTypeAnalyzer:
                           c=[colors[i]], 
                           edgecolors='black', 
                           linewidth=1,
-                          zorder=3)
-                
-                # Add labels in matching color
-                offset_x = 0.02
-                offset_y = 0.02
-                ha = 'left'
-                
-                # Adjust positioning for overlapping labels
-                if fa_values[i] > max(fa_values) * 0.8:
-                    ha = 'right'
-                    offset_x = -offset_x
-                
-                ax1.annotate(cat, 
-                           (fa_values[i], sens_values[i]),
-                           xytext=(fa_values[i] + offset_x, sens_values[i] + offset_y),
-                           fontsize=10,
-                           fontweight='bold',
-                           color=colors[i],
-                           ha=ha,
-                           va='bottom')
+                          zorder=3,
+                          label=cat)
             
             # Formatting
             ax1.set_xlabel('False Alarms per Hour', fontsize=12)
@@ -602,6 +584,7 @@ class MadridClusteredSeizureTypeAnalyzer:
             ax1.grid(True, alpha=0.3)
             ax1.set_xlim(left=-0.1)
             ax1.set_ylim(-0.05, 1.05)
+            ax1.legend(loc='best', framealpha=0.9)
             
             # Add ideal point
             ax1.scatter([0], [1], s=150, marker='*', color='red', label='Ideal', zorder=5)
@@ -644,25 +627,8 @@ class MadridClusteredSeizureTypeAnalyzer:
                           c=[colors[i]], 
                           edgecolors='black', 
                           linewidth=1,
-                          zorder=3)
-                
-                # Add labels in matching color
-                offset_x = 0.02
-                offset_y = 0.02
-                ha = 'left'
-                
-                if fa_values[i] > max(fa_values) * 0.8:
-                    ha = 'right'
-                    offset_x = -offset_x
-                
-                ax2.annotate(motor, 
-                           (fa_values[i], sens_values[i]),
-                           xytext=(fa_values[i] + offset_x, sens_values[i] + offset_y),
-                           fontsize=10,
-                           fontweight='bold',
-                           color=colors[i],
-                           ha=ha,
-                           va='bottom')
+                          zorder=3,
+                          label=motor)
             
             # Formatting
             ax2.set_xlabel('False Alarms per Hour', fontsize=12)
@@ -674,12 +640,7 @@ class MadridClusteredSeizureTypeAnalyzer:
             
             # Add ideal point
             ax2.scatter([0], [1], s=150, marker='*', color='red', label='Ideal', zorder=5)
-            
-            # Add custom legend for motor types
-            ax2.scatter([], [], c=color_map['motor'], alpha=0.7, s=100, label='Motor')
-            ax2.scatter([], [], c=color_map['non-motor'], alpha=0.7, s=100, label='Non-Motor')
-            ax2.scatter([], [], c=color_map['unknown'], alpha=0.7, s=100, label='Unknown/Mixed')
-            ax2.legend(loc='lower right', fontsize=8)
+            ax2.legend(loc='best', framealpha=0.9)
         
         # 3. Sensitivity vs False Alarms for Top Event Types
         ax3 = axes[2]
@@ -704,45 +665,19 @@ class MadridClusteredSeizureTypeAnalyzer:
                 
                 # Create scatter plot with uniform size
                 for i in range(len(type_names)):
+                    # Shorten long event type names for legend
+                    label = type_names[i]
+                    if len(label) > 25:
+                        label = label[:22] + '...'
+                    
                     ax3.scatter(fa_values[i], sens_values[i], 
                               s=100,  # Uniform size
                               alpha=0.7, 
                               c=[colors[i]], 
                               edgecolors='black', 
                               linewidth=1,
-                              zorder=3)
-                
-                # Add labels for all points in matching colors
-                for i in range(len(type_names)):
-                    # Shorten long event type names
-                    label = type_names[i]
-                    if len(label) > 20:
-                        label = label[:17] + '...'
-                    
-                    offset_x = 0.02
-                    offset_y = 0.02
-                    ha = 'left'
-                    
-                    # Adjust positioning to avoid overlap
-                    if i > 0 and fa_values[i] > max(fa_values) * 0.7:
-                        ha = 'right'
-                        offset_x = -offset_x
-                    
-                    # Use alternating vertical offsets for closely spaced points
-                    if i % 2 == 1:
-                        offset_y = -offset_y
-                        va = 'top'
-                    else:
-                        va = 'bottom'
-                    
-                    ax3.annotate(label, 
-                               (fa_values[i], sens_values[i]),
-                               xytext=(fa_values[i] + offset_x, sens_values[i] + offset_y),
-                               fontsize=9,
-                               fontweight='bold',
-                               color=colors[i],
-                               ha=ha,
-                               va=va)
+                              zorder=3,
+                              label=label)
                 
                 # Formatting
                 ax3.set_xlabel('False Alarms per Hour', fontsize=12)
@@ -754,7 +689,7 @@ class MadridClusteredSeizureTypeAnalyzer:
                 
                 # Add ideal point
                 ax3.scatter([0], [1], s=150, marker='*', color='red', label='Ideal', zorder=5)
-                ax3.legend(loc='lower right', fontsize=8)
+                ax3.legend(loc='center left', bbox_to_anchor=(1, 0.5), fontsize=7, ncol=1)
         
         # Overall title
         threshold_str = f'Threshold={self.threshold}' if self.threshold is not None else 'Top-Ranked'
