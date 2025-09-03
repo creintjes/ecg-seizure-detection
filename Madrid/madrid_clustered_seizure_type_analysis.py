@@ -582,7 +582,7 @@ class MadridClusteredSeizureTypeAnalyzer:
             ax1.set_ylabel('Sensitivity', fontsize=12)
             ax1.set_title('Seizure Categories', fontsize=14, fontweight='bold')
             ax1.grid(True, alpha=0.3)
-            ax1.set_xlim(left=-0.1)
+            ax1.set_xlim(-0.1, 4.5)
             ax1.set_ylim(-0.05, 1.05)
             ax1.legend(loc='best', framealpha=0.9)
             
@@ -635,7 +635,7 @@ class MadridClusteredSeizureTypeAnalyzer:
             ax2.set_ylabel('Sensitivity', fontsize=12)
             ax2.set_title('Motor Classification', fontsize=14, fontweight='bold')
             ax2.grid(True, alpha=0.3)
-            ax2.set_xlim(left=-0.1)
+            ax2.set_xlim(-0.1, 4.5)
             ax2.set_ylim(-0.05, 1.05)
             
             # Add ideal point
@@ -684,7 +684,7 @@ class MadridClusteredSeizureTypeAnalyzer:
                 ax3.set_ylabel('Sensitivity', fontsize=12)
                 ax3.set_title('Top Event Types (by frequency)', fontsize=14, fontweight='bold')
                 ax3.grid(True, alpha=0.3)
-                ax3.set_xlim(left=-0.1)
+                ax3.set_xlim(-0.1, 4.5)
                 ax3.set_ylim(-0.05, 1.05)
                 
                 # Add ideal point
