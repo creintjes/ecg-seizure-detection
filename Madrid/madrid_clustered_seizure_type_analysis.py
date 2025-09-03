@@ -533,7 +533,7 @@ class MadridClusteredSeizureTypeAnalyzer:
         return metrics
     
     def create_visualizations(self, metrics: Dict[str, Dict[str, float]]):
-        """Create visualizations for seizure type analysis."""
+        """Create visualizations for seizure type analysis - Sensitivity vs False Alarms only."""
         
         # Separate different metric types
         event_types = {}
@@ -552,176 +552,207 @@ class MadridClusteredSeizureTypeAnalyzer:
         plt.style.use('default')
         sns.set_palette("husl")
         
-        # Create comprehensive figure
-        fig = plt.figure(figsize=(20, 15))
+        # Create figure with three subplots
+        fig, axes = plt.subplots(1, 3, figsize=(18, 6))
         
-        # 1. Sensitivity by seizure type
-        ax1 = plt.subplot(3, 3, 1)
-        if event_types:
-            types_sorted = sorted(event_types.items(), key=lambda x: x[1]['sensitivity'], reverse=True)[:15]
-            types = [t[0] for t in types_sorted]
-            sensitivities = [t[1]['sensitivity'] for t in types_sorted]
-            ax1.barh(types, sensitivities, color='skyblue')
-            ax1.set_xlabel('Sensitivity')
-            ax1.set_title('Top 15 Seizure Types by Sensitivity')
-            ax1.set_xlim(0, 1)
-            for i, v in enumerate(sensitivities):
-                ax1.text(v + 0.01, i, f'{v:.2%}', va='center')
-        
-        # 2. Sensitivity by category
-        ax2 = plt.subplot(3, 3, 2)
+        # 1. Sensitivity vs False Alarms for Categories
+        ax1 = axes[0]
         if categories:
-            cat_sorted = sorted(categories.items(), key=lambda x: x[1]['sensitivity'], reverse=True)
-            cat_names = [c[0] for c in cat_sorted]
-            cat_sens = [c[1]['sensitivity'] for c in cat_sorted]
-            cat_counts = [c[1]['total_seizures'] for c in cat_sorted]
+            # Extract data
+            cat_names = list(categories.keys())
+            sens_values = [categories[cat]['sensitivity'] for cat in cat_names]
+            fa_values = [categories[cat]['false_alarms_per_hour'] for cat in cat_names]
+            sizes = [categories[cat]['total_seizures'] for cat in cat_names]
             
-            bars = ax2.bar(range(len(cat_names)), cat_sens, color='lightgreen')
-            ax2.set_xlabel('Category')
-            ax2.set_ylabel('Sensitivity')
-            ax2.set_title('Sensitivity by Seizure Category')
-            ax2.set_xticks(range(len(cat_names)))
-            ax2.set_xticklabels(cat_names, rotation=45, ha='right')
-            ax2.set_ylim(0, 1)
+            # Create scatter plot
+            scatter = ax1.scatter(fa_values, sens_values, s=[s*5 for s in sizes], 
+                                alpha=0.6, c=range(len(cat_names)), cmap='tab10')
             
-            # Add sample size on top of bars
-            for i, (bar, count) in enumerate(zip(bars, cat_counts)):
-                ax2.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.02,
-                        f'n={count}', ha='center', va='bottom', fontsize=8)
-        
-        # 3. Motor vs Non-Motor
-        ax3 = plt.subplot(3, 3, 3)
-        if motor_classes:
-            motor_sorted = sorted(motor_classes.items(), key=lambda x: x[1]['sensitivity'], reverse=True)
-            motor_names = [m[0] for m in motor_sorted]
-            motor_sens = [m[1]['sensitivity'] for m in motor_sorted]
-            motor_counts = [m[1]['total_seizures'] for m in motor_sorted]
+            # Add labels for each point
+            for i, cat in enumerate(cat_names):
+                # Position label slightly offset from point
+                offset_x = 0.02
+                offset_y = 0.02
+                ha = 'left'
+                
+                # Adjust positioning for overlapping labels
+                if fa_values[i] > max(fa_values) * 0.8:
+                    ha = 'right'
+                    offset_x = -offset_x
+                
+                ax1.annotate(cat, 
+                           (fa_values[i], sens_values[i]),
+                           xytext=(fa_values[i] + offset_x, sens_values[i] + offset_y),
+                           fontsize=9,
+                           ha=ha,
+                           va='bottom',
+                           bbox=dict(boxstyle='round,pad=0.2', fc='white', alpha=0.7, edgecolor='none'))
             
-            bars = ax3.bar(range(len(motor_names)), motor_sens, color='salmon')
-            ax3.set_xlabel('Motor Classification')
-            ax3.set_ylabel('Sensitivity')
-            ax3.set_title('Sensitivity by Motor Classification')
-            ax3.set_xticks(range(len(motor_names)))
-            ax3.set_xticklabels(motor_names, rotation=45, ha='right')
-            ax3.set_ylim(0, 1)
-            
-            for i, (bar, count) in enumerate(zip(bars, motor_counts)):
-                ax3.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.02,
-                        f'n={count}', ha='center', va='bottom', fontsize=8)
-        
-        # 4. False Alarms per Hour by category
-        ax4 = plt.subplot(3, 3, 4)
-        if categories:
-            cat_fa = [(c, v['false_alarms_per_hour']) for c, v in categories.items()]
-            cat_fa_sorted = sorted(cat_fa, key=lambda x: x[1])
-            cat_names = [c[0] for c in cat_fa_sorted]
-            fa_rates = [c[1] for c in cat_fa_sorted]
-            
-            ax4.bar(range(len(cat_names)), fa_rates, color='orange')
-            ax4.set_xlabel('Category')
-            ax4.set_ylabel('False Alarms per Hour')
-            ax4.set_title('False Alarm Rate by Category')
-            ax4.set_xticks(range(len(cat_names)))
-            ax4.set_xticklabels(cat_names, rotation=45, ha='right')
-        
-        # 5. Scatter plot: Sensitivity vs False Alarms
-        ax5 = plt.subplot(3, 3, 5)
-        if event_types:
-            sens_values = [v['sensitivity'] for v in event_types.values()]
-            fa_values = [v['false_alarms_per_hour'] for v in event_types.values()]
-            sizes = [v['total_seizures'] * 10 for v in event_types.values()]
-            
-            scatter = ax5.scatter(fa_values, sens_values, s=sizes, alpha=0.6, c=range(len(sens_values)), cmap='viridis')
-            ax5.set_xlabel('False Alarms per Hour')
-            ax5.set_ylabel('Sensitivity')
-            ax5.set_title('Sensitivity vs False Alarms Trade-off')
-            ax5.grid(True, alpha=0.3)
+            # Formatting
+            ax1.set_xlabel('False Alarms per Hour', fontsize=12)
+            ax1.set_ylabel('Sensitivity', fontsize=12)
+            ax1.set_title('Seizure Categories', fontsize=14, fontweight='bold')
+            ax1.grid(True, alpha=0.3)
+            ax1.set_xlim(left=-0.1)
+            ax1.set_ylim(-0.05, 1.05)
             
             # Add ideal point
-            ax5.scatter([0], [1], s=100, marker='*', color='red', label='Ideal', zorder=5)
-            ax5.legend()
+            ax1.scatter([0], [1], s=150, marker='*', color='red', label='Ideal', zorder=5)
+            
+            # Add size legend
+            sizes_legend = [10, 50, 100]
+            for size in sizes_legend:
+                ax1.scatter([], [], s=size*5, c='gray', alpha=0.6, 
+                          label=f'{size} seizures')
+            ax1.legend(loc='lower right', fontsize=8)
         
-        # 6. Anomaly Reduction by Category
-        ax6 = plt.subplot(3, 3, 6)
-        if categories:
-            cat_reduction = [(c, v['anomaly_reduction']) for c, v in categories.items()]
-            cat_reduction_sorted = sorted(cat_reduction, key=lambda x: x[1], reverse=True)
-            cat_names = [c[0] for c in cat_reduction_sorted]
-            reductions = [c[1] * 100 for c in cat_reduction_sorted]
+        # 2. Sensitivity vs False Alarms for Motor Classification
+        ax2 = axes[1]
+        if motor_classes:
+            # Extract data
+            motor_names = list(motor_classes.keys())
+            sens_values = [motor_classes[m]['sensitivity'] for m in motor_names]
+            fa_values = [motor_classes[m]['false_alarms_per_hour'] for m in motor_names]
+            sizes = [motor_classes[m]['total_seizures'] for m in motor_names]
             
-            ax6.bar(range(len(cat_names)), reductions, color='purple', alpha=0.7)
-            ax6.set_xlabel('Category')
-            ax6.set_ylabel('Anomaly Reduction (%)')
-            ax6.set_title('Clustering Effectiveness by Category')
-            ax6.set_xticks(range(len(cat_names)))
-            ax6.set_xticklabels(cat_names, rotation=45, ha='right')
-            ax6.set_ylim(0, 100)
+            # Define colors for motor classification
+            colors = []
+            for name in motor_names:
+                if 'motor' in name.lower() and 'non' not in name.lower():
+                    colors.append('red')
+                elif 'non-motor' in name.lower() or 'non_motor' in name.lower():
+                    colors.append('blue')
+                else:
+                    colors.append('gray')
+            
+            # Create scatter plot
+            for i, motor in enumerate(motor_names):
+                ax2.scatter(fa_values[i], sens_values[i], s=sizes[i]*5, 
+                          alpha=0.6, c=colors[i], edgecolors='black', linewidth=1)
+                
+                # Add labels
+                offset_x = 0.02
+                offset_y = 0.02
+                ha = 'left'
+                
+                if fa_values[i] > max(fa_values) * 0.8:
+                    ha = 'right'
+                    offset_x = -offset_x
+                
+                ax2.annotate(motor, 
+                           (fa_values[i], sens_values[i]),
+                           xytext=(fa_values[i] + offset_x, sens_values[i] + offset_y),
+                           fontsize=9,
+                           ha=ha,
+                           va='bottom',
+                           bbox=dict(boxstyle='round,pad=0.2', fc='white', alpha=0.7, edgecolor='none'))
+            
+            # Formatting
+            ax2.set_xlabel('False Alarms per Hour', fontsize=12)
+            ax2.set_ylabel('Sensitivity', fontsize=12)
+            ax2.set_title('Motor Classification', fontsize=14, fontweight='bold')
+            ax2.grid(True, alpha=0.3)
+            ax2.set_xlim(left=-0.1)
+            ax2.set_ylim(-0.05, 1.05)
+            
+            # Add ideal point
+            ax2.scatter([0], [1], s=150, marker='*', color='green', label='Ideal', zorder=5)
+            
+            # Add custom legend for motor types
+            ax2.scatter([], [], c='red', alpha=0.6, s=100, label='Motor')
+            ax2.scatter([], [], c='blue', alpha=0.6, s=100, label='Non-Motor')
+            ax2.scatter([], [], c='gray', alpha=0.6, s=100, label='Unknown/Mixed')
+            ax2.legend(loc='lower right', fontsize=8)
         
-        # 7. Sample Size Distribution
-        ax7 = plt.subplot(3, 3, 7)
-        if categories:
-            cat_samples = [(c, v['total_seizures']) for c, v in categories.items()]
-            cat_samples_sorted = sorted(cat_samples, key=lambda x: x[1], reverse=True)
-            cat_names = [c[0] for c in cat_samples_sorted]
-            samples = [c[1] for c in cat_samples_sorted]
+        # 3. Sensitivity vs False Alarms for Top Event Types
+        ax3 = axes[2]
+        if event_types:
+            # Filter to top event types by frequency or select representative ones
+            # Exclude 'no_seizure' and 'unknown' types
+            filtered_types = {k: v for k, v in event_types.items() 
+                            if k not in ['no_seizure', 'unknown'] and v['total_seizures'] > 0}
             
-            ax7.bar(range(len(cat_names)), samples, color='teal')
-            ax7.set_xlabel('Category')
-            ax7.set_ylabel('Number of Seizures')
-            ax7.set_title('Sample Size by Category')
-            ax7.set_xticks(range(len(cat_names)))
-            ax7.set_xticklabels(cat_names, rotation=45, ha='right')
+            # Sort by total seizures and take top 15
+            sorted_types = sorted(filtered_types.items(), 
+                                key=lambda x: x[1]['total_seizures'], 
+                                reverse=True)[:15]
+            
+            if sorted_types:
+                type_names = [t[0] for t in sorted_types]
+                sens_values = [t[1]['sensitivity'] for t in sorted_types]
+                fa_values = [t[1]['false_alarms_per_hour'] for t in sorted_types]
+                sizes = [t[1]['total_seizures'] for t in sorted_types]
+                
+                # Create scatter plot
+                scatter = ax3.scatter(fa_values, sens_values, 
+                                    s=[s*10 for s in sizes], 
+                                    alpha=0.6, 
+                                    c=range(len(type_names)), 
+                                    cmap='viridis')
+                
+                # Add labels for selected points (to avoid overcrowding)
+                # Label top 5 by sensitivity and top 5 by sample size
+                top_sens_indices = sorted(range(len(sens_values)), 
+                                        key=lambda i: sens_values[i], 
+                                        reverse=True)[:5]
+                top_size_indices = sorted(range(len(sizes)), 
+                                        key=lambda i: sizes[i], 
+                                        reverse=True)[:5]
+                
+                indices_to_label = set(top_sens_indices + top_size_indices)
+                
+                for i in indices_to_label:
+                    # Shorten long event type names
+                    label = type_names[i]
+                    if len(label) > 20:
+                        label = label[:17] + '...'
+                    
+                    offset_x = 0.02
+                    offset_y = 0.02
+                    ha = 'left'
+                    
+                    if fa_values[i] > max(fa_values) * 0.7:
+                        ha = 'right'
+                        offset_x = -offset_x
+                    
+                    ax3.annotate(label, 
+                               (fa_values[i], sens_values[i]),
+                               xytext=(fa_values[i] + offset_x, sens_values[i] + offset_y),
+                               fontsize=8,
+                               ha=ha,
+                               va='bottom',
+                               bbox=dict(boxstyle='round,pad=0.2', fc='yellow', alpha=0.5, edgecolor='none'))
+                
+                # Formatting
+                ax3.set_xlabel('False Alarms per Hour', fontsize=12)
+                ax3.set_ylabel('Sensitivity', fontsize=12)
+                ax3.set_title('Top Event Types (by frequency)', fontsize=14, fontweight='bold')
+                ax3.grid(True, alpha=0.3)
+                ax3.set_xlim(left=-0.1)
+                ax3.set_ylim(-0.05, 1.05)
+                
+                # Add ideal point
+                ax3.scatter([0], [1], s=150, marker='*', color='red', label='Ideal', zorder=5)
+                ax3.legend(loc='lower right', fontsize=8)
         
-        # 8. Precision by Category
-        ax8 = plt.subplot(3, 3, 8)
-        if categories:
-            cat_prec = [(c, v['precision']) for c, v in categories.items()]
-            cat_prec_sorted = sorted(cat_prec, key=lambda x: x[1], reverse=True)
-            cat_names = [c[0] for c in cat_prec_sorted]
-            precisions = [c[1] for c in cat_prec_sorted]
-            
-            ax8.bar(range(len(cat_names)), precisions, color='gold')
-            ax8.set_xlabel('Category')
-            ax8.set_ylabel('Precision')
-            ax8.set_title('Precision by Category')
-            ax8.set_xticks(range(len(cat_names)))
-            ax8.set_xticklabels(cat_names, rotation=45, ha='right')
-            ax8.set_ylim(0, 1)
-        
-        # 9. Heatmap of metrics by category
-        ax9 = plt.subplot(3, 3, 9)
-        if categories:
-            cat_names = list(categories.keys())
-            metric_names = ['Sensitivity', 'Precision', 'FA/h', 'Reduction']
-            
-            heatmap_data = []
-            for cat in cat_names:
-                row = [
-                    categories[cat]['sensitivity'],
-                    categories[cat]['precision'],
-                    min(categories[cat]['false_alarms_per_hour'] / 10, 1),  # Normalize FA/h
-                    categories[cat]['anomaly_reduction']
-                ]
-                heatmap_data.append(row)
-            
-            im = ax9.imshow(np.array(heatmap_data).T, cmap='YlOrRd', aspect='auto', vmin=0, vmax=1)
-            ax9.set_xticks(range(len(cat_names)))
-            ax9.set_yticks(range(len(metric_names)))
-            ax9.set_xticklabels(cat_names, rotation=45, ha='right')
-            ax9.set_yticklabels(metric_names)
-            ax9.set_title('Metrics Heatmap by Category')
-            
-            # Add colorbar
-            plt.colorbar(im, ax=ax9, fraction=0.046, pad=0.04)
-        
-        plt.suptitle(f'Seizure Type Detection Analysis with time_{self.clustering_time_threshold}s Clustering', 
+        # Overall title
+        threshold_str = f'Threshold={self.threshold}' if self.threshold is not None else 'Top-Ranked'
+        plt.suptitle(f'Seizure Type Detection: Sensitivity vs False Alarms\n'
+                    f'(time_{self.clustering_time_threshold}s Clustering, {threshold_str})', 
                     fontsize=16, fontweight='bold')
+        
         plt.tight_layout()
         
         # Save figure
-        output_path = self.output_dir / f'seizure_type_analysis_{datetime.now().strftime("%Y%m%d_%H%M%S")}.png'
+        output_path = self.output_dir / f'sensitivity_vs_fa_{datetime.now().strftime("%Y%m%d_%H%M%S")}.png'
         plt.savefig(output_path, dpi=300, bbox_inches='tight')
-        print(f"Visualizations saved to: {output_path}")
+        print(f"Sensitivity vs FA plot saved to: {output_path}")
+        
+        # Also save as PDF for publication quality
+        pdf_path = self.output_dir / f'sensitivity_vs_fa_{datetime.now().strftime("%Y%m%d_%H%M%S")}.pdf'
+        plt.savefig(pdf_path, bbox_inches='tight')
+        print(f"PDF version saved to: {pdf_path}")
+        
         plt.close()
     
     def save_results(self, metrics: Dict[str, Dict[str, float]]):
