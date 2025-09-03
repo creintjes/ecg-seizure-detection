@@ -33,7 +33,8 @@ except ImportError:
 
 class MadridClusteredSeizureTypeAnalyzer:
     def __init__(self, results_dir: str, seizeit2_data_path: str = None, output_dir: str = None,
-                 pre_seizure_minutes: float = 5.0, post_seizure_minutes: float = 3.0):
+                 pre_seizure_minutes: float = 5.0, post_seizure_minutes: float = 3.0,
+                 threshold: float = None):
         """
         Initialize the clustered seizure type analyzer.
         
@@ -43,6 +44,7 @@ class MadridClusteredSeizureTypeAnalyzer:
             output_dir: Directory to save analysis results
             pre_seizure_minutes: Minutes before seizure start to consider as detection window
             post_seizure_minutes: Minutes after seizure end to consider as detection window
+            threshold: Anomaly score threshold for detection (if None, uses top-ranked anomaly per window)
         """
         self.results_dir = Path(results_dir)
         self.seizeit2_data_path = Path(seizeit2_data_path) if seizeit2_data_path else None
@@ -50,6 +52,7 @@ class MadridClusteredSeizureTypeAnalyzer:
         self.pre_seizure_seconds = pre_seizure_minutes * 60.0
         self.post_seizure_seconds = post_seizure_minutes * 60.0
         self.clustering_time_threshold = 180  # Fixed time_180s strategy
+        self.threshold = threshold
         self.output_dir.mkdir(exist_ok=True)
         
         # Initialize storage for results
@@ -264,7 +267,7 @@ class MadridClusteredSeizureTypeAnalyzer:
     
     def extract_file_level_anomalies(self, result_data: Dict[str, Any]) -> List[Dict[str, Any]]:
         """
-        Extract all anomalies from a file using top-ranked strategy.
+        Extract all anomalies from a file using threshold or top-ranked strategy.
         """
         analysis_results = result_data.get('analysis_results', {})
         window_results = analysis_results.get('window_results', [])
@@ -279,8 +282,13 @@ class MadridClusteredSeizureTypeAnalyzer:
             if not anomalies:
                 continue
             
-            # Use top-ranked anomaly only (matching train_test script)
-            selected_anomalies = [anomalies[0]]
+            # Select anomalies based on threshold or top-ranked strategy
+            if self.threshold is not None:
+                # Filter by threshold - include all anomalies >= threshold
+                selected_anomalies = [a for a in anomalies if a.get('anomaly_score', 0) >= self.threshold]
+            else:
+                # Use top-ranked anomaly only (default)
+                selected_anomalies = [anomalies[0]]
             
             # Convert to file-level representation
             for anomaly in selected_anomalies:
@@ -736,6 +744,8 @@ class MadridClusteredSeizureTypeAnalyzer:
                 'analysis_metadata': {
                     'timestamp': timestamp,
                     'clustering_strategy': f'time_{self.clustering_time_threshold}s',
+                    'detection_strategy': 'threshold' if self.threshold is not None else 'top_ranked',
+                    'threshold_value': self.threshold,
                     'pre_seizure_minutes': self.pre_seizure_seconds / 60,
                     'post_seizure_minutes': self.post_seizure_seconds / 60
                 },
@@ -750,6 +760,7 @@ class MadridClusteredSeizureTypeAnalyzer:
             f.write("="*80 + "\n")
             f.write("SEIZURE TYPE DETECTION ANALYSIS REPORT\n")
             f.write(f"Clustering Strategy: time_{self.clustering_time_threshold}s\n")
+            f.write(f"Detection Strategy: {'threshold=' + str(self.threshold) if self.threshold is not None else 'top-ranked'}\n")
             f.write(f"Extended Window: -{self.pre_seizure_seconds/60:.1f} min to +{self.post_seizure_seconds/60:.1f} min\n")
             f.write("="*80 + "\n\n")
             
@@ -816,6 +827,7 @@ class MadridClusteredSeizureTypeAnalyzer:
         print(f"Found {len(json_files)} Madrid result files")
         print(f"Using clustering strategy: time_{self.clustering_time_threshold}s")
         print(f"Extended window: -{self.pre_seizure_seconds/60:.1f} min to +{self.post_seizure_seconds/60:.1f} min")
+        print(f"Detection strategy: {'threshold=' + str(self.threshold) if self.threshold is not None else 'top-ranked'}")
         
         # Process each file
         for i, json_file in enumerate(sorted(json_files), 1):
@@ -878,6 +890,11 @@ def main():
         help="Output directory for analysis results"
     )
     parser.add_argument(
+        "-t", "--threshold",
+        type=float,
+        help="Anomaly score threshold for detection (default: use top-ranked anomaly per window)"
+    )
+    parser.add_argument(
         "--pre-seizure-minutes",
         type=float,
         default=5.0,
@@ -898,7 +915,8 @@ def main():
         seizeit2_data_path=args.seizeit2_path,
         output_dir=args.output_dir,
         pre_seizure_minutes=args.pre_seizure_minutes,
-        post_seizure_minutes=args.post_seizure_minutes
+        post_seizure_minutes=args.post_seizure_minutes,
+        threshold=args.threshold
     )
     
     # Run analysis
