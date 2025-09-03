@@ -14,7 +14,7 @@ from typing import Dict, List, Tuple, Any
 import argparse
 
 # Import the main metrics calculator
-from madrid_file_level_metrics import MadridFileLevelMetrics
+from Madrid.no_split.madrid_file_level_metrics import MadridFileLevelMetrics
 
 
 class MadridThresholdTradeoffAnalyzer:
