@@ -562,15 +562,21 @@ class MadridClusteredSeizureTypeAnalyzer:
             cat_names = list(categories.keys())
             sens_values = [categories[cat]['sensitivity'] for cat in cat_names]
             fa_values = [categories[cat]['false_alarms_per_hour'] for cat in cat_names]
-            sizes = [categories[cat]['total_seizures'] for cat in cat_names]
             
-            # Create scatter plot
-            scatter = ax1.scatter(fa_values, sens_values, s=[s*5 for s in sizes], 
-                                alpha=0.6, c=range(len(cat_names)), cmap='tab10')
+            # Use tab10 colormap for distinct colors
+            colors = plt.cm.tab10(np.linspace(0, 1, len(cat_names)))
             
-            # Add labels for each point
+            # Create scatter plot with uniform size
             for i, cat in enumerate(cat_names):
-                # Position label slightly offset from point
+                ax1.scatter(fa_values[i], sens_values[i], 
+                          s=100,  # Uniform size
+                          alpha=0.7, 
+                          c=[colors[i]], 
+                          edgecolors='black', 
+                          linewidth=1,
+                          zorder=3)
+                
+                # Add labels in matching color
                 offset_x = 0.02
                 offset_y = 0.02
                 ha = 'left'
@@ -583,10 +589,11 @@ class MadridClusteredSeizureTypeAnalyzer:
                 ax1.annotate(cat, 
                            (fa_values[i], sens_values[i]),
                            xytext=(fa_values[i] + offset_x, sens_values[i] + offset_y),
-                           fontsize=9,
+                           fontsize=10,
+                           fontweight='bold',
+                           color=colors[i],
                            ha=ha,
-                           va='bottom',
-                           bbox=dict(boxstyle='round,pad=0.2', fc='white', alpha=0.7, edgecolor='none'))
+                           va='bottom')
             
             # Formatting
             ax1.set_xlabel('False Alarms per Hour', fontsize=12)
@@ -598,12 +605,6 @@ class MadridClusteredSeizureTypeAnalyzer:
             
             # Add ideal point
             ax1.scatter([0], [1], s=150, marker='*', color='red', label='Ideal', zorder=5)
-            
-            # Add size legend
-            sizes_legend = [10, 50, 100]
-            for size in sizes_legend:
-                ax1.scatter([], [], s=size*5, c='gray', alpha=0.6, 
-                          label=f'{size} seizures')
             ax1.legend(loc='lower right', fontsize=8)
         
         # 2. Sensitivity vs False Alarms for Motor Classification
@@ -613,24 +614,39 @@ class MadridClusteredSeizureTypeAnalyzer:
             motor_names = list(motor_classes.keys())
             sens_values = [motor_classes[m]['sensitivity'] for m in motor_names]
             fa_values = [motor_classes[m]['false_alarms_per_hour'] for m in motor_names]
-            sizes = [motor_classes[m]['total_seizures'] for m in motor_names]
             
-            # Define colors for motor classification
+            # Define distinct colors for motor classification
+            color_map = {
+                'motor': '#FF4444',  # Red
+                'non-motor': '#4444FF',  # Blue
+                'non_motor': '#4444FF',  # Blue (alternative spelling)
+                'mixed': '#44FF44',  # Green
+                'unknown': '#888888'  # Gray
+            }
+            
             colors = []
             for name in motor_names:
-                if 'motor' in name.lower() and 'non' not in name.lower():
-                    colors.append('red')
-                elif 'non-motor' in name.lower() or 'non_motor' in name.lower():
-                    colors.append('blue')
+                name_lower = name.lower()
+                if 'motor' in name_lower and 'non' not in name_lower:
+                    colors.append(color_map['motor'])
+                elif 'non-motor' in name_lower or 'non_motor' in name_lower:
+                    colors.append(color_map['non-motor'])
+                elif 'mixed' in name_lower:
+                    colors.append(color_map['mixed'])
                 else:
-                    colors.append('gray')
+                    colors.append(color_map['unknown'])
             
-            # Create scatter plot
+            # Create scatter plot with uniform size
             for i, motor in enumerate(motor_names):
-                ax2.scatter(fa_values[i], sens_values[i], s=sizes[i]*5, 
-                          alpha=0.6, c=colors[i], edgecolors='black', linewidth=1)
+                ax2.scatter(fa_values[i], sens_values[i], 
+                          s=100,  # Uniform size
+                          alpha=0.7, 
+                          c=[colors[i]], 
+                          edgecolors='black', 
+                          linewidth=1,
+                          zorder=3)
                 
-                # Add labels
+                # Add labels in matching color
                 offset_x = 0.02
                 offset_y = 0.02
                 ha = 'left'
@@ -642,10 +658,11 @@ class MadridClusteredSeizureTypeAnalyzer:
                 ax2.annotate(motor, 
                            (fa_values[i], sens_values[i]),
                            xytext=(fa_values[i] + offset_x, sens_values[i] + offset_y),
-                           fontsize=9,
+                           fontsize=10,
+                           fontweight='bold',
+                           color=colors[i],
                            ha=ha,
-                           va='bottom',
-                           bbox=dict(boxstyle='round,pad=0.2', fc='white', alpha=0.7, edgecolor='none'))
+                           va='bottom')
             
             # Formatting
             ax2.set_xlabel('False Alarms per Hour', fontsize=12)
@@ -656,12 +673,12 @@ class MadridClusteredSeizureTypeAnalyzer:
             ax2.set_ylim(-0.05, 1.05)
             
             # Add ideal point
-            ax2.scatter([0], [1], s=150, marker='*', color='green', label='Ideal', zorder=5)
+            ax2.scatter([0], [1], s=150, marker='*', color='red', label='Ideal', zorder=5)
             
             # Add custom legend for motor types
-            ax2.scatter([], [], c='red', alpha=0.6, s=100, label='Motor')
-            ax2.scatter([], [], c='blue', alpha=0.6, s=100, label='Non-Motor')
-            ax2.scatter([], [], c='gray', alpha=0.6, s=100, label='Unknown/Mixed')
+            ax2.scatter([], [], c=color_map['motor'], alpha=0.7, s=100, label='Motor')
+            ax2.scatter([], [], c=color_map['non-motor'], alpha=0.7, s=100, label='Non-Motor')
+            ax2.scatter([], [], c=color_map['unknown'], alpha=0.7, s=100, label='Unknown/Mixed')
             ax2.legend(loc='lower right', fontsize=8)
         
         # 3. Sensitivity vs False Alarms for Top Event Types
@@ -681,27 +698,22 @@ class MadridClusteredSeizureTypeAnalyzer:
                 type_names = [t[0] for t in sorted_types]
                 sens_values = [t[1]['sensitivity'] for t in sorted_types]
                 fa_values = [t[1]['false_alarms_per_hour'] for t in sorted_types]
-                sizes = [t[1]['total_seizures'] for t in sorted_types]
                 
-                # Create scatter plot
-                scatter = ax3.scatter(fa_values, sens_values, 
-                                    s=[s*10 for s in sizes], 
-                                    alpha=0.6, 
-                                    c=range(len(type_names)), 
-                                    cmap='viridis')
+                # Use viridis colormap for distinct colors
+                colors = plt.cm.viridis(np.linspace(0, 1, len(type_names)))
                 
-                # Add labels for selected points (to avoid overcrowding)
-                # Label top 5 by sensitivity and top 5 by sample size
-                top_sens_indices = sorted(range(len(sens_values)), 
-                                        key=lambda i: sens_values[i], 
-                                        reverse=True)[:5]
-                top_size_indices = sorted(range(len(sizes)), 
-                                        key=lambda i: sizes[i], 
-                                        reverse=True)[:5]
+                # Create scatter plot with uniform size
+                for i in range(len(type_names)):
+                    ax3.scatter(fa_values[i], sens_values[i], 
+                              s=100,  # Uniform size
+                              alpha=0.7, 
+                              c=[colors[i]], 
+                              edgecolors='black', 
+                              linewidth=1,
+                              zorder=3)
                 
-                indices_to_label = set(top_sens_indices + top_size_indices)
-                
-                for i in indices_to_label:
+                # Add labels for all points in matching colors
+                for i in range(len(type_names)):
                     # Shorten long event type names
                     label = type_names[i]
                     if len(label) > 20:
@@ -711,17 +723,26 @@ class MadridClusteredSeizureTypeAnalyzer:
                     offset_y = 0.02
                     ha = 'left'
                     
-                    if fa_values[i] > max(fa_values) * 0.7:
+                    # Adjust positioning to avoid overlap
+                    if i > 0 and fa_values[i] > max(fa_values) * 0.7:
                         ha = 'right'
                         offset_x = -offset_x
+                    
+                    # Use alternating vertical offsets for closely spaced points
+                    if i % 2 == 1:
+                        offset_y = -offset_y
+                        va = 'top'
+                    else:
+                        va = 'bottom'
                     
                     ax3.annotate(label, 
                                (fa_values[i], sens_values[i]),
                                xytext=(fa_values[i] + offset_x, sens_values[i] + offset_y),
-                               fontsize=8,
+                               fontsize=9,
+                               fontweight='bold',
+                               color=colors[i],
                                ha=ha,
-                               va='bottom',
-                               bbox=dict(boxstyle='round,pad=0.2', fc='yellow', alpha=0.5, edgecolor='none'))
+                               va=va)
                 
                 # Formatting
                 ax3.set_xlabel('False Alarms per Hour', fontsize=12)
