@@ -47,6 +47,69 @@ class MadridClusteringFalseAlarmReducerTrainTest:
             420, 600, 900, 1200, 1500, 1800
         ]
     
+    def calculate_responder_metrics(self, patient_metrics: Dict[str, Dict]) -> Dict[str, Any]:
+        """
+        Calculate responder metrics for the test set.
+        A responder is a patient where at least 2/3 of seizures are detected.
+        
+        Args:
+            patient_metrics: Dictionary with patient-specific seizure detection metrics
+        
+        Returns:
+            Dictionary with responder analysis results
+        """
+        responders = []
+        non_responders = []
+        patients_with_seizures = []
+        
+        for patient_id, metrics in patient_metrics.items():
+            if metrics['total_seizures'] > 0:
+                patients_with_seizures.append(patient_id)
+                detection_rate = metrics['detected_seizures'] / metrics['total_seizures']
+                
+                patient_info = {
+                    'patient_id': patient_id,
+                    'total_seizures': metrics['total_seizures'],
+                    'detected_seizures': metrics['detected_seizures'],
+                    'detection_rate': detection_rate,
+                    'files': metrics['files']
+                }
+                
+                # Check if patient is a responder (≥2/3 seizures detected)
+                if detection_rate >= 2/3:
+                    responders.append(patient_info)
+                else:
+                    non_responders.append(patient_info)
+        
+        # Calculate responder-specific sensitivity
+        total_seizures_responders = sum(p['total_seizures'] for p in responders)
+        detected_seizures_responders = sum(p['detected_seizures'] for p in responders)
+        
+        responder_sensitivity = (detected_seizures_responders / total_seizures_responders 
+                                if total_seizures_responders > 0 else None)
+        
+        # Calculate non-responder sensitivity for comparison
+        total_seizures_non_responders = sum(p['total_seizures'] for p in non_responders)
+        detected_seizures_non_responders = sum(p['detected_seizures'] for p in non_responders)
+        
+        non_responder_sensitivity = (detected_seizures_non_responders / total_seizures_non_responders 
+                                    if total_seizures_non_responders > 0 else None)
+        
+        return {
+            'total_patients_with_seizures': len(patients_with_seizures),
+            'num_responders': len(responders),
+            'num_non_responders': len(non_responders),
+            'responder_rate': len(responders) / len(patients_with_seizures) if patients_with_seizures else 0,
+            'responder_sensitivity': responder_sensitivity,
+            'non_responder_sensitivity': non_responder_sensitivity,
+            'responders': responders,
+            'non_responders': non_responders,
+            'total_seizures_responders': total_seizures_responders,
+            'detected_seizures_responders': detected_seizures_responders,
+            'total_seizures_non_responders': total_seizures_non_responders,
+            'detected_seizures_non_responders': detected_seizures_non_responders
+        }
+    
     def is_training_file(self, filename: str) -> bool:
         """
         Determine if a file belongs to the training set (sub001-sub096).
@@ -635,6 +698,9 @@ class MadridClusteringFalseAlarmReducerTrainTest:
             'total_detected_seizures': 0
         }
         
+        # Track per-patient metrics for responder analysis
+        patient_metrics = {}
+        
         for json_file in sorted(test_files):
             file_result = self.process_single_file_with_global_strategy(json_file, best_global_strategy)
             if file_result is None:
@@ -652,6 +718,18 @@ class MadridClusteringFalseAlarmReducerTrainTest:
             test_base_stats['total_detected_seizures'] += base_metrics['detected_seizures']
             test_base_stats['total_duration_hours'] += file_result['file_info']['total_duration_hours']
             
+            # Track per-patient seizure detection for responder analysis
+            subject_id = file_result['file_info']['subject_id']
+            if subject_id not in patient_metrics:
+                patient_metrics[subject_id] = {
+                    'total_seizures': 0,
+                    'detected_seizures': 0,
+                    'files': []
+                }
+            
+            patient_metrics[subject_id]['files'].append(json_file.name)
+            patient_metrics[subject_id]['total_seizures'] += base_metrics['total_seizures']
+            
             # Update test final stats (after clustering)
             if file_result['applied_strategy']:
                 final_metrics = file_result['applied_strategy']['metrics']
@@ -659,12 +737,21 @@ class MadridClusteringFalseAlarmReducerTrainTest:
                 test_final_stats['total_true_positives'] += final_metrics['true_positives']
                 test_final_stats['total_false_positives'] += final_metrics['false_positives']
                 test_final_stats['total_detected_seizures'] += final_metrics['detected_seizures']
+                
+                # Update patient-specific detected seizures
+                patient_metrics[subject_id]['detected_seizures'] += final_metrics['detected_seizures']
             else:
                 # No clustering applied
                 test_final_stats['total_anomalies'] += base_metrics['total_anomalies']
                 test_final_stats['total_true_positives'] += base_metrics['true_positives']
                 test_final_stats['total_false_positives'] += base_metrics['false_positives']
                 test_final_stats['total_detected_seizures'] += base_metrics['detected_seizures']
+                
+                # Update patient-specific detected seizures
+                patient_metrics[subject_id]['detected_seizures'] += base_metrics['detected_seizures']
+        
+        # Calculate responder metrics
+        responder_analysis = self.calculate_responder_metrics(patient_metrics)
         
         # Calculate test set metrics
         test_base_sensitivity = (test_base_stats['total_detected_seizures'] / 
@@ -731,6 +818,7 @@ class MadridClusteringFalseAlarmReducerTrainTest:
                     'fp_reduction': test_fp_reduction,
                     'sensitivity_change': test_sensitivity_change
                 },
+                'responder_analysis': responder_analysis,
                 'individual_results': test_file_results
             }
         }
@@ -800,7 +888,8 @@ class MadridClusteringFalseAlarmReducerTrainTest:
             'evaluated_on': 'test_set (sub097-sub125)',
             'before_clustering': results['test_results']['base_metrics'],
             'after_clustering': results['test_results']['final_metrics'],
-            'improvements': results['test_results']['improvements']
+            'improvements': results['test_results']['improvements'],
+            'responder_analysis': results['test_results']['responder_analysis']
         }
         
         final_metrics_path = self.output_dir / "metrics_after" / f"test_final_metrics_{timestamp}.json"
@@ -873,6 +962,23 @@ class MadridClusteringFalseAlarmReducerTrainTest:
         print(f"  Anomaly reduction: {test_improvements['anomaly_reduction']:.4f} ({test_improvements['anomaly_reduction']*100:.2f}%)")
         print(f"  FP reduction: {test_improvements['fp_reduction']:.4f} ({test_improvements['fp_reduction']*100:.2f}%)")
         print(f"  Sensitivity change: {test_improvements['sensitivity_change']:+.4f}")
+        
+        # Print responder analysis
+        responder_analysis = results['test_results'].get('responder_analysis', {})
+        if responder_analysis:
+            print(f"\nRESPONDER ANALYSIS (Test Set):")
+            print(f"  Total patients with seizures: {responder_analysis['total_patients_with_seizures']}")
+            print(f"  Responders (≥2/3 seizures detected): {responder_analysis['num_responders']}")
+            print(f"  Non-responders: {responder_analysis['num_non_responders']}")
+            print(f"  Responder rate: {responder_analysis['responder_rate']:.4f} ({responder_analysis['responder_rate']*100:.2f}%)")
+            
+            if responder_analysis['responder_sensitivity'] is not None:
+                print(f"\n  Responder Sensitivity: {responder_analysis['responder_sensitivity']:.4f} ({responder_analysis['responder_sensitivity']*100:.2f}%)")
+                print(f"    (Seizures in responders: {responder_analysis['detected_seizures_responders']}/{responder_analysis['total_seizures_responders']})")
+            
+            if responder_analysis['non_responder_sensitivity'] is not None:
+                print(f"  Non-responder Sensitivity: {responder_analysis['non_responder_sensitivity']:.4f} ({responder_analysis['non_responder_sensitivity']*100:.2f}%)")
+                print(f"    (Seizures in non-responders: {responder_analysis['detected_seizures_non_responders']}/{responder_analysis['total_seizures_non_responders']})")
         
         print(f"\nOUTPUT DIRECTORY: {self.output_dir}")
         print(f"{'='*70}")
