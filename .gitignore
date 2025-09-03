@@ -41,3 +41,6 @@ Madrid/results_8hz_window3600_stride1800_new20min
 results_madrid_noIntervalExtension
 jeppesen_seizeit2_threshold_reduced/example_data
 jeppesen_seizeit2_threshold_reduced/example_data
+Madrid/trade_off_FAR_vs_Sens
+Madrid/clustering_withSDW
+Madrid/clustering_withoutSDW

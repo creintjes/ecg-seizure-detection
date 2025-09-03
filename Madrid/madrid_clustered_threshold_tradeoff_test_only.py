@@ -433,9 +433,6 @@ class MadridClusteredThresholdTradeoffAnalyzerTestOnly:
         ax1.set_xlim(left=0)
         ax1.set_ylim(0, 1)
         
-        # Add dataset label
-        ax1.text(0.02, 0.98, 'Dataset: sub097-sub125', transform=ax1.transAxes,
-                verticalalignment='top', bbox=dict(boxstyle='round', facecolor='yellow', alpha=0.3))
         
         # Plot 2: Total detections before vs after clustering
         ax2.plot(thresholds, total_detections_before, 'r.-', label='Before Clustering', linewidth=2, markersize=4)
