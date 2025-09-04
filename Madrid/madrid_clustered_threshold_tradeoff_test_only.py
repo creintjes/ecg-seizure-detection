@@ -482,10 +482,23 @@ class MadridClusteredThresholdTradeoffAnalyzerTestOnly:
         """Save detailed results to JSON and CSV files."""
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         
+        # Calculate best performing configurations
+        best_sensitivity_config = None
+        best_fad_config = None
+        
+        if results:
+            # Find configuration with highest sensitivity
+            best_sensitivity_config = max(results, key=lambda x: x['sensitivity'] if x['sensitivity'] is not None else 0)
+            
+            # Find configuration with lowest false alarms per hour (but sensitivity > 0)
+            valid_results = [r for r in results if r['sensitivity'] is not None and r['sensitivity'] > 0]
+            if valid_results:
+                best_fad_config = min(valid_results, key=lambda x: x['false_alarms_per_hour'])
+        
         # Save JSON results
         json_path = self.output_dir / f"{output_filename}_results.json"
         with open(json_path, 'w') as f:
-            json.dump({
+            json_data = {
                 'analysis_metadata': {
                     'analysis_type': 'threshold_tradeoff_clustered_time_180s_test_only',
                     'timestamp': timestamp,
@@ -495,9 +508,37 @@ class MadridClusteredThresholdTradeoffAnalyzerTestOnly:
                     'clustering_strategy': f'time_{self.clustering_time_threshold}s',
                     'pre_seizure_minutes': self.pre_seizure_seconds / 60.0,
                     'post_seizure_minutes': self.post_seizure_seconds / 60.0
-                },
-                'results': results
-            }, f, indent=2)
+                }
+            }
+            
+            # Add best performing configurations at the top
+            if best_sensitivity_config:
+                json_data['best_sensitivity'] = {
+                    'threshold': best_sensitivity_config['threshold'],
+                    'sensitivity': best_sensitivity_config['sensitivity'],
+                    'false_alarms_per_hour': best_sensitivity_config['false_alarms_per_hour'],
+                    'anomaly_reduction': best_sensitivity_config['anomaly_reduction'],
+                    'total_true_positives': best_sensitivity_config['total_true_positives'],
+                    'total_false_positives': best_sensitivity_config['total_false_positives'],
+                    'total_seizures': best_sensitivity_config['total_seizures'],
+                    'detected_seizures': best_sensitivity_config['detected_seizures']
+                }
+            
+            if best_fad_config:
+                json_data['best_fad'] = {
+                    'threshold': best_fad_config['threshold'],
+                    'sensitivity': best_fad_config['sensitivity'],
+                    'false_alarms_per_hour': best_fad_config['false_alarms_per_hour'],
+                    'anomaly_reduction': best_fad_config['anomaly_reduction'],
+                    'total_true_positives': best_fad_config['total_true_positives'],
+                    'total_false_positives': best_fad_config['total_false_positives'],
+                    'total_seizures': best_fad_config['total_seizures'],
+                    'detected_seizures': best_fad_config['detected_seizures']
+                }
+            
+            json_data['results'] = results
+            
+            json.dump(json_data, f, indent=2)
         print(f"Detailed results saved to: {json_path}")
         
         # Save CSV for easy analysis
