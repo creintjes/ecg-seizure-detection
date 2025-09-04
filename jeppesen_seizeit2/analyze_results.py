@@ -157,10 +157,29 @@ def calculate_responder_metrics(param_data):
         'detected_seizures_non_responders': detected_seizures_non_responders
     }
 
+def is_test_subject(subject_id):
+    """
+    Determine if a subject belongs to the test set (sub097-sub125).
+    
+    Parameters:
+    subject_id (str): Subject ID (e.g., "sub-077" or "sub-123")
+    
+    Returns:
+    bool: True if subject is in test set, False otherwise
+    """
+    import re
+    # Extract subject number from subject_id
+    match = re.search(r'sub-?(\d{3})', subject_id)
+    if match:
+        subject_num = int(match.group(1))
+        return 97 <= subject_num <= 125
+    return False
+
 def calculate_overall_metrics(csv_file, raw_data_path="/home/swolf/asim_shared/raw_data/ds005873-1.1.0"):
     """
     Calculate overall sensitivity and false alarms per hour from results CSV.
     Uses actual recording durations from raw data.
+    ONLY analyzes TEST SET subjects (sub097-sub125).
     
     Parameters:
     csv_file (str): Path to the CSV file with results
@@ -173,6 +192,17 @@ def calculate_overall_metrics(csv_file, raw_data_path="/home/swolf/asim_shared/r
     # Read the CSV file
     df = pd.read_csv(csv_file)
     
+    # Filter to only test set subjects (sub097-sub125)
+    test_subjects = [subj for subj in df['subject'].unique() if is_test_subject(subj)]
+    df_test = df[df['subject'].isin(test_subjects)]
+    
+    print(f"Original dataset: {len(df)} records from {len(df['subject'].unique())} subjects")
+    print(f"Test set filter: {len(df_test)} records from {len(test_subjects)} subjects (sub097-sub125)")
+    
+    if len(df_test) == 0:
+        print("WARNING: No test set subjects found in the CSV file!")
+        return {}
+    
     # Load actual recording durations from raw data
     print("Loading recording durations from raw data...")
     subject_durations, total_dataset_hours = load_recording_durations_from_raw_data(raw_data_path)
@@ -180,16 +210,16 @@ def calculate_overall_metrics(csv_file, raw_data_path="/home/swolf/asim_shared/r
     # Group by parameter to get overall metrics for each method
     results = {}
     
-    # Get unique parameters and subjects
-    parameters = df['parameter'].unique()
-    subjects_in_csv = df['subject'].unique()
+    # Get unique parameters and subjects (only test set)
+    parameters = df_test['parameter'].unique()
+    subjects_in_csv = test_subjects
     
-    print(f"\nAnalyzing {len(df)} records from {len(subjects_in_csv)} subjects")
+    print(f"\nAnalyzing TEST SET ONLY: {len(df_test)} records from {len(subjects_in_csv)} subjects")
     print(f"Found {len(parameters)} different parameters/methods")
     print("\n" + "="*80)
     
     for param in parameters:
-        param_data = df[df['parameter'] == param]
+        param_data = df_test[df_test['parameter'] == param]
         
         # Calculate overall sensitivity
         total_correct_pred = param_data['num_correct_pred_seizures'].sum()
