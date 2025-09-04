@@ -89,12 +89,13 @@ def load_recording_durations_from_raw_data(raw_data_path="/home/swolf/asim_share
     print(f"\nTotal recording time: {total_hours:.1f} hours ({processed_recordings} recordings)")
     return durations, total_hours
 
-def calculate_responder_metrics(param_data):
+def calculate_responder_metrics(param_data, subject_durations):
     """
     Calculate responder metrics for patients where at least 2/3 of seizures are detected.
     
     Parameters:
     param_data (DataFrame): Parameter-specific data from CSV
+    subject_durations (dict): Dictionary mapping subject_id to recording duration in hours
     
     Returns:
     dict: Dictionary with responder analysis results
@@ -110,6 +111,12 @@ def calculate_responder_metrics(param_data):
         # Sum across all recordings for this subject
         total_seizures = subject_data['num_seizures'].sum()
         detected_seizures = subject_data['num_correct_pred_seizures'].sum()
+        total_predictions = subject_data['num_pred_seizures'].sum()
+        false_alarms = total_predictions - detected_seizures
+        
+        # Get recording duration for this subject
+        subject_duration_hours = subject_durations.get(subject_id, 0)
+        subject_fad = false_alarms / subject_duration_hours if subject_duration_hours > 0 else 0
         
         if total_seizures > 0:
             patients_with_seizures.append(subject_id)
@@ -119,7 +126,10 @@ def calculate_responder_metrics(param_data):
                 'patient_id': subject_id,
                 'total_seizures': total_seizures,
                 'detected_seizures': detected_seizures,
-                'detection_rate': detection_rate
+                'detection_rate': detection_rate,
+                'false_alarms': false_alarms,
+                'duration_hours': subject_duration_hours,
+                'fad': subject_fad
             }
             
             # Check if patient is a responder (≥2/3 seizures detected)
@@ -128,19 +138,27 @@ def calculate_responder_metrics(param_data):
             else:
                 non_responders.append(patient_info)
     
-    # Calculate responder-specific sensitivity
+    # Calculate responder-specific metrics
     total_seizures_responders = sum(p['total_seizures'] for p in responders)
     detected_seizures_responders = sum(p['detected_seizures'] for p in responders)
+    total_false_alarms_responders = sum(p['false_alarms'] for p in responders)
+    total_duration_responders = sum(p['duration_hours'] for p in responders)
     
     responder_sensitivity = (detected_seizures_responders / total_seizures_responders 
                             if total_seizures_responders > 0 else None)
+    responder_fad = (total_false_alarms_responders / total_duration_responders 
+                     if total_duration_responders > 0 else None)
     
-    # Calculate non-responder sensitivity for comparison
+    # Calculate non-responder metrics
     total_seizures_non_responders = sum(p['total_seizures'] for p in non_responders)
     detected_seizures_non_responders = sum(p['detected_seizures'] for p in non_responders)
+    total_false_alarms_non_responders = sum(p['false_alarms'] for p in non_responders)
+    total_duration_non_responders = sum(p['duration_hours'] for p in non_responders)
     
     non_responder_sensitivity = (detected_seizures_non_responders / total_seizures_non_responders 
                                 if total_seizures_non_responders > 0 else None)
+    non_responder_fad = (total_false_alarms_non_responders / total_duration_non_responders 
+                         if total_duration_non_responders > 0 else None)
     
     return {
         'total_patients_with_seizures': len(patients_with_seizures),
@@ -148,13 +166,19 @@ def calculate_responder_metrics(param_data):
         'num_non_responders': len(non_responders),
         'responder_rate': len(responders) / len(patients_with_seizures) if patients_with_seizures else 0,
         'responder_sensitivity': responder_sensitivity,
+        'responder_fad': responder_fad,
         'non_responder_sensitivity': non_responder_sensitivity,
+        'non_responder_fad': non_responder_fad,
         'responders': responders,
         'non_responders': non_responders,
         'total_seizures_responders': total_seizures_responders,
         'detected_seizures_responders': detected_seizures_responders,
+        'total_false_alarms_responders': total_false_alarms_responders,
+        'total_duration_responders': total_duration_responders,
         'total_seizures_non_responders': total_seizures_non_responders,
-        'detected_seizures_non_responders': detected_seizures_non_responders
+        'detected_seizures_non_responders': detected_seizures_non_responders,
+        'total_false_alarms_non_responders': total_false_alarms_non_responders,
+        'total_duration_non_responders': total_duration_non_responders
     }
 
 def is_test_subject(subject_id):
@@ -241,7 +265,7 @@ def calculate_metrics_for_dataset(df_subset, subject_durations, dataset_name):
         overall_precision = total_correct_pred / total_predictions if total_predictions > 0 else 0
         
         # Calculate responder metrics
-        responder_analysis = calculate_responder_metrics(param_data)
+        responder_analysis = calculate_responder_metrics(param_data, subject_durations)
         
         # Store results
         results[param] = {
@@ -352,6 +376,12 @@ def calculate_overall_metrics_with_train_test_split(csv_file, raw_data_path="/ho
             print(f"    Responder rate: {resp_analysis['responder_rate']:.4f} ({resp_analysis['responder_rate']*100:.2f}%)")
             if resp_analysis['responder_sensitivity'] is not None:
                 print(f"    Responder Sensitivity: {resp_analysis['responder_sensitivity']:.4f} ({resp_analysis['responder_sensitivity']*100:.2f}%)")
+            if resp_analysis['responder_fad'] is not None:
+                print(f"    Responder FAD: {resp_analysis['responder_fad']:.4f}")
+            if resp_analysis['non_responder_sensitivity'] is not None:
+                print(f"    Non-responder Sensitivity: {resp_analysis['non_responder_sensitivity']:.4f} ({resp_analysis['non_responder_sensitivity']*100:.2f}%)")
+            if resp_analysis['non_responder_fad'] is not None:
+                print(f"    Non-responder FAD: {resp_analysis['non_responder_fad']:.4f}")
         else:
             print(f"\nWARNING: Parameter {param} not found in test set!")
     
@@ -396,7 +426,9 @@ def save_train_test_summary(train_test_results, output_file):
             'num_responders': resp_analysis['num_responders'],
             'responder_rate': resp_analysis['responder_rate'],
             'responder_sensitivity': resp_analysis['responder_sensitivity'],
-            'non_responder_sensitivity': resp_analysis['non_responder_sensitivity']
+            'responder_fad': resp_analysis['responder_fad'],
+            'non_responder_sensitivity': resp_analysis['non_responder_sensitivity'],
+            'non_responder_fad': resp_analysis['non_responder_fad']
         })
     
     # Add test results for selected parameters
@@ -416,7 +448,9 @@ def save_train_test_summary(train_test_results, output_file):
             'num_responders': resp_analysis['num_responders'],
             'responder_rate': resp_analysis['responder_rate'],
             'responder_sensitivity': resp_analysis['responder_sensitivity'],
-            'non_responder_sensitivity': resp_analysis['non_responder_sensitivity']
+            'responder_fad': resp_analysis['responder_fad'],
+            'non_responder_sensitivity': resp_analysis['non_responder_sensitivity'],
+            'non_responder_fad': resp_analysis['non_responder_fad']
         })
     
     summary_df = pd.DataFrame(summary_data)
