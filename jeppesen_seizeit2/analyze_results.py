@@ -304,34 +304,23 @@ def find_best_parameters(results):
     
     # Best sensitivity
     best_sensitivity = max(results.items(), key=lambda x: x[1]['overall_sensitivity'])
+    resp_analysis_sens = best_sensitivity[1]['responder_analysis']
     print(f"Best Sensitivity: {best_sensitivity[0]}")
-    print(f"  Sensitivity: {best_sensitivity[1]['overall_sensitivity']:.4f}")
+    print(f"  Overall Sensitivity: {best_sensitivity[1]['overall_sensitivity']:.4f}")
     print(f"  Overall FAD: {best_sensitivity[1]['overall_fad']:.4f}")
-    print(f"  Precision: {best_sensitivity[1]['overall_precision']:.4f}")
+    if resp_analysis_sens['responder_sensitivity'] is not None:
+        print(f"  Responder Sensitivity: {resp_analysis_sens['responder_sensitivity']:.4f} ({resp_analysis_sens['responder_sensitivity']*100:.2f}%)")
+    print(f"  Responder Rate: {resp_analysis_sens['responder_rate']:.4f} ({resp_analysis_sens['responder_rate']*100:.2f}%)")
     
-    # Best precision
-    best_precision = max(results.items(), key=lambda x: x[1]['overall_precision'])
-    print(f"\nBest Precision: {best_precision[0]}")
-    print(f"  Precision: {best_precision[1]['overall_precision']:.4f}")
-    print(f"  Sensitivity: {best_precision[1]['overall_sensitivity']:.4f}")
-    print(f"  Overall FAD: {best_precision[1]['overall_fad']:.4f}")
-    
-    # Best F1-score (harmonic mean of sensitivity and precision)
-    f1_scores = {}
-    for param, metrics in results.items():
-        sens = metrics['overall_sensitivity']
-        prec = metrics['overall_precision']
-        if sens + prec > 0:
-            f1_scores[param] = 2 * (sens * prec) / (sens + prec)
-        else:
-            f1_scores[param] = 0
-    
-    best_f1 = max(f1_scores.items(), key=lambda x: x[1])
-    print(f"\nBest F1-Score: {best_f1[0]}")
-    print(f"  F1-Score: {best_f1[1]:.4f}")
-    print(f"  Sensitivity: {results[best_f1[0]]['overall_sensitivity']:.4f}")
-    print(f"  Precision: {results[best_f1[0]]['overall_precision']:.4f}")
-    print(f"  Overall FAD: {results[best_f1[0]]['overall_fad']:.4f}")
+    # Best overall FAD (lowest false alarms per hour)
+    best_fad = min(results.items(), key=lambda x: x[1]['overall_fad'])
+    resp_analysis_fad = best_fad[1]['responder_analysis']
+    print(f"\nBest Overall FAD (Lowest): {best_fad[0]}")
+    print(f"  Overall FAD: {best_fad[1]['overall_fad']:.4f}")
+    print(f"  Overall Sensitivity: {best_fad[1]['overall_sensitivity']:.4f}")
+    if resp_analysis_fad['responder_sensitivity'] is not None:
+        print(f"  Responder Sensitivity: {resp_analysis_fad['responder_sensitivity']:.4f} ({resp_analysis_fad['responder_sensitivity']*100:.2f}%)")
+    print(f"  Responder Rate: {resp_analysis_fad['responder_rate']:.4f} ({resp_analysis_fad['responder_rate']*100:.2f}%)")
 
 def save_summary(results, output_file):
     """
