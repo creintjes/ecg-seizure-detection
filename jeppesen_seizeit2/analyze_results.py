@@ -89,6 +89,74 @@ def load_recording_durations_from_raw_data(raw_data_path="/home/swolf/asim_share
     print(f"\nTotal recording time: {total_hours:.1f} hours ({processed_recordings} recordings)")
     return durations, total_hours
 
+def calculate_responder_metrics(param_data):
+    """
+    Calculate responder metrics for patients where at least 2/3 of seizures are detected.
+    
+    Parameters:
+    param_data (DataFrame): Parameter-specific data from CSV
+    
+    Returns:
+    dict: Dictionary with responder analysis results
+    """
+    responders = []
+    non_responders = []
+    patients_with_seizures = []
+    
+    # Group by subject to calculate per-patient detection rates
+    for subject_id in param_data['subject'].unique():
+        subject_data = param_data[param_data['subject'] == subject_id]
+        
+        # Sum across all recordings for this subject
+        total_seizures = subject_data['num_seizures'].sum()
+        detected_seizures = subject_data['num_correct_pred_seizures'].sum()
+        
+        if total_seizures > 0:
+            patients_with_seizures.append(subject_id)
+            detection_rate = detected_seizures / total_seizures
+            
+            patient_info = {
+                'patient_id': subject_id,
+                'total_seizures': total_seizures,
+                'detected_seizures': detected_seizures,
+                'detection_rate': detection_rate
+            }
+            
+            # Check if patient is a responder (≥2/3 seizures detected)
+            if detection_rate >= 2/3:
+                responders.append(patient_info)
+            else:
+                non_responders.append(patient_info)
+    
+    # Calculate responder-specific sensitivity
+    total_seizures_responders = sum(p['total_seizures'] for p in responders)
+    detected_seizures_responders = sum(p['detected_seizures'] for p in responders)
+    
+    responder_sensitivity = (detected_seizures_responders / total_seizures_responders 
+                            if total_seizures_responders > 0 else None)
+    
+    # Calculate non-responder sensitivity for comparison
+    total_seizures_non_responders = sum(p['total_seizures'] for p in non_responders)
+    detected_seizures_non_responders = sum(p['detected_seizures'] for p in non_responders)
+    
+    non_responder_sensitivity = (detected_seizures_non_responders / total_seizures_non_responders 
+                                if total_seizures_non_responders > 0 else None)
+    
+    return {
+        'total_patients_with_seizures': len(patients_with_seizures),
+        'num_responders': len(responders),
+        'num_non_responders': len(non_responders),
+        'responder_rate': len(responders) / len(patients_with_seizures) if patients_with_seizures else 0,
+        'responder_sensitivity': responder_sensitivity,
+        'non_responder_sensitivity': non_responder_sensitivity,
+        'responders': responders,
+        'non_responders': non_responders,
+        'total_seizures_responders': total_seizures_responders,
+        'detected_seizures_responders': detected_seizures_responders,
+        'total_seizures_non_responders': total_seizures_non_responders,
+        'detected_seizures_non_responders': detected_seizures_non_responders
+    }
+
 def calculate_overall_metrics(csv_file, raw_data_path="/home/swolf/asim_shared/raw_data/ds005873-1.1.0"):
     """
     Calculate overall sensitivity and false alarms per hour from results CSV.
@@ -150,6 +218,9 @@ def calculate_overall_metrics(csv_file, raw_data_path="/home/swolf/asim_shared/r
         total_predictions = param_data['num_pred_seizures'].sum()
         overall_precision = total_correct_pred / total_predictions if total_predictions > 0 else 0
         
+        # Calculate responder metrics
+        responder_analysis = calculate_responder_metrics(param_data)
+        
         # Store results
         results[param] = {
             'overall_sensitivity': overall_sensitivity,
@@ -162,7 +233,8 @@ def calculate_overall_metrics(csv_file, raw_data_path="/home/swolf/asim_shared/r
             'avg_fad': avg_fad,
             'total_record_hours': total_record_hours,
             'subjects_with_duration': subjects_with_duration,
-            'num_subjects': len(param_data)
+            'num_subjects': len(param_data),
+            'responder_analysis': responder_analysis
         }
         
         print(f"Parameter: {param}")
@@ -174,6 +246,23 @@ def calculate_overall_metrics(csv_file, raw_data_path="/home/swolf/asim_shared/r
         print(f"  Total Recording Hours (from raw data): {total_record_hours:.1f}h")
         print(f"  Overall FAD (False Alarms per Hour): {overall_fad:.4f}")
         print(f"  Average individual FAD (from CSV): {avg_fad:.4f}")
+        
+        # Print responder analysis
+        resp_analysis = responder_analysis
+        print(f"  Responder Analysis:")
+        print(f"    Patients with seizures: {resp_analysis['total_patients_with_seizures']}")
+        print(f"    Responders (≥2/3 seizures detected): {resp_analysis['num_responders']}")
+        print(f"    Non-responders: {resp_analysis['num_non_responders']}")
+        print(f"    Responder rate: {resp_analysis['responder_rate']:.4f} ({resp_analysis['responder_rate']*100:.2f}%)")
+        
+        if resp_analysis['responder_sensitivity'] is not None:
+            print(f"    Responder Sensitivity: {resp_analysis['responder_sensitivity']:.4f} ({resp_analysis['responder_sensitivity']*100:.2f}%)")
+            print(f"      (Seizures in responders: {resp_analysis['detected_seizures_responders']}/{resp_analysis['total_seizures_responders']})")
+        
+        if resp_analysis['non_responder_sensitivity'] is not None:
+            print(f"    Non-responder Sensitivity: {resp_analysis['non_responder_sensitivity']:.4f} ({resp_analysis['non_responder_sensitivity']*100:.2f}%)")
+            print(f"      (Seizures in non-responders: {resp_analysis['detected_seizures_non_responders']}/{resp_analysis['total_seizures_non_responders']})")
+        
         print("-" * 60)
     
     return results
@@ -226,6 +315,7 @@ def save_summary(results, output_file):
     """
     summary_data = []
     for param, metrics in results.items():
+        resp_analysis = metrics['responder_analysis']
         summary_data.append({
             'parameter': param,
             'overall_sensitivity': metrics['overall_sensitivity'],
@@ -236,7 +326,11 @@ def save_summary(results, output_file):
             'total_seizures': metrics['total_seizures'],
             'total_false_alarms': metrics['total_false_alarms'],
             'total_record_hours': metrics['total_record_hours'],
-            'num_subjects': metrics['num_subjects']
+            'num_subjects': metrics['num_subjects'],
+            'num_responders': resp_analysis['num_responders'],
+            'responder_rate': resp_analysis['responder_rate'],
+            'responder_sensitivity': resp_analysis['responder_sensitivity'],
+            'non_responder_sensitivity': resp_analysis['non_responder_sensitivity']
         })
     
     summary_df = pd.DataFrame(summary_data)
