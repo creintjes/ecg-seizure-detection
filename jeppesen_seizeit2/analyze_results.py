@@ -241,8 +241,7 @@ def calculate_overall_metrics(csv_file, raw_data_path="/home/swolf/asim_shared/r
         # Calculate overall false alarms per hour
         overall_fad = total_false_alarms / total_record_hours if total_record_hours > 0 else 0
         
-        # Also keep the average FAD from individual subjects for comparison
-        avg_fad = param_data['FAD'].mean()
+
         
         # Calculate additional metrics
         total_predictions = param_data['num_pred_seizures'].sum()
@@ -260,7 +259,6 @@ def calculate_overall_metrics(csv_file, raw_data_path="/home/swolf/asim_shared/r
             'total_predictions': total_predictions,
             'overall_precision': overall_precision,
             'overall_fad': overall_fad,
-            'avg_fad': avg_fad,
             'total_record_hours': total_record_hours,
             'subjects_with_duration': subjects_with_duration,
             'num_subjects': len(param_data),
@@ -275,7 +273,6 @@ def calculate_overall_metrics(csv_file, raw_data_path="/home/swolf/asim_shared/r
         print(f"  Total False Alarms: {total_false_alarms}")
         print(f"  Total Recording Hours (from raw data): {total_record_hours:.1f}h")
         print(f"  Overall FAD (False Alarms per Hour): {overall_fad:.4f}")
-        print(f"  Average individual FAD (from CSV): {avg_fad:.4f}")
         
         # Print responder analysis
         resp_analysis = responder_analysis
@@ -310,7 +307,6 @@ def find_best_parameters(results):
     print(f"Best Sensitivity: {best_sensitivity[0]}")
     print(f"  Sensitivity: {best_sensitivity[1]['overall_sensitivity']:.4f}")
     print(f"  Overall FAD: {best_sensitivity[1]['overall_fad']:.4f}")
-    print(f"  Average FAD: {best_sensitivity[1]['avg_fad']:.4f}")
     print(f"  Precision: {best_sensitivity[1]['overall_precision']:.4f}")
     
     # Best precision
@@ -319,7 +315,6 @@ def find_best_parameters(results):
     print(f"  Precision: {best_precision[1]['overall_precision']:.4f}")
     print(f"  Sensitivity: {best_precision[1]['overall_sensitivity']:.4f}")
     print(f"  Overall FAD: {best_precision[1]['overall_fad']:.4f}")
-    print(f"  Average FAD: {best_precision[1]['avg_fad']:.4f}")
     
     # Best F1-score (harmonic mean of sensitivity and precision)
     f1_scores = {}
@@ -337,7 +332,6 @@ def find_best_parameters(results):
     print(f"  Sensitivity: {results[best_f1[0]]['overall_sensitivity']:.4f}")
     print(f"  Precision: {results[best_f1[0]]['overall_precision']:.4f}")
     print(f"  Overall FAD: {results[best_f1[0]]['overall_fad']:.4f}")
-    print(f"  Average FAD: {results[best_f1[0]]['avg_fad']:.4f}")
 
 def save_summary(results, output_file):
     """
@@ -351,7 +345,6 @@ def save_summary(results, output_file):
             'overall_sensitivity': metrics['overall_sensitivity'],
             'overall_precision': metrics['overall_precision'],
             'overall_fad': metrics['overall_fad'],
-            'avg_fad': metrics['avg_fad'],
             'total_correct_predictions': metrics['total_correct_predictions'],
             'total_seizures': metrics['total_seizures'],
             'total_false_alarms': metrics['total_false_alarms'],
