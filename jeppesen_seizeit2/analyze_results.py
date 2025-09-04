@@ -175,51 +175,46 @@ def is_test_subject(subject_id):
         return 97 <= subject_num <= 125
     return False
 
-def calculate_overall_metrics(csv_file, raw_data_path="/home/swolf/asim_shared/raw_data/ds005873-1.1.0"):
+def is_train_subject(subject_id):
     """
-    Calculate overall sensitivity and false alarms per hour from results CSV.
-    Uses actual recording durations from raw data.
-    ONLY analyzes TEST SET subjects (sub097-sub125).
+    Determine if a subject belongs to the training set (sub001-sub096).
     
     Parameters:
-    csv_file (str): Path to the CSV file with results
-    raw_data_path (str): Path to raw SeizeIT2 dataset
+    subject_id (str): Subject ID (e.g., "sub-077" or "sub-123")
     
     Returns:
-    dict: Dictionary with calculated metrics
+    bool: True if subject is in training set, False otherwise
     """
+    import re
+    # Extract subject number from subject_id
+    match = re.search(r'sub-?(\d{3})', subject_id)
+    if match:
+        subject_num = int(match.group(1))
+        return 1 <= subject_num <= 96
+    return False
+
+def calculate_metrics_for_dataset(df_subset, subject_durations, dataset_name):
+    """
+    Calculate metrics for a specific dataset (training or test).
     
-    # Read the CSV file
-    df = pd.read_csv(csv_file)
+    Parameters:
+    df_subset (DataFrame): Subset of data (training or test)
+    subject_durations (dict): Dictionary mapping subject_id to recording duration
+    dataset_name (str): Name of the dataset ("Training" or "Test")
     
-    # Filter to only test set subjects (sub097-sub125)
-    test_subjects = [subj for subj in df['subject'].unique() if is_test_subject(subj)]
-    df_test = df[df['subject'].isin(test_subjects)]
-    
-    print(f"Original dataset: {len(df)} records from {len(df['subject'].unique())} subjects")
-    print(f"Test set filter: {len(df_test)} records from {len(test_subjects)} subjects (sub097-sub125)")
-    
-    if len(df_test) == 0:
-        print("WARNING: No test set subjects found in the CSV file!")
-        return {}
-    
-    # Load actual recording durations from raw data
-    print("Loading recording durations from raw data...")
-    subject_durations, total_dataset_hours = load_recording_durations_from_raw_data(raw_data_path)
-    
-    # Group by parameter to get overall metrics for each method
+    Returns:
+    dict: Dictionary with calculated metrics for each parameter
+    """
     results = {}
+    parameters = df_subset['parameter'].unique()
     
-    # Get unique parameters and subjects (only test set)
-    parameters = df_test['parameter'].unique()
-    subjects_in_csv = test_subjects
-    
-    print(f"\nAnalyzing TEST SET ONLY: {len(df_test)} records from {len(subjects_in_csv)} subjects")
+    print(f"\n{dataset_name} Set Analysis:")
+    print(f"Analyzing {len(df_subset)} records from {len(df_subset['subject'].unique())} subjects")
     print(f"Found {len(parameters)} different parameters/methods")
-    print("\n" + "="*80)
+    print("-" * 60)
     
     for param in parameters:
-        param_data = df_test[df_test['parameter'] == param]
+        param_data = df_subset[df_subset['parameter'] == param]
         
         # Calculate overall sensitivity
         total_correct_pred = param_data['num_correct_pred_seizures'].sum()
@@ -241,8 +236,6 @@ def calculate_overall_metrics(csv_file, raw_data_path="/home/swolf/asim_shared/r
         # Calculate overall false alarms per hour
         overall_fad = total_false_alarms / total_record_hours if total_record_hours > 0 else 0
         
-
-        
         # Calculate additional metrics
         total_predictions = param_data['num_pred_seizures'].sum()
         overall_precision = total_correct_pred / total_predictions if total_predictions > 0 else 0
@@ -261,75 +254,156 @@ def calculate_overall_metrics(csv_file, raw_data_path="/home/swolf/asim_shared/r
             'overall_fad': overall_fad,
             'total_record_hours': total_record_hours,
             'subjects_with_duration': subjects_with_duration,
-            'num_subjects': len(param_data),
+            'num_subjects': len(param_data['subject'].unique()),
             'responder_analysis': responder_analysis
         }
-        
-        print(f"Parameter: {param}")
-        print(f"  Subjects analyzed: {len(param_data)}")
-        print(f"  Subjects with duration info: {subjects_with_duration}/{len(param_data['subject'].unique())}")
-        print(f"  Overall Sensitivity: {overall_sensitivity:.4f} ({total_correct_pred}/{total_seizures})")
-        print(f"  Overall Precision: {overall_precision:.4f} ({total_correct_pred}/{total_predictions})")
-        print(f"  Total False Alarms: {total_false_alarms}")
-        print(f"  Total Recording Hours (from raw data): {total_record_hours:.1f}h")
-        print(f"  Overall FAD (False Alarms per Hour): {overall_fad:.4f}")
-        
-        # Print responder analysis
-        resp_analysis = responder_analysis
-        print(f"  Responder Analysis:")
-        print(f"    Patients with seizures: {resp_analysis['total_patients_with_seizures']}")
-        print(f"    Responders (≥2/3 seizures detected): {resp_analysis['num_responders']}")
-        print(f"    Non-responders: {resp_analysis['num_non_responders']}")
-        print(f"    Responder rate: {resp_analysis['responder_rate']:.4f} ({resp_analysis['responder_rate']*100:.2f}%)")
-        
-        if resp_analysis['responder_sensitivity'] is not None:
-            print(f"    Responder Sensitivity: {resp_analysis['responder_sensitivity']:.4f} ({resp_analysis['responder_sensitivity']*100:.2f}%)")
-            print(f"      (Seizures in responders: {resp_analysis['detected_seizures_responders']}/{resp_analysis['total_seizures_responders']})")
-        
-        if resp_analysis['non_responder_sensitivity'] is not None:
-            print(f"    Non-responder Sensitivity: {resp_analysis['non_responder_sensitivity']:.4f} ({resp_analysis['non_responder_sensitivity']*100:.2f}%)")
-            print(f"      (Seizures in non-responders: {resp_analysis['detected_seizures_non_responders']}/{resp_analysis['total_seizures_non_responders']})")
-        
-        print("-" * 60)
     
     return results
 
-def find_best_parameters(results):
+def calculate_overall_metrics_with_train_test_split(csv_file, raw_data_path="/home/swolf/asim_shared/raw_data/ds005873-1.1.0"):
     """
-    Find parameters with best sensitivity and best precision.
+    Calculate metrics using train/test split approach.
+    Select best parameters on training data (sub001-sub096) and evaluate on test data (sub097-sub125).
+    
+    Parameters:
+    csv_file (str): Path to the CSV file with results
+    raw_data_path (str): Path to raw SeizeIT2 dataset
+    
+    Returns:
+    dict: Dictionary with train/test results and best parameter evaluation
     """
+    
+    # Read the CSV file
+    df = pd.read_csv(csv_file)
+    
+    # Split into training and test sets
+    train_subjects = [subj for subj in df['subject'].unique() if is_train_subject(subj)]
+    test_subjects = [subj for subj in df['subject'].unique() if is_test_subject(subj)]
+    
+    df_train = df[df['subject'].isin(train_subjects)]
+    df_test = df[df['subject'].isin(test_subjects)]
+    
+    print(f"Original dataset: {len(df)} records from {len(df['subject'].unique())} subjects")
+    print(f"Training set: {len(df_train)} records from {len(train_subjects)} subjects (sub001-sub096)")
+    print(f"Test set: {len(df_test)} records from {len(test_subjects)} subjects (sub097-sub125)")
+    
+    if len(df_train) == 0:
+        print("WARNING: No training set subjects found in the CSV file!")
+        return {}
+    if len(df_test) == 0:
+        print("WARNING: No test set subjects found in the CSV file!")
+        return {}
+    
+    # Load actual recording durations from raw data
+    print("Loading recording durations from raw data...")
+    subject_durations, total_dataset_hours = load_recording_durations_from_raw_data(raw_data_path)
+    
+    # Phase 1: Calculate metrics on training set
     print("\n" + "="*80)
-    print("BEST PERFORMING PARAMETERS:")
+    print("PHASE 1: PARAMETER SELECTION ON TRAINING SET")
     print("="*80)
     
-    # Best sensitivity
-    best_sensitivity = max(results.items(), key=lambda x: x[1]['overall_sensitivity'])
-    resp_analysis_sens = best_sensitivity[1]['responder_analysis']
-    print(f"Best Sensitivity: {best_sensitivity[0]}")
-    print(f"  Overall Sensitivity: {best_sensitivity[1]['overall_sensitivity']:.4f}")
-    print(f"  Overall FAD: {best_sensitivity[1]['overall_fad']:.4f}")
-    if resp_analysis_sens['responder_sensitivity'] is not None:
-        print(f"  Responder Sensitivity: {resp_analysis_sens['responder_sensitivity']:.4f} ({resp_analysis_sens['responder_sensitivity']*100:.2f}%)")
-    print(f"  Responder Rate: {resp_analysis_sens['responder_rate']:.4f} ({resp_analysis_sens['responder_rate']*100:.2f}%)")
+    train_results = calculate_metrics_for_dataset(df_train, subject_durations, "Training")
     
-    # Best overall FAD (lowest false alarms per hour)
-    best_fad = min(results.items(), key=lambda x: x[1]['overall_fad'])
-    resp_analysis_fad = best_fad[1]['responder_analysis']
-    print(f"\nBest Overall FAD (Lowest): {best_fad[0]}")
-    print(f"  Overall FAD: {best_fad[1]['overall_fad']:.4f}")
-    print(f"  Overall Sensitivity: {best_fad[1]['overall_sensitivity']:.4f}")
-    if resp_analysis_fad['responder_sensitivity'] is not None:
-        print(f"  Responder Sensitivity: {resp_analysis_fad['responder_sensitivity']:.4f} ({resp_analysis_fad['responder_sensitivity']*100:.2f}%)")
-    print(f"  Responder Rate: {resp_analysis_fad['responder_rate']:.4f} ({resp_analysis_fad['responder_rate']*100:.2f}%)")
+    # Phase 2: Select best parameters based on training set
+    print("\n" + "="*80)
+    print("PHASE 2: BEST PARAMETER SELECTION FROM TRAINING SET")
+    print("="*80)
+    
+    if not train_results:
+        print("No training results available!")
+        return {}
+    
+    # Select best parameters from training set
+    best_sensitivity_param = max(train_results.items(), key=lambda x: x[1]['overall_sensitivity'])
+    best_fad_param = min(train_results.items(), key=lambda x: x[1]['overall_fad'])
+    
+    print(f"Best Sensitivity on Training Set: {best_sensitivity_param[0]}")
+    print(f"  Training Sensitivity: {best_sensitivity_param[1]['overall_sensitivity']:.4f}")
+    print(f"  Training FAD: {best_sensitivity_param[1]['overall_fad']:.4f}")
+    
+    print(f"\nBest FAD on Training Set: {best_fad_param[0]}")
+    print(f"  Training FAD: {best_fad_param[1]['overall_fad']:.4f}")
+    print(f"  Training Sensitivity: {best_fad_param[1]['overall_sensitivity']:.4f}")
+    
+    # Phase 3: Evaluate selected parameters on test set
+    print("\n" + "="*80)
+    print("PHASE 3: EVALUATION OF SELECTED PARAMETERS ON TEST SET")
+    print("="*80)
+    
+    test_results = calculate_metrics_for_dataset(df_test, subject_durations, "Test")
+    
+    # Extract test performance for selected parameters
+    selected_params = {best_sensitivity_param[0], best_fad_param[0]}
+    
+    test_evaluation = {}
+    for param in selected_params:
+        if param in test_results:
+            test_evaluation[param] = test_results[param]
+            
+            print(f"\nTest Set Performance for {param}:")
+            print(f"  Test Sensitivity: {test_results[param]['overall_sensitivity']:.4f}")
+            print(f"  Test FAD: {test_results[param]['overall_fad']:.4f}")
+            
+            resp_analysis = test_results[param]['responder_analysis']
+            print(f"  Test Responder Analysis:")
+            print(f"    Patients with seizures: {resp_analysis['total_patients_with_seizures']}")
+            print(f"    Responders (≥2/3 seizures detected): {resp_analysis['num_responders']}")
+            print(f"    Responder rate: {resp_analysis['responder_rate']:.4f} ({resp_analysis['responder_rate']*100:.2f}%)")
+            if resp_analysis['responder_sensitivity'] is not None:
+                print(f"    Responder Sensitivity: {resp_analysis['responder_sensitivity']:.4f} ({resp_analysis['responder_sensitivity']*100:.2f}%)")
+        else:
+            print(f"\nWARNING: Parameter {param} not found in test set!")
+    
+    return {
+        'train_results': train_results,
+        'test_results': test_results,
+        'best_sensitivity_param': best_sensitivity_param[0],
+        'best_fad_param': best_fad_param[0],
+        'train_best_sensitivity': best_sensitivity_param[1],
+        'train_best_fad': best_fad_param[1],
+        'test_evaluation': test_evaluation,
+        'train_subjects': train_subjects,
+        'test_subjects': test_subjects
+    }
 
-def save_summary(results, output_file):
+def find_best_parameters_legacy(results):
     """
-    Save summary to a CSV file.
+    Legacy function for backwards compatibility - not used with train/test split.
+    """
+    pass
+
+def save_train_test_summary(train_test_results, output_file):
+    """
+    Save train/test split results to a CSV file.
     """
     summary_data = []
-    for param, metrics in results.items():
+    
+    # Add training results
+    for param, metrics in train_test_results['train_results'].items():
         resp_analysis = metrics['responder_analysis']
         summary_data.append({
+            'dataset': 'training',
+            'parameter': param,
+            'overall_sensitivity': metrics['overall_sensitivity'],
+            'overall_precision': metrics['overall_precision'],
+            'overall_fad': metrics['overall_fad'],
+            'total_correct_predictions': metrics['total_correct_predictions'],
+            'total_seizures': metrics['total_seizures'],
+            'total_false_alarms': metrics['total_false_alarms'],
+            'total_record_hours': metrics['total_record_hours'],
+            'num_subjects': metrics['num_subjects'],
+            'num_responders': resp_analysis['num_responders'],
+            'responder_rate': resp_analysis['responder_rate'],
+            'responder_sensitivity': resp_analysis['responder_sensitivity'],
+            'non_responder_sensitivity': resp_analysis['non_responder_sensitivity']
+        })
+    
+    # Add test results for selected parameters
+    for param, metrics in train_test_results['test_evaluation'].items():
+        resp_analysis = metrics['responder_analysis']
+        summary_data.append({
+            'dataset': 'test',
             'parameter': param,
             'overall_sensitivity': metrics['overall_sensitivity'],
             'overall_precision': metrics['overall_precision'],
@@ -346,9 +420,8 @@ def save_summary(results, output_file):
         })
     
     summary_df = pd.DataFrame(summary_data)
-    summary_df = summary_df.sort_values('overall_sensitivity', ascending=False)
     summary_df.to_csv(output_file, index=False)
-    print(f"\nSummary saved to: {output_file}")
+    print(f"\nTrain/Test summary saved to: {output_file}")
 
 def main():
     parser = argparse.ArgumentParser(description='Analyze Jeppesen seizure detection results')
@@ -363,17 +436,22 @@ def main():
         print(f"Error: File {args.csv_file} not found!")
         return
     
-    # Calculate metrics using actual recording durations
-    results = calculate_overall_metrics(args.csv_file, args.raw_data_path)
+    # Calculate metrics using train/test split approach
+    results = calculate_overall_metrics_with_train_test_split(args.csv_file, args.raw_data_path)
     
-    # Find best parameters
-    find_best_parameters(results)
+    if not results:
+        print("No results to analyze.")
+        return
     
     # Save summary if output file specified
     if args.output:
-        save_summary(results, args.output)
+        save_train_test_summary(results, args.output)
     
-    print(f"\nAnalysis complete! Analyzed {len(results)} different parameters.")
+    print(f"\nAnalysis complete! ")
+    print(f"Training parameters analyzed: {len(results['train_results'])}")
+    print(f"Selected parameters evaluated on test set: {len(results['test_evaluation'])}")
+    print(f"Best sensitivity parameter: {results['best_sensitivity_param']}")
+    print(f"Best FAD parameter: {results['best_fad_param']}")
 
 if __name__ == "__main__":
     main()
