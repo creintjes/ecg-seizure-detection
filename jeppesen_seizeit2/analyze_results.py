@@ -229,13 +229,28 @@ def calculate_metrics_for_dataset(df_subset, subject_durations, dataset_name):
     Returns:
     dict: Dictionary with calculated metrics for each parameter
     """
+    return calculate_metrics_for_dataset_with_output(df_subset, subject_durations, dataset_name, print)
+
+def calculate_metrics_for_dataset_with_output(df_subset, subject_durations, dataset_name, output_func):
+    """
+    Calculate metrics for a specific dataset (training or test) with custom output function.
+    
+    Parameters:
+    df_subset (DataFrame): Subset of data (training or test)
+    subject_durations (dict): Dictionary mapping subject_id to recording duration
+    dataset_name (str): Name of the dataset ("Training" or "Test")
+    output_func (function): Function to use for output (print or custom)
+    
+    Returns:
+    dict: Dictionary with calculated metrics for each parameter
+    """
     results = {}
     parameters = df_subset['parameter'].unique()
     
-    print(f"\n{dataset_name} Set Analysis:")
-    print(f"Analyzing {len(df_subset)} records from {len(df_subset['subject'].unique())} subjects")
-    print(f"Found {len(parameters)} different parameters/methods")
-    print("-" * 60)
+    output_func(f"\n{dataset_name} Set Analysis:")
+    output_func(f"Analyzing {len(df_subset)} records from {len(df_subset['subject'].unique())} subjects")
+    output_func(f"Found {len(parameters)} different parameters/methods")
+    output_func("-" * 60)
     
     for param in parameters:
         param_data = df_subset[df_subset['parameter'] == param]
@@ -284,7 +299,7 @@ def calculate_metrics_for_dataset(df_subset, subject_durations, dataset_name):
     
     return results
 
-def calculate_overall_metrics_with_train_test_split(csv_file, raw_data_path="/home/swolf/asim_shared/raw_data/ds005873-1.1.0"):
+def calculate_overall_metrics_with_train_test_split(csv_file, raw_data_path="/home/swolf/asim_shared/raw_data/ds005873-1.1.0", output_txt_file=None):
     """
     Calculate metrics using train/test split approach.
     Select best parameters on training data (sub001-sub096) and evaluate on test data (sub097-sub125).
@@ -292,10 +307,18 @@ def calculate_overall_metrics_with_train_test_split(csv_file, raw_data_path="/ho
     Parameters:
     csv_file (str): Path to the CSV file with results
     raw_data_path (str): Path to raw SeizeIT2 dataset
+    output_txt_file (str, optional): Path to save detailed analysis report as text file
     
     Returns:
     dict: Dictionary with train/test results and best parameter evaluation
     """
+    
+    # Prepare output capture
+    output_lines = []
+    def tee_print(text):
+        """Print to console and capture for file output"""
+        print(text)
+        output_lines.append(text)
     
     # Read the CSV file
     df = pd.read_csv(csv_file)
@@ -307,55 +330,55 @@ def calculate_overall_metrics_with_train_test_split(csv_file, raw_data_path="/ho
     df_train = df[df['subject'].isin(train_subjects)]
     df_test = df[df['subject'].isin(test_subjects)]
     
-    print(f"Original dataset: {len(df)} records from {len(df['subject'].unique())} subjects")
-    print(f"Training set: {len(df_train)} records from {len(train_subjects)} subjects (sub001-sub096)")
-    print(f"Test set: {len(df_test)} records from {len(test_subjects)} subjects (sub097-sub125)")
+    tee_print(f"Original dataset: {len(df)} records from {len(df['subject'].unique())} subjects")
+    tee_print(f"Training set: {len(df_train)} records from {len(train_subjects)} subjects (sub001-sub096)")
+    tee_print(f"Test set: {len(df_test)} records from {len(test_subjects)} subjects (sub097-sub125)")
     
     if len(df_train) == 0:
-        print("WARNING: No training set subjects found in the CSV file!")
+        tee_print("WARNING: No training set subjects found in the CSV file!")
         return {}
     if len(df_test) == 0:
-        print("WARNING: No test set subjects found in the CSV file!")
+        tee_print("WARNING: No test set subjects found in the CSV file!")
         return {}
     
     # Load actual recording durations from raw data
-    print("Loading recording durations from raw data...")
+    tee_print("Loading recording durations from raw data...")
     subject_durations, total_dataset_hours = load_recording_durations_from_raw_data(raw_data_path)
     
     # Phase 1: Calculate metrics on training set
-    print("\n" + "="*80)
-    print("PHASE 1: PARAMETER SELECTION ON TRAINING SET")
-    print("="*80)
+    tee_print("\n" + "="*80)
+    tee_print("PHASE 1: PARAMETER SELECTION ON TRAINING SET")
+    tee_print("="*80)
     
-    train_results = calculate_metrics_for_dataset(df_train, subject_durations, "Training")
+    train_results = calculate_metrics_for_dataset_with_output(df_train, subject_durations, "Training", tee_print)
     
     # Phase 2: Select best parameters based on training set
-    print("\n" + "="*80)
-    print("PHASE 2: BEST PARAMETER SELECTION FROM TRAINING SET")
-    print("="*80)
+    tee_print("\n" + "="*80)
+    tee_print("PHASE 2: BEST PARAMETER SELECTION FROM TRAINING SET")
+    tee_print("="*80)
     
     if not train_results:
-        print("No training results available!")
+        tee_print("No training results available!")
         return {}
     
     # Select best parameters from training set
     best_sensitivity_param = max(train_results.items(), key=lambda x: x[1]['overall_sensitivity'])
     best_fad_param = min(train_results.items(), key=lambda x: x[1]['overall_fad'])
     
-    print(f"Best Sensitivity on Training Set: {best_sensitivity_param[0]}")
-    print(f"  Training Sensitivity: {best_sensitivity_param[1]['overall_sensitivity']:.4f}")
-    print(f"  Training FAD: {best_sensitivity_param[1]['overall_fad']:.4f}")
+    tee_print(f"Best Sensitivity on Training Set: {best_sensitivity_param[0]}")
+    tee_print(f"  Training Sensitivity: {best_sensitivity_param[1]['overall_sensitivity']:.4f}")
+    tee_print(f"  Training FAD: {best_sensitivity_param[1]['overall_fad']:.4f}")
     
-    print(f"\nBest FAD on Training Set: {best_fad_param[0]}")
-    print(f"  Training FAD: {best_fad_param[1]['overall_fad']:.4f}")
-    print(f"  Training Sensitivity: {best_fad_param[1]['overall_sensitivity']:.4f}")
+    tee_print(f"\nBest FAD on Training Set: {best_fad_param[0]}")
+    tee_print(f"  Training FAD: {best_fad_param[1]['overall_fad']:.4f}")
+    tee_print(f"  Training Sensitivity: {best_fad_param[1]['overall_sensitivity']:.4f}")
     
     # Phase 3: Evaluate selected parameters on test set
-    print("\n" + "="*80)
-    print("PHASE 3: EVALUATION OF SELECTED PARAMETERS ON TEST SET")
-    print("="*80)
+    tee_print("\n" + "="*80)
+    tee_print("PHASE 3: EVALUATION OF SELECTED PARAMETERS ON TEST SET")
+    tee_print("="*80)
     
-    test_results = calculate_metrics_for_dataset(df_test, subject_durations, "Test")
+    test_results = calculate_metrics_for_dataset_with_output(df_test, subject_durations, "Test", tee_print)
     
     # Extract test performance for selected parameters
     selected_params = {best_sensitivity_param[0], best_fad_param[0]}
@@ -365,25 +388,49 @@ def calculate_overall_metrics_with_train_test_split(csv_file, raw_data_path="/ho
         if param in test_results:
             test_evaluation[param] = test_results[param]
             
-            print(f"\nTest Set Performance for {param}:")
-            print(f"  Test Sensitivity: {test_results[param]['overall_sensitivity']:.4f}")
-            print(f"  Test FAD: {test_results[param]['overall_fad']:.4f}")
+            tee_print(f"\nTest Set Performance for {param}:")
+            tee_print(f"  Test Sensitivity: {test_results[param]['overall_sensitivity']:.4f}")
+            tee_print(f"  Test FAD: {test_results[param]['overall_fad']:.4f}")
             
             resp_analysis = test_results[param]['responder_analysis']
-            print(f"  Test Responder Analysis:")
-            print(f"    Patients with seizures: {resp_analysis['total_patients_with_seizures']}")
-            print(f"    Responders (≥2/3 seizures detected): {resp_analysis['num_responders']}")
-            print(f"    Responder rate: {resp_analysis['responder_rate']:.4f} ({resp_analysis['responder_rate']*100:.2f}%)")
+            tee_print(f"  Test Responder Analysis:")
+            tee_print(f"    Patients with seizures: {resp_analysis['total_patients_with_seizures']}")
+            tee_print(f"    Responders (≥2/3 seizures detected): {resp_analysis['num_responders']}")
+            tee_print(f"    Responder rate: {resp_analysis['responder_rate']:.4f} ({resp_analysis['responder_rate']*100:.2f}%)")
             if resp_analysis['responder_sensitivity'] is not None:
-                print(f"    Responder Sensitivity: {resp_analysis['responder_sensitivity']:.4f} ({resp_analysis['responder_sensitivity']*100:.2f}%)")
+                tee_print(f"    Responder Sensitivity: {resp_analysis['responder_sensitivity']:.4f} ({resp_analysis['responder_sensitivity']*100:.2f}%)")
             if resp_analysis['responder_fad'] is not None:
-                print(f"    Responder FAD: {resp_analysis['responder_fad']:.4f}")
+                tee_print(f"    Responder FAD: {resp_analysis['responder_fad']:.4f}")
             if resp_analysis['non_responder_sensitivity'] is not None:
-                print(f"    Non-responder Sensitivity: {resp_analysis['non_responder_sensitivity']:.4f} ({resp_analysis['non_responder_sensitivity']*100:.2f}%)")
+                tee_print(f"    Non-responder Sensitivity: {resp_analysis['non_responder_sensitivity']:.4f} ({resp_analysis['non_responder_sensitivity']*100:.2f}%)")
             if resp_analysis['non_responder_fad'] is not None:
-                print(f"    Non-responder FAD: {resp_analysis['non_responder_fad']:.4f}")
+                tee_print(f"    Non-responder FAD: {resp_analysis['non_responder_fad']:.4f}")
         else:
-            print(f"\nWARNING: Parameter {param} not found in test set!")
+            tee_print(f"\nWARNING: Parameter {param} not found in test set!")
+    
+    # Save output to text file if specified
+    if output_txt_file:
+        from datetime import datetime
+        import os
+        
+        # Create output directory if it doesn't exist
+        output_dir = os.path.dirname(output_txt_file)
+        if output_dir:  # Only create directory if there is a directory path
+            os.makedirs(output_dir, exist_ok=True)
+        
+        with open(output_txt_file, 'w') as f:
+            f.write("="*80 + "\n")
+            f.write("JEPPESEN SEIZURE DETECTION ANALYSIS REPORT\n")
+            f.write("="*80 + "\n")
+            f.write(f"Generated on: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+            f.write(f"Input CSV file: {csv_file}\n")
+            f.write(f"Raw data path: {raw_data_path}\n")
+            f.write("="*80 + "\n\n")
+            
+            for line in output_lines:
+                f.write(line + "\n")
+        
+        tee_print(f"\nDetailed analysis report saved to: {output_txt_file}")
     
     return {
         'train_results': train_results,
@@ -458,9 +505,10 @@ def save_train_test_summary(train_test_results, output_file):
     print(f"\nTrain/Test summary saved to: {output_file}")
 
 def main():
-    parser = argparse.ArgumentParser(description='Analyze Jeppesen seizure detection results')
+    parser = argparse.ArgumentParser(description='Analyze Jeppesen seizure detection results with train/test split')
     parser.add_argument('csv_file', help='Path to the results CSV file')
-    parser.add_argument('--output', '-o', help='Output file for summary (optional)')
+    parser.add_argument('--output', '-o', help='Output CSV file for summary (optional)')
+    parser.add_argument('--output-txt', help='Output TXT file for detailed analysis report (optional)')
     parser.add_argument('--raw-data-path', default='/home/swolf/asim_shared/raw_data/ds005873-1.1.0',
                        help='Path to raw SeizeIT2 dataset (default: /home/swolf/asim_shared/raw_data/ds005873-1.1.0)')
     
@@ -470,22 +518,35 @@ def main():
         print(f"Error: File {args.csv_file} not found!")
         return
     
+    # Generate default output file names if not specified
+    csv_base = os.path.splitext(args.csv_file)[0]
+    
+    # Set default output files based on input filename
+    csv_output = args.output if args.output else f"{csv_base}_train_test_summary.csv"
+    txt_output = args.output_txt if args.output_txt else f"{csv_base}_analysis_report.txt"
+    
     # Calculate metrics using train/test split approach
-    results = calculate_overall_metrics_with_train_test_split(args.csv_file, args.raw_data_path)
+    results = calculate_overall_metrics_with_train_test_split(
+        args.csv_file, 
+        args.raw_data_path, 
+        output_txt_file=txt_output
+    )
     
     if not results:
         print("No results to analyze.")
         return
     
-    # Save summary if output file specified
-    if args.output:
-        save_train_test_summary(results, args.output)
+    # Save CSV summary 
+    save_train_test_summary(results, csv_output)
     
     print(f"\nAnalysis complete! ")
     print(f"Training parameters analyzed: {len(results['train_results'])}")
     print(f"Selected parameters evaluated on test set: {len(results['test_evaluation'])}")
     print(f"Best sensitivity parameter: {results['best_sensitivity_param']}")
     print(f"Best FAD parameter: {results['best_fad_param']}")
+    print(f"\nOutput files:")
+    print(f"  CSV summary: {csv_output}")
+    print(f"  TXT report: {txt_output}")
 
 if __name__ == "__main__":
     main()
