@@ -273,6 +273,78 @@ class MadridClusteredThresholdTradeoffAnalyzerTestOnly:
         
         return representative
     
+    def calculate_responder_analysis(self, patient_stats: Dict[str, Dict[str, Any]]) -> Dict[str, Any]:
+        """
+        Calculate responder analysis for patients where at least 2/3 of seizures are detected.
+        
+        Args:
+            patient_stats: Dictionary with patient-specific statistics
+            
+        Returns:
+            Dictionary with responder analysis results
+        """
+        responders = []
+        non_responders = []
+        patients_with_seizures = []
+        
+        # Analyze each patient
+        for patient_id, stats in patient_stats.items():
+            if stats['total_seizures'] > 0:
+                patients_with_seizures.append(patient_id)
+                detection_rate = stats['detected_seizures'] / stats['total_seizures']
+                fad = stats['total_false_positives'] / stats['total_duration_hours'] if stats['total_duration_hours'] > 0 else 0
+                
+                patient_info = {
+                    'patient_id': patient_id,
+                    'total_seizures': stats['total_seizures'],
+                    'detected_seizures': stats['detected_seizures'],
+                    'detection_rate': detection_rate,
+                    'total_false_positives': stats['total_false_positives'],
+                    'total_duration_hours': stats['total_duration_hours'],
+                    'false_alarms_per_hour': fad
+                }
+                
+                # Check if patient is a responder (≥2/3 seizures detected)
+                if detection_rate >= 2/3:
+                    responders.append(patient_info)
+                else:
+                    non_responders.append(patient_info)
+        
+        # Calculate aggregate responder metrics
+        total_seizures_responders = sum(p['total_seizures'] for p in responders)
+        detected_seizures_responders = sum(p['detected_seizures'] for p in responders)
+        total_false_positives_responders = sum(p['total_false_positives'] for p in responders)
+        total_duration_responders = sum(p['total_duration_hours'] for p in responders)
+        
+        responder_sensitivity = (detected_seizures_responders / total_seizures_responders 
+                                if total_seizures_responders > 0 else None)
+        responder_fad = (total_false_positives_responders / total_duration_responders 
+                        if total_duration_responders > 0 else None)
+        
+        # Calculate aggregate non-responder metrics
+        total_seizures_non_responders = sum(p['total_seizures'] for p in non_responders)
+        detected_seizures_non_responders = sum(p['detected_seizures'] for p in non_responders)
+        total_false_positives_non_responders = sum(p['total_false_positives'] for p in non_responders)
+        total_duration_non_responders = sum(p['total_duration_hours'] for p in non_responders)
+        
+        non_responder_sensitivity = (detected_seizures_non_responders / total_seizures_non_responders 
+                                    if total_seizures_non_responders > 0 else None)
+        non_responder_fad = (total_false_positives_non_responders / total_duration_non_responders 
+                            if total_duration_non_responders > 0 else None)
+        
+        return {
+            'total_patients_with_seizures': len(patients_with_seizures),
+            'num_responders': len(responders),
+            'num_non_responders': len(non_responders),
+            'responder_rate': len(responders) / len(patients_with_seizures) if patients_with_seizures else 0,
+            'responder_sensitivity': responder_sensitivity,
+            'responder_false_alarms_per_hour': responder_fad,
+            'non_responder_sensitivity': non_responder_sensitivity,
+            'non_responder_false_alarms_per_hour': non_responder_fad,
+            'responder_details': responders,
+            'non_responder_details': non_responders
+        }
+    
     def calculate_clustered_metrics_for_threshold(self, threshold: float) -> Dict[str, Any]:
         """Calculate clustered metrics for a single threshold using time_180s strategy - TEST SET ONLY."""
         print(f"Processing threshold {threshold:.6f} with time_180s clustering on test set...")
@@ -295,6 +367,9 @@ class MadridClusteredThresholdTradeoffAnalyzerTestOnly:
             'total_false_positives': 0
         }
         
+        # Patient-specific tracking for responder analysis
+        patient_stats = {}
+        
         for json_file in json_files:
             try:
                 result_data = self.load_result_file(json_file)
@@ -305,24 +380,37 @@ class MadridClusteredThresholdTradeoffAnalyzerTestOnly:
                 input_data = result_data.get('input_data', {})
                 validation_data = result_data.get('validation_data', {})
                 
+                subject_id = input_data.get('subject_id', 'unknown')
+                
+                # Initialize patient stats if not exists
+                if subject_id not in patient_stats:
+                    patient_stats[subject_id] = {
+                        'total_seizures': 0,
+                        'detected_seizures': 0,
+                        'total_false_positives': 0,
+                        'total_duration_hours': 0.0
+                    }
+                
                 # Get signal duration
                 signal_metadata = input_data.get('signal_metadata', {})
                 file_duration_hours = signal_metadata.get('total_duration_seconds', 0) / 3600.0
                 overall_stats['total_duration_hours'] += file_duration_hours
+                patient_stats[subject_id]['total_duration_hours'] += file_duration_hours
                 
                 # Get anomalies at file level (filtered by threshold)
                 all_anomalies = self.extract_file_level_anomalies(result_data, threshold)
                 overall_stats['total_anomalies_before_clustering'] += len(all_anomalies)
-                
-                if len(all_anomalies) == 0:
-                    overall_stats['files_processed'] += 1
-                    continue
                 
                 # Get seizures
                 ground_truth = validation_data.get('ground_truth', {})
                 seizure_windows = ground_truth.get('seizure_windows', [])
                 individual_seizures = self.group_seizures_by_time(seizure_windows)
                 overall_stats['total_seizures'] += len(individual_seizures)
+                patient_stats[subject_id]['total_seizures'] += len(individual_seizures)
+                
+                if len(all_anomalies) == 0:
+                    overall_stats['files_processed'] += 1
+                    continue
                 
                 # Apply time_180s clustering
                 clusters = self.time_based_clustering(all_anomalies, self.clustering_time_threshold)
@@ -355,6 +443,10 @@ class MadridClusteredThresholdTradeoffAnalyzerTestOnly:
                 overall_stats['total_false_positives'] += file_false_positives
                 overall_stats['files_processed'] += 1
                 
+                # Update patient-specific stats
+                patient_stats[subject_id]['detected_seizures'] += len(file_detected_seizures)
+                patient_stats[subject_id]['total_false_positives'] += file_false_positives
+                
             except Exception as e:
                 print(f"Error processing {json_file}: {e}")
                 continue
@@ -369,6 +461,9 @@ class MadridClusteredThresholdTradeoffAnalyzerTestOnly:
             false_alarms_per_hour = overall_stats['total_false_positives'] / overall_stats['total_duration_hours']
         else:
             false_alarms_per_hour = 0.0
+        
+        # Calculate responder analysis
+        responder_analysis = self.calculate_responder_analysis(patient_stats)
         
         return {
             'threshold': threshold,
@@ -386,7 +481,8 @@ class MadridClusteredThresholdTradeoffAnalyzerTestOnly:
             'files_skipped': overall_stats['files_skipped'],
             'total_duration_hours': overall_stats['total_duration_hours'],
             'anomaly_reduction': ((overall_stats['total_anomalies_before_clustering'] - overall_stats['total_anomalies_after_clustering']) / 
-                                overall_stats['total_anomalies_before_clustering'] if overall_stats['total_anomalies_before_clustering'] > 0 else 0)
+                                overall_stats['total_anomalies_before_clustering'] if overall_stats['total_anomalies_before_clustering'] > 0 else 0),
+            'responder_analysis': responder_analysis
         }
     
     def run_threshold_analysis(self, thresholds: List[float]) -> List[Dict[str, Any]]:
@@ -521,7 +617,8 @@ class MadridClusteredThresholdTradeoffAnalyzerTestOnly:
                     'total_true_positives': best_sensitivity_config['total_true_positives'],
                     'total_false_positives': best_sensitivity_config['total_false_positives'],
                     'total_seizures': best_sensitivity_config['total_seizures'],
-                    'detected_seizures': best_sensitivity_config['detected_seizures']
+                    'detected_seizures': best_sensitivity_config['detected_seizures'],
+                    'responder_analysis': best_sensitivity_config.get('responder_analysis', {})
                 }
             
             if best_fad_config:
@@ -533,7 +630,8 @@ class MadridClusteredThresholdTradeoffAnalyzerTestOnly:
                     'total_true_positives': best_fad_config['total_true_positives'],
                     'total_false_positives': best_fad_config['total_false_positives'],
                     'total_seizures': best_fad_config['total_seizures'],
-                    'detected_seizures': best_fad_config['detected_seizures']
+                    'detected_seizures': best_fad_config['detected_seizures'],
+                    'responder_analysis': best_fad_config.get('responder_analysis', {})
                 }
             
             json_data['results'] = results
@@ -544,9 +642,10 @@ class MadridClusteredThresholdTradeoffAnalyzerTestOnly:
         # Save CSV for easy analysis
         csv_path = self.output_dir / f"{output_filename}_results.csv"
         with open(csv_path, 'w') as f:
-            f.write("threshold,clustering_strategy,dataset,sensitivity,false_alarms_per_hour,total_detections_before_clustering,total_detections_after_clustering,total_true_positives,total_false_positives,total_seizures,detected_seizures,files_processed,files_skipped,total_duration_hours,anomaly_reduction\n")
+            f.write("threshold,clustering_strategy,dataset,sensitivity,false_alarms_per_hour,total_detections_before_clustering,total_detections_after_clustering,total_true_positives,total_false_positives,total_seizures,detected_seizures,files_processed,files_skipped,total_duration_hours,anomaly_reduction,num_responders,responder_rate,responder_sensitivity,responder_fad,non_responder_sensitivity,non_responder_fad\n")
             for r in results:
-                f.write(f"{r['threshold']},{r['clustering_strategy']},{r['dataset']},{r['sensitivity']},{r['false_alarms_per_hour']},{r['total_detections_before_clustering']},{r['total_detections_after_clustering']},{r['total_true_positives']},{r['total_false_positives']},{r['total_seizures']},{r['detected_seizures']},{r['files_processed']},{r['files_skipped']},{r['total_duration_hours']},{r['anomaly_reduction']}\n")
+                resp_analysis = r.get('responder_analysis', {})
+                f.write(f"{r['threshold']},{r['clustering_strategy']},{r['dataset']},{r['sensitivity']},{r['false_alarms_per_hour']},{r['total_detections_before_clustering']},{r['total_detections_after_clustering']},{r['total_true_positives']},{r['total_false_positives']},{r['total_seizures']},{r['detected_seizures']},{r['files_processed']},{r['files_skipped']},{r['total_duration_hours']},{r['anomaly_reduction']},{resp_analysis.get('num_responders', 0)},{resp_analysis.get('responder_rate', 0)},{resp_analysis.get('responder_sensitivity', '')},{resp_analysis.get('responder_false_alarms_per_hour', '')},{resp_analysis.get('non_responder_sensitivity', '')},{resp_analysis.get('non_responder_false_alarms_per_hour', '')}\n")
         print(f"CSV results saved to: {csv_path}")
     
     def run_full_analysis(self, num_thresholds: int = 50):
