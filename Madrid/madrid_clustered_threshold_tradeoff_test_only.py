@@ -581,6 +581,7 @@ class MadridClusteredThresholdTradeoffAnalyzerTestOnly:
         # Calculate best performing configurations
         best_sensitivity_config = None
         best_fad_config = None
+        best_challenge_score_config = None
         
         if results:
             # Find configuration with highest sensitivity
@@ -590,6 +591,20 @@ class MadridClusteredThresholdTradeoffAnalyzerTestOnly:
             valid_results = [r for r in results if r['sensitivity'] is not None and r['sensitivity'] > 0]
             if valid_results:
                 best_fad_config = min(valid_results, key=lambda x: x['false_alarms_per_hour'])
+            
+            # Calculate Challenge Score for each result and find best
+            # Challenge Score = Sensitivity (%) - 0.4 * False Alarms per Hour
+            for r in results:
+                if r['sensitivity'] is not None:
+                    challenge_score = (r['sensitivity'] * 100) - (0.4 * r['false_alarms_per_hour'])
+                    r['challenge_score'] = challenge_score
+                else:
+                    r['challenge_score'] = None
+            
+            # Find configuration with highest challenge score
+            challenge_results = [r for r in results if r['challenge_score'] is not None]
+            if challenge_results:
+                best_challenge_score_config = max(challenge_results, key=lambda x: x['challenge_score'])
         
         # Save JSON results
         json_path = self.output_dir / f"{output_filename}_results.json"
@@ -613,6 +628,7 @@ class MadridClusteredThresholdTradeoffAnalyzerTestOnly:
                     'threshold': best_sensitivity_config['threshold'],
                     'sensitivity': best_sensitivity_config['sensitivity'],
                     'false_alarms_per_hour': best_sensitivity_config['false_alarms_per_hour'],
+                    'challenge_score': best_sensitivity_config.get('challenge_score'),
                     'anomaly_reduction': best_sensitivity_config['anomaly_reduction'],
                     'total_true_positives': best_sensitivity_config['total_true_positives'],
                     'total_false_positives': best_sensitivity_config['total_false_positives'],
@@ -631,7 +647,22 @@ class MadridClusteredThresholdTradeoffAnalyzerTestOnly:
                     'total_false_positives': best_fad_config['total_false_positives'],
                     'total_seizures': best_fad_config['total_seizures'],
                     'detected_seizures': best_fad_config['detected_seizures'],
+                    'challenge_score': best_fad_config.get('challenge_score'),
                     'responder_analysis': best_fad_config.get('responder_analysis', {})
+                }
+            
+            if best_challenge_score_config:
+                json_data['best_challenge_score'] = {
+                    'threshold': best_challenge_score_config['threshold'],
+                    'sensitivity': best_challenge_score_config['sensitivity'],
+                    'false_alarms_per_hour': best_challenge_score_config['false_alarms_per_hour'],
+                    'challenge_score': best_challenge_score_config['challenge_score'],
+                    'anomaly_reduction': best_challenge_score_config['anomaly_reduction'],
+                    'total_true_positives': best_challenge_score_config['total_true_positives'],
+                    'total_false_positives': best_challenge_score_config['total_false_positives'],
+                    'total_seizures': best_challenge_score_config['total_seizures'],
+                    'detected_seizures': best_challenge_score_config['detected_seizures'],
+                    'responder_analysis': best_challenge_score_config.get('responder_analysis', {})
                 }
             
             json_data['results'] = results
@@ -642,10 +673,11 @@ class MadridClusteredThresholdTradeoffAnalyzerTestOnly:
         # Save CSV for easy analysis
         csv_path = self.output_dir / f"{output_filename}_results.csv"
         with open(csv_path, 'w') as f:
-            f.write("threshold,clustering_strategy,dataset,sensitivity,false_alarms_per_hour,total_detections_before_clustering,total_detections_after_clustering,total_true_positives,total_false_positives,total_seizures,detected_seizures,files_processed,files_skipped,total_duration_hours,anomaly_reduction,num_responders,responder_rate,responder_sensitivity,responder_fad,non_responder_sensitivity,non_responder_fad\n")
+            f.write("threshold,clustering_strategy,dataset,sensitivity,false_alarms_per_hour,challenge_score,total_detections_before_clustering,total_detections_after_clustering,total_true_positives,total_false_positives,total_seizures,detected_seizures,files_processed,files_skipped,total_duration_hours,anomaly_reduction,num_responders,responder_rate,responder_sensitivity,responder_fad,non_responder_sensitivity,non_responder_fad\n")
             for r in results:
                 resp_analysis = r.get('responder_analysis', {})
-                f.write(f"{r['threshold']},{r['clustering_strategy']},{r['dataset']},{r['sensitivity']},{r['false_alarms_per_hour']},{r['total_detections_before_clustering']},{r['total_detections_after_clustering']},{r['total_true_positives']},{r['total_false_positives']},{r['total_seizures']},{r['detected_seizures']},{r['files_processed']},{r['files_skipped']},{r['total_duration_hours']},{r['anomaly_reduction']},{resp_analysis.get('num_responders', 0)},{resp_analysis.get('responder_rate', 0)},{resp_analysis.get('responder_sensitivity', '')},{resp_analysis.get('responder_false_alarms_per_hour', '')},{resp_analysis.get('non_responder_sensitivity', '')},{resp_analysis.get('non_responder_false_alarms_per_hour', '')}\n")
+                challenge_score = r.get('challenge_score', '')
+                f.write(f"{r['threshold']},{r['clustering_strategy']},{r['dataset']},{r['sensitivity']},{r['false_alarms_per_hour']},{challenge_score},{r['total_detections_before_clustering']},{r['total_detections_after_clustering']},{r['total_true_positives']},{r['total_false_positives']},{r['total_seizures']},{r['detected_seizures']},{r['files_processed']},{r['files_skipped']},{r['total_duration_hours']},{r['anomaly_reduction']},{resp_analysis.get('num_responders', 0)},{resp_analysis.get('responder_rate', 0)},{resp_analysis.get('responder_sensitivity', '')},{resp_analysis.get('responder_false_alarms_per_hour', '')},{resp_analysis.get('non_responder_sensitivity', '')},{resp_analysis.get('non_responder_false_alarms_per_hour', '')}\n")
         print(f"CSV results saved to: {csv_path}")
     
     def run_full_analysis(self, num_thresholds: int = 50):
