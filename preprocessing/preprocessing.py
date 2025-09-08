@@ -8,7 +8,9 @@ from pathlib import Path
 
 import sys
 import os
-sys.path.append(os.path.join(os.path.dirname(__file__), 'Information', 'Data', 'seizeit2_main'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'Information', 'Data', 'seizeit2_main'))
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))  # Add project root
+from config import RAW_DATA_PATH
 
 from classes.data import Data
 from classes.annotation import Annotation

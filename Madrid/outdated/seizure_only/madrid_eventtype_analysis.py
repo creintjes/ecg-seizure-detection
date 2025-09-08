@@ -24,6 +24,10 @@ from collections import defaultdict
 project_root = Path(__file__).parent.parent
 sys.path.append(str(project_root))
 
+# Import global configuration
+sys.path.append(str(project_root.parent))
+from config import RAW_DATA_PATH
+
 from Information.Data.seizeit2_main.classes.annotation import Annotation
 
 class MadridEventTypeAnalyzer:
@@ -780,7 +784,7 @@ def main():
     """Main execution function."""
     # Configuration - Use clustered results directory
     madrid_results_dir = "Madrid/madrid_results copy/tolerance_adjusted_smart_clustered"
-    seizeit2_data_path = "/home/swolf/asim_shared/raw_data/ds005873-1.1.0"  
+    seizeit2_data_path = RAW_DATA_PATH  
     output_dir = "Madrid/madrid_eventtype_analysis"
     
     # Initialize analyzer

@@ -3,12 +3,17 @@
 Script to preprocess ALL ECG data from the SeizeIT2 dataset.
 """
 
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))  # Add preprocessing directory
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))  # Add project root for config
+
 from preprocessing import ECGPreprocessor
 from pathlib import Path
-import os
 import time
 import pandas as pd
 import csv
+from config import RAW_DATA_PATH
 
 
 def discover_all_recordings(data_path):
@@ -67,7 +72,7 @@ def main():
     )
     
     # Set data path
-    data_path = "/home/swolf/asim_shared/raw_data/ds005873-1.1.0" 
+    data_path = RAW_DATA_PATH 
     
     if not Path(data_path).exists():
         print(f"Error: Data path {data_path} does not exist!")

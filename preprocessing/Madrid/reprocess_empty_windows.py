@@ -11,13 +11,13 @@ from pathlib import Path
 from typing import List, Tuple, Dict, Any
 import numpy as np
 import warnings
+from config import RAW_DATA_PATH
 
-# Add current directory to Python path
-sys.path.append(os.path.join(os.path.dirname(__file__)))
+# Add paths for imports
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))  # Add preprocessing directory
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', 'Information', 'Data', 'seizeit2_main'))  # Add seizeit2 classes
 
 from preprocessing import ECGPreprocessor
-sys.path.append(os.path.join(os.path.dirname(__file__), 'Information', 'Data', 'seizeit2_main'))
-
 from classes.data import Data
 from classes.annotation import Annotation
 
@@ -368,7 +368,7 @@ def main():
                        default='/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new',
                        help='Directory containing preprocessed files with 0 windows')
     parser.add_argument('--original-data-dir', 
-                       default='/home/swolf/asim_shared/raw_data/ds005873-1.1.0',
+                       default=RAW_DATA_PATH,
                        help='Directory containing original SeizeIT2 data')
     parser.add_argument('--output-dir',
                        default='/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new_flexible',
