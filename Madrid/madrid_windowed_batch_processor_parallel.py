@@ -12,8 +12,7 @@ Usage:
     python madrid_windowed_batch_processor_parallel.py --data-dir /path/to/windowed/data --output-dir results --n-workers 4
     python madrid_windowed_batch_processor_parallel.py --data-dir /path/to/windowed/data --window-strategy reconstruct --train-minutes 10
 python madrid_windowed_batch_processor_parallel.py --data-dir /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new --existing-result
-s-dir results_8hz_window3600_stride1800_new20min --output-dir results_8hz_window3600_stride1800_new20min --n-workers 20 --tr
-ain-minutes 20
+s-dir results_8hz_window3600_stride1800_new20min --output-dir results_8hz_window3600_stride1800_new20min --n-workers 20 --train-minutes 20
 Key Features:
     - Handles windowed preprocessed data with overlaps
     - Multiple window processing strategies (individual, reconstruct, hybrid)
