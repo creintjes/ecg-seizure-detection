@@ -223,7 +223,7 @@ def main():
     # Create output directory
     results_path = Path(
         PREPROCESSED_DATA_PATH
-    ) / "downsample_freq=8,window_size=3600_0,stride=1800_0_new"
+    ) / "downsample_freq=8,window_size=3600_0,stride=1800_0_reproduced"
     results_path.mkdir(parents=True, exist_ok=True)
     
     # Process in batches to avoid memory issues

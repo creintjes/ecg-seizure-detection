@@ -44,3 +44,7 @@ jeppesen_seizeit2_threshold_reduced/example_data
 Madrid/trade_off_FAR_vs_Sens
 Madrid/clustering_withSDW
 Madrid/clustering_withoutSDW
+venv_reproduce
+madrid_windowed_batch_processor_parallel.log
+reprocess_empty_windows.log
+results_8hz_window3600_stride1800_new20min_reproduced
