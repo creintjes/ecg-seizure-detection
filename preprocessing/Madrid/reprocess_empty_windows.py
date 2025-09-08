@@ -13,12 +13,11 @@ import numpy as np
 import warnings
 from config import RAW_DATA_PATH
 
-# Add current directory to Python path
-sys.path.append(os.path.join(os.path.dirname(__file__)))
+# Add paths for imports
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))  # Add preprocessing directory
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', 'Information', 'Data', 'seizeit2_main'))  # Add seizeit2 classes
 
 from preprocessing import ECGPreprocessor
-sys.path.append(os.path.join(os.path.dirname(__file__), 'Information', 'Data', 'seizeit2_main'))
-
 from classes.data import Data
 from classes.annotation import Annotation
 
