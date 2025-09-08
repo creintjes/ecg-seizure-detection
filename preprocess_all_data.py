@@ -11,6 +11,7 @@ import pandas as pd
 import csv
 import numpy as np
 import sys
+from config import RAW_DATA_PATH
 
 # Add seizeit2 data classes to path
 sys.path.append(os.path.join(os.path.dirname(__file__), 'Information', 'Data', 'seizeit2_main'))
@@ -200,7 +201,7 @@ def main():
     )
     
     # Set data path
-    data_path = "/home/swolf/asim_shared/raw_data/ds005873-1.1.0" 
+    data_path = RAW_DATA_PATH 
     
     if not Path(data_path).exists():
         print(f"Error: Data path {data_path} does not exist!")
