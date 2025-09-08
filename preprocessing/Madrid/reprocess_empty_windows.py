@@ -11,11 +11,11 @@ from pathlib import Path
 from typing import List, Tuple, Dict, Any
 import numpy as np
 import warnings
-from config import RAW_DATA_PATH
-
-# Add paths for imports
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))  # Add preprocessing directory
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))  # Add project root for config
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', 'Information', 'Data', 'seizeit2_main'))  # Add seizeit2 classes
+
+from config import RAW_DATA_PATH
 
 from preprocessing import ECGPreprocessor
 from classes.data import Data
