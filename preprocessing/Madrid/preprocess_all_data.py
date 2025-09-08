@@ -15,7 +15,7 @@ import time
 import pandas as pd
 import csv
 import numpy as np
-from config import RAW_DATA_PATH
+from config import RAW_DATA_PATH, PREPROCESSED_DATA_PATH
 
 from classes.data import Data
 from classes.annotation import Annotation
@@ -222,9 +222,8 @@ def main():
     
     # Create output directory
     results_path = Path(
-        "/home/swolf/asim_shared/preprocessed_data/"
-        "downsample_freq=8,window_size=3600_0,stride=1800_0_new"
-    )
+        PREPROCESSED_DATA_PATH
+    ) / "downsample_freq=8,window_size=3600_0,stride=1800_0_new"
     results_path.mkdir(parents=True, exist_ok=True)
     
     # Process in batches to avoid memory issues
