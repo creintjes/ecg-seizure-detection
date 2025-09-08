@@ -1,7 +1,7 @@
 {
   "analysis_metadata": {
     "analysis_type": "threshold_tradeoff_clustered_time_600s_test_only",
-    "timestamp": "20250904_134101",
+    "timestamp": "20250905_092656",
     "results_directory": "Madrid/results_8hz_window3600_stride1800_new20min",
     "dataset": "TEST_SET_ONLY (sub097-sub125)",
     "num_thresholds_tested": 100,
@@ -13,6 +13,7 @@
     "threshold": 0.5946337479311353,
     "sensitivity": 0.16129032258064516,
     "false_alarms_per_hour": 1.6661146208657152,
+    "challenge_score": 15.46258640971823,
     "anomaly_reduction": 0.9664909282623714,
     "total_true_positives": 25,
     "total_false_positives": 4583,
@@ -289,6 +290,7 @@
     "threshold": 0.6653743287690177,
     "sensitivity": 0.01935483870967742,
     "false_alarms_per_hour": 0.10324602930959265,
+    "challenge_score": 1.894185459243905,
     "anomaly_reduction": 0.8384918401800788,
     "total_true_positives": 3,
     "total_false_positives": 284,
@@ -556,6 +558,283 @@
           "total_false_positives": 2,
           "total_duration_hours": 111.5297222222222,
           "false_alarms_per_hour": 0.01793243953405545
+        }
+      ]
+    }
+  },
+  "best_challenge_score": {
+    "threshold": 0.6140808210976424,
+    "sensitivity": 0.16129032258064516,
+    "false_alarms_per_hour": 1.5850446753162815,
+    "challenge_score": 15.495014387938003,
+    "anomaly_reduction": 0.9589469446602942,
+    "total_true_positives": 25,
+    "total_false_positives": 4360,
+    "total_seizures": 155,
+    "detected_seizures": 25,
+    "responder_analysis": {
+      "total_patients_with_seizures": 28,
+      "num_responders": 4,
+      "num_non_responders": 24,
+      "responder_rate": 0.14285714285714285,
+      "responder_sensitivity": 0.8333333333333334,
+      "responder_false_alarms_per_hour": 1.6472681958531374,
+      "non_responder_sensitivity": 0.1048951048951049,
+      "non_responder_false_alarms_per_hour": 1.567962413383282,
+      "responder_details": [
+        {
+          "patient_id": "sub-116",
+          "total_seizures": 6,
+          "detected_seizures": 5,
+          "detection_rate": 0.8333333333333334,
+          "total_false_positives": 150,
+          "total_duration_hours": 99.87777777777777,
+          "false_alarms_per_hour": 1.5018355768161087
+        },
+        {
+          "patient_id": "sub-115",
+          "total_seizures": 4,
+          "detected_seizures": 3,
+          "detection_rate": 0.75,
+          "total_false_positives": 430,
+          "total_duration_hours": 271.3869444444444,
+          "false_alarms_per_hour": 1.5844535221849085
+        },
+        {
+          "patient_id": "sub-107",
+          "total_seizures": 1,
+          "detected_seizures": 1,
+          "detection_rate": 1.0,
+          "total_false_positives": 190,
+          "total_duration_hours": 105.695,
+          "false_alarms_per_hour": 1.7976252424428782
+        },
+        {
+          "patient_id": "sub-098",
+          "total_seizures": 1,
+          "detected_seizures": 1,
+          "detection_rate": 1.0,
+          "total_false_positives": 206,
+          "total_duration_hours": 115.5363888888889,
+          "false_alarms_per_hour": 1.7829880436899388
+        }
+      ],
+      "non_responder_details": [
+        {
+          "patient_id": "sub-123",
+          "total_seizures": 2,
+          "detected_seizures": 0,
+          "detection_rate": 0.0,
+          "total_false_positives": 94,
+          "total_duration_hours": 82.70916666666668,
+          "false_alarms_per_hour": 1.1365124784636929
+        },
+        {
+          "patient_id": "sub-124",
+          "total_seizures": 1,
+          "detected_seizures": 0,
+          "detection_rate": 0.0,
+          "total_false_positives": 91,
+          "total_duration_hours": 66.00611111111112,
+          "false_alarms_per_hour": 1.3786602250633355
+        },
+        {
+          "patient_id": "sub-109",
+          "total_seizures": 37,
+          "detected_seizures": 2,
+          "detection_rate": 0.05405405405405406,
+          "total_false_positives": 204,
+          "total_duration_hours": 114.15861111111111,
+          "false_alarms_per_hour": 1.7869874030041049
+        },
+        {
+          "patient_id": "sub-121",
+          "total_seizures": 4,
+          "detected_seizures": 0,
+          "detection_rate": 0.0,
+          "total_false_positives": 149,
+          "total_duration_hours": 103.69055555555553,
+          "false_alarms_per_hour": 1.436967901287485
+        },
+        {
+          "patient_id": "sub-102",
+          "total_seizures": 3,
+          "detected_seizures": 0,
+          "detection_rate": 0.0,
+          "total_false_positives": 220,
+          "total_duration_hours": 115.44361111111112,
+          "false_alarms_per_hour": 1.9056922932552447
+        },
+        {
+          "patient_id": "sub-122",
+          "total_seizures": 4,
+          "detected_seizures": 2,
+          "detection_rate": 0.5,
+          "total_false_positives": 90,
+          "total_duration_hours": 66.54888888888888,
+          "false_alarms_per_hour": 1.3523892209570243
+        },
+        {
+          "patient_id": "sub-118",
+          "total_seizures": 1,
+          "detected_seizures": 0,
+          "detection_rate": 0.0,
+          "total_false_positives": 146,
+          "total_duration_hours": 124.61416666666668,
+          "false_alarms_per_hour": 1.1716163892548332
+        },
+        {
+          "patient_id": "sub-100",
+          "total_seizures": 2,
+          "detected_seizures": 1,
+          "detection_rate": 0.5,
+          "total_false_positives": 139,
+          "total_duration_hours": 111.46694444444445,
+          "false_alarms_per_hour": 1.247006461806066
+        },
+        {
+          "patient_id": "sub-125",
+          "total_seizures": 2,
+          "detected_seizures": 1,
+          "detection_rate": 0.5,
+          "total_false_positives": 113,
+          "total_duration_hours": 77.47999999999998,
+          "false_alarms_per_hour": 1.4584408879710897
+        },
+        {
+          "patient_id": "sub-104",
+          "total_seizures": 2,
+          "detected_seizures": 0,
+          "detection_rate": 0.0,
+          "total_false_positives": 168,
+          "total_duration_hours": 98.16999999999999,
+          "false_alarms_per_hour": 1.7113171029846188
+        },
+        {
+          "patient_id": "sub-110",
+          "total_seizures": 2,
+          "detected_seizures": 1,
+          "detection_rate": 0.5,
+          "total_false_positives": 177,
+          "total_duration_hours": 99.0011111111111,
+          "false_alarms_per_hour": 1.787858722124331
+        },
+        {
+          "patient_id": "sub-106",
+          "total_seizures": 2,
+          "detected_seizures": 0,
+          "detection_rate": 0.0,
+          "total_false_positives": 179,
+          "total_duration_hours": 99.19361111111111,
+          "false_alarms_per_hour": 1.80455170443885
+        },
+        {
+          "patient_id": "sub-114",
+          "total_seizures": 3,
+          "detected_seizures": 0,
+          "detection_rate": 0.0,
+          "total_false_positives": 114,
+          "total_duration_hours": 75.93972222222223,
+          "false_alarms_per_hour": 1.501190637311025
+        },
+        {
+          "patient_id": "sub-117",
+          "total_seizures": 9,
+          "detected_seizures": 2,
+          "detection_rate": 0.2222222222222222,
+          "total_false_positives": 139,
+          "total_duration_hours": 88.36888888888889,
+          "false_alarms_per_hour": 1.572951767841875
+        },
+        {
+          "patient_id": "sub-119",
+          "total_seizures": 14,
+          "detected_seizures": 1,
+          "detection_rate": 0.07142857142857142,
+          "total_false_positives": 289,
+          "total_duration_hours": 187.37694444444443,
+          "false_alarms_per_hour": 1.5423455690178889
+        },
+        {
+          "patient_id": "sub-112",
+          "total_seizures": 7,
+          "detected_seizures": 3,
+          "detection_rate": 0.42857142857142855,
+          "total_false_positives": 95,
+          "total_duration_hours": 66.69361111111112,
+          "false_alarms_per_hour": 1.4244242951806976
+        },
+        {
+          "patient_id": "sub-103",
+          "total_seizures": 15,
+          "detected_seizures": 0,
+          "detection_rate": 0.0,
+          "total_false_positives": 149,
+          "total_duration_hours": 89.59583333333333,
+          "false_alarms_per_hour": 1.663023764125936
+        },
+        {
+          "patient_id": "sub-120",
+          "total_seizures": 10,
+          "detected_seizures": 0,
+          "detection_rate": 0.0,
+          "total_false_positives": 5,
+          "total_duration_hours": 2.5025,
+          "false_alarms_per_hour": 1.998001998001998
+        },
+        {
+          "patient_id": "sub-101",
+          "total_seizures": 5,
+          "detected_seizures": 0,
+          "detection_rate": 0.0,
+          "total_false_positives": 113,
+          "total_duration_hours": 74.25333333333333,
+          "false_alarms_per_hour": 1.521817202370264
+        },
+        {
+          "patient_id": "sub-099",
+          "total_seizures": 2,
+          "detected_seizures": 0,
+          "detection_rate": 0.0,
+          "total_false_positives": 190,
+          "total_duration_hours": 112.94527777777779,
+          "false_alarms_per_hour": 1.6822305787217504
+        },
+        {
+          "patient_id": "sub-111",
+          "total_seizures": 2,
+          "detected_seizures": 1,
+          "detection_rate": 0.5,
+          "total_false_positives": 115,
+          "total_duration_hours": 74.53805555555556,
+          "false_alarms_per_hour": 1.5428360606252585
+        },
+        {
+          "patient_id": "sub-108",
+          "total_seizures": 2,
+          "detected_seizures": 0,
+          "detection_rate": 0.0,
+          "total_false_positives": 36,
+          "total_duration_hours": 20.76388888888889,
+          "false_alarms_per_hour": 1.7337792642140468
+        },
+        {
+          "patient_id": "sub-113",
+          "total_seizures": 10,
+          "detected_seizures": 1,
+          "detection_rate": 0.1,
+          "total_false_positives": 160,
+          "total_duration_hours": 95.22444444444446,
+          "false_alarms_per_hour": 1.6802408345196143
+        },
+        {
+          "patient_id": "sub-105",
+          "total_seizures": 2,
+          "detected_seizures": 0,
+          "detection_rate": 0.0,
+          "total_false_positives": 209,
+          "total_duration_hours": 111.5297222222222,
+          "false_alarms_per_hour": 1.8739399313087943
         }
       ]
     }
@@ -842,7 +1121,8 @@
             "false_alarms_per_hour": 1.7753115138714894
           }
         ]
-      }
+      },
+      "challenge_score": 14.805646347037795
     },
     {
       "threshold": 0.5401949908227224,
@@ -1125,7 +1405,8 @@
             "false_alarms_per_hour": 1.7753115138714894
           }
         ]
-      }
+      },
+      "challenge_score": 14.805210096209727
     },
     {
       "threshold": 0.5537817444986123,
@@ -1408,7 +1689,8 @@
             "false_alarms_per_hour": 1.7842777336385172
           }
         ]
-      }
+      },
+      "challenge_score": 14.805064679267037
     },
     {
       "threshold": 0.561452984809526,
@@ -1691,7 +1973,8 @@
             "false_alarms_per_hour": 1.7932439534055449
           }
         ]
-      }
+      },
+      "challenge_score": 14.80361050984014
     },
     {
       "threshold": 0.5676034311303946,
@@ -1974,7 +2257,8 @@
             "false_alarms_per_hour": 1.7932439534055449
           }
         ]
-      }
+      },
+      "challenge_score": 14.804337594553589
     },
     {
       "threshold": 0.5722533647828248,
@@ -2257,7 +2541,8 @@
             "false_alarms_per_hour": 1.7753115138714894
           }
         ]
-      }
+      },
+      "challenge_score": 14.805210096209727
     },
     {
       "threshold": 0.575855403788717,
@@ -2540,7 +2825,8 @@
             "false_alarms_per_hour": 1.7753115138714894
           }
         ]
-      }
+      },
+      "challenge_score": 14.806664265636622
     },
     {
       "threshold": 0.5792772053845355,
@@ -2823,7 +3109,8 @@
             "false_alarms_per_hour": 1.757379074337434
           }
         ]
-      }
+      },
+      "challenge_score": 14.808263852006206
     },
     {
       "threshold": 0.5822968507814309,
@@ -3106,7 +3393,8 @@
             "false_alarms_per_hour": 1.7663452941044617
           }
         ]
-      }
+      },
+      "challenge_score": 14.808263852006206
     },
     {
       "threshold": 0.5849571112830396,
@@ -3389,7 +3677,8 @@
             "false_alarms_per_hour": 1.7663452941044617
           }
         ]
-      }
+      },
+      "challenge_score": 14.81029968920386
     },
     {
       "threshold": 0.587338775282254,
@@ -3672,7 +3961,8 @@
             "false_alarms_per_hour": 1.7663452941044617
           }
         ]
-      }
+      },
+      "challenge_score": 14.81015427226117
     },
     {
       "threshold": 0.5894444518139048,
@@ -3955,7 +4245,8 @@
             "false_alarms_per_hour": 1.7753115138714894
           }
         ]
-      }
+      },
+      "challenge_score": 14.812190109458825
     },
     {
       "threshold": 0.5913890011470485,
@@ -4238,7 +4529,8 @@
             "false_alarms_per_hour": 1.7842777336385172
           }
         ]
-      }
+      },
+      "challenge_score": 14.813062611114963
     },
     {
       "threshold": 0.59308421055644,
@@ -4521,7 +4813,8 @@
             "false_alarms_per_hour": 1.7842777336385172
           }
         ]
-      }
+      },
+      "challenge_score": 14.815534699140686
     },
     {
       "threshold": 0.5946337479311353,
@@ -4804,7 +5097,8 @@
             "false_alarms_per_hour": 1.7842777336385172
           }
         ]
-      }
+      },
+      "challenge_score": 15.46258640971823
     },
     {
       "threshold": 0.5962346491550691,
@@ -5087,7 +5381,8 @@
             "false_alarms_per_hour": 1.8022101731725726
           }
         ]
-      }
+      },
+      "challenge_score": 15.464185996087815
     },
     {
       "threshold": 0.597703342640024,
@@ -5370,7 +5665,8 @@
             "false_alarms_per_hour": 1.8022101731725726
           }
         ]
-      }
+      },
+      "challenge_score": 15.464476829973194
     },
     {
       "threshold": 0.5989795334287661,
@@ -5653,7 +5949,8 @@
             "false_alarms_per_hour": 1.8111763929396003
           }
         ]
-      }
+      },
+      "challenge_score": 15.464913080801264
     },
     {
       "threshold": 0.600247479263208,
@@ -5936,7 +6233,8 @@
             "false_alarms_per_hour": 1.820142612706628
           }
         ]
-      }
+      },
+      "challenge_score": 14.819897207421372
     },
     {
       "threshold": 0.6013956580508111,
@@ -6219,7 +6517,8 @@
             "false_alarms_per_hour": 1.8111763929396003
           }
         ]
-      }
+      },
+      "challenge_score": 14.82106054296289
     },
     {
       "threshold": 0.6026149924275248,
@@ -6502,7 +6801,8 @@
             "false_alarms_per_hour": 1.820142612706628
           }
         ]
-      }
+      },
+      "challenge_score": 15.467966836597745
     },
     {
       "threshold": 0.6037555702680735,
@@ -6785,7 +7085,8 @@
             "false_alarms_per_hour": 1.820142612706628
           }
         ]
-      }
+      },
+      "challenge_score": 14.825132217358197
     },
     {
       "threshold": 0.6047913127719866,
@@ -7068,7 +7369,8 @@
             "false_alarms_per_hour": 1.8111763929396003
           }
         ]
-      }
+      },
+      "challenge_score": 14.182297598118648
     },
     {
       "threshold": 0.605816859727016,
@@ -7351,7 +7653,8 @@
             "false_alarms_per_hour": 1.8111763929396003
           }
         ]
-      }
+      },
+      "challenge_score": 14.183606350602854
     },
     {
       "threshold": 0.6067434366984674,
@@ -7634,7 +7937,8 @@
             "false_alarms_per_hour": 1.8111763929396003
           }
         ]
-      }
+      },
+      "challenge_score": 14.186514689456645
     },
     {
       "threshold": 0.6076357137289373,
@@ -7917,7 +8221,8 @@
             "false_alarms_per_hour": 1.8291088324736557
           }
         ]
-      }
+      },
+      "challenge_score": 14.83400265086226
     },
     {
       "threshold": 0.6084877357860785,
@@ -8200,7 +8505,8 @@
             "false_alarms_per_hour": 1.820142612706628
           }
         ]
-      }
+      },
+      "challenge_score": 14.836910989716053
     },
     {
       "threshold": 0.6093742031055304,
@@ -8483,7 +8789,8 @@
             "false_alarms_per_hour": 1.8380750522406835
           }
         ]
-      }
+      },
+      "challenge_score": 14.839237660799085
     },
     {
       "threshold": 0.6102242554392397,
@@ -8766,7 +9073,8 @@
             "false_alarms_per_hour": 1.8380750522406835
           }
         ]
-      }
+      },
+      "challenge_score": 14.84098266411136
     },
     {
       "threshold": 0.6110338556871364,
@@ -9049,7 +9357,8 @@
             "false_alarms_per_hour": 1.8380750522406835
           }
         ]
-      }
+      },
+      "challenge_score": 14.843600169079771
     },
     {
       "threshold": 0.6118336796733996,
@@ -9332,7 +9641,8 @@
             "false_alarms_per_hour": 1.820142612706628
           }
         ]
-      }
+      },
+      "challenge_score": 14.844181836850531
     },
     {
       "threshold": 0.6125592013594692,
@@ -9615,7 +9925,8 @@
             "false_alarms_per_hour": 1.8380750522406835
           }
         ]
-      }
+      },
+      "challenge_score": 14.845054338506667
     },
     {
       "threshold": 0.6133060375766605,
@@ -9898,7 +10209,8 @@
             "false_alarms_per_hour": 1.8470412720077112
           }
         ]
-      }
+      },
+      "challenge_score": 14.845926840162806
     },
     {
       "threshold": 0.6140808210976424,
@@ -10181,7 +10493,8 @@
             "false_alarms_per_hour": 1.8739399313087943
           }
         ]
-      }
+      },
+      "challenge_score": 15.495014387938003
     },
     {
       "threshold": 0.6148360263691884,
@@ -10464,7 +10777,8 @@
             "false_alarms_per_hour": 1.8649737115417666
           }
         ]
-      }
+      },
+      "challenge_score": 14.207890980032012
     },
     {
       "threshold": 0.6155229072448603,
@@ -10747,7 +11061,8 @@
             "false_alarms_per_hour": 1.856007491774739
           }
         ]
-      }
+      },
+      "challenge_score": 14.856396860036455
     },
     {
       "threshold": 0.6162638305807976,
@@ -11030,7 +11345,8 @@
             "false_alarms_per_hour": 1.8649737115417666
           }
         ]
-      }
+      },
+      "challenge_score": 14.858287280291417
     },
     {
       "threshold": 0.6169791238074489,
@@ -11313,7 +11629,8 @@
             "false_alarms_per_hour": 1.8470412720077112
           }
         ]
-      }
+      },
+      "challenge_score": 14.215743494937248
     },
     {
       "threshold": 0.6176581114502209,
@@ -11596,7 +11913,8 @@
             "false_alarms_per_hour": 1.820142612706628
           }
         ]
-      }
+      },
+      "challenge_score": 13.575380963723424
     },
     {
       "threshold": 0.6183029712104368,
@@ -11879,7 +12197,8 @@
             "false_alarms_per_hour": 1.8380750522406835
           }
         ]
-      }
+      },
+      "challenge_score": 12.931528425885052
     },
     {
       "threshold": 0.6189476445952832,
@@ -12162,7 +12481,8 @@
             "false_alarms_per_hour": 1.856007491774739
           }
         ]
-      }
+      },
+      "challenge_score": 13.58061597366025
     },
     {
       "threshold": 0.6195936200040965,
@@ -12445,7 +12765,8 @@
             "false_alarms_per_hour": 1.8380750522406835
           }
         ]
-      }
+      },
+      "challenge_score": 12.938217605248772
     },
     {
       "threshold": 0.6202223473207656,
@@ -12728,7 +13049,8 @@
             "false_alarms_per_hour": 1.8111763929396003
           }
         ]
-      }
+      },
+      "challenge_score": 12.941998445758701
     },
     {
       "threshold": 0.6208364801390894,
@@ -13011,7 +13333,8 @@
             "false_alarms_per_hour": 1.8111763929396003
           }
         ]
-      }
+      },
+      "challenge_score": 13.591813078247345
     },
     {
       "threshold": 0.6214251453300378,
@@ -13294,7 +13617,8 @@
             "false_alarms_per_hour": 1.7842777336385172
           }
         ]
-      }
+      },
+      "challenge_score": 13.595157667929206
     },
     {
       "threshold": 0.6220192938044008,
@@ -13577,7 +13901,8 @@
             "false_alarms_per_hour": 1.7842777336385172
           }
         ]
-      }
+      },
+      "challenge_score": 13.597920589840307
     },
     {
       "threshold": 0.6226122927990159,
@@ -13860,7 +14185,8 @@
             "false_alarms_per_hour": 1.7842777336385172
           }
         ]
-      }
+      },
+      "challenge_score": 12.95566763837152
     },
     {
       "threshold": 0.6232028986088255,
@@ -14143,7 +14469,8 @@
             "false_alarms_per_hour": 1.7753115138714894
           }
         ]
-      }
+      },
+      "challenge_score": 12.960902648308345
     },
     {
       "threshold": 0.6237945272610703,
@@ -14426,7 +14753,8 @@
             "false_alarms_per_hour": 1.757379074337434
           }
         ]
-      }
+      },
+      "challenge_score": 12.965119739646342
     },
     {
       "threshold": 0.6244157055095367,
@@ -14709,7 +15037,8 @@
             "false_alarms_per_hour": 1.7484128545704063
           }
         ]
-      }
+      },
+      "challenge_score": 12.323593872890998
     },
     {
       "threshold": 0.6250358444022369,
@@ -14992,7 +15321,8 @@
             "false_alarms_per_hour": 1.7304804150363509
           }
         ]
-      }
+      },
+      "challenge_score": 12.329119716713201
     },
     {
       "threshold": 0.6255889168022154,
@@ -15275,7 +15605,8 @@
             "false_alarms_per_hour": 1.69461553596824
           }
         ]
-      }
+      },
+      "challenge_score": 12.334063892764647
     },
     {
       "threshold": 0.626171479740906,
@@ -15558,7 +15889,8 @@
             "false_alarms_per_hour": 1.6677168766671568
           }
         ]
-      }
+      },
+      "challenge_score": 11.692247192123926
     },
     {
       "threshold": 0.6267462100133977,
@@ -15841,7 +16173,8 @@
             "false_alarms_per_hour": 1.6497844371331014
           }
         ]
-      }
+      },
+      "challenge_score": 11.699227205373026
     },
     {
       "threshold": 0.627287829209421,
@@ -16124,7 +16457,8 @@
             "false_alarms_per_hour": 1.6587506569001291
           }
         ]
-      }
+      },
+      "challenge_score": 12.349187254804361
     },
     {
       "threshold": 0.6278621836975543,
@@ -16407,7 +16741,8 @@
             "false_alarms_per_hour": 1.6587506569001291
           }
         ]
-      }
+      },
+      "challenge_score": 11.708097638877089
     },
     {
       "threshold": 0.6284318117554757,
@@ -16690,7 +17025,8 @@
             "false_alarms_per_hour": 1.6408182173660735
           }
         ]
-      }
+      },
+      "challenge_score": 11.71420515047005
     },
     {
       "threshold": 0.6290024868401495,
@@ -16973,7 +17309,8 @@
             "false_alarms_per_hour": 1.6318519975990458
           }
         ]
-      }
+      },
+      "challenge_score": 11.719730994292254
     },
     {
       "threshold": 0.6295632543214902,
@@ -17256,7 +17593,8 @@
             "false_alarms_per_hour": 1.6587506569001291
           }
         ]
-      }
+      },
+      "challenge_score": 11.725983922827906
     },
     {
       "threshold": 0.6300977126556859,
@@ -17539,7 +17877,8 @@
             "false_alarms_per_hour": 1.6139195580649903
           }
         ]
-      }
+      },
+      "challenge_score": 11.73121893276473
     },
     {
       "threshold": 0.6306386128841165,
@@ -17822,7 +18161,8 @@
             "false_alarms_per_hour": 1.6318519975990458
           }
         ]
-      }
+      },
+      "challenge_score": 11.735290607160039
     },
     {
       "threshold": 0.6311896392394849,
@@ -18105,7 +18445,8 @@
             "false_alarms_per_hour": 1.622885777832018
           }
         ]
-      }
+      },
+      "challenge_score": 11.09580057760235
     },
     {
       "threshold": 0.6317346693360061,
@@ -18388,7 +18729,8 @@
             "false_alarms_per_hour": 1.6139195580649903
           }
         ]
-      }
+      },
+      "challenge_score": 11.746778545632514
     },
     {
       "threshold": 0.6322706826895368,
@@ -18671,7 +19013,8 @@
             "false_alarms_per_hour": 1.5780546789968795
           }
         ]
-      }
+      },
+      "challenge_score": 11.752595223340096
     },
     {
       "threshold": 0.6328356016754002,
@@ -18954,7 +19297,8 @@
             "false_alarms_per_hour": 1.560122239462824
           }
         ]
-      }
+      },
+      "challenge_score": 11.116740617349649
     },
     {
       "threshold": 0.6333865163863361,
@@ -19237,7 +19581,8 @@
             "false_alarms_per_hour": 1.5242573603947132
           }
         ]
-      }
+      },
+      "challenge_score": 11.767718585379813
     },
     {
       "threshold": 0.6339590051018227,
@@ -19520,7 +19865,8 @@
             "false_alarms_per_hour": 1.5152911406276854
           }
         ]
-      }
+      },
+      "challenge_score": 12.419569055066113
     },
     {
       "threshold": 0.6345016567152185,
@@ -19803,7 +20149,8 @@
             "false_alarms_per_hour": 1.4883924813266023
           }
         ]
-      }
+      },
+      "challenge_score": 12.429748241054382
     },
     {
       "threshold": 0.6350416096267174,
@@ -20086,7 +20433,8 @@
             "false_alarms_per_hour": 1.4525276022584914
           }
         ]
-      }
+      },
+      "challenge_score": 12.435855752647344
     },
     {
       "threshold": 0.6356129033163512,
@@ -20369,7 +20717,8 @@
             "false_alarms_per_hour": 1.4256289429574083
           }
         ]
-      }
+      },
+      "challenge_score": 12.445162436979476
     },
     {
       "threshold": 0.6361931833928376,
@@ -20652,7 +21001,8 @@
             "false_alarms_per_hour": 1.3897640638892972
           }
         ]
-      }
+      },
+      "challenge_score": 11.808289912390201
     },
     {
       "threshold": 0.636728924976804,
@@ -20935,7 +21285,8 @@
             "false_alarms_per_hour": 1.3987302836563251
           }
         ]
-      }
+      },
+      "challenge_score": 12.46101288373264
     },
     {
       "threshold": 0.6372758313580873,
@@ -21218,7 +21569,8 @@
             "false_alarms_per_hour": 1.3987302836563251
           }
         ]
-      }
+      },
+      "challenge_score": 12.469156232523254
     },
     {
       "threshold": 0.6378426946217504,
@@ -21501,7 +21853,8 @@
             "false_alarms_per_hour": 1.3807978441222695
           }
         ]
-      }
+      },
+      "challenge_score": 12.475554578001596
     },
     {
       "threshold": 0.6384224912851961,
@@ -21784,7 +22137,8 @@
             "false_alarms_per_hour": 1.3270005255201032
           }
         ]
-      }
+      },
+      "challenge_score": 13.130895054312449
     },
     {
       "threshold": 0.6390036848881977,
@@ -22067,7 +22421,8 @@
             "false_alarms_per_hour": 1.3090680859860477
           }
         ]
-      }
+      },
+      "challenge_score": 13.139910904759201
     },
     {
       "threshold": 0.6395702207876497,
@@ -22350,7 +22705,8 @@
             "false_alarms_per_hour": 1.2821694266849646
           }
         ]
-      }
+      },
+      "challenge_score": 12.503038380169924
     },
     {
       "threshold": 0.6402026004127611,
@@ -22633,7 +22989,8 @@
             "false_alarms_per_hour": 1.2911356464519923
           }
         ]
-      }
+      },
+      "challenge_score": 11.867183774179475
     },
     {
       "threshold": 0.6407892008222589,
@@ -22916,7 +23273,8 @@
             "false_alarms_per_hour": 1.2463045476168537
           }
         ]
-      }
+      },
+      "challenge_score": 12.523542169089152
     },
     {
       "threshold": 0.6413777037510581,
@@ -23199,7 +23557,8 @@
             "false_alarms_per_hour": 1.2194058883157706
           }
         ]
-      }
+      },
+      "challenge_score": 11.889723400296358
     },
     {
       "threshold": 0.6420009870599734,
@@ -23482,7 +23841,8 @@
             "false_alarms_per_hour": 1.138709910412521
           }
         ]
-      }
+      },
+      "challenge_score": 12.545936378263345
     },
     {
       "threshold": 0.6426440147432078,
@@ -23765,7 +24125,8 @@
             "false_alarms_per_hour": 1.1207774708784655
           }
         ]
-      }
+      },
+      "challenge_score": 13.201567688459578
     },
     {
       "threshold": 0.6432821533747716,
@@ -24048,7 +24409,8 @@
             "false_alarms_per_hour": 1.1118112511114377
           }
         ]
-      }
+      },
+      "challenge_score": 13.209856454192883
     },
     {
       "threshold": 0.6439301880547439,
@@ -24331,7 +24693,8 @@
             "false_alarms_per_hour": 1.0669801522762992
           }
         ]
-      }
+      },
+      "challenge_score": 13.219163138525015
     },
     {
       "threshold": 0.6446061176636713,
@@ -24614,7 +24977,8 @@
             "false_alarms_per_hour": 1.0759463720433269
           }
         ]
-      }
+      },
+      "challenge_score": 12.585780620560287
     },
     {
       "threshold": 0.6453084527344572,
@@ -24897,7 +25261,8 @@
             "false_alarms_per_hour": 1.0849125918103546
           }
         ]
-      }
+      },
+      "challenge_score": 11.949198929856392
     },
     {
       "threshold": 0.6460638661180776,
@@ -25180,7 +25545,8 @@
             "false_alarms_per_hour": 1.0580139325092714
           }
         ]
-      }
+      },
+      "challenge_score": 11.315816411891666
     },
     {
       "threshold": 0.6468040054869314,
@@ -25463,7 +25829,8 @@
             "false_alarms_per_hour": 1.0221490534411606
           }
         ]
-      }
+      },
+      "challenge_score": 11.329921855332554
     },
     {
       "threshold": 0.6476013896958357,
@@ -25746,7 +26113,8 @@
             "false_alarms_per_hour": 0.9593855150719666
           }
         ]
-      }
+      },
+      "challenge_score": 10.695957669597071
     },
     {
       "threshold": 0.6484518467199544,
@@ -26029,7 +26397,8 @@
             "false_alarms_per_hour": 0.8338584383335784
           }
         ]
-      }
+      },
+      "challenge_score": 10.069264330996065
     },
     {
       "threshold": 0.6493452495834726,
@@ -26312,7 +26681,8 @@
             "false_alarms_per_hour": 0.7710948999643843
           }
         ]
-      }
+      },
+      "challenge_score": 9.441407656853542
     },
     {
       "threshold": 0.6502745351673306,
@@ -26595,7 +26965,8 @@
             "false_alarms_per_hour": 0.6993651418281626
           }
         ]
-      }
+      },
+      "challenge_score": 8.171152614299542
     },
     {
       "threshold": 0.6513468328597669,
@@ -26878,7 +27249,8 @@
             "false_alarms_per_hour": 0.6455678232259962
           }
         ]
-      }
+      },
+      "challenge_score": 7.544604692641226
     },
     {
       "threshold": 0.652494955847164,
@@ -27160,7 +27532,8 @@
             "false_alarms_per_hour": 0.5379731860216634
           }
         ]
-      }
+      },
+      "challenge_score": 5.633114617217262
     },
     {
       "threshold": 0.6538377633454577,
@@ -27443,7 +27816,8 @@
             "false_alarms_per_hour": 0.4393447685843585
           }
         ]
-      }
+      },
+      "challenge_score": 5.657980914417178
     },
     {
       "threshold": 0.65560404283599,
@@ -27726,7 +28100,8 @@
             "false_alarms_per_hour": 0.3227839116129981
           }
         ]
-      }
+      },
+      "challenge_score": 5.682847211617094
     },
     {
       "threshold": 0.6577897234899067,
@@ -28008,7 +28383,8 @@
             "false_alarms_per_hour": 0.16139195580649904
           }
         ]
-      }
+      },
+      "challenge_score": 3.774265475046922
     },
     {
       "threshold": 0.6607775453614548,
@@ -28290,7 +28666,8 @@
             "false_alarms_per_hour": 0.044831098835138625
           }
         ]
-      }
+      },
+      "challenge_score": 2.5086637746589866
     },
     {
       "threshold": 0.6653743287690177,
@@ -28572,7 +28949,8 @@
             "false_alarms_per_hour": 0.01793243953405545
           }
         ]
-      }
+      },
+      "challenge_score": 1.894185459243905
     },
     {
       "threshold": 0.6846189990357592,
@@ -28854,7 +29232,8 @@
             "false_alarms_per_hour": 0.0
           }
         ]
-      }
+      },
+      "challenge_score": -0.004217091337997447
     }
   ]
 }

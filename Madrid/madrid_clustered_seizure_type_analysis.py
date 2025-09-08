@@ -682,7 +682,7 @@ class MadridClusteredSeizureTypeAnalyzer:
                 # Formatting
                 ax3.set_xlabel('False Alarms per Hour', fontsize=12)
                 ax3.set_ylabel('Sensitivity', fontsize=12)
-                ax3.set_title('Top Event Types (by frequency)', fontsize=14, fontweight='bold')
+                ax3.set_title('Event Types Analysis', fontsize=14, fontweight='bold')
                 ax3.grid(True, alpha=0.3)
                 ax3.set_xlim(-0.1, 4.5)
                 ax3.set_ylim(-0.05, 1.05)
