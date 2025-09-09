@@ -1,0 +1,65 @@
+================================================================================
+JEPPESEN SEIZURE DETECTION ANALYSIS REPORT
+================================================================================
+Generated on: 2025-09-04 12:03:27
+Input CSV file: jeppesen_seizeit2/results_full/seizeit2_jeppesen_detection_elgendi_padding_120-120-120-100_20250821_105628.csv
+Raw data path: /home/swolf/asim_shared/raw_data/ds005873-1.1.0
+================================================================================
+
+Original dataset: 3224 records from 124 subjects
+Training set: 2496 records from 96 subjects (sub001-sub096)
+Test set: 728 records from 28 subjects (sub097-sub125)
+Loading recording durations from raw data...
+
+================================================================================
+PHASE 1: PARAMETER SELECTION ON TRAINING SET
+================================================================================
+
+Training Set Analysis:
+Analyzing 2496 records from 96 subjects
+Found 26 different parameters/methods
+------------------------------------------------------------
+
+================================================================================
+PHASE 2: BEST PARAMETER SELECTION FROM TRAINING SET
+================================================================================
+Best Sensitivity on Training Set: en-csi_100xslope_100xcsi_100_filteredxslope_100
+  Training Sensitivity: 0.1691
+  Training FAD: 0.0746
+
+Best FAD on Training Set: csi_50_filteredxslope_50
+  Training FAD: 0.0411
+  Training Sensitivity: 0.0574
+
+================================================================================
+PHASE 3: EVALUATION OF SELECTED PARAMETERS ON TEST SET
+================================================================================
+
+Test Set Analysis:
+Analyzing 728 records from 28 subjects
+Found 26 different parameters/methods
+------------------------------------------------------------
+
+Test Set Performance for csi_50_filteredxslope_50:
+  Test Sensitivity: 0.0683
+  Test FAD: 0.0647
+  Test Responder Analysis:
+    Patients with seizures: 28
+    Responders (≥2/3 seizures detected): 4
+    Responder rate: 0.1429 (14.29%)
+    Responder Sensitivity: 0.8571 (85.71%)
+    Responder FAD: 0.0542
+    Non-responder Sensitivity: 0.0325 (3.25%)
+    Non-responder FAD: 0.0664
+
+Test Set Performance for en-csi_100xslope_100xcsi_100_filteredxslope_100:
+  Test Sensitivity: 0.1491
+  Test FAD: 0.1244
+  Test Responder Analysis:
+    Patients with seizures: 28
+    Responders (≥2/3 seizures detected): 5
+    Responder rate: 0.1786 (17.86%)
+    Responder Sensitivity: 0.9000 (90.00%)
+    Responder FAD: 0.0902
+    Non-responder Sensitivity: 0.0993 (9.93%)
+    Non-responder FAD: 0.1321
