@@ -2484,3 +2484,10 @@
 2025-09-08 16:20:30,593 - MainProcess - INFO -   • Non-seizure files: 2443
 2025-09-08 16:20:30,593 - MainProcess - INFO -   • Total files: 2795
 2025-09-08 16:20:30,593 - MainProcess - INFO - Processing 2795 windowed files with 6 workers
+2025-09-08 19:24:31,771 - ForkPoolWorker-4 - ERROR - Error analyzing window 2: Time series contains constant regions that would make anomaly detection trivial. Consider: 1) Increasing min_length, 2) Adding noise, 3) Adding linear trend, 4) Removing constant sections
+2025-09-08 19:24:31,776 - ForkPoolWorker-4 - ERROR - Error processing windowed file /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_reproduced/sub-119_run-24_preprocessed.pkl: 'anomalies'
+2025-09-08 20:51:16,583 - ForkPoolWorker-1 - ERROR - Error analyzing window 28: Time series contains constant regions that would make anomaly detection trivial. Consider: 1) Increasing min_length, 2) Adding noise, 3) Adding linear trend, 4) Removing constant sections
+2025-09-08 20:51:16,583 - ForkPoolWorker-1 - ERROR - Error analyzing window 29: Time series contains constant regions that would make anomaly detection trivial. Consider: 1) Increasing min_length, 2) Adding noise, 3) Adding linear trend, 4) Removing constant sections
+2025-09-08 20:51:16,622 - ForkPoolWorker-1 - ERROR - Error processing windowed file /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_reproduced/sub-111_run-06_preprocessed.pkl: 'anomalies'
+2025-09-09 04:11:10,724 - ForkPoolWorker-2 - ERROR - Error analyzing window 0: Time series contains constant regions that would make anomaly detection trivial. Consider: 1) Increasing min_length, 2) Adding noise, 3) Adding linear trend, 4) Removing constant sections
+2025-09-09 04:11:10,725 - ForkPoolWorker-2 - ERROR - Error processing windowed file /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_reproduced/sub-076_run-01_preprocessed.pkl: 'anomalies'
