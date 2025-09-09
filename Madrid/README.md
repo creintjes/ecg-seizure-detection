@@ -112,7 +112,7 @@ python madrid_windowed_batch_processor_parallel.py \
 - JSON files with Madrid analysis results: `madrid_windowed_results_{subject_id}_{run_id}_{timestamp}.json`
 - Processing logs and progress information
 
-> **Note for supervisors (Tim & Simon):** Madrid analysis results are available on ds01 server at: `/home/creintj2_sw/ecg-seizure-detection/Madrid/results/results_8hz_window3600_stride1800_new20min` (Runtime: ~4 days total. You can use these existing results for reproduction instead of re-running the analysis.)
+> **Note for supervisors (Tim & Simon):** Madrid analysis results are available on ds01 server at: `/home/creintj2_sw/ecg-seizure-detection/Madrid/results_madrid/results_8hz_window3600_stride1800_new20min` (Runtime: ~4 days total. You can use these existing results for reproduction instead of re-running the analysis.)
 
 ### 5. False Alarm Reduction with Clustering
 
@@ -166,8 +166,8 @@ Each configuration typically results in different optimal clustering strategies.
 - Complete summary in `train_test_clustered_results/complete_train_test_results_{timestamp}.json`
 
 > **Note for supervisors (Tim & Simon):** Clustering results are available on ds01 server at:
-> - **Without extended seizure window:** `/home/creintj2_sw/ecg-seizure-detection/Madrid/results/clustering_withoutSDW`
-> - **With extended seizure window:** `/home/creintj2_sw/ecg-seizure-detection/Madrid/results/clustering_withSDW`
+> - **Without extended seizure window:** `/home/creintj2_sw/ecg-seizure-detection/Madrid/results_madrid/clustering_withoutSDW`
+> - **With extended seizure window:** `/home/creintj2_sw/ecg-seizure-detection/Madrid/results_madrid/clustering_withSDW`
 
 ### 6. Threshold Trade-off Analysis (Test Set Only)
 
@@ -224,8 +224,8 @@ self.clustering_time_threshold = 180  # Change this value to your desired strate
 - Sensitivity vs FAR curves for publication
 
 > **Note for supervisors (Tim & Simon):** Threshold trade-off results are available on ds01 server at:
-> - **With extended seizure window:** `/home/creintj2_sw/ecg-seizure-detection/Madrid/results/trade_off_FAR_vs_Sens_withSDW`
-> - **Without extended seizure window:** `/home/creintj2_sw/ecg-seizure-detection/Madrid/results/trade_off_FAR_vs_Sens_n100_withoutSDW`
+> - **With extended seizure window:** `/home/creintj2_sw/ecg-seizure-detection/Madrid/results_madrid/trade_off_FAR_vs_Sens_withSDW`
+> - **Without extended seizure window:** `/home/creintj2_sw/ecg-seizure-detection/Madrid/results_madrid/trade_off_FAR_vs_Sens_n100_withoutSDW`
 
 ### 7. Seizure Type Analysis
 
@@ -261,7 +261,7 @@ python madrid_clustered_seizure_type_analysis.py results_8hz_window3600_stride18
 - Visualization plots showing performance per seizure type
 - Statistical analysis of seizure type detection patterns
 
-> **Note for supervisors (Tim & Simon):** Seizure type analysis results are available on ds01 server at: `/home/creintj2_sw/ecg-seizure-detection/Madrid/results/seizureTypeAnalysis`
+> **Note for supervisors (Tim & Simon):** Seizure type analysis results are available on ds01 server at: `/home/creintj2_sw/ecg-seizure-detection/Madrid/results_madrid/seizureTypeAnalysis`
 
 
 ### 8. File Structure
