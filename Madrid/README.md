@@ -30,9 +30,14 @@ The first step is to preprocess the raw ECG data using the parameters specified 
 - Stride: 1800 seconds (30 minutes, 50% overlap)
 - Sampling frequency: 8 Hz (downsampled from original 250 Hz)
 
+**Go in Madrid Folder:**
+```bash
+cd Madrid
+```
+
 **Run preprocessing:**
 ```bash
-python Madrid/preprocessing/preprocess_all_data.py
+python preprocessing/preprocess_all_data.py
 ```
 
 This script will:
@@ -54,14 +59,14 @@ Some ECG recordings may be shorter than the 3600-second window size, resulting i
 
 **Check for files with 0 windows:**
 ```bash
-python Madrid/preprocessing/reprocess_empty_windows.py \
+python preprocessing/reprocess_empty_windows.py \
     --preprocessed-dir /path/to/preprocessed/data \
     --dry-run
 ```
 
 **Reprocess empty files with flexible windowing (recommended approach):**
 ```bash
-python Madrid/preprocessing/reprocess_empty_windows.py \
+python preprocessing/reprocess_empty_windows.py \
     --preprocessed-dir /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new \
     --output-dir /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new \
     --original-data-dir /path/to/seizeit2/data
