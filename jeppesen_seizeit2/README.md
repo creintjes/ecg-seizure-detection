@@ -28,6 +28,11 @@ Update these paths according to your local setup:
 
 Execute the main Jeppesen algorithm analysis on the SeizeIT2 dataset:
 
+**Go into the right folder:**
+```bash
+cd jeppesen_seizeit2
+```
+
 **Run the algorithm:**
 ```bash
 python jeppesen_seizeit2.py
@@ -89,7 +94,7 @@ python analyze_results.py results_full/seizeit2_jeppesen_detection_elgendi_paddi
 - Console output with key performance indicators (sensitivity, FAH)
 - Train/test split performance comparison
 
-> **Note for supervisors (Tim & Simon):** Analysis results and reports are available on ds01 server at: `/home/creintj2_sw/jeppesen/ecg-seizure-detection/jeppesen_seizeit2/results_full`
+> **Note for supervisors (Tim & Simon):** Analysis results and reports are available in this repository at: `/jeppesen_seizeit2/results_full`
 
 ### 4. File Structure
 
@@ -104,6 +109,8 @@ jeppesen_seizeit2/
 ├── evaluation_utils.py         # Evaluation and metrics utilities
 └── results_full/               # Analysis results
     ├── seizeit2_jeppesen_detection_*.csv
+    ├── seizeit2_jeppesen_detection_*_analysis_report.txt
+    ├── seizeit2_jeppesen_detection_*_train_test_summary.csv
     └── interim_seizeit2_jeppesen_detection_*.csv
 ```
 
