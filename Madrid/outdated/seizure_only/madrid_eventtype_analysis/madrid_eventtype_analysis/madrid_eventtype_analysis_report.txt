@@ -1,0 +1,204 @@
+Madrid Seizure Detection: Analysis by EventType
+==================================================
+
+SUMMARY BY EVENTTYPE:
+------------------------------
+
+EventType: sz_foc_ia_nm
+  Total Seizures: 78
+  Detected Seizures: 0
+  Sensitivity: 0.000 (0.0%)
+  Precision: 0.000 (0.0%)
+  False Alarm Rate: 0.000 (0.0%)
+  True Positives: 0
+  False Positives: 0
+  Total Anomalies: 0
+
+EventType: sz_foc_a_m_hyperkinetic
+  Total Seizures: 76
+  Detected Seizures: 0
+  Sensitivity: 0.000 (0.0%)
+  Precision: 0.000 (0.0%)
+  False Alarm Rate: 0.000 (0.0%)
+  True Positives: 0
+  False Positives: 0
+  Total Anomalies: 0
+
+EventType: sz_foc_ia_m_hyperkinetic
+  Total Seizures: 53
+  Detected Seizures: 0
+  Sensitivity: 0.000 (0.0%)
+  Precision: 0.000 (0.0%)
+  False Alarm Rate: 0.000 (0.0%)
+  True Positives: 0
+  False Positives: 0
+  Total Anomalies: 0
+
+EventType: sz_foc_f2b
+  Total Seizures: 28
+  Detected Seizures: 0
+  Sensitivity: 0.000 (0.0%)
+  Precision: 0.000 (0.0%)
+  False Alarm Rate: 0.000 (0.0%)
+  True Positives: 0
+  False Positives: 0
+  Total Anomalies: 0
+
+EventType: sz_foc_ia_m_automatisms
+  Total Seizures: 28
+  Detected Seizures: 0
+  Sensitivity: 0.000 (0.0%)
+  Precision: 0.000 (0.0%)
+  False Alarm Rate: 0.000 (0.0%)
+  True Positives: 0
+  False Positives: 0
+  Total Anomalies: 0
+
+EventType: sz_foc_a_nm
+  Total Seizures: 22
+  Detected Seizures: 0
+  Sensitivity: 0.000 (0.0%)
+  Precision: 0.000 (0.0%)
+  False Alarm Rate: 0.000 (0.0%)
+  True Positives: 0
+  False Positives: 0
+  Total Anomalies: 0
+
+EventType: sz_foc_a_nm_behavior
+  Total Seizures: 20
+  Detected Seizures: 0
+  Sensitivity: 0.000 (0.0%)
+  Precision: 0.000 (0.0%)
+  False Alarm Rate: 0.000 (0.0%)
+  True Positives: 0
+  False Positives: 0
+  Total Anomalies: 0
+
+EventType: sz_foc_a_um
+  Total Seizures: 20
+  Detected Seizures: 0
+  Sensitivity: 0.000 (0.0%)
+  Precision: 0.000 (0.0%)
+  False Alarm Rate: 0.000 (0.0%)
+  True Positives: 0
+  False Positives: 0
+  Total Anomalies: 0
+
+EventType: sz_foc_ia
+  Total Seizures: 17
+  Detected Seizures: 0
+  Sensitivity: 0.000 (0.0%)
+  Precision: 0.000 (0.0%)
+  False Alarm Rate: 0.000 (0.0%)
+  True Positives: 0
+  False Positives: 0
+  Total Anomalies: 0
+
+EventType: sz_foc_ua_nm
+  Total Seizures: 16
+  Detected Seizures: 0
+  Sensitivity: 0.000 (0.0%)
+  Precision: 0.000 (0.0%)
+  False Alarm Rate: 0.000 (0.0%)
+  True Positives: 0
+  False Positives: 0
+  Total Anomalies: 0
+
+EventType: sz_foc_ua_um
+  Total Seizures: 15
+  Detected Seizures: 0
+  Sensitivity: 0.000 (0.0%)
+  Precision: 0.000 (0.0%)
+  False Alarm Rate: 0.000 (0.0%)
+  True Positives: 0
+  False Positives: 0
+  Total Anomalies: 0
+
+EventType: sz_foc_ia_m_tonic
+  Total Seizures: 9
+  Detected Seizures: 0
+  Sensitivity: 0.000 (0.0%)
+  Precision: 0.000 (0.0%)
+  False Alarm Rate: 0.000 (0.0%)
+  True Positives: 0
+  False Positives: 0
+  Total Anomalies: 0
+
+EventType: sz_foc_ua_nm_behavior
+  Total Seizures: 8
+  Detected Seizures: 0
+  Sensitivity: 0.000 (0.0%)
+  Precision: 0.000 (0.0%)
+  False Alarm Rate: 0.000 (0.0%)
+  True Positives: 0
+  False Positives: 0
+  Total Anomalies: 0
+
+EventType: sz_foc_ia_um
+  Total Seizures: 3
+  Detected Seizures: 0
+  Sensitivity: 0.000 (0.0%)
+  Precision: 0.000 (0.0%)
+  False Alarm Rate: 0.000 (0.0%)
+  True Positives: 0
+  False Positives: 0
+  Total Anomalies: 0
+
+EventType: sz_foc_ua_m_hyperkinetic
+  Total Seizures: 2
+  Detected Seizures: 0
+  Sensitivity: 0.000 (0.0%)
+  Precision: 0.000 (0.0%)
+  False Alarm Rate: 0.000 (0.0%)
+  True Positives: 0
+  False Positives: 0
+  Total Anomalies: 0
+
+EventType: sz_foc_a_m_automatisms
+  Total Seizures: 2
+  Detected Seizures: 0
+  Sensitivity: 0.000 (0.0%)
+  Precision: 0.000 (0.0%)
+  False Alarm Rate: 0.000 (0.0%)
+  True Positives: 0
+  False Positives: 0
+  Total Anomalies: 0
+
+EventType: sz_foc_ua_m
+  Total Seizures: 1
+  Detected Seizures: 0
+  Sensitivity: 0.000 (0.0%)
+  Precision: 0.000 (0.0%)
+  False Alarm Rate: 0.000 (0.0%)
+  True Positives: 0
+  False Positives: 0
+  Total Anomalies: 0
+
+EventType: sz_uo_nm
+  Total Seizures: 1
+  Detected Seizures: 0
+  Sensitivity: 0.000 (0.0%)
+  Precision: 0.000 (0.0%)
+  False Alarm Rate: 0.000 (0.0%)
+  True Positives: 0
+  False Positives: 0
+  Total Anomalies: 0
+
+EventType: sz_foc_ia_nm_behavior
+  Total Seizures: 1
+  Detected Seizures: 0
+  Sensitivity: 0.000 (0.0%)
+  Precision: 0.000 (0.0%)
+  False Alarm Rate: 0.000 (0.0%)
+  True Positives: 0
+  False Positives: 0
+  Total Anomalies: 0
+
+
+OVERALL STATISTICS:
+--------------------
+Total Seizures Analyzed: 400
+Total EventTypes Found: 19
+Overall Sensitivity: 0.000 (0.0%)
+Overall Precision: 0.000 (0.0%)
+Overall False Alarm Rate: 0.000 (0.0%)

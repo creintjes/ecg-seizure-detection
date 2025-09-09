@@ -11,7 +11,8 @@ with Madrid algorithm in parallel. Supports various window configurations like:
 Usage:
     python madrid_windowed_batch_processor_parallel.py --data-dir /path/to/windowed/data --output-dir results --n-workers 4
     python madrid_windowed_batch_processor_parallel.py --data-dir /path/to/windowed/data --window-strategy reconstruct --train-minutes 10
-
+python madrid_windowed_batch_processor_parallel.py --data-dir /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new --existing-result
+s-dir results_8hz_window3600_stride1800_new20min --output-dir results_8hz_window3600_stride1800_new20min --n-workers 20 --train-minutes 20
 Key Features:
     - Handles windowed preprocessed data with overlaps
     - Multiple window processing strategies (individual, reconstruct, hybrid)
@@ -40,7 +41,8 @@ import threading
 
 warnings.filterwarnings('ignore')
 
-# Add models directory to path
+# Add current directory and models directory to path
+sys.path.append(os.path.dirname(__file__))
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 try:
@@ -224,13 +226,18 @@ class MadridWindowedBatchProcessorCore:
                 logger.debug(f"Detected windowed format from multiple windows: {len(channel['windows'])} windows")
                 return True
             
-            # Method 3: Check for window-related keys in preprocessing params
-            window_related_keys = ['window_size', 'stride', 'overlap', 'windowing']
+            # Method 3: Check for flexible windowing flag
+            if 'flexible_windowing' in preprocessing_params and preprocessing_params['flexible_windowing']:
+                logger.debug("Detected windowed format from flexible_windowing flag")
+                return True
+            
+            # Method 4: Check for window-related keys in preprocessing params
+            window_related_keys = ['window_size', 'stride', 'overlap', 'windowing', 'min_window_size']
             if any(key in preprocessing_params for key in window_related_keys):
                 logger.debug(f"Detected windowed format from preprocessing keys: {[k for k in window_related_keys if k in preprocessing_params]}")
                 return True
             
-            # Method 4: Check if this looks like output from windowed preprocessing by metadata
+            # Method 5: Check if this looks like output from windowed preprocessing by metadata
             if len(channel['windows']) >= 1:
                 if 'metadata' in channel and isinstance(channel['metadata'], list):
                     if len(channel['metadata']) > 0:
@@ -239,9 +246,13 @@ class MadridWindowedBatchProcessorCore:
                         if 'start_time' in meta and 'end_time' in meta:
                             logger.debug("Detected windowed format from metadata structure")
                             return True
+                        # Check for flexible window indicators
+                        if 'is_flexible_window' in meta and meta['is_flexible_window']:
+                            logger.debug("Detected windowed format from flexible window metadata")
+                            return True
             
-            # Method 5: Aggressive detection - if it has windows and n_windows > 1, it's probably windowed
-            if 'n_windows' in channel and channel.get('n_windows', 0) > 1:
+            # Method 6: Detection for single windows (flexible windowing) - changed from > 1 to >= 1
+            if 'n_windows' in channel and channel.get('n_windows', 0) >= 1:
                 logger.debug(f"Detected windowed format from n_windows field: {channel['n_windows']}")
                 return True
             
@@ -513,10 +524,38 @@ class MadridWindowedBatchProcessorCore:
             window_start_time = time.time()
             
             try:
-                # Skip windows that are too short
-                if len(window) < madrid_params['max_length']:
-                    logger.warning(f"Window {i} too short ({len(window)} samples), skipping")
-                    continue
+                # Handle flexible window sizes - adapt Madrid parameters dynamically
+                window_length = len(window)
+                window_duration = window_length / sampling_rate
+                
+                # For very short windows, adapt Madrid parameters
+                if window_length < madrid_params['max_length']:
+                    logger.info(f"Window {i} is short ({window_length} samples, {window_duration:.1f}s), adapting Madrid parameters")
+                    
+                    # Dynamically adjust Madrid parameters for short windows
+                    adapted_params = self.adapt_madrid_params_for_window_size(window_length, sampling_rate)
+                    
+                    if window_length < adapted_params['min_length']:
+                        logger.warning(f"Window {i} too short even for adapted params ({window_length} < {adapted_params['min_length']}), creating minimal result")
+                        
+                        # Create minimal result for very short windows
+                        window_result = {
+                            'window_index': i,
+                            'window_start_time': i * signal_metadata.get('windowing_info', {}).get('stride', 0),
+                            'window_duration': window_duration,
+                            'original_length': window_length,
+                            'cleaned_length': window_length,
+                            'constant_regions_removed': 0,
+                            'anomalies': [],  # No anomalies for very short windows
+                            'execution_time': time.time() - window_start_time,
+                            'analysis_successful': False,
+                            'warning': f'Window too short for Madrid analysis ({window_length} samples < {adapted_params["min_length"]} min)'
+                        }
+                        window_results.append(window_result)
+                        continue
+                    
+                    # Use adapted parameters
+                    madrid_params = adapted_params
                 
                 # Remove constant regions from window
                 cleaned_window, removal_info = self.remove_constant_regions(window, madrid_params['min_length'])
@@ -837,14 +876,66 @@ class MadridWindowedBatchProcessorCore:
         """Adapt Madrid parameters for sampling rate"""
         if sampling_rate > 0: 
             return {
-                'min_length': sampling_rate * 10,
-                'max_length': sampling_rate * 100,
-                'step_size': sampling_rate * 10
+                'min_length': sampling_rate * 10,  # 10 seconds
+                'max_length': sampling_rate * 100, # 100 seconds  
+                'step_size': sampling_rate * 10    # 10 seconds
             }
         return {
             'min_length': 80,
             'max_length': 800,
             'step_size': 80
+        }
+    
+    def adapt_madrid_params_for_window_size(self, window_length: int, sampling_rate: int) -> Dict:
+        """
+        Adapt Madrid parameters for a specific window size
+        
+        Args:
+            window_length: Length of window in samples
+            sampling_rate: Sampling rate
+            
+        Returns:
+            Adapted Madrid parameters
+        """
+        # Calculate window duration in seconds
+        window_duration = window_length / sampling_rate
+        
+        # For very short windows (< 30 seconds), use minimal parameters
+        if window_duration < 30:
+            min_length = max(int(sampling_rate * 2), 16)  # 2 seconds minimum
+            max_length = max(int(window_length * 0.3), min_length * 2)  # Use 30% of window
+            step_size = max(int(sampling_rate * 1), 8)  # 1 second steps
+        
+        # For short windows (30-300 seconds), scale down from default
+        elif window_duration < 300:
+            min_length = max(int(sampling_rate * 5), 40)  # 5 seconds minimum
+            max_length = max(int(window_length * 0.4), min_length * 2)  # Use 40% of window
+            step_size = max(int(sampling_rate * 2), 16)  # 2 second steps
+            
+        # For medium windows (300-1800 seconds), use moderate parameters
+        elif window_duration < 1800:
+            min_length = int(sampling_rate * 10)  # 10 seconds
+            max_length = int(window_length * 0.5)  # Use 50% of window
+            step_size = int(sampling_rate * 5)  # 5 second steps
+            
+        # For long windows, use default scaling
+        else:
+            return self.adapt_madrid_params_for_sampling_rate(sampling_rate)
+        
+        # Ensure reasonable bounds
+        min_length = max(min_length, 8)
+        max_length = max(max_length, min_length * 2)
+        step_size = max(step_size, 4)
+        
+        # Ensure max_length doesn't exceed window length
+        max_length = min(max_length, window_length - 1)
+        
+        logger.debug(f"Adapted Madrid params for window ({window_duration:.1f}s): min={min_length}, max={max_length}, step={step_size}")
+        
+        return {
+            'min_length': min_length,
+            'max_length': max_length,
+            'step_size': step_size
         }
     
     def create_windowed_json_output(self, file_data: Dict, analysis_results: Dict, performance_info: Dict) -> Dict:

@@ -6,6 +6,7 @@ Example script for ECG preprocessing using the ECGPreprocessor class.
 from preprocessing import ECGPreprocessor
 from pathlib import Path
 import sys
+from config import RAW_DATA_PATH
 
 def main():
     # 1. Initialize preprocessor with custom parameters
@@ -21,7 +22,7 @@ def main():
     )
     
     # 2. Set data path (adjust to your SeizeIT2 dataset location)
-    data_path = "/home/swolf/asim_shared/raw_data/ds005873-1.1.0"  # Update this path!
+    data_path = RAW_DATA_PATH
     
     # Check if path exists
     if not Path(data_path).exists():
