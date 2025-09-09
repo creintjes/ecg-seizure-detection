@@ -116,6 +116,6 @@ jeppesen_seizeit2/
 
 ### 5. Expected Runtime
 
-- **Jeppesen Algorithm Analysis**: 2-4 hours (depending on amount of workers and hardware)
+- **Jeppesen Algorithm Analysis**: 2-3 days (depending on amount of workers and hardware)
 - **Results Analysis**: 5-10 minutes 
 
