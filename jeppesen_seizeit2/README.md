@@ -1,41 +1,114 @@
-# Jeppesen 2019 Ansatz für SeizeIT2 Dataset
+# Jeppesen 2019 Algorithm - ECG Seizure Detection
 
-## Überblick
+This folder contains the implementation and analysis scripts for the Jeppesen 2019 algorithm adapted for the SeizeIT2 dataset. The algorithm uses ECG-based heart rate variability features for seizure detection.
 
-Diese Implementierung adaptiert den Jeppesen 2019 ECG-basierten Epilepsie-Vorhersage-Ansatz für das SeizeIT2 Dataset.
 
-## Architektur
+## Reproducing Results
 
-### Datenstruktur Unterschiede:
-- **Original (Aarhus)**: TDMS-Dateien, patientenspezifische Ordnerstruktur
-- **SeizeIT2**: EDF-Dateien, BIDS-Format mit `sub-XXX/ses-01/modality/` Struktur
+Follow these steps to reproduce the results presented in the paper:
 
-### Feature-Pipeline:
-1. **ECG Laden**: SeizeIT2 EDF-Format → ECG Channel
-2. **R-Peak Erkennung**: Elgendi-Methode (8-20Hz Bandpass)
-3. **RR-Intervall Extraktion**: Peak-zu-Peak Zeitabstände
-4. **Feature-Berechnung**: CSI, ModCSI, HR-diff, Tachogram-Slope
-5. **Schwellenwert-Klassifikation**: Baseline-basierte Cutoffs
+### 1. Configuration Setup
 
-### Dateien:
-- `jeppesen_seizeit2.py` - Hauptskript mit Parallelverarbeitung
-- `seizeit2_utils.py` - SeizeIT2-spezifische Utility-Funktionen
-- `feature_extraction.py` - Jeppesen Feature-Implementierung
-- `config.py` - Konfiguration für Datenpfade und Parameter
+Before running any scripts, ensure the data paths are correctly configured:
 
-## Verwendung
-
+**File: `config.py`**
 ```python
-# Datenpfad anpassen in config.py
-SEIZEIT2_DATA_PATH = "/path/to/seizeit2/bids"
+# === DATENPFADE ===
+SEIZEIT2_DATA_PATH = Path("/home/swolf/asim_shared/raw_data/ds005873-1.1.0")
+RESULTS_DIR = Path("./results_full")
+```
 
-# Ausführung
+Update these paths according to your local setup:
+- `SEIZEIT2_DATA_PATH`: Path to the downloaded SeizeIT2 dataset
+- `RESULTS_DIR`: Directory where results will be saved
+
+> **Note for supervisors (Tim & Simon):** Raw data is available on both ds01 and ds03 servers at: `/home/swolf/asim_shared/raw_data/ds005873-1.1.0`
+
+### 2. Run Jeppesen Algorithm Analysis
+
+Execute the main Jeppesen algorithm analysis on the SeizeIT2 dataset:
+
+**Run the algorithm:**
+```bash
 python jeppesen_seizeit2.py
 ```
 
-## Anpassungen für SeizeIT2
+**Key Parameters (configured in config.py):**
+- **Peak detection method**: Elgendi algorithm
+- **Seizure padding**: 120 RR-intervals before, 120 after (cutoff), 120 before, 100 after (evaluation)
+- **Feature windows**: [50, 100] RR-intervals for CSI/ModCSI/HR-diff calculations
+- **Refractory period**: 3 minutes after prediction
+- **Parallel processing**: 10 workers (configurable via MAX_WORKERS)
 
-1. **Datenloader**: EDF statt TDMS, BIDS-Struktur
-2. **Annotation-Format**: TSV events statt proprietäre Seizure-IDs
-3. **Sampling-Rate**: 250Hz (SeizeIT2) vs 512Hz (Original)
-4. **Channel-Namen**: Automatische ECG-Channel-Erkennung
+**What this step does:**
+- Processes all subjects in the SeizeIT2 dataset
+- Extracts R-peaks using Elgendi method
+- Calculates heart rate variability features (CSI, ModCSI, HR differences)
+- Computes tachogram slope features
+- Generates ensemble feature combinations
+- Applies seizure detection using various parameter combinations
+- Outputs detailed CSV results with per-subject metrics
+
+**Expected Output:**
+- CSV files with detection results: `seizeit2_jeppesen_detection_elgendi_padding_{parameters}_{timestamp}.csv`
+- Interim checkpoint files for recovery: `interim_seizeit2_jeppesen_detection_*.csv`
+- Processing logs and progress information
+
+> **Note for supervisors (Tim & Simon):** Jeppesen analysis results are available in this repository at: `/jeppesen_seizeit2/results_full` (Runtime: ~2-3 days)
+
+### 3. Analyze Results
+
+After the Jeppesen algorithm analysis, analyze the results to calculate overall performance metrics:
+
+**Run the results analysis:**
+```bash
+python analyze_results.py <path_to_csv_file>
+```
+
+**Example Command:**
+```bash
+python analyze_results.py results_full/seizeit2_jeppesen_detection_elgendi_padding_120-120-120-100_20250821_105628.csv --output-txt jeppesen_analysis_report.txt
+```
+
+**Parameter Options:**
+- `csv_file` (required): Path to the results CSV file from step 2
+- `--output OUTPUT`: Output CSV file for summary metrics (optional)
+- `--output-txt OUTPUT_TXT`: Output TXT file for detailed analysis report (optional)
+
+**What this step does:**
+- Loads results from CSV file
+- Calculates overall sensitivity across all subjects and seizures
+- Computes false alarms per hour using actual recording durations
+- Performs train/test split analysis (subjects 001-096 for training, 097-125 for testing)
+- Generates detailed performance statistics and reports
+- Provides per-subject breakdown and ensemble method comparisons
+
+**Expected Output:**
+- Detailed analysis report (if --output-txt specified)
+- Summary metrics CSV (if --output specified)
+- Console output with key performance indicators (sensitivity, FAH)
+- Train/test split performance comparison
+
+> **Note for supervisors (Tim & Simon):** Analysis results and reports are available on ds01 server at: `/home/creintj2_sw/jeppesen/ecg-seizure-detection/jeppesen_seizeit2/results_full`
+
+### 4. File Structure
+
+```
+jeppesen_seizeit2/
+├── README.md                    # This file
+├── config.py                    # Configuration parameters
+├── jeppesen_seizeit2.py         # Main algorithm implementation
+├── analyze_results.py           # Results analysis script
+├── seizeit2_utils.py           # SeizeIT2 dataset utilities
+├── feature_extraction.py       # Heart rate variability feature extraction
+├── evaluation_utils.py         # Evaluation and metrics utilities
+└── results_full/               # Analysis results
+    ├── seizeit2_jeppesen_detection_*.csv
+    └── interim_seizeit2_jeppesen_detection_*.csv
+```
+
+### 5. Expected Runtime
+
+- **Jeppesen Algorithm Analysis**: 2-4 hours (depending on amount of workers and hardware)
+- **Results Analysis**: 5-10 minutes 
+
