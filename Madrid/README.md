@@ -21,6 +21,8 @@ Update these paths according to your local setup:
 - `RAW_DATA_PATH`: Path to the downloaded SeizeIT2 dataset
 - `PREPROCESSED_DATA_PATH`: Directory where preprocessed files will be saved
 
+> **Note for supervisors (Tim & Simon):** Raw data is available on both ds01 and ds03 servers at the path specified above: `/home/swolf/asim_shared/raw_data/ds005873-1.1.0`
+
 ### 2. Data Preprocessing
 
 The first step is to preprocess the raw ECG data using the parameters specified in our paper:
@@ -53,6 +55,8 @@ This script will:
 - Summary file: `preprocessing_summary.xlsx`
 - Processing statistics and data overview
 
+> **Note for supervisors (Tim & Simon):** Preprocessed data is available on both ds01 and ds03 servers at: `/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new`
+
 ### 3. Handle Short Recordings 
 
 Some ECG recordings may be shorter than the 3600-second window size, resulting in files with 0 windows that cannot be analyzed by Madrid. This step recovers these "lost" recordings using flexible windowing.
@@ -81,6 +85,8 @@ python preprocessing/reprocess_empty_windows.py \
 - **All data in one place**: Both original and recovered files in the same location
 - **Safe overwriting**: Only replaces the empty files (0 windows), preserves all other files
 
+> **Note for supervisors (Tim & Simon):** Reprocessed data (including recovered short recordings) is available on both ds01 and ds03 servers at: `/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new`
+
 ### 4. Madrid Algorithm Analysis
 
 After preprocessing is complete, run the Madrid algorithm analysis. 
@@ -105,6 +111,8 @@ python madrid_windowed_batch_processor_parallel.py \
 **Expected Output:**
 - JSON files with Madrid analysis results: `madrid_windowed_results_{subject_id}_{run_id}_{timestamp}.json`
 - Processing logs and progress information
+
+> **Note for supervisors (Tim & Simon):** Madrid analysis results are available on ds01 server at: `/home/creintj2_sw/ecg-seizure-detection/Madrid/results/results_8hz_window3600_stride1800_new20min` (Runtime: ~4 days total. You can use these existing results for reproduction instead of re-running the analysis.)
 
 ### 5. False Alarm Reduction with Clustering
 
@@ -156,6 +164,10 @@ Each configuration typically results in different optimal clustering strategies.
 - Metrics after clustering in `train_test_clustered_results/metrics_after/`
 - Final clustered results in `train_test_clustered_results/clusters/`
 - Complete summary in `train_test_clustered_results/complete_train_test_results_{timestamp}.json`
+
+> **Note for supervisors (Tim & Simon):** Clustering results are available on ds01 server at:
+> - **Without extended seizure window:** `/home/creintj2_sw/ecg-seizure-detection/Madrid/results/clustering_withoutSDW`
+> - **With extended seizure window:** `/home/creintj2_sw/ecg-seizure-detection/Madrid/results/clustering_withSDW`
 
 ### 6. Threshold Trade-off Analysis (Test Set Only)
 
@@ -211,6 +223,10 @@ self.clustering_time_threshold = 180  # Change this value to your desired strate
 - JSON files with detailed results for each threshold
 - Sensitivity vs FAR curves for publication
 
+> **Note for supervisors (Tim & Simon):** Threshold trade-off results are available on ds01 server at:
+> - **With extended seizure window:** `/home/creintj2_sw/ecg-seizure-detection/Madrid/results/trade_off_FAR_vs_Sens_withSDW`
+> - **Without extended seizure window:** `/home/creintj2_sw/ecg-seizure-detection/Madrid/results/trade_off_FAR_vs_Sens_n100_withoutSDW`
+
 ### 7. Seizure Type Analysis
 
 After completing the threshold trade-off analysis, perform seizure type analysis to understand which types of seizures are best detected by the Madrid algorithm using the optimal clustering strategy.
@@ -238,6 +254,14 @@ python madrid_clustered_seizure_type_analysis.py results_8hz_window3600_stride18
 - Generates seizure type-specific sensitivity and false alarm metrics
 - Provides insights into which seizure characteristics are better detected
 - Creates visualizations comparing detection rates across seizure types
+
+**Expected Output:**
+- Seizure type analysis report in `seizure_type_analysis/`
+- Detection metrics breakdown by seizure type (JSON format)
+- Visualization plots showing performance per seizure type
+- Statistical analysis of seizure type detection patterns
+
+> **Note for supervisors (Tim & Simon):** Seizure type analysis results are available on ds01 server at: `/home/creintj2_sw/ecg-seizure-detection/Madrid/results/seizureTypeAnalysis`
 
 
 ### 8. File Structure
