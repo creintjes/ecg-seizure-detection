@@ -15,6 +15,7 @@ import pandas as pd
 import time
 import csv
 import argparse
+from config import RAW_DATA_PATH
 
 
 # Configuration presets for different algorithms and experiments
@@ -62,7 +63,7 @@ def main():
     parser.add_argument('--config', choices=list(PREPROCESSING_CONFIGS.keys()), 
                        default='merlin_8hz', help='Preprocessing configuration preset')
     parser.add_argument('--data-path', type=str, 
-                       default="/home/swolf/asim_shared/raw_data/ds005873-1.1.0",
+                       default=RAW_DATA_PATH,
                        help='Path to SeizeIT2 dataset')
     parser.add_argument('--output-path', type=str,
                        default="/home/swolf/asim_shared/preprocessed_data/seizure_only/8hz_30min",

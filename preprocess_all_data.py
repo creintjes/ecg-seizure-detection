@@ -9,6 +9,140 @@ import os
 import time
 import pandas as pd
 import csv
+import numpy as np
+import sys
+from config import RAW_DATA_PATH
+
+# Add seizeit2 data classes to path
+sys.path.append(os.path.join(os.path.dirname(__file__), 'Information', 'Data', 'seizeit2_main'))
+from classes.data import Data
+from classes.annotation import Annotation
+
+
+def enhance_with_sample_level_labels(preprocessed_data, data_path, subject_id, run_id):
+    """
+    Enhance preprocessed data with sample-level seizure annotations.
+    
+    Args:
+        preprocessed_data: Output from preprocessing pipeline with window-level labels
+        data_path: Path to SeizeIT2 dataset
+        subject_id: Subject identifier
+        run_id: Run identifier
+        
+    Returns:
+        Enhanced preprocessed data with sample-level labels
+    """
+    try:
+        # Load original annotations
+        recording = [subject_id, run_id]
+        annotations = Annotation.loadAnnotation(data_path, recording)
+        seizure_events = annotations.events if annotations.events else []
+        
+        if not seizure_events:
+            # No seizures - return original data
+            return preprocessed_data
+        
+        # Create enhanced copy
+        enhanced_data = preprocessed_data.copy()
+        
+        for channel_idx, channel in enumerate(enhanced_data['channels']):
+            sampling_rate = channel['processed_fs']
+            windows = channel['windows']
+            metadata = channel['metadata']
+            
+            # Create sample-level labels for each window
+            sample_labels = []
+            enhanced_metadata = []
+            
+            for window_idx, (window_data, window_meta) in enumerate(zip(windows, metadata)):
+                window_start_time = window_meta['start_time']
+                window_end_time = window_meta['end_time']
+                window_samples = len(window_data)
+                
+                # Create sample-level labels for this window
+                window_sample_labels = np.zeros(window_samples, dtype=int)
+                
+                # Mark seizure samples
+                for seizure_start, seizure_end in seizure_events:
+                    # Calculate overlap with window
+                    overlap_start = max(window_start_time, seizure_start)
+                    overlap_end = min(window_end_time, seizure_end)
+                    
+                    if overlap_start < overlap_end:
+                        # Convert to sample indices within window
+                        sample_start = int((overlap_start - window_start_time) * sampling_rate)
+                        sample_end = int((overlap_end - window_start_time) * sampling_rate)
+                        
+                        # Ensure indices are within bounds
+                        sample_start = max(0, sample_start)
+                        sample_end = min(window_samples, sample_end)
+                        
+                        if sample_start < sample_end:
+                            window_sample_labels[sample_start:sample_end] = 1
+                
+                sample_labels.append(window_sample_labels)
+                
+                # Enhanced metadata with seizure details
+                n_seizure_samples = int(np.sum(window_sample_labels))
+                seizure_ratio = float(np.mean(window_sample_labels))
+                window_label = 1 if n_seizure_samples > 0 else 0
+                
+                enhanced_meta = window_meta.copy()
+                enhanced_meta.update({
+                    'window_label': window_label,
+                    'n_seizure_samples': n_seizure_samples,
+                    'seizure_ratio': seizure_ratio,
+                    'seizure_segments': extract_seizure_segments(
+                        window_sample_labels, window_start_time, sampling_rate
+                    )
+                })
+                enhanced_metadata.append(enhanced_meta)
+            
+            # Update channel data
+            enhanced_data['channels'][channel_idx]['labels'] = sample_labels
+            enhanced_data['channels'][channel_idx]['metadata'] = enhanced_metadata
+            enhanced_data['channels'][channel_idx]['n_seizure_windows'] = sum(
+                1 for meta in enhanced_metadata if meta['window_label'] == 1
+            )
+        
+        return enhanced_data
+        
+    except Exception as e:
+        print(f"Warning: Could not enhance with sample-level labels for {subject_id} {run_id}: {e}")
+        return preprocessed_data
+
+
+def extract_seizure_segments(window_labels, window_start_time, sampling_rate):
+    """
+    Extract continuous seizure segments from window labels.
+    
+    Args:
+        window_labels: Sample-level labels for the window (0/1 array)
+        window_start_time: Start time of the window in seconds
+        sampling_rate: Sampling frequency
+        
+    Returns:
+        List of seizure segments with timing information
+    """
+    segments = []
+    
+    # Find continuous seizure regions
+    diff = np.diff(np.concatenate(([0], window_labels, [0])))
+    seizure_starts = np.where(diff == 1)[0]
+    seizure_ends = np.where(diff == -1)[0]
+    
+    for start_idx, end_idx in zip(seizure_starts, seizure_ends):
+        segment = {
+            'start_sample_in_window': int(start_idx),
+            'end_sample_in_window': int(end_idx),
+            'start_time_absolute': float(window_start_time + start_idx / sampling_rate),
+            'end_time_absolute': float(window_start_time + end_idx / sampling_rate),
+            'duration_seconds': float((end_idx - start_idx) / sampling_rate),
+            'n_samples': int(end_idx - start_idx)
+        }
+        segments.append(segment)
+    
+    return segments
 
 
 def discover_all_recordings(data_path):
@@ -67,7 +201,7 @@ def main():
     )
     
     # Set data path
-    data_path = "/home/swolf/asim_shared/raw_data/ds005873-1.1.0" 
+    data_path = RAW_DATA_PATH 
     
     if not Path(data_path).exists():
         print(f"Error: Data path {data_path} does not exist!")
@@ -87,7 +221,7 @@ def main():
     # Create output directory
     results_path = Path(
         "/home/swolf/asim_shared/preprocessed_data/"
-        "downsample_freq=8,window_size=3600_0,stride=1800_0"
+        "downsample_freq=8,window_size=3600_0,stride=1800_0_new"
     )
     results_path.mkdir(parents=True, exist_ok=True)
     
@@ -120,16 +254,19 @@ def main():
                 result = preprocessor.preprocess_pipeline(data_path, subject_id, run_id)
 
                 if result is not None:
+                    # Enhance with sample-level seizure annotations
+                    enhanced_result = enhance_with_sample_level_labels(result, data_path, subject_id, run_id)
+                    
                     # Save individual result
                     filename = f"{subject_id}_{run_id}_preprocessed.pkl"
                     filepath = results_path / filename
-                    pd.to_pickle(result, filepath)
+                    pd.to_pickle(enhanced_result, filepath)
                     
                     successful_recordings.append((subject_id, run_id))
                     
                     # Print summary
-                    total_windows = sum(ch['n_windows'] for ch in result['channels'])
-                    seizure_windows = sum(ch['n_seizure_windows'] for ch in result['channels'])
+                    total_windows = sum(ch['n_windows'] for ch in enhanced_result['channels'])
+                    seizure_windows = sum(ch['n_seizure_windows'] for ch in enhanced_result['channels'])
                     
                     print(f"Success: {total_windows} windows ({seizure_windows} seizure)")
                 else:
