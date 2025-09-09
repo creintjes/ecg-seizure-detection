@@ -41,7 +41,8 @@ import threading
 
 warnings.filterwarnings('ignore')
 
-# Add models directory to path
+# Add current directory and models directory to path
+sys.path.append(os.path.dirname(__file__))
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 try:
