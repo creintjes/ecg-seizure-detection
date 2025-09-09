@@ -40,7 +40,7 @@ This script will:
 - Apply bandpass filtering (0.5-40 Hz)
 - Downsample to 8 Hz
 - Create 3600-second windows with 1800-second stride
-- Save preprocessed data to `PREPROCESSED_DATA_PATH/downsample_freq=8,window_size=3600_0,stride=1800_0_new/`
+- Save preprocessed data to `PREPROCESSED_DATA_PATH/downsample_freq=8,window_size=3600_0,stride=1800_0_reproduced/`
 - Generate preprocessing summary statistics
 
 **Expected output:**
