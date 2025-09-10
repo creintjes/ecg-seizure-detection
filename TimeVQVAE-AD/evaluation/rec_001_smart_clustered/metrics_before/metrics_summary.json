@@ -1,8 +1,0 @@
-{
-  "total_anomalies": 929,
-  "true_positives": 3,
-  "false_positives": 926,
-  "event_recall": 0.75,
-  "event_iou": 0.0032258064516129032,
-  "event_far_per_hour": 8.688852746152884
-}
