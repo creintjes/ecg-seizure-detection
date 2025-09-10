@@ -297,8 +297,9 @@ def evaluate_fn(config,
     # load model
     expand_labels = config['dataset']['expand_labels']
     input_length = window_size = set_window_size(config['dataset']['downsample_freq'], config['dataset']['n_periods'], bpm=config['dataset']['heartbeats_per_minute'])
-    stage2 = ExpStage2.load_from_checkpoint(os.path.join('saved_models', f'stage2-all{"_window" if expand_labels else "_no_window"}.ckpt'), 
-                                            dataset_idx=dataset_idx, input_length=input_length, config=config, 
+    path = os.path.join('saved_models', f'stage2-all{"_window" if expand_labels else "_no_window"}.ckpt')
+    stage2 = ExpStage2.load_from_checkpoint(path, 
+                                            dataset_idx="all", input_length=input_length, config=config, 
                                             map_location=f'cuda:{device}')
     maskgit = stage2.maskgit
     maskgit.eval()
@@ -350,55 +351,55 @@ def evaluate_fn(config,
 
     # ================================ plot ================================
     # Calculate n_rows dynamically: 1 (X_test) + 1 (imshow) + n_freq (individual plots) + 1 (reconstruction)
-    n_rows = 3 + a_star.shape[0]  # 3 fixed plots + number of frequency bands
-    fig, axes = plt.subplots(n_rows, 1, figsize=(25, 1.5 * n_rows))
-    fontsize= 15
+    # n_rows = 3 + a_star.shape[0]  # 3 fixed plots + number of frequency bands
+    # fig, axes = plt.subplots(n_rows, 1, figsize=(25, 1.5 * n_rows))
+    # fontsize= 15
 
     # plot: X_test & labels
-    i = 0
-    axes[i].plot(X_test_unscaled, color='black')
-    axes[i].set_xlim(0, X_test_unscaled.shape[0] - 1)
-    axes[i].set_title(f"dataset idx: {dataset_idx} | latent window size rate: {latent_window_size_rate}", fontsize=20)
-    ax2 = axes[i].twinx()
-    ax2.plot(Y, alpha=0.5, color='C1')
+    # i = 0
+    # axes[i].plot(X_test_unscaled, color='black')
+    # axes[i].set_xlim(0, X_test_unscaled.shape[0] - 1)
+    # axes[i].set_title(f"dataset idx: {dataset_idx} | latent window size rate: {latent_window_size_rate}", fontsize=20)
+    # ax2 = axes[i].twinx()
+    # ax2.plot(Y, alpha=0.5, color='C1')
 
     # plot: anomaly score
-    i += 1
-    vmin = np.nanquantile(np.array(a_star).flatten(), q=0.5)  # q to remove the insignificant values in imshow.
-    axes[i].imshow(a_star, interpolation='nearest', aspect='auto', vmin=vmin)
-    axes[i].invert_yaxis()
-    axes[i].set_xticks([])
-    ylabel = 'clipped\n' + r'$a^*$'
-    axes[i].set_ylabel(ylabel, fontsize=fontsize, rotation=0, labelpad=10, ha='right', va='center')
+    # i += 1
+    # vmin = np.nanquantile(np.array(a_star).flatten(), q=0.5)  # q to remove the insignificant values in imshow.
+    # axes[i].imshow(a_star, interpolation='nearest', aspect='auto', vmin=vmin)
+    # axes[i].invert_yaxis()
+    # axes[i].set_xticks([])
+    # ylabel = 'clipped\n' + r'$a^*$'
+    # axes[i].set_ylabel(ylabel, fontsize=fontsize, rotation=0, labelpad=10, ha='right', va='center')
 
-    ylim_max = np.max(a_star) * 1.05
-    for j in range(a_star.shape[0]):
-        i += 1
-        axes[i].plot(a_star[j])
-        axes[i].set_xticks([])
-        xlim = (0, a_star[j].shape[0] - 1)
-        axes[i].set_xlim(*xlim)
-        axes[i].set_ylim(None, ylim_max)
-        # axes[i].set_ylim(0, 60)
-        # axes[i].set_ylabel(f'anom (freq={j + 1}-th) \n kernel_size: {kernel_size}')
-        h_idx = f'h={j}'
-        axes[i].set_ylabel(r'$(a^*)_{{{}}}$'.format(h_idx),
-                           fontsize=fontsize, rotation=0, labelpad=35, va='center')
-        threshold = 1e99 if anom_threshold[j] == np.inf else anom_threshold[j]
-        axes[i].hlines(threshold, xmin=xlim[0], xmax=xlim[1], linestyle='--', color='black')
+    # ylim_max = np.max(a_star) * 1.05
+    # for j in range(a_star.shape[0]):
+    #     i += 1
+    #     axes[i].plot(a_star[j])
+    #     axes[i].set_xticks([])
+    #     xlim = (0, a_star[j].shape[0] - 1)
+    #     axes[i].set_xlim(*xlim)
+    #     axes[i].set_ylim(None, ylim_max)
+    #     # axes[i].set_ylim(0, 60)
+    #     # axes[i].set_ylabel(f'anom (freq={j + 1}-th) \n kernel_size: {kernel_size}')
+    #     h_idx = f'h={j}'
+    #     axes[i].set_ylabel(r'$(a^*)_{{{}}}$'.format(h_idx),
+    #                        fontsize=fontsize, rotation=0, labelpad=35, va='center')
+    #     threshold = 1e99 if anom_threshold[j] == np.inf else anom_threshold[j]
+    #     axes[i].hlines(threshold, xmin=xlim[0], xmax=xlim[1], linestyle='--', color='black')
 
     # plot: reconstruction
-    i += 1
-    axes[i].plot(X_test_unscaled, color='black')
-    axes[i].plot(X_recons_test, alpha=0.5, color='C1')
-    axes[i].set_xticks([])
-    axes[i].set_xlim(0, X_test_unscaled.shape[0] - 1)
-    axes[i].set_ylabel('recons', fontsize=fontsize)
+    # i += 1
+    # axes[i].plot(X_test_unscaled, color='black')
+    # axes[i].plot(X_recons_test, alpha=0.5, color='C1')
+    # axes[i].set_xticks([])
+    # axes[i].set_xlim(0, X_test_unscaled.shape[0] - 1)
+    # axes[i].set_ylabel('recons', fontsize=fontsize)
 
-    # save: plot
-    plt.tight_layout()
-    plt.savefig(get_root_dir().joinpath('evaluation', 'results', f'{dataset_idx}-anomaly_score-latent_window_size_rate_{latent_window_size_rate}.png'))
-    plt.close()
+    # # save: plot
+    # plt.tight_layout()
+    # plt.savefig(get_root_dir().joinpath('evaluation', 'results', f'{dataset_idx}-anomaly_score-latent_window_size_rate_{latent_window_size_rate}.png'))
+    # plt.close()
 
     # save: resulting data
     resulting_data = {'dataset_index': dataset_idx,

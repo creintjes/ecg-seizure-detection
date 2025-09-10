@@ -1,0 +1,32 @@
+{
+  "strategy": "time_2s",
+  "before": {
+    "total_anomalies": 8,
+    "true_positives": 1,
+    "false_positives": 7,
+    "event_recall": 1.0,
+    "event_iou": 0.125,
+    "event_far_per_hour": 0.06091900673009979
+  },
+  "after": {
+    "total_anomalies": 8,
+    "true_positives": 1,
+    "false_positives": 7,
+    "anomaly_reduction": 0.0,
+    "fp_reduction": 0.0,
+    "event_recall": 1.0,
+    "event_iou": 0.125,
+    "event_far_per_hour": 0.06091900673009979,
+    "event_recall_change": 0.0,
+    "sensitivity_penalty": 0.0,
+    "over_clustering_penalty": 41351.625,
+    "score": -41351.625
+  },
+  "improvements": {
+    "anomaly_reduction_pct": 0.0,
+    "fp_reduction_pct": 0.0,
+    "event_recall_change": 0.0,
+    "event_iou_improvement": 0.0,
+    "event_far_change": 0.0
+  }
+}

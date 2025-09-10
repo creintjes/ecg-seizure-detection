@@ -1,11 +1,8 @@
 {
-  "total_files": 1,
-  "files_with_seizures": 1,
-  "files_with_detected_seizures": 1,
-  "total_anomalies": 81,
-  "true_positives": 1,
-  "false_positives": 80,
-  "sensitivity": 1.0,
-  "precision": 0.012345679012345678,
-  "false_alarm_rate": 0.9876543209876543
+  "total_anomalies": 929,
+  "true_positives": 3,
+  "false_positives": 926,
+  "event_recall": 0.75,
+  "event_iou": 0.0032258064516129032,
+  "event_far_per_hour": 8.688852746152884
 }
