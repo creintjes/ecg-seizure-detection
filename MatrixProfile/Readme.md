@@ -13,7 +13,7 @@ This project implements an **ECG-based anomaly detection pipeline using Matrix P
 ```plaintext
 
 ├── configs/                      # Configuration files (validation/test splits)
-├── legacy_code/                  # Old or experimental code
+├── legacy_code/                  # Old or experimental code - should not be graded!
 ├── mv_mp/                        # Multivariate matrix profile storage
 ├── notebooks/                    # Jupyter notebooks (e.g., experiments, visualization)
 ├── results/                      # Result files (Excel files - output of hp tuning)
