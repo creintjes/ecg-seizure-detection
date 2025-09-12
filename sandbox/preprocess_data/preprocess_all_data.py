@@ -3,7 +3,7 @@
 Script to preprocess ALL ECG data from the SeizeIT2 dataset.
 """
 
-from preprocessing import ECGPreprocessor
+from sandbox.preprocess_data.preprocessing import ECGPreprocessor
 from pathlib import Path
 import os
 import time
@@ -61,7 +61,7 @@ def main():
             'high_freq': 40.0,   # Remove high-frequency noise
             'order': 4           # Filter order
         },
-        downsample_freq=32,     # Target sampling rate
+        downsample_freq=8,     # Target sampling rate
         window_size=3600.0,        # 30 second windows
         stride=1800.0              # 50% overlap
     )
@@ -87,7 +87,7 @@ def main():
     # Create output directory
     results_path = Path(
         "/home/swolf/asim_shared/preprocessed_data/"
-        "downsample_freq=32,window_size=3600_0,stride=1800_0"
+        "downsample_freq=8,window_size=3600_0,stride=1800_0"
     )
     results_path.mkdir(parents=True, exist_ok=True)
     

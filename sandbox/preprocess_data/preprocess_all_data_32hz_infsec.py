@@ -3,7 +3,7 @@
 Script to preprocess ALL ECG data from the SeizeIT2 dataset.
 """
 
-from preprocessing import ECGPreprocessor
+from sandbox.preprocess_data.preprocessing import ECGPreprocessor
 from pathlib import Path
 import os
 import time
@@ -62,8 +62,9 @@ def main():
             'order': 4           # Filter order
         },
         downsample_freq=32,     # Target sampling rate
-        window_size=120.0,        # 120 second windows
-        stride=60.0              # 50% overlap
+        window_size=3600,        # 120 second windows
+        stride=60.0,             # 50% overlap
+        create_window=False
     )
     
     # Set data path
@@ -83,11 +84,11 @@ def main():
         return
     
     print(f"Found {len(recordings)} recordings to process")
-    
+    print(f"downsample_freq={preprocessor.downsample_freq}")
     # Create output directory
     results_path = Path(
-        "/home/swolf/asim_shared/preprocessed_data/"
-        "downsample_freq=32,window_size=120_0,stride=60_0"
+        f"/home/swolf/asim_shared/preprocessed_data/downsample_freq={preprocessor.downsample_freq},no_windows"
+        # "/home/jhagenbe_sw/ASIM/ecg-seizure-detection/PP_demo_jh"
     )
     results_path.mkdir(parents=True, exist_ok=True)
     
@@ -202,8 +203,9 @@ def main():
 
         print(f"  • Total recording duration:   {total_duration/3600:.1f} hours")
         print(f"  • Total windows created:      {total_windows:,}")
-        print(f"  • Seizure windows:            {total_seizure_windows:,}")
-        print(f"  • Seizure percentage:         {seizure_percentage:.2f}%")
+        if preprocessor.create_window: 
+            print(f"  • Seizure windows:            {total_seizure_windows:,}")
+            print(f"  • Seizure percentage:         {seizure_percentage:.2f}%")
 
         total_size = sum(f.stat().st_size for f in results_path.glob("*.pkl"))
         print(f"  • Total storage size:         {total_size/(1024**3):.2f} GB")

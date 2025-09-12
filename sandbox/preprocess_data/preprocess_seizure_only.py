@@ -9,7 +9,7 @@ This script implements a targeted preprocessing approach that:
 - Enables rapid parameter optimization and algorithm testing
 """
 
-from seizure_only_preprocessing import SeizureOnlyECGPreprocessor
+from sandbox.preprocess_data.seizure_only_preprocessing import SeizureOnlyECGPreprocessor
 from pathlib import Path
 import pandas as pd
 import time
