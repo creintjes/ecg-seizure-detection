@@ -77,7 +77,6 @@ def load_one_preprocessed_sample(filepath: str) -> Tuple[List[np.ndarray], List[
                 print(50*"-")
                 print(f"Missig channels or data in file: {filepath}")
                 return None
-                
 
             # Since data only cover 1 channel we can use chanell[0]
             channel_data = data["channels"][0]
@@ -85,7 +84,6 @@ def load_one_preprocessed_sample(filepath: str) -> Tuple[List[np.ndarray], List[
             labels = channel_data.get("labels", [])
 
     except (EOFError, pickle.UnpicklingError) as e:
-        # print(f"Warning: {filename} is empty or corrupted.")
         print(f"Corrupted pickle file: {filepath} ({e})")
         return None
     return windows, labels
@@ -99,7 +97,6 @@ def save_numpy_array_list(array_list: list[np.ndarray], name:str, path:str) -> N
     array_list : list[np.ndarray]
         List of NumPy arrays to save.
     """
-    # timestamp = datetime.now().strftime("%H-%M-%S")
     timestamp = datetime.now().strftime("%d.%m.%Y, %H:%M")
     filename = f"/home/swolf/asim_shared/results/MP/{name}_{timestamp}.pkl"
     
@@ -138,12 +135,9 @@ def _map_anomaly_seconds_to_downsample_indices(times_sec: list[float],
     """
     return [int(round(t * downsample_freq)) for t in times_sec]
 
-
 def MatProfDemo()-> None:
     print(f'Started MP calc at {datetime.now().strftime("%d.%m.%Y, %H:%M")}')
-    
     data_path = "/home/swolf/asim_shared/raw_data/ds005873-1.1.0" 
-
     downsample_freq: int=8
     window_size_sec:int = 25
     subsequence_length:int = downsample_freq*window_size_sec # Assuming seizure of max. N sec
@@ -151,7 +145,6 @@ def MatProfDemo()-> None:
     approx_matrix_profile: bool = False
     multi_variate_matrix_profile: bool = True
     printer_int = 100
-    # Add parent directory (../) to sys.path
     project_root = Path().resolve().parent
     if str(project_root) not in sys.path:
         sys.path.insert(0, str(project_root))
@@ -162,17 +155,12 @@ def MatProfDemo()-> None:
     results_path.mkdir(parents=True, exist_ok=True)
 
     data, annotations = load_data(data_path=data_path, subject_id="sub-012", run_id="run-03")
-    # data = data[0]
-    # print(data.shape)
-    # print(len(data))
     print(data)
     print(annotations.events)
     gt_intervals = annotations.events
     if not gt_intervals:
         return
-    # annomaly_indices = [int(idx) for idx in annomaly_indices]
-    # print(annomaly_indices)
-    # return
+
     data_ecg = None
     for i, (channel_data, channel_name, fs) in enumerate(
                 zip(data.data, data.channels, data.fs)
@@ -186,19 +174,7 @@ def MatProfDemo()-> None:
     print(int(data.fs[0]))
     frequency = int(data.fs[0])
     print(data_ecg.shape)
-    # return
-    # features, timestamps = MatrixProfile.process_ecg_to_hrv_features(data_ecg, sampling_rate=frequency)
-    # print("Feature shape:", features.shape)
-    # anomalies, tp, fp, mp = MatrixProfile.detect_anomalies_from_hrv_features(
-        # features,
-        # timestamps,
-        # subsequence_length=20,
-        # ground_truth_intervals=gt_intervals,
-        # sampling_rate=256,
-        # top_k_percent=10.0
-    # )
-
-
+    
     # Toggle here: HRV features (slow) vs. lightweight FFT features (fast)
     use_lightweight_features: bool = True  
 
@@ -232,7 +208,7 @@ def MatProfDemo()-> None:
         k: int = max(1, int(0.10 * len(mp_mean)))
         anomaly_feature_indices: list[int] = MatrixProfile.get_top_k_anomaly_indices(mp_mean, k=k)
 
-        # Map feature-index → time (sec) using subsequence center
+        # Map feature-index -> time (sec) using subsequence center
         m: int = 20  # must match subsequence_length used in mstump
         anomaly_times_sec: list[float] = []
         for i in anomaly_feature_indices:

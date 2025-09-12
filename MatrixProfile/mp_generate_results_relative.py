@@ -71,8 +71,6 @@ def produce_mp_results(
     Returns:
         tuple: (loaded_recs, loaded_recs_resp, sensitivity, false_alarms_per_hour, resp_sensitivity, resp_false_alarms_per_hour, overview)
     """
-
-
     if not recording_list_excel:
         return 0, 0, 0.0, 0.0, 0.0, 0.0, {}
 
@@ -275,8 +273,6 @@ def append_rf_samples_to_xlsx(
     df_out.to_excel(out_path, index=False)
     print(f"Appended {len(df)} samples from {subject}_{run} to {out_path}.")
 
-
-
 def run_grid_search(
     param_grid: Dict[str, List[Any]],
     target_function: Callable[..., Any],
@@ -294,8 +290,6 @@ def run_grid_search(
         test_excel_path (str): Path to test file list.
         save_results (bool): Whether to save results to file.
     """
-
-
     keys = list(param_grid.keys())
     combinations = list(itertools.product(*(param_grid[key] for key in keys)))
 
@@ -348,8 +342,6 @@ def run_grid_search(
             print(f"Error with parameters {params}: {e}")
             continue
 
-
-
 if __name__ == "__main__":
     downsample_freq = 8
     window_size_sec = 25
@@ -387,24 +379,7 @@ if __name__ == "__main__":
         "MPs_path": [f"/home/swolf/asim_shared/results/MP/downsample_freq={downsample_freq},no_windows/seq_len{window_size_sec}sec"]
     }
 
-    # run_grid_search(
-    #     param_grid=parameter_grid_relative,
-    #     target_function=produce_mp_results,
-    #     val_excel_path=val_excel_path,
-    #     test_excel_path=test_excel_path,
-    #     save_results=True
-    # )
-    # run_grid_search(
-    #     param_grid=parameter_grid_detection_window_relative,
-    #     target_function=produce_mp_results,
-    #     val_excel_path=val_excel_path,
-    #     test_excel_path=test_excel_path,
-    #     save_results=True
-    # )
     from concurrent.futures import ThreadPoolExecutor
-
-
-
     # Run both grid searches in parallel threads
     with ThreadPoolExecutor(max_workers=2) as executor:
         futures = [
@@ -426,7 +401,6 @@ if __name__ == "__main__":
             ),
         ]
 
-        # Warten bis beide fertig sind (und Exceptions ggf. auslösen)
         for f in futures:
             f.result()
 

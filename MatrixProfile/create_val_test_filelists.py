@@ -2,9 +2,7 @@ import os
 import re
 from pathlib import Path
 from typing import List, Tuple, Dict
-
 import pandas as pd
-
 
 def extract_subject_run_pairs(mps_path: str) -> List[str]:
     """
@@ -56,7 +54,6 @@ def _parse_subject_and_run(sr: str) -> Tuple[str, int]:
     subject_label: str = m.group(1)
     run_number: int = int(m.group(2))
     return subject_label, run_number
-
 
 def create_val_test_split_by_subject_ranges(
     mps_path: str,
@@ -148,7 +145,6 @@ def create_val_test_split_by_subject_ranges(
     print(f"Test list saved to: {test_path} (n={len(test_df)})")
 
     return val_df, test_df
-
 
 if __name__ == "__main__":
     # Example usage with your paths

@@ -259,30 +259,3 @@ if __name__ == "__main__":
         test_excel_path=test_excel_path,
         save_results=True
     )
-
-    # parameter_grid: Dict[str, List[Any]] = {
-    #     "amount_of_annomalies_per_record": [1500, 2000, 3000, 4000],
-    #     "batch_size_load": [100],
-    #     "downsample_freq": [downsample_freq],
-    #     "max_gap_annos_in_sec": [1,10, 15, 20, 25, 30],
-    #     "n_cons": [1, 3, 5, 10, 35],
-    #     "window_size_sec": [window_size_sec],
-    #     "pre_thresh_sec": [0],
-    #     "post_thresh_sec": [0],
-    #     "verbose": [False],
-    #     "DIR_preprocessed": [f"/home/swolf/asim_shared/preprocessed_data/downsample_freq={downsample_freq},no_windows"],
-    #     "MPs_path": [f"/home/swolf/asim_shared/results/MP/downsample_freq={downsample_freq},no_windows/seq_len{window_size_sec}sec"]
-    # }
-    # parameter_grid_detection_window: Dict[str, List[Any]] = {
-    #     "amount_of_annomalies_per_record": [1500, 2000, 3000, 4000],
-    #     "batch_size_load": [100],
-    #     "downsample_freq": [downsample_freq],
-    #     "max_gap_annos_in_sec": [1,10, 15, 20, 25, 30],
-    #     "n_cons": [1, 3, 5, 10, 35],
-    #     "window_size_sec": [window_size_sec],
-    #     "pre_thresh_sec": [60 * 5],
-    #     "post_thresh_sec": [60 * 3],
-    #     "verbose": [False],
-    #     "DIR_preprocessed": [f"/home/swolf/asim_shared/preprocessed_data/downsample_freq={downsample_freq},no_windows"],
-    #     "MPs_path": [f"/home/swolf/asim_shared/results/MP/downsample_freq={downsample_freq},no_windows/seq_len{window_size_sec}sec"]
-    # }
