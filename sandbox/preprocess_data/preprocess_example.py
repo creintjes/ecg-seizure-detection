@@ -3,7 +3,7 @@
 Example script for ECG preprocessing using the ECGPreprocessor class.
 """
 
-from preprocessing import ECGPreprocessor
+from sandbox.preprocess_data.preprocessing import ECGPreprocessor
 from pathlib import Path
 import sys
 from config import RAW_DATA_PATH

@@ -40,7 +40,6 @@ def load_preprocessed_samples(data_dir: str, max_loaded_files: int) -> Tuple[Lis
 
                     if not data or "channels" not in data:
                         continue
-
                     # Iterate through each ECG channel
                     for channel_data in data["channels"]:
                         windows = channel_data.get("windows", [])
@@ -56,3 +55,40 @@ def load_preprocessed_samples(data_dir: str, max_loaded_files: int) -> Tuple[Lis
                 continue
     print(f"Amount empty or corrupted files {amount_empty_or_corrupted_files}.")
     return all_samples, all_labels
+
+def load_one_preprocessed_sample(filepath: str) -> Tuple[List[np.ndarray], List[int]]:
+    """
+    Load preprocessed ECG window samples from pickle files and collect them into a list.
+
+    Args:
+        data_dir: Path to directory containing the preprocessed .pkl files.
+
+    Returns:
+        List of windowed ECG samples as numpy arrays and a List with their according labels [0 or 1].
+    """
+    # Skip empty files
+    if os.path.getsize(filepath) == 0:
+        print(50*"-")
+        print(f"Skipped empty file: {filepath}")
+        return None
+
+    try:
+        with open(filepath, 'rb') as file:
+            data = pickle.load(file)
+
+            if not data or "channels" not in data:
+                print(50*"-")
+                print(f"Missig channels or data in file: {filepath}")
+                return None
+                
+
+            # Since data only cover 1 channel we can use chanell[0]
+            channel_data = data["channels"][0]
+            windows = channel_data.get("windows", [])
+            labels = channel_data.get("labels", [])
+
+    except (EOFError, pickle.UnpicklingError) as e:
+        # print(f"Warning: {filename} is empty or corrupted.")
+        print(f"Corrupted pickle file: {filepath} ({e})")
+        return None
+    return windows, labels

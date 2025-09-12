@@ -131,11 +131,12 @@ def compute_sensitivity_false_alarm_rate_timing_tolerance(
     true_positives = 0
     false_positives = 0
     total_detections = 0
-
+    hours = 0
     tolerance_left = int(lower * frequency)
     tolerance_right = int(upper * frequency)
 
     for labels, indices in zip(label_sequences, detection_indices):
+        hours += (labels.__len__()/frequency)/3600
         labels = np.asarray(labels)
         indices_set = set(indices)
         total_detections += len(indices)
@@ -143,6 +144,7 @@ def compute_sensitivity_false_alarm_rate_timing_tolerance(
         # Efficient extraction of event regions
         event_indices = np.where(labels == 1)[0]
         if event_indices.size == 0:
+            false_positives += len(indices)
             continue
 
         # Identify contiguous event regions
@@ -163,7 +165,12 @@ def compute_sensitivity_false_alarm_rate_timing_tolerance(
             if not any(start <= idx <= end for start, end in event_regions):
                 false_positives += 1
 
-    sensitivity = true_positives / total_events if total_events > 0 else 0.0
-    false_alarm_rate = false_positives / total_detections if total_detections > 0 else 0.0
+    # sensitivity = true_positives / total_events if total_events > 0 else 0.0
+    # false_alarm_rate = false_positives / total_detections if total_detections > 0 else 0.0
+    false_alarms_per_hour = false_positives/hours
+    # print(f"False alarms per hour {false_positives/hours}")
+    # return true_positives, false_positives, hours, total_events
+    return true_positives, false_positives, hours, total_events
 
-    return sensitivity, false_alarm_rate
+    # return sensitivity, false_alarm_rate, true_positives, false_positives
+
