@@ -4,8 +4,6 @@ Stage 1: VQ training
 run `python stage1.py`
 """
 import os
-
-os.environ["PYTORCH_ENABLE_MPS_FALLBACK"] = "1"
 from argparse import ArgumentParser
 import datetime
 
@@ -16,16 +14,16 @@ from pytorch_lightning.loggers import WandbLogger
 from torch.utils.data import DataLoader
 
 from experiments.exp_stage1 import ExpStage1
-from preprocessing.preprocess import UCR_AnomalySequence
 from preprocessing.data_pipeline import build_data_pipeline
 from utils import get_root_dir, load_yaml_param_settings, set_window_size
+from pathlib import Path
 
 def load_args():
     parser = ArgumentParser()
     parser.add_argument('--config', type=str, help="Path to the config data  file.",
                         default=get_root_dir().joinpath('configs', 'config.yaml'))
     parser.add_argument('--gpu_device_ind', nargs='+', default=[0], type=int)
-    parser.add_argument('--dataset_ind', default='1', nargs='+', help='e.g., 1 2 3. Indices of datasets to run experiments on.')
+    parser.add_argument('--dataset_ind', default=None, nargs='+', help='e.g., 1 2 3. Indices of datasets to run experiments on.')
     return parser.parse_args()
 
 
@@ -39,7 +37,7 @@ def train_stage1(config: dict,
     """
     :param do_validate: if True, validation is conducted during training with a test dataset.
     """
-    project_name = 'TimeVQVAE-AnomalyDetection-stage1'
+    project_name = config['dataset']['names'] + "-stage1"
     
     # fit
     input_length = window_size
@@ -70,7 +68,7 @@ def train_stage1(config: dict,
     wandb.finish()
 
     print('saving the models...')
-    trainer.save_checkpoint(os.path.join(f'saved_models', f'stage1-{dataset_idx}.ckpt'))
+    trainer.save_checkpoint(os.path.join(f'saved_models', f'stage1-{dataset_idx}{"_window" if expand_labels else "_no_window"}.ckpt'))
 
 
 if __name__ == '__main__':
@@ -78,18 +76,39 @@ if __name__ == '__main__':
     args = load_args()
     config = load_yaml_param_settings(args.config)
 
-    for idx in args.dataset_ind:
-        dataset_idx = int(idx)
-        dataset_importer = UCR_AnomalySequence.create_by_id(dataset_idx)
+    sr = config['dataset']['downsample_freq']
+    data_dir = Path(config['dataset']['root_dir'] + f"/downsample_freq={sr},no_windows")
+    batch_size = config['dataset']['batch_sizes']['stage1']
+    num_workers = config['dataset']['num_workers']
+    n_periods = config['dataset']['n_periods']
+    bpm = config['dataset']['heartbeats_per_minute']
+    stride = config['dataset']['stride']
+    expand_labels = config['dataset']['expand_labels']
 
-        window_size = set_window_size(dataset_idx, config['dataset']['n_periods'])
-        batch_size = config['dataset']['batch_sizes']['stage1']
-        num_workers = config['dataset']["num_workers"]
-        train_data_loader, test_data_loader = [build_data_pipeline(batch_size,
-                                                                   dataset_importer,
-                                                                   kind,
-                                                                   window_size,
-                                                                   num_workers) for kind in ['train', 'test']]
-
+    window_size = set_window_size(sr, n_periods, bpm=bpm)
+    if not args.dataset_ind:
+        args.dataset_ind = ["all"]
+    for dataset_idx in [x for idx in args.dataset_ind for x in idx.split(',')]:
+        sub = f"{int(dataset_idx):03d}" if str(dataset_idx) != "all" else "all"
+        checkpoint_path = os.path.join('saved_models', f'stage1-{sub}{"_window" if expand_labels else "_no_window"}.ckpt')
+        if os.path.exists(checkpoint_path):
+            print(f"Skipping training for {sub}, checkpoint already exists at {checkpoint_path}")
+            continue
+        train_data_loader, test_data_loader = [build_data_pipeline(
+                    batch_size,
+                    data_dir,
+                    sub,
+                    kind,
+                    window_size,
+                    stride,
+                    num_workers,
+                    sampling_rate=sr,
+                    expand_labels=expand_labels,
+                    n_periods=n_periods,
+                    bpm=bpm
+                ) for kind in ['train', 'test']
+            ]
         # train
-        train_stage1(config, dataset_idx, window_size, train_data_loader, test_data_loader, args.gpu_device_ind)
+        train_stage1(config, sub, window_size, train_data_loader, test_data_loader, args.gpu_device_ind)
+
+        

@@ -1,10 +1,16 @@
 dataset:
+  names: SeizeIT2-ECG-TimeVQVAE-AD
+  root_dir: /home/swolf/asim_shared/preprocessed_data
+  downsample_freq: 8
+  stride: -1
   in_channels: 1
   batch_sizes:
-    stage1: 256 #512
-    stage2: 128 #256 #512
+    stage1: 1792
+    stage2: 576
   num_workers: 0
-  n_periods: 2  # window_size = n_periods * period_length; REF: MERLIN++
+  heartbeats_per_minute: 75
+  n_periods: 120
+  expand_labels: False
 
 exp_params:
   lr:
@@ -13,41 +19,37 @@ exp_params:
   linear_warmup_rate: 0.1
 
 trainer_params:
-  gpus:
-    - 0
   max_steps:
-    stage1: 10000
-    stage2: 50000
+    stage1: 10000000000
+    stage2: 10000000000
   max_hours:
-    stage1: 2
-    stage2: 2
+    stage1: 48
+    stage2: 48
   val_check_interval:
     stage1: 1000
-    stage2: 2000
-
+    stage2: 1000
 
 encoder:
-  dim: 64
-  n_resnet_blocks: 4
-  downsampled_width: 32
+  dim: 128
+  n_resnet_blocks: 10
+  downsampled_width: 16
 
 decoder:
-  n_resnet_blocks: 4
+  n_resnet_blocks: 10
 
 VQ-VAE:
-  n_fft: 4
-  codebook_size: 64 #128
-
+  n_fft: 16
+  codebook_size: 1024
 
 MaskGIT:
-  choice_temperature: 4  # for masking
-  T: 20
+  choice_temperature: 2
+  T: 25
   mask_scheduling_func: "cosine"
   prior_model:
-    hidden_dim: 128
-    depth: 4
-    heads: 4
-    attn_dim_head: 64
+    hidden_dim: 384
+    depth: 8
+    heads: 6
+    attn_dim_head: 32
     ff_mult: 4
     use_rmsnorm: True
-    dropout: 0.3
+    dropout: 0.2

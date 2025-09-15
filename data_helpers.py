@@ -4,6 +4,7 @@ from typing import List, Tuple
 import numpy as np
 from pathlib import Path
 
+
 def load_preprocessed_samples(data_dir: str, max_loaded_files: int) -> Tuple[List[np.ndarray], List[int]]:
     """
     Load preprocessed ECG window samples from pickle files and collect them into a list.
