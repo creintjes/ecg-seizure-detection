@@ -28,11 +28,9 @@ We follow a structured analysis approach based on the **CRISP-DM** model. Key st
   Includes heart rate (HR), heart rate variability (HRV)-based features, and Cardiac Sympathetic Index (CSI)  
 - **Model Implementation**  
   Evaluation of three anomaly detection algorithms (MERLIN++, TimeVQVAE-AD, Matrix Profile)  
-- **Baseline**  
-  A 1-class SVM is used for comparison  
 - **Tracking & Evaluation**  
   Using [Weights & Biases](https://wandb.ai/) for experiment tracking  
-  Metrics: Sensitivity, FAR, AUC, Specificity, PPV  
+  Metrics: Sensitivity, FAR, Challenge Score  
 
 ## 📁 Project Structure
 
