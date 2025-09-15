@@ -37,11 +37,16 @@ We follow a structured analysis approach based on the **CRISP-DM** model. Key st
 ## 📁 Project Structure
 
 - `ecg-seizure-detection/`
+  - `MatrixProfile/` – All code used for the MatrixProfile experiments
+  - `Madrid/` – All code used for the Madrid experiments
+  - `TimeVQVAE-AD/` – All code used for the TimeVQVAE-AD experiments
+  - `jeppesen_seizeit2/` – All code used for the jeppesen implementation experiments
   - `data/` – Data loaders and preprocessed ECG files
   - `notebooks/` – Jupyter notebooks for exploration and prototyping
+  - `sandbox/` – Jupyter notebooks for exploration and prototyping
   - `models/` – Implementation of MERLIN++, TimeVQVAE-AD, etc.
   - `scripts/` – Scripts for training, evaluation, and metrics
-  - `results/` – Evaluation outputs and plots
+  - `results/` – Evaluation outputs and plots. For MP results check `MatrixProfile/`
   - `README.md` – Project overview and instructions
   - `requirements.txt` – Python dependencies
 
