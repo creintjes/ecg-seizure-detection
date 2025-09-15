@@ -1,2 +1,0 @@
-/home/swolf/asim_shared/preprocessed_data/downsample_freq=125,window_size=30_0,stride=15_0
-/home/swolf/asim_shared/preprocessed_data/downsample_freq=125,window_size=30_0,stride=15_0/001_continuous_test.pkl

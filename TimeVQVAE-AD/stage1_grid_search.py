@@ -50,12 +50,12 @@ def save_config(config: Dict[str, Any], config_path: str) -> None:
     with open(config_path, 'w') as f:
         yaml.dump(config, f, default_flow_style=False, indent=2)
 
-# def backup_original_config(config_path: str) -> str:
-#     """Create a backup of the original config file."""
-#     backup_path = f"{config_path}.backup.{datetime.now().strftime('%Y%m%d_%H%M%S')}"
-#     # shutil.copy2(config_path, backup_path)
-#     print(f"Original config backed up to: {backup_path}")
-#     return backup_path
+def backup_original_config(config_path: str) -> str:
+    """Create a backup of the original config file."""
+    backup_path = f"{config_path}.backup.{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+    # shutil.copy2(config_path, backup_path)
+    print(f"Original config backed up to: {backup_path}")
+    return backup_path
 
 def clean_saved_models() -> None:
     """Clean up saved model checkpoints before next training run."""
@@ -134,7 +134,7 @@ def main():
     base_config = load_config(config_path)
     
     # Create backup of original config
-    # backup_path = backup_original_config(config_path)
+    backup_path = backup_original_config(config_path)
     
     # Generate all parameter combinations
     param_names = list(param_grid.keys())
