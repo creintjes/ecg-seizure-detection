@@ -8,9 +8,11 @@ Epileptic seizures can cause serious medical and psychosocial consequences. Whil
 
 In this project, we evaluate the performance of three modern anomaly detection algorithms on ECG data for the purpose of seizure detection:
 
-- **MERLIN++**
+- **Madrid**
 - **TimeVQVAE-AD**
 - **Matrix Profile**
+
+Each folder contains a dedicated README file with instructions.
 
 We aim to identify approaches that achieve a favorable balance between **sensitivity** and **false alarm rate** (FAR), using the [SeizeIT2 dataset](https://doi.org/10.48550/arXiv.2502.01224).
 
