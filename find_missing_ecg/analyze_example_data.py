@@ -410,6 +410,222 @@ def print_summary_report(results):
         if patient_data['runs_with_empty_ecg'] > 0 or patient_data['runs_with_missing_ecg'] > 0:
             print(f"    ⚠️  Problems: {patient_data['runs_with_empty_ecg']} empty ECG, {patient_data['runs_with_missing_ecg']} missing ECG")
 
+def generate_problems_report(results):
+    """
+    Generate a detailed TXT report listing all problems found in the data.
+
+    Args:
+        results: Dictionary containing analysis results
+
+    Returns:
+        str: Formatted report text
+    """
+    from datetime import datetime
+
+    report_lines = []
+    report_lines.append("="*80)
+    report_lines.append("ECG DATA QUALITY PROBLEMS REPORT")
+    report_lines.append("="*80)
+    report_lines.append(f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    report_lines.append(f"Dataset: ds005873-1.1.0_example")
+    report_lines.append("")
+
+    # Collect all problems
+    problems = []
+
+    for patient_id, patient_data in sorted(results['patients'].items()):
+        for run_id, run_data in sorted(patient_data['runs'].items()):
+            # Check if run has any problems
+            if run_data.get('ecg_empty') or not run_data.get('usable'):
+                problem = {
+                    'patient_id': patient_id,
+                    'run_id': run_id,
+                    'ecg_file': run_data.get('ecg_file', 'N/A'),
+                    'problem_type': 'Unknown',
+                    'description': '',
+                    'severity': 'CRITICAL',
+                    'details': {}
+                }
+
+                # Determine problem type and severity
+                if not run_data.get('ecg_exists'):
+                    problem['problem_type'] = 'Missing ECG File'
+                    problem['description'] = 'ECG file does not exist'
+                    problem['severity'] = 'CRITICAL'
+
+                elif run_data.get('ecg_filesize', 0) < 10000:
+                    problem['problem_type'] = 'File Too Small'
+                    problem['description'] = f"ECG file too small ({run_data.get('ecg_filesize', 0)} bytes)"
+                    problem['severity'] = 'CRITICAL'
+                    problem['details']['file_size'] = run_data.get('ecg_filesize', 0)
+
+                elif 'ecg_problem' in run_data and run_data['ecg_problem']:
+                    ecg_problem = run_data['ecg_problem']
+
+                    if 'no ECG channels found' in ecg_problem:
+                        problem['problem_type'] = 'No ECG Channels'
+                        problem['description'] = ecg_problem
+                        problem['severity'] = 'CRITICAL'
+
+                    elif 'zero signal' in ecg_problem.lower():
+                        problem['problem_type'] = 'Zero/Empty Signal'
+                        problem['description'] = ecg_problem
+                        problem['severity'] = 'CRITICAL'
+                        problem['details']['zero_channels'] = run_data.get('zero_signal_channels', 0)
+
+                    elif 'saturated' in ecg_problem.lower():
+                        problem['problem_type'] = 'Saturated Signal'
+                        problem['description'] = ecg_problem
+                        problem['severity'] = 'CRITICAL'
+                        problem['details']['saturated_channels'] = run_data.get('saturated_signal_channels', 0)
+
+                    elif 'only' in ecg_problem.lower() and 'usable' in ecg_problem.lower():
+                        problem['problem_type'] = 'Partial Signal Quality'
+                        problem['description'] = ecg_problem
+                        problem['severity'] = 'WARNING'
+
+                    elif 'error' in ecg_problem.lower():
+                        problem['problem_type'] = 'File Read Error'
+                        problem['description'] = ecg_problem
+                        problem['severity'] = 'CRITICAL'
+
+                    else:
+                        problem['problem_type'] = 'Other ECG Problem'
+                        problem['description'] = ecg_problem
+                        problem['severity'] = 'WARNING'
+
+                # Add additional context
+                problem['details']['duration'] = run_data.get('ecg_duration', 0)
+                problem['details']['channels_found'] = run_data.get('ecg_channels_found', [])
+                problem['details']['sampling_rates'] = run_data.get('ecg_sampling_rates', [])
+                problem['details']['signal_quality'] = run_data.get('signal_quality', 'unknown')
+                problem['details']['has_seizures'] = run_data.get('seizures_annotated', 0) > 0
+                problem['details']['seizure_count'] = run_data.get('seizures_annotated', 0)
+
+                problems.append(problem)
+
+    # Summary statistics
+    report_lines.append("SUMMARY")
+    report_lines.append("-"*80)
+    report_lines.append(f"Total problems found: {len(problems)}")
+
+    # Count by severity
+    critical_count = sum(1 for p in problems if p['severity'] == 'CRITICAL')
+    warning_count = sum(1 for p in problems if p['severity'] == 'WARNING')
+    report_lines.append(f"  - CRITICAL: {critical_count}")
+    report_lines.append(f"  - WARNING: {warning_count}")
+    report_lines.append("")
+
+    # Count by problem type
+    problem_types = {}
+    for p in problems:
+        ptype = p['problem_type']
+        problem_types[ptype] = problem_types.get(ptype, 0) + 1
+
+    report_lines.append("Problems by type:")
+    for ptype, count in sorted(problem_types.items(), key=lambda x: x[1], reverse=True):
+        report_lines.append(f"  - {ptype}: {count}")
+    report_lines.append("")
+
+    # Problems with seizure annotations
+    problems_with_seizures = [p for p in problems if p['details']['has_seizures']]
+    if problems_with_seizures:
+        total_lost_seizures = sum(p['details']['seizure_count'] for p in problems_with_seizures)
+        report_lines.append(f"⚠️  CRITICAL: {len(problems_with_seizures)} problematic runs contain {total_lost_seizures} annotated seizures!")
+        report_lines.append("")
+
+    # Detailed problem listing
+    report_lines.append("")
+    report_lines.append("="*80)
+    report_lines.append("DETAILED PROBLEM LISTING")
+    report_lines.append("="*80)
+    report_lines.append("")
+
+    # Group by patient
+    problems_by_patient = {}
+    for p in problems:
+        patient_id = p['patient_id']
+        if patient_id not in problems_by_patient:
+            problems_by_patient[patient_id] = []
+        problems_by_patient[patient_id].append(p)
+
+    for patient_id in sorted(problems_by_patient.keys()):
+        patient_problems = problems_by_patient[patient_id]
+        report_lines.append(f"PATIENT: {patient_id}")
+        report_lines.append("-"*80)
+
+        for problem in sorted(patient_problems, key=lambda x: x['run_id']):
+            report_lines.append(f"  Run: {problem['run_id']}")
+            report_lines.append(f"  Severity: {problem['severity']}")
+            report_lines.append(f"  Problem Type: {problem['problem_type']}")
+            report_lines.append(f"  Description: {problem['description']}")
+            report_lines.append(f"  File: {problem['ecg_file']}")
+
+            # Additional details
+            if problem['details'].get('duration', 0) > 0:
+                report_lines.append(f"  Duration: {problem['details']['duration']:.1f} seconds")
+
+            if problem['details'].get('channels_found'):
+                channels_str = ", ".join(problem['details']['channels_found'])
+                report_lines.append(f"  Channels Found: {channels_str}")
+
+            if problem['details'].get('sampling_rates'):
+                rates_str = ", ".join(str(r) for r in problem['details']['sampling_rates'])
+                report_lines.append(f"  Sampling Rates: {rates_str} Hz")
+
+            if problem['details'].get('signal_quality') != 'unknown':
+                report_lines.append(f"  Signal Quality: {problem['details']['signal_quality']}")
+
+            if problem['details'].get('has_seizures'):
+                seizure_count = problem['details']['seizure_count']
+                report_lines.append(f"  ⚠️  Contains {seizure_count} annotated seizure(s) - DATA LOSS!")
+
+            report_lines.append("")
+
+    # Add recommendations section
+    report_lines.append("")
+    report_lines.append("="*80)
+    report_lines.append("RECOMMENDATIONS")
+    report_lines.append("="*80)
+    report_lines.append("")
+
+    if critical_count > 0:
+        report_lines.append("1. CRITICAL ISSUES FOUND:")
+        report_lines.append("   - Review files with missing or corrupted ECG data")
+        report_lines.append("   - Consider re-downloading or re-processing affected files")
+        if problems_with_seizures:
+            report_lines.append(f"   - URGENT: {len(problems_with_seizures)} runs with seizures are unusable!")
+        report_lines.append("")
+
+    # Count specific recommendations
+    no_channels = sum(1 for p in problems if p['problem_type'] == 'No ECG Channels')
+    if no_channels > 0:
+        report_lines.append(f"2. NO ECG CHANNELS ({no_channels} files):")
+        report_lines.append("   - Verify that ECG data was recorded for these sessions")
+        report_lines.append("   - Check if different channel naming conventions are used")
+        report_lines.append("")
+
+    zero_signal = sum(1 for p in problems if p['problem_type'] == 'Zero/Empty Signal')
+    if zero_signal > 0:
+        report_lines.append(f"3. ZERO/EMPTY SIGNALS ({zero_signal} files):")
+        report_lines.append("   - These files may be corrupted during recording or transfer")
+        report_lines.append("   - Consider excluding from analysis")
+        report_lines.append("")
+
+    saturated = sum(1 for p in problems if p['problem_type'] == 'Saturated Signal')
+    if saturated > 0:
+        report_lines.append(f"4. SATURATED SIGNALS ({saturated} files):")
+        report_lines.append("   - Check recording equipment calibration")
+        report_lines.append("   - May indicate amplifier saturation or disconnected electrodes")
+        report_lines.append("")
+
+    report_lines.append("")
+    report_lines.append("="*80)
+    report_lines.append("END OF REPORT")
+    report_lines.append("="*80)
+
+    return "\n".join(report_lines)
+
 def main():
     print("Analyzing ds005873-1.1.0_example data...")
     print("="*60)
@@ -419,10 +635,27 @@ def main():
         print_summary_report(results)
 
         # Save detailed results to JSON
-        with open('example_data_analysis.json', 'w') as f:
+        json_filename = 'example_data_analysis.json'
+        with open(json_filename, 'w') as f:
             json.dump(results, f, indent=2, default=str)
+        print(f"\n✓ Detailed results saved to '{json_filename}'")
 
-        print(f"\n✓ Detailed results saved to 'example_data_analysis.json'")
+        # Generate and save problems report
+        print("\nGenerating problems report...")
+        problems_report = generate_problems_report(results)
+
+        report_filename = 'example_data_problems_report.txt'
+        with open(report_filename, 'w', encoding='utf-8') as f:
+            f.write(problems_report)
+
+        print(f"✓ Problems report saved to '{report_filename}'")
+
+        # Show quick preview of problems found
+        problems_count = sum(1 for patient_data in results['patients'].values()
+                           for run_data in patient_data['runs'].values()
+                           if not run_data.get('usable'))
+        print(f"\nTotal problems found: {problems_count}")
+        print(f"See '{report_filename}' for detailed problem listing.")
 
     except Exception as e:
         print(f"Error during analysis: {e}")
