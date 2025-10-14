@@ -169,8 +169,11 @@ def analyze_example_data():
             'runs_with_missing_ecg': 0,
             'total_seizures_annotated': 0,
             'usable_runs': 0,
-            'unusable_runs': 0
-        }
+            'unusable_runs': 0,
+            'orphaned_events': 0,  # Events ohne entsprechende ECG-Datei
+            'total_event_files': 0
+        },
+        'orphaned_event_files': []  # Liste von Event-Dateien ohne ECG
     }
 
     # Get all subjects
@@ -327,6 +330,57 @@ def analyze_example_data():
 
                 print(f"  {subject_id} {run_id}: {status}{seizure_info}{duration_info}{ecg_quality_info}{event_types_info}{problem}")
 
+    # After processing all ECG files, check for orphaned event files
+    print("\n" + "="*60)
+    print("Checking for event files without corresponding ECG files...")
+    print("="*60 + "\n")
+
+    for subject in sorted(subjects):
+        subject_id = subject.name
+        sessions = [d for d in subject.iterdir() if d.is_dir() and d.name.startswith('ses-')]
+
+        for session in sessions:
+            eeg_dir = session / "eeg"
+            ecg_dir = session / "ecg"
+
+            if not eeg_dir.exists():
+                continue
+
+            # Get all event files
+            event_files = list(eeg_dir.glob("*_events.tsv"))
+            results['summary']['total_event_files'] += len(event_files)
+
+            for event_file in sorted(event_files):
+                # Extract run ID from event filename
+                run_id = parse_run_id(event_file.name)
+
+                # Check if this run_id is in the results (meaning ECG file exists)
+                if run_id not in results['patients'][subject_id]['runs']:
+                    # This is an orphaned event file - no corresponding ECG
+                    seizure_count, seizure_events = count_seizures_in_events_file(event_file)
+
+                    orphan_info = {
+                        'patient_id': subject_id,
+                        'run_id': run_id,
+                        'events_file': str(event_file),
+                        'expected_ecg_file': str(ecg_dir / f"{subject_id}_ses-01_task-szMonitoring_{run_id}_ecg.edf"),
+                        'seizures_annotated': seizure_count,
+                        'seizure_events': seizure_events
+                    }
+
+                    results['orphaned_event_files'].append(orphan_info)
+                    results['summary']['orphaned_events'] += 1
+
+                    if seizure_count > 0:
+                        results['summary']['total_seizures_annotated'] += seizure_count
+
+                    print(f"  ⚠️  {subject_id} {run_id}: Event file exists but ECG file missing!")
+                    if seizure_count > 0:
+                        print(f"      Contains {seizure_count} annotated seizures - potential DATA LOSS!")
+
+    if results['summary']['orphaned_events'] == 0:
+        print("  ✓ No orphaned event files found - all events have corresponding ECG files.")
+
     return results
 
 def print_summary_report(results):
@@ -345,6 +399,13 @@ def print_summary_report(results):
     print(f"\nECG QUALITY ANALYSIS:")
     print(f"  Runs with missing ECG files: {summary['runs_with_missing_ecg']}")
     print(f"  Runs with empty/unusable ECG: {summary['runs_with_empty_ecg']}")
+    print(f"\nEVENT FILE ANALYSIS:")
+    print(f"  Total event files found: {summary['total_event_files']}")
+    print(f"  Orphaned event files (no ECG): {summary['orphaned_events']}")
+    if summary['orphaned_events'] > 0:
+        orphaned_with_seizures = sum(1 for o in results['orphaned_event_files'] if o['seizures_annotated'] > 0)
+        total_orphaned_seizures = sum(o['seizures_annotated'] for o in results['orphaned_event_files'])
+        print(f"    ⚠️  {orphaned_with_seizures} orphaned event files contain {total_orphaned_seizures} seizures!")
 
     # Count ECG quality issues
     ecg_quality_stats = {
@@ -464,6 +525,26 @@ def generate_problems_report(results):
     # Collect all problems
     problems = []
 
+    # First, add orphaned event files as problems
+    for orphan in results.get('orphaned_event_files', []):
+        problem = {
+            'patient_id': orphan['patient_id'],
+            'run_id': orphan['run_id'],
+            'ecg_file': orphan['expected_ecg_file'],
+            'problem_type': 'Orphaned Event File',
+            'description': 'Event file exists but corresponding ECG file is missing',
+            'severity': 'CRITICAL',
+            'details': {
+                'events_file': orphan['events_file'],
+                'expected_ecg_file': orphan['expected_ecg_file'],
+                'has_seizures': orphan['seizures_annotated'] > 0,
+                'seizure_count': orphan['seizures_annotated'],
+                'seizure_events': orphan.get('seizure_events', [])
+            }
+        }
+        problems.append(problem)
+
+    # Then add problems from runs with ECG files
     for patient_id, patient_data in sorted(results['patients'].items()):
         for run_id, run_data in sorted(patient_data['runs'].items()):
             # Check if run has any problems
@@ -590,7 +671,13 @@ def generate_problems_report(results):
             report_lines.append(f"  Severity: {problem['severity']}")
             report_lines.append(f"  Problem Type: {problem['problem_type']}")
             report_lines.append(f"  Description: {problem['description']}")
-            report_lines.append(f"  File: {problem['ecg_file']}")
+
+            # For orphaned events, show both event file and expected ECG file
+            if problem['problem_type'] == 'Orphaned Event File':
+                report_lines.append(f"  Event File: {problem['details'].get('events_file', 'N/A')}")
+                report_lines.append(f"  Expected ECG File: {problem['details'].get('expected_ecg_file', 'N/A')}")
+            else:
+                report_lines.append(f"  File: {problem['ecg_file']}")
 
             # Additional details
             if problem['details'].get('duration', 0) > 0:
@@ -604,7 +691,7 @@ def generate_problems_report(results):
                 rates_str = ", ".join(str(r) for r in problem['details']['sampling_rates'])
                 report_lines.append(f"  Sampling Rates: {rates_str} Hz")
 
-            if problem['details'].get('signal_quality') != 'unknown':
+            if problem['details'].get('signal_quality') != 'unknown' and problem['details'].get('signal_quality'):
                 report_lines.append(f"  Signal Quality: {problem['details']['signal_quality']}")
 
             if problem['details'].get('has_seizures'):
@@ -629,23 +716,34 @@ def generate_problems_report(results):
         report_lines.append("")
 
     # Count specific recommendations
+    orphaned_events = sum(1 for p in problems if p['problem_type'] == 'Orphaned Event File')
+    if orphaned_events > 0:
+        report_lines.append(f"2. ORPHANED EVENT FILES ({orphaned_events} files):")
+        report_lines.append("   - Event files exist but corresponding ECG files are missing")
+        report_lines.append("   - Check if ECG files were not recorded or lost during transfer")
+        report_lines.append("   - Verify file naming conventions match between EEG and ECG directories")
+        orphaned_with_seizures = sum(1 for p in problems if p['problem_type'] == 'Orphaned Event File' and p['details']['has_seizures'])
+        if orphaned_with_seizures > 0:
+            report_lines.append(f"   - ⚠️  CRITICAL: {orphaned_with_seizures} orphaned files contain seizure annotations!")
+        report_lines.append("")
+
     no_channels = sum(1 for p in problems if p['problem_type'] == 'No ECG Channels')
     if no_channels > 0:
-        report_lines.append(f"2. NO ECG CHANNELS ({no_channels} files):")
+        report_lines.append(f"3. NO ECG CHANNELS ({no_channels} files):")
         report_lines.append("   - Verify that ECG data was recorded for these sessions")
         report_lines.append("   - Check if different channel naming conventions are used")
         report_lines.append("")
 
     zero_signal = sum(1 for p in problems if p['problem_type'] == 'Zero/Empty Signal')
     if zero_signal > 0:
-        report_lines.append(f"3. ZERO/EMPTY SIGNALS ({zero_signal} files):")
+        report_lines.append(f"4. ZERO/EMPTY SIGNALS ({zero_signal} files):")
         report_lines.append("   - These files may be corrupted during recording or transfer")
         report_lines.append("   - Consider excluding from analysis")
         report_lines.append("")
 
     saturated = sum(1 for p in problems if p['problem_type'] == 'Saturated Signal')
     if saturated > 0:
-        report_lines.append(f"4. SATURATED SIGNALS ({saturated} files):")
+        report_lines.append(f"5. SATURATED SIGNALS ({saturated} files):")
         report_lines.append("   - Check recording equipment calibration")
         report_lines.append("   - May indicate amplifier saturation or disconnected electrodes")
         report_lines.append("")
