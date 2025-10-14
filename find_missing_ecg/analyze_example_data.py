@@ -13,6 +13,9 @@ from pathlib import Path
 import json
 from collections import defaultdict
 import pyedflib
+import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.use('Agg')  # Use non-interactive backend
 
 def analyze_ecg_signal(ecg_file_path, subject_id, run_id):
     """
@@ -626,6 +629,126 @@ def generate_problems_report(results):
 
     return "\n".join(report_lines)
 
+def plot_saturated_signals(results, max_plots=3):
+    """
+    Plot ECG signals from files with saturated signals for visual inspection.
+
+    Args:
+        results: Dictionary containing analysis results
+        max_plots: Maximum number of files to plot (default: 3)
+    """
+    print("\nSearching for files with saturated signals to plot...")
+
+    # Find files with saturated signals
+    saturated_files = []
+    for patient_id, patient_data in results['patients'].items():
+        for run_id, run_data in patient_data['runs'].items():
+            if 'ecg_problem' in run_data and run_data['ecg_problem']:
+                if 'saturated' in run_data['ecg_problem'].lower():
+                    saturated_files.append({
+                        'patient_id': patient_id,
+                        'run_id': run_id,
+                        'ecg_file': run_data['ecg_file'],
+                        'problem': run_data['ecg_problem'],
+                        'channels': run_data.get('ecg_channels_found', []),
+                        'sampling_rates': run_data.get('ecg_sampling_rates', [])
+                    })
+
+    if not saturated_files:
+        print("No files with saturated signals found.")
+        return
+
+    print(f"Found {len(saturated_files)} files with saturated signals.")
+    print(f"Plotting first {min(max_plots, len(saturated_files))} files...\n")
+
+    # Create output directory for plots
+    output_dir = Path("saturated_signal_plots")
+    output_dir.mkdir(exist_ok=True)
+
+    # Plot up to max_plots files
+    for idx, file_info in enumerate(saturated_files[:max_plots]):
+        try:
+            print(f"Plotting {idx+1}/{min(max_plots, len(saturated_files))}: {file_info['patient_id']} {file_info['run_id']}")
+
+            ecg_file_path = file_info['ecg_file']
+
+            # Read the ECG file
+            with pyedflib.EdfReader(ecg_file_path) as f:
+                signal_labels = f.getSignalLabels()
+
+                # Find ECG channels
+                ecg_channel_indices = []
+                for i, label in enumerate(signal_labels):
+                    label_lower = label.lower()
+                    if any(ecg_keyword in label_lower for ecg_keyword in ['ecg', 'ekg', 'lead']):
+                        ecg_channel_indices.append(i)
+
+                if not ecg_channel_indices:
+                    print(f"  Skipping - no ECG channels found")
+                    continue
+
+                # Read data from all ECG channels
+                num_channels = len(ecg_channel_indices)
+                fig, axes = plt.subplots(num_channels, 1, figsize=(15, 4*num_channels))
+
+                if num_channels == 1:
+                    axes = [axes]  # Make it iterable
+
+                for plot_idx, channel_idx in enumerate(ecg_channel_indices):
+                    # Read signal (first 60 seconds or max 15000 samples for better overview)
+                    sample_size = min(15000, int(f.getSampleFrequency(channel_idx) * 60))
+                    if f.getNSamples()[channel_idx] < sample_size:
+                        sample_size = f.getNSamples()[channel_idx]
+
+                    signal_data = f.readSignal(channel_idx, start=0, n=sample_size)
+                    sampling_rate = f.getSampleFrequency(channel_idx)
+
+                    # Create time axis
+                    time_axis = np.arange(len(signal_data)) / sampling_rate
+
+                    # Plot
+                    axes[plot_idx].plot(time_axis, signal_data, linewidth=0.5)
+                    axes[plot_idx].set_xlabel('Time (seconds)', fontsize=10)
+                    axes[plot_idx].set_ylabel('Amplitude', fontsize=10)
+                    axes[plot_idx].set_title(f'Channel: {signal_labels[channel_idx]} (Sample Rate: {sampling_rate} Hz)',
+                                            fontsize=11)
+                    axes[plot_idx].grid(True, alpha=0.3)
+
+                    # Add statistics to plot
+                    stats_text = (f'Mean: {np.mean(signal_data):.4f}\n'
+                                 f'Std: {np.std(signal_data):.4f}\n'
+                                 f'Min: {np.min(signal_data):.4f}\n'
+                                 f'Max: {np.max(signal_data):.4f}\n'
+                                 f'Range: {np.max(signal_data) - np.min(signal_data):.4f}\n'
+                                 f'Unique values: {len(np.unique(signal_data))}')
+
+                    axes[plot_idx].text(0.02, 0.98, stats_text,
+                                       transform=axes[plot_idx].transAxes,
+                                       fontsize=9,
+                                       verticalalignment='top',
+                                       bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.8))
+
+                # Add overall title
+                fig.suptitle(f'Saturated Signal Analysis: {file_info["patient_id"]} {file_info["run_id"]}\n'
+                           f'Problem: {file_info["problem"]}',
+                           fontsize=14, fontweight='bold')
+
+                plt.tight_layout()
+
+                # Save plot
+                output_filename = output_dir / f"saturated_{file_info['patient_id']}_{file_info['run_id']}.png"
+                plt.savefig(output_filename, dpi=150, bbox_inches='tight')
+                plt.close()
+
+                print(f"  ✓ Saved plot to: {output_filename}")
+
+        except Exception as e:
+            print(f"  ✗ Error plotting {file_info['patient_id']} {file_info['run_id']}: {e}")
+            continue
+
+    print(f"\n✓ Plots saved to directory: {output_dir}/")
+    print(f"  Total plots created: {min(max_plots, len(saturated_files))}")
+
 def main():
     print("Analyzing ds005873-1.1.0_example data...")
     print("="*60)
@@ -656,6 +779,9 @@ def main():
                            if not run_data.get('usable'))
         print(f"\nTotal problems found: {problems_count}")
         print(f"See '{report_filename}' for detailed problem listing.")
+
+        # Plot saturated signals for visual inspection
+        plot_saturated_signals(results, max_plots=3)
 
     except Exception as e:
         print(f"Error during analysis: {e}")
