@@ -63,7 +63,7 @@ def analyze_ecg_signal(ecg_file_path, subject_id, run_id):
             for channel_idx in ecg_channel_indices:
                 try:
                     # Read a sample of the signal (first 30 seconds or max 10000 samples)
-                    sample_size = min(10000, int(f.getSampleFrequency(channel_idx) * 30))
+                    sample_size = min(200000, int(f.getSampleFrequency(channel_idx) * 600))
                     if f.getNSamples()[channel_idx] < sample_size:
                         sample_size = f.getNSamples()[channel_idx]
 
@@ -629,7 +629,7 @@ def generate_problems_report(results):
 
     return "\n".join(report_lines)
 
-def plot_saturated_signals(results, max_plots=3):
+def plot_saturated_signals(results, max_plots=10):
     """
     Plot ECG signals from files with saturated signals for visual inspection.
 
@@ -696,7 +696,7 @@ def plot_saturated_signals(results, max_plots=3):
 
                 for plot_idx, channel_idx in enumerate(ecg_channel_indices):
                     # Read signal (first 60 seconds or max 15000 samples for better overview)
-                    sample_size = min(15000, int(f.getSampleFrequency(channel_idx) * 60))
+                    sample_size = min(150000, int(f.getSampleFrequency(channel_idx) * 600))
                     if f.getNSamples()[channel_idx] < sample_size:
                         sample_size = f.getNSamples()[channel_idx]
 
@@ -749,6 +749,154 @@ def plot_saturated_signals(results, max_plots=3):
     print(f"\n✓ Plots saved to directory: {output_dir}/")
     print(f"  Total plots created: {min(max_plots, len(saturated_files))}")
 
+# --- NEU: Hilfsfunktion zur Sättigungs-Detektion ---
+def is_signal_saturated(sig: np.ndarray, digital_min=None, digital_max=None):
+    """
+    Bestimmt, ob ein ECG-Segment 'gesättigt' ist.
+    Heuristik:
+      - sehr wenige einzigartige Werte (hart quantisiert/flat)
+      - sehr kleine Dynamik (ptp)
+      - (optional) signifikanter Anteil der Samples am digitalen Min/Max (Clipping)
+    Rückgabe: (bool saturated, dict metrics, str reason)
+    """
+    if sig is None or len(sig) == 0:
+        return True, {"uniq": 0, "ptp": 0.0, "clip_frac": 0.0}, "empty segment"
+
+    uniq = len(np.unique(sig))
+    ptp = float(np.ptp(sig))
+    reason_parts = []
+    saturated = False
+
+    # 1) wenige einzigartige Werte
+    if uniq < 10:
+        saturated = True
+        reason_parts.append(f"low unique values ({uniq})")
+
+    # 2) extrem kleine Dynamik (wie in deinem Code)
+    if ptp < 1e-3:
+        saturated = True
+        reason_parts.append(f"low range (ptp={ptp:.3g})")
+
+    # 3) Clipping an digitalen Grenzen (falls bekannt)
+    clip_frac = 0.0
+    if digital_min is not None and digital_max is not None and digital_max > digital_min:
+        clip_mask = (sig <= digital_min) | (sig >= digital_max)
+        clip_frac = float(np.mean(clip_mask))
+        if clip_frac > 0.05:  # >5% am Rand → starkes Clipping
+            saturated = True
+            reason_parts.append(f"clipping {clip_frac*100:.1f}%")
+
+    reason = ", ".join(reason_parts) if reason_parts else "not saturated"
+    metrics = {"uniq": uniq, "ptp": ptp, "clip_frac": clip_frac}
+    return saturated, metrics, reason
+
+
+# --- NEU: Seizure-bezogene Prüfung & Plot ---
+def plot_seizure_saturation(results, pre_pad=5.0, post_pad=5.0, max_plots=50):
+    """
+    Für jede Seizure (onset/duration) je ECG-Kanal prüfen, ob Segment gesättigt ist.
+    Falls ja, Segment plotten und als PNG speichern.
+    """
+    out_dir = Path("seizure_saturation_plots")
+    out_dir.mkdir(exist_ok=True)
+
+    made_plots = 0
+    print("\nScanning seizure segments for saturation and plotting saturated segments...")
+
+    for patient_id, patient_data in results['patients'].items():
+        for run_id, run_data in patient_data['runs'].items():
+            if not run_data.get('ecg_exists') or run_data.get('seizures_annotated', 0) == 0:
+                continue
+
+            ecg_path = run_data['ecg_file']
+            seizure_events = run_data.get('seizure_events', [])
+            if not seizure_events:
+                continue
+
+            try:
+                with pyedflib.EdfReader(ecg_path) as f:
+                    labels = f.getSignalLabels()
+                    ch_indices = []
+                    for i, lab in enumerate(labels):
+                        ll = lab.lower()
+                        if any(k in ll for k in ['ecg', 'ekg', 'lead']):
+                            ch_indices.append(i)
+                    if not ch_indices:
+                        continue
+
+                    # Digital limits (optional; kann je Kanal unterschiedlich sein)
+                    dig_min = [f.getDigitalMinimum(i) for i in range(f.signals_in_file)]
+                    dig_max = [f.getDigitalMaximum(i) for i in range(f.signals_in_file)]
+
+                    file_dur = float(f.file_duration)
+
+                    for sz_idx, sz in enumerate(seizure_events):
+                        onset = float(sz.get('onset', 0.0))
+                        dur = float(sz.get('duration', 0.0))
+                        label = str(sz.get('eventType', 'sz'))
+
+                        # Fenster mit Padding, innerhalb Filegrenzen kappen
+                        t0 = max(0.0, onset - pre_pad)
+                        t1 = min(file_dur, onset + dur + post_pad)
+                        if t1 <= t0:
+                            continue
+
+                        for ch in ch_indices:
+                            fs = float(f.getSampleFrequency(ch))
+                            start_sample = int(t0 * fs)
+                            n_samples = int((t1 - t0) * fs)
+                            if n_samples <= 0:
+                                continue
+
+                            try:
+                                sig = f.readSignal(ch, start=start_sample, n=n_samples)
+                            except Exception as e:
+                                print(f"  readSignal failed ({patient_id} {run_id}, ch {labels[ch]}): {e}")
+                                continue
+
+                            saturated, metrics, reason = is_signal_saturated(
+                                sig,
+                                digital_min=dig_min[ch],
+                                digital_max=dig_max[ch]
+                            )
+                            if not saturated:
+                                continue  # nur gesättigte Segmente plotten
+
+                            # Plot erstellen
+                            t = np.arange(len(sig)) / fs + t0  # absolute Zeitachse (s)
+                            fig, ax = plt.subplots(figsize=(14, 3.5))
+                            ax.plot(t, sig, linewidth=0.5)
+                            ax.set_xlabel("Time (s)")
+                            ax.set_ylabel("Amplitude")
+                            ax.set_title(
+                                f"{patient_id} {run_id} | {label} #{sz_idx+1} | Channel {labels[ch]} | "
+                                f"saturated: {reason} | uniq={metrics['uniq']}, "
+                                f"ptp={metrics['ptp']:.4g}, clip={metrics['clip_frac']*100:.1f}%"
+                            )
+                            ax.grid(True, alpha=0.3)
+
+                            # Seizure-Fenster markieren
+                            ax.axvspan(onset, onset + dur, alpha=0.15, hatch='//')
+
+                            # speichern
+                            fname = out_dir / f"sat_{patient_id}_{run_id}_sz{sz_idx+1}_{labels[ch].replace(' ', '')}.png"
+                            plt.tight_layout()
+                            plt.savefig(fname, dpi=150, bbox_inches='tight')
+                            plt.close(fig)
+
+                            made_plots += 1
+                            print(f"  ✓ Saved saturated seizure plot: {fname}")
+
+                            if made_plots >= max_plots:
+                                print(f"\nReached max_plots={max_plots}. Stopping.")
+                                return
+
+            except Exception as e:
+                print(f"  ✗ Error processing {patient_id} {run_id} for seizure plots: {e}")
+
+    print(f"\n✓ Done. Created {made_plots} saturated seizure plot(s) in '{out_dir}/'.")
+
+
 def main():
     print("Analyzing ds005873-1.1.0_example data...")
     print("="*60)
@@ -781,7 +929,10 @@ def main():
         print(f"See '{report_filename}' for detailed problem listing.")
 
         # Plot saturated signals for visual inspection
-        plot_saturated_signals(results, max_plots=3)
+        plot_saturated_signals(results, max_plots=10)
+        # Plot nur für SEIZURE-SEGMENTE, falls diese gesättigt sind
+        plot_seizure_saturation(results, pre_pad=5.0, post_pad=3.0, max_plots=50)
+
 
     except Exception as e:
         print(f"Error during analysis: {e}")

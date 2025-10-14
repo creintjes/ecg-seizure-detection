@@ -3150,11 +3150,11 @@
           "events_file": "/home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-011/ses-01/eeg/sub-011_ses-01_task-szMonitoring_run-09_events.tsv",
           "ecg_exists": true,
           "ecg_filesize": 48614050,
-          "ecg_empty": true,
+          "ecg_empty": false,
           "ecg_duration": 77657.0,
           "seizures_annotated": 0,
           "seizure_events": [],
-          "usable": false,
+          "usable": true,
           "all_event_types": [
             "impd"
           ],
@@ -3164,10 +3164,10 @@
           "ecg_sampling_rates": [
             256.0
           ],
-          "ecg_problem": "all 1 ECG channels are saturated",
-          "signal_quality": "unknown",
+          "ecg_problem": null,
+          "signal_quality": "good",
           "zero_signal_channels": 0,
-          "saturated_signal_channels": 1,
+          "saturated_signal_channels": 0,
           "total_channels": 1
         },
         "run-10": {
@@ -3223,10 +3223,10 @@
       },
       "total_runs": 11,
       "runs_with_seizures": 3,
-      "runs_with_empty_ecg": 1,
+      "runs_with_empty_ecg": 0,
       "runs_with_missing_ecg": 0,
       "total_seizures": 4,
-      "usable_runs": 10
+      "usable_runs": 11
     },
     "sub-012": {
       "runs": {
@@ -3733,7 +3733,7 @@
           "events_file": "/home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-015/ses-01/eeg/sub-015_ses-01_task-szMonitoring_run-01_events.tsv",
           "ecg_exists": true,
           "ecg_filesize": 47081602,
-          "ecg_empty": true,
+          "ecg_empty": false,
           "ecg_duration": 75209.0,
           "seizures_annotated": 1,
           "seizure_events": [
@@ -3743,7 +3743,7 @@
               "eventType": "sz_foc_ia_m_tonic"
             }
           ],
-          "usable": false,
+          "usable": true,
           "all_event_types": [
             "sz_foc_ia_m_tonic"
           ],
@@ -3753,10 +3753,10 @@
           "ecg_sampling_rates": [
             256.0
           ],
-          "ecg_problem": "all 1 ECG channels are saturated",
-          "signal_quality": "unknown",
+          "ecg_problem": null,
+          "signal_quality": "good",
           "zero_signal_channels": 0,
-          "saturated_signal_channels": 1,
+          "saturated_signal_channels": 0,
           "total_channels": 1
         },
         "run-02": {
@@ -3764,11 +3764,11 @@
           "events_file": "/home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-015/ses-01/eeg/sub-015_ses-01_task-szMonitoring_run-02_events.tsv",
           "ecg_exists": true,
           "ecg_filesize": 5914590,
-          "ecg_empty": true,
+          "ecg_empty": false,
           "ecg_duration": 9447.0,
           "seizures_annotated": 0,
           "seizure_events": [],
-          "usable": false,
+          "usable": true,
           "all_event_types": [
             "bckg"
           ],
@@ -3778,10 +3778,10 @@
           "ecg_sampling_rates": [
             256.0
           ],
-          "ecg_problem": "all 1 ECG channels are saturated",
-          "signal_quality": "unknown",
+          "ecg_problem": null,
+          "signal_quality": "good",
           "zero_signal_channels": 0,
-          "saturated_signal_channels": 1,
+          "saturated_signal_channels": 0,
           "total_channels": 1
         },
         "run-03": {
@@ -4011,10 +4011,10 @@
       },
       "total_runs": 9,
       "runs_with_seizures": 6,
-      "runs_with_empty_ecg": 2,
+      "runs_with_empty_ecg": 0,
       "runs_with_missing_ecg": 0,
       "total_seizures": 9,
-      "usable_runs": 7
+      "usable_runs": 9
     },
     "sub-016": {
       "runs": {
@@ -4356,11 +4356,11 @@
           "events_file": "/home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-018/ses-01/eeg/sub-018_ses-01_task-szMonitoring_run-01_events.tsv",
           "ecg_exists": true,
           "ecg_filesize": 47180510,
-          "ecg_empty": true,
+          "ecg_empty": false,
           "ecg_duration": 75367.0,
           "seizures_annotated": 0,
           "seizure_events": [],
-          "usable": false,
+          "usable": true,
           "all_event_types": [
             "impd"
           ],
@@ -4370,10 +4370,10 @@
           "ecg_sampling_rates": [
             256.0
           ],
-          "ecg_problem": "all 1 ECG channels are saturated",
-          "signal_quality": "unknown",
+          "ecg_problem": null,
+          "signal_quality": "good",
           "zero_signal_channels": 0,
-          "saturated_signal_channels": 1,
+          "saturated_signal_channels": 0,
           "total_channels": 1
         },
         "run-02": {
@@ -4611,10 +4611,10 @@
       },
       "total_runs": 10,
       "runs_with_seizures": 1,
-      "runs_with_empty_ecg": 1,
+      "runs_with_empty_ecg": 0,
       "runs_with_missing_ecg": 0,
       "total_seizures": 1,
-      "usable_runs": 9
+      "usable_runs": 10
     },
     "sub-019": {
       "runs": {
@@ -5692,11 +5692,11 @@
           "events_file": "/home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-023/ses-01/eeg/sub-023_ses-01_task-szMonitoring_run-01_events.tsv",
           "ecg_exists": true,
           "ecg_filesize": 45397662,
-          "ecg_empty": true,
+          "ecg_empty": false,
           "ecg_duration": 72519.0,
           "seizures_annotated": 0,
           "seizure_events": [],
-          "usable": false,
+          "usable": true,
           "all_event_types": [
             "bckg"
           ],
@@ -5706,10 +5706,10 @@
           "ecg_sampling_rates": [
             256.0
           ],
-          "ecg_problem": "all 1 ECG channels are saturated",
-          "signal_quality": "unknown",
+          "ecg_problem": null,
+          "signal_quality": "good",
           "zero_signal_channels": 0,
-          "saturated_signal_channels": 1,
+          "saturated_signal_channels": 0,
           "total_channels": 1
         },
         "run-02": {
@@ -5922,10 +5922,10 @@
       },
       "total_runs": 9,
       "runs_with_seizures": 1,
-      "runs_with_empty_ecg": 1,
+      "runs_with_empty_ecg": 0,
       "runs_with_missing_ecg": 0,
       "total_seizures": 1,
-      "usable_runs": 8
+      "usable_runs": 9
     },
     "sub-024": {
       "runs": {
@@ -7835,7 +7835,7 @@
           "events_file": "/home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-031/ses-01/eeg/sub-031_ses-01_task-szMonitoring_run-03_events.tsv",
           "ecg_exists": true,
           "ecg_filesize": 41704888,
-          "ecg_empty": true,
+          "ecg_empty": false,
           "ecg_duration": 66620.0,
           "seizures_annotated": 3,
           "seizure_events": [
@@ -7855,7 +7855,7 @@
               "eventType": "sz_foc_f2b"
             }
           ],
-          "usable": false,
+          "usable": true,
           "all_event_types": [
             "sz_foc_a_nm",
             "impd",
@@ -7867,10 +7867,10 @@
           "ecg_sampling_rates": [
             256.0
           ],
-          "ecg_problem": "all 1 ECG channels are saturated",
-          "signal_quality": "unknown",
+          "ecg_problem": null,
+          "signal_quality": "good",
           "zero_signal_channels": 0,
-          "saturated_signal_channels": 1,
+          "saturated_signal_channels": 0,
           "total_channels": 1
         },
         "run-04": {
@@ -8028,11 +8028,11 @@
           "events_file": "/home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-031/ses-01/eeg/sub-031_ses-01_task-szMonitoring_run-10_events.tsv",
           "ecg_exists": true,
           "ecg_filesize": 41029434,
-          "ecg_empty": true,
+          "ecg_empty": false,
           "ecg_duration": 65541.0,
           "seizures_annotated": 0,
           "seizure_events": [],
-          "usable": false,
+          "usable": true,
           "all_event_types": [
             "bckg"
           ],
@@ -8042,19 +8042,19 @@
           "ecg_sampling_rates": [
             256.0
           ],
-          "ecg_problem": "all 1 ECG channels are saturated",
-          "signal_quality": "unknown",
+          "ecg_problem": null,
+          "signal_quality": "good",
           "zero_signal_channels": 0,
-          "saturated_signal_channels": 1,
+          "saturated_signal_channels": 0,
           "total_channels": 1
         }
       },
       "total_runs": 10,
       "runs_with_seizures": 1,
-      "runs_with_empty_ecg": 2,
+      "runs_with_empty_ecg": 0,
       "runs_with_missing_ecg": 0,
       "total_seizures": 3,
-      "usable_runs": 8
+      "usable_runs": 10
     },
     "sub-032": {
       "runs": {
@@ -14945,11 +14945,11 @@
           "events_file": "/home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-062/ses-01/eeg/sub-062_ses-01_task-szMonitoring_run-03_events.tsv",
           "ecg_exists": true,
           "ecg_filesize": 22356480,
-          "ecg_empty": true,
+          "ecg_empty": false,
           "ecg_duration": 35712.0,
           "seizures_annotated": 0,
           "seizure_events": [],
-          "usable": false,
+          "usable": true,
           "all_event_types": [
             "bckg"
           ],
@@ -14959,10 +14959,10 @@
           "ecg_sampling_rates": [
             256.0
           ],
-          "ecg_problem": "all 1 ECG channels are saturated",
-          "signal_quality": "unknown",
+          "ecg_problem": null,
+          "signal_quality": "good",
           "zero_signal_channels": 0,
-          "saturated_signal_channels": 1,
+          "saturated_signal_channels": 0,
           "total_channels": 1
         },
         "run-04": {
@@ -15049,10 +15049,10 @@
       },
       "total_runs": 6,
       "runs_with_seizures": 3,
-      "runs_with_empty_ecg": 1,
+      "runs_with_empty_ecg": 0,
       "runs_with_missing_ecg": 0,
       "total_seizures": 3,
-      "usable_runs": 5
+      "usable_runs": 6
     },
     "sub-063": {
       "runs": {
@@ -15626,11 +15626,11 @@
           "events_file": "/home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-066/ses-01/eeg/sub-066_ses-01_task-szMonitoring_run-01_events.tsv",
           "ecg_exists": true,
           "ecg_filesize": 1312238,
-          "ecg_empty": true,
+          "ecg_empty": false,
           "ecg_duration": 2095.0,
           "seizures_annotated": 0,
           "seizure_events": [],
-          "usable": false,
+          "usable": true,
           "all_event_types": [
             "bckg"
           ],
@@ -15640,10 +15640,10 @@
           "ecg_sampling_rates": [
             256.0
           ],
-          "ecg_problem": "all 1 ECG channels are saturated",
-          "signal_quality": "unknown",
+          "ecg_problem": null,
+          "signal_quality": "good",
           "zero_signal_channels": 0,
-          "saturated_signal_channels": 1,
+          "saturated_signal_channels": 0,
           "total_channels": 1
         },
         "run-02": {
@@ -15651,11 +15651,11 @@
           "events_file": "/home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-066/ses-01/eeg/sub-066_ses-01_task-szMonitoring_run-02_events.tsv",
           "ecg_exists": true,
           "ecg_filesize": 24472986,
-          "ecg_empty": true,
+          "ecg_empty": false,
           "ecg_duration": 39093.0,
           "seizures_annotated": 0,
           "seizure_events": [],
-          "usable": false,
+          "usable": true,
           "all_event_types": [
             "bckg"
           ],
@@ -15665,10 +15665,10 @@
           "ecg_sampling_rates": [
             256.0
           ],
-          "ecg_problem": "all 1 ECG channels are saturated",
-          "signal_quality": "unknown",
+          "ecg_problem": null,
+          "signal_quality": "good",
           "zero_signal_channels": 0,
-          "saturated_signal_channels": 1,
+          "saturated_signal_channels": 0,
           "total_channels": 1
         },
         "run-03": {
@@ -15807,11 +15807,11 @@
           "events_file": "/home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-066/ses-01/eeg/sub-066_ses-01_task-szMonitoring_run-08_events.tsv",
           "ecg_exists": true,
           "ecg_filesize": 4631916,
-          "ecg_empty": true,
+          "ecg_empty": false,
           "ecg_duration": 7398.0,
           "seizures_annotated": 0,
           "seizure_events": [],
-          "usable": false,
+          "usable": true,
           "all_event_types": [
             "bckg"
           ],
@@ -15821,10 +15821,10 @@
           "ecg_sampling_rates": [
             256.0
           ],
-          "ecg_problem": "all 1 ECG channels are saturated",
-          "signal_quality": "unknown",
+          "ecg_problem": null,
+          "signal_quality": "good",
           "zero_signal_channels": 0,
-          "saturated_signal_channels": 1,
+          "saturated_signal_channels": 0,
           "total_channels": 1
         },
         "run-09": {
@@ -16025,11 +16025,11 @@
           "events_file": "/home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-066/ses-01/eeg/sub-066_ses-01_task-szMonitoring_run-16_events.tsv",
           "ecg_exists": true,
           "ecg_filesize": 17610774,
-          "ecg_empty": true,
+          "ecg_empty": false,
           "ecg_duration": 28131.0,
           "seizures_annotated": 0,
           "seizure_events": [],
-          "usable": false,
+          "usable": true,
           "all_event_types": [
             "bckg"
           ],
@@ -16039,10 +16039,10 @@
           "ecg_sampling_rates": [
             256.0
           ],
-          "ecg_problem": "all 1 ECG channels are saturated",
-          "signal_quality": "unknown",
+          "ecg_problem": null,
+          "signal_quality": "good",
           "zero_signal_channels": 0,
-          "saturated_signal_channels": 1,
+          "saturated_signal_channels": 0,
           "total_channels": 1
         },
         "run-17": {
@@ -16100,11 +16100,11 @@
           "events_file": "/home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-066/ses-01/eeg/sub-066_ses-01_task-szMonitoring_run-19_events.tsv",
           "ecg_exists": true,
           "ecg_filesize": 8499970,
-          "ecg_empty": true,
+          "ecg_empty": false,
           "ecg_duration": 13577.0,
           "seizures_annotated": 0,
           "seizure_events": [],
-          "usable": false,
+          "usable": true,
           "all_event_types": [
             "bckg"
           ],
@@ -16114,19 +16114,19 @@
           "ecg_sampling_rates": [
             256.0
           ],
-          "ecg_problem": "all 1 ECG channels are saturated",
-          "signal_quality": "unknown",
+          "ecg_problem": null,
+          "signal_quality": "good",
           "zero_signal_channels": 0,
-          "saturated_signal_channels": 1,
+          "saturated_signal_channels": 0,
           "total_channels": 1
         }
       },
       "total_runs": 19,
       "runs_with_seizures": 4,
-      "runs_with_empty_ecg": 5,
+      "runs_with_empty_ecg": 0,
       "runs_with_missing_ecg": 0,
       "total_seizures": 4,
-      "usable_runs": 14
+      "usable_runs": 19
     },
     "sub-067": {
       "runs": {
@@ -21825,11 +21825,11 @@
           "events_file": "/home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-073/ses-01/eeg/sub-073_ses-01_task-szMonitoring_run-58_events.tsv",
           "ecg_exists": true,
           "ecg_filesize": 13310780,
-          "ecg_empty": true,
+          "ecg_empty": false,
           "ecg_duration": 21262.0,
           "seizures_annotated": 0,
           "seizure_events": [],
-          "usable": false,
+          "usable": true,
           "all_event_types": [
             "bckg"
           ],
@@ -21839,10 +21839,10 @@
           "ecg_sampling_rates": [
             256.0
           ],
-          "ecg_problem": "all 1 ECG channels are saturated",
-          "signal_quality": "unknown",
+          "ecg_problem": null,
+          "signal_quality": "good",
           "zero_signal_channels": 0,
-          "saturated_signal_channels": 1,
+          "saturated_signal_channels": 0,
           "total_channels": 1
         },
         "run-59": {
@@ -21948,10 +21948,10 @@
       },
       "total_runs": 61,
       "runs_with_seizures": 26,
-      "runs_with_empty_ecg": 1,
+      "runs_with_empty_ecg": 0,
       "runs_with_missing_ecg": 0,
       "total_seizures": 75,
-      "usable_runs": 60
+      "usable_runs": 61
     },
     "sub-074": {
       "runs": {
@@ -24867,7 +24867,7 @@
           "events_file": "/home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-077/ses-01/eeg/sub-077_ses-01_task-szMonitoring_run-10_events.tsv",
           "ecg_exists": true,
           "ecg_filesize": 3657234,
-          "ecg_empty": true,
+          "ecg_empty": false,
           "ecg_duration": 5841.0,
           "seizures_annotated": 1,
           "seizure_events": [
@@ -24877,7 +24877,7 @@
               "eventType": "sz_foc_a_um"
             }
           ],
-          "usable": false,
+          "usable": true,
           "all_event_types": [
             "sz_foc_a_um"
           ],
@@ -24887,10 +24887,10 @@
           "ecg_sampling_rates": [
             256.0
           ],
-          "ecg_problem": "all 1 ECG channels are saturated",
-          "signal_quality": "unknown",
+          "ecg_problem": null,
+          "signal_quality": "good",
           "zero_signal_channels": 0,
-          "saturated_signal_channels": 1,
+          "saturated_signal_channels": 0,
           "total_channels": 1
         },
         "run-11": {
@@ -24971,10 +24971,10 @@
       },
       "total_runs": 13,
       "runs_with_seizures": 4,
-      "runs_with_empty_ecg": 1,
+      "runs_with_empty_ecg": 0,
       "runs_with_missing_ecg": 0,
       "total_seizures": 9,
-      "usable_runs": 12
+      "usable_runs": 13
     },
     "sub-078": {
       "runs": {
@@ -27042,11 +27042,11 @@
           "events_file": "/home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-079/ses-01/eeg/sub-079_ses-01_task-szMonitoring_run-05_events.tsv",
           "ecg_exists": true,
           "ecg_filesize": 6306466,
-          "ecg_empty": true,
+          "ecg_empty": false,
           "ecg_duration": 10073.0,
           "seizures_annotated": 0,
           "seizure_events": [],
-          "usable": false,
+          "usable": true,
           "all_event_types": [
             "bckg"
           ],
@@ -27056,10 +27056,10 @@
           "ecg_sampling_rates": [
             256.0
           ],
-          "ecg_problem": "all 1 ECG channels are saturated",
-          "signal_quality": "unknown",
+          "ecg_problem": null,
+          "signal_quality": "good",
           "zero_signal_channels": 0,
-          "saturated_signal_channels": 1,
+          "saturated_signal_channels": 0,
           "total_channels": 1
         },
         "run-06": {
@@ -27507,10 +27507,10 @@
       },
       "total_runs": 20,
       "runs_with_seizures": 9,
-      "runs_with_empty_ecg": 1,
+      "runs_with_empty_ecg": 0,
       "runs_with_missing_ecg": 0,
       "total_seizures": 15,
-      "usable_runs": 19
+      "usable_runs": 20
     },
     "sub-080": {
       "runs": {
@@ -28327,11 +28327,11 @@
           "events_file": "/home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-081/ses-01/eeg/sub-081_ses-01_task-szMonitoring_run-01_events.tsv",
           "ecg_exists": true,
           "ecg_filesize": 2106006,
-          "ecg_empty": true,
+          "ecg_empty": false,
           "ecg_duration": 3363.0,
           "seizures_annotated": 0,
           "seizure_events": [],
-          "usable": false,
+          "usable": true,
           "all_event_types": [
             "bckg"
           ],
@@ -28341,10 +28341,10 @@
           "ecg_sampling_rates": [
             256.0
           ],
-          "ecg_problem": "all 1 ECG channels are saturated",
-          "signal_quality": "unknown",
+          "ecg_problem": null,
+          "signal_quality": "good",
           "zero_signal_channels": 0,
-          "saturated_signal_channels": 1,
+          "saturated_signal_channels": 0,
           "total_channels": 1
         },
         "run-02": {
@@ -30874,10 +30874,10 @@
       },
       "total_runs": 101,
       "runs_with_seizures": 4,
-      "runs_with_empty_ecg": 1,
+      "runs_with_empty_ecg": 0,
       "runs_with_missing_ecg": 0,
       "total_seizures": 4,
-      "usable_runs": 100
+      "usable_runs": 101
     },
     "sub-082": {
       "runs": {
@@ -49692,11 +49692,11 @@
           "events_file": "/home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-094/ses-01/eeg/sub-094_ses-01_task-szMonitoring_run-01_events.tsv",
           "ecg_exists": true,
           "ecg_filesize": 1041806,
-          "ecg_empty": true,
+          "ecg_empty": false,
           "ecg_duration": 1663.0,
           "seizures_annotated": 0,
           "seizure_events": [],
-          "usable": false,
+          "usable": true,
           "all_event_types": [
             "bckg"
           ],
@@ -49706,10 +49706,10 @@
           "ecg_sampling_rates": [
             256.0
           ],
-          "ecg_problem": "all 1 ECG channels are saturated",
-          "signal_quality": "unknown",
+          "ecg_problem": null,
+          "signal_quality": "good",
           "zero_signal_channels": 0,
-          "saturated_signal_channels": 1,
+          "saturated_signal_channels": 0,
           "total_channels": 1
         },
         "run-02": {
@@ -50933,10 +50933,10 @@
       },
       "total_runs": 49,
       "runs_with_seizures": 3,
-      "runs_with_empty_ecg": 1,
+      "runs_with_empty_ecg": 0,
       "runs_with_missing_ecg": 0,
       "total_seizures": 3,
-      "usable_runs": 48
+      "usable_runs": 49
     },
     "sub-095": {
       "runs": {
@@ -59983,11 +59983,11 @@
           "events_file": "/home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-114/ses-01/eeg/sub-114_ses-01_task-szMonitoring_run-08_events.tsv",
           "ecg_exists": true,
           "ecg_filesize": 2815890,
-          "ecg_empty": true,
+          "ecg_empty": false,
           "ecg_duration": 4497.0,
           "seizures_annotated": 0,
           "seizure_events": [],
-          "usable": false,
+          "usable": true,
           "all_event_types": [
             "bckg"
           ],
@@ -59997,10 +59997,10 @@
           "ecg_sampling_rates": [
             256.0
           ],
-          "ecg_problem": "all 1 ECG channels are saturated",
-          "signal_quality": "unknown",
+          "ecg_problem": null,
+          "signal_quality": "good",
           "zero_signal_channels": 0,
-          "saturated_signal_channels": 1,
+          "saturated_signal_channels": 0,
           "total_channels": 1
         },
         "run-09": {
@@ -60093,10 +60093,10 @@
       },
       "total_runs": 9,
       "runs_with_seizures": 4,
-      "runs_with_empty_ecg": 1,
+      "runs_with_empty_ecg": 0,
       "runs_with_missing_ecg": 0,
       "total_seizures": 4,
-      "usable_runs": 8
+      "usable_runs": 9
     },
     "sub-115": {
       "runs": {
@@ -62962,11 +62962,11 @@
           "events_file": "/home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-117/ses-01/eeg/sub-117_ses-01_task-szMonitoring_run-14_events.tsv",
           "ecg_exists": true,
           "ecg_filesize": 7652366,
-          "ecg_empty": true,
+          "ecg_empty": false,
           "ecg_duration": 12223.0,
           "seizures_annotated": 0,
           "seizure_events": [],
-          "usable": false,
+          "usable": true,
           "all_event_types": [
             "bckg"
           ],
@@ -62976,10 +62976,10 @@
           "ecg_sampling_rates": [
             256.0
           ],
-          "ecg_problem": "all 1 ECG channels are saturated",
-          "signal_quality": "unknown",
+          "ecg_problem": null,
+          "signal_quality": "good",
           "zero_signal_channels": 0,
-          "saturated_signal_channels": 1,
+          "saturated_signal_channels": 0,
           "total_channels": 1
         },
         "run-15": {
@@ -63035,10 +63035,10 @@
       },
       "total_runs": 16,
       "runs_with_seizures": 4,
-      "runs_with_empty_ecg": 1,
+      "runs_with_empty_ecg": 0,
       "runs_with_missing_ecg": 0,
       "total_seizures": 11,
-      "usable_runs": 15
+      "usable_runs": 16
     },
     "sub-118": {
       "runs": {
@@ -75893,10 +75893,10 @@
     "total_patients": 125,
     "total_runs": 2795,
     "runs_with_seizures": 378,
-    "runs_with_empty_ecg": 26,
+    "runs_with_empty_ecg": 6,
     "runs_with_missing_ecg": 0,
     "total_seizures_annotated": 856,
-    "usable_runs": 2769,
-    "unusable_runs": 26
+    "usable_runs": 2789,
+    "unusable_runs": 6
   }
 }

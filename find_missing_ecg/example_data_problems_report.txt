@@ -1,0 +1,103 @@
+================================================================================
+ECG DATA QUALITY PROBLEMS REPORT
+================================================================================
+Generated: 2025-10-14 15:23:48
+Dataset: ds005873-1.1.0_example
+
+SUMMARY
+--------------------------------------------------------------------------------
+Total problems found: 6
+  - CRITICAL: 6
+  - WARNING: 0
+
+Problems by type:
+  - Saturated Signal: 6
+
+
+================================================================================
+DETAILED PROBLEM LISTING
+================================================================================
+
+PATIENT: sub-027
+--------------------------------------------------------------------------------
+  Run: run-01
+  Severity: CRITICAL
+  Problem Type: Saturated Signal
+  Description: all 1 ECG channels are saturated
+  File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-027/ses-01/ecg/sub-027_ses-01_task-szMonitoring_run-01_ecg.edf
+  Duration: 71237.0 seconds
+  Channels Found: ECG SD
+  Sampling Rates: 256.0 Hz
+
+PATIENT: sub-035
+--------------------------------------------------------------------------------
+  Run: run-01
+  Severity: CRITICAL
+  Problem Type: Saturated Signal
+  Description: all 1 ECG channels are saturated
+  File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-035/ses-01/ecg/sub-035_ses-01_task-szMonitoring_run-01_ecg.edf
+  Duration: 9368.0 seconds
+  Channels Found: ECG SD
+  Sampling Rates: 256.0 Hz
+
+PATIENT: sub-075
+--------------------------------------------------------------------------------
+  Run: run-43
+  Severity: CRITICAL
+  Problem Type: Saturated Signal
+  Description: all 1 ECG channels are saturated
+  File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-075/ses-01/ecg/sub-075_ses-01_task-szMonitoring_run-43_ecg.edf
+  Duration: 6626.0 seconds
+  Channels Found: ECG SD
+  Sampling Rates: 256.0 Hz
+
+PATIENT: sub-105
+--------------------------------------------------------------------------------
+  Run: run-05
+  Severity: CRITICAL
+  Problem Type: Saturated Signal
+  Description: all 1 ECG channels are saturated
+  File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-105/ses-01/ecg/sub-105_ses-01_task-szMonitoring_run-05_ecg.edf
+  Duration: 72176.0 seconds
+  Channels Found: ECG SD
+  Sampling Rates: 256.0 Hz
+
+PATIENT: sub-109
+--------------------------------------------------------------------------------
+  Run: run-01
+  Severity: CRITICAL
+  Problem Type: Saturated Signal
+  Description: all 1 ECG channels are saturated
+  File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-109/ses-01/ecg/sub-109_ses-01_task-szMonitoring_run-01_ecg.edf
+  Duration: 71167.0 seconds
+  Channels Found: ECG SD
+  Sampling Rates: 256.0 Hz
+
+PATIENT: sub-115
+--------------------------------------------------------------------------------
+  Run: run-32
+  Severity: CRITICAL
+  Problem Type: Saturated Signal
+  Description: all 1 ECG channels are saturated
+  File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-115/ses-01/ecg/sub-115_ses-01_task-szMonitoring_run-32_ecg.edf
+  Duration: 19459.0 seconds
+  Channels Found: ECG SD
+  Sampling Rates: 256.0 Hz
+
+
+================================================================================
+RECOMMENDATIONS
+================================================================================
+
+1. CRITICAL ISSUES FOUND:
+   - Review files with missing or corrupted ECG data
+   - Consider re-downloading or re-processing affected files
+
+4. SATURATED SIGNALS (6 files):
+   - Check recording equipment calibration
+   - May indicate amplifier saturation or disconnected electrodes
+
+
+================================================================================
+END OF REPORT
+================================================================================
