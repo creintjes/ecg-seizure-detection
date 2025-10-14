@@ -199,7 +199,51 @@ def print_summary_report(results):
     print(f"\nSEIZURE ANNOTATIONS:")
     print(f"  Total annotated seizures: {summary['total_seizures_annotated']}")
     print(f"  Runs with seizures: {summary['runs_with_seizures']}")
-    print(f"  Runs with seizures that are usable: {len([p for p in results['patients'].values() if any(r['usable'] and r['seizures_annotated'] > 0 for r in p['runs'].values())])}")
+    usable_runs_with_seizures = sum(sum(1 for r in patient_data['runs'].values() if r['usable'] and r['seizures_annotated'] > 0) for patient_data in results['patients'].values())
+    print(f"  Runs with seizures that are usable: {usable_runs_with_seizures}")
+
+    patients_with_usable_seizure_runs = len([p for p in results['patients'].values() if any(r['usable'] and r['seizures_annotated'] > 0 for r in p['runs'].values())])
+    print(f"  Patients with usable seizure runs: {patients_with_usable_seizure_runs}")
+
+    # Find patients without usable seizure runs and analyze reasons
+    patients_without_usable_seizure_runs = []
+    for patient_id, patient_data in results['patients'].items():
+        if not any(r['usable'] and r['seizures_annotated'] > 0 for r in patient_data['runs'].values()):
+            # Analyze why this patient has no usable seizure runs
+            total_seizures = patient_data['total_seizures']
+            usable_runs = patient_data['usable_runs']
+            total_runs = patient_data['total_runs']
+
+            reasons = []
+            if total_seizures == 0:
+                reasons.append("no seizures annotated")
+            else:
+                # Patient has seizures, check why they're not usable
+                seizure_runs_unusable = 0
+                for run_id, run_data in patient_data['runs'].items():
+                    if run_data['seizures_annotated'] > 0 and not run_data['usable']:
+                        seizure_runs_unusable += 1
+
+                if seizure_runs_unusable > 0:
+                    reasons.append(f"{seizure_runs_unusable} seizure runs with unusable ECG")
+                if usable_runs < total_runs:
+                    reasons.append(f"{total_runs - usable_runs} total unusable runs")
+
+            patients_without_usable_seizure_runs.append({
+                'id': patient_id,
+                'total_seizures': total_seizures,
+                'usable_runs': usable_runs,
+                'total_runs': total_runs,
+                'reasons': reasons
+            })
+
+    print(f"  Patients without usable seizure runs: {len(patients_without_usable_seizure_runs)}")
+
+    if patients_without_usable_seizure_runs:
+        print(f"\nDETAILED BREAKDOWN OF PATIENTS WITHOUT USABLE SEIZURE RUNS:")
+        for patient in sorted(patients_without_usable_seizure_runs, key=lambda x: x['id']):
+            reason_text = "; ".join(patient['reasons']) if patient['reasons'] else "unknown reason"
+            print(f"    {patient['id']}: {patient['total_seizures']} seizures, {patient['usable_runs']}/{patient['total_runs']} usable runs - {reason_text}")
 
     print(f"\nPER-PATIENT BREAKDOWN:")
     for patient_id, patient_data in results['patients'].items():
