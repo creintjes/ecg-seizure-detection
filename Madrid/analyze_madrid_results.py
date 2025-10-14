@@ -53,6 +53,8 @@ def extract_seizure_info(result_data, file_path):
         'seizure_windows': [],
         'total_seizure_segments': 0,
         'total_seizure_duration_seconds': 0,
+        'unique_seizures': [],
+        'unique_seizures_count': 0,
         'analysis_timestamp': None,
         'analysis_successful': False
     }
@@ -86,23 +88,78 @@ def extract_seizure_info(result_data, file_path):
                 info['seizure_windows_count'] = len(seizure_windows)
                 info['seizure_windows'] = seizure_windows
 
-                # Count segments and total duration
-                total_duration = 0
+                # Collect all segments across all windows
+                all_segments = []
                 total_segments = 0
 
                 for window in seizure_windows:
                     if 'seizure_segments' in window:
                         segments = window['seizure_segments']
                         total_segments += len(segments)
-
-                        for segment in segments:
-                            duration = segment.get('duration_seconds', 0)
-                            total_duration += duration
+                        all_segments.extend(segments)
 
                 info['total_seizure_segments'] = total_segments
+
+                # Identify unique seizures by merging overlapping time ranges
+                unique_seizures = merge_overlapping_seizures(all_segments)
+                info['unique_seizures'] = unique_seizures
+                info['unique_seizures_count'] = len(unique_seizures)
+
+                # Calculate total duration from unique seizures
+                total_duration = sum(s['duration_seconds'] for s in unique_seizures)
                 info['total_seizure_duration_seconds'] = total_duration
 
     return info
+
+
+def merge_overlapping_seizures(segments):
+    """
+    Merge overlapping seizure segments to identify unique seizures.
+    Segments from different windows may represent the same seizure.
+
+    Args:
+        segments: List of seizure segment dictionaries with start/end times
+
+    Returns:
+        list: List of unique merged seizure dictionaries
+    """
+    if not segments:
+        return []
+
+    # Sort segments by start time
+    sorted_segments = sorted(segments, key=lambda x: x.get('start_time_absolute', 0))
+
+    # Merge overlapping or adjacent segments
+    merged = []
+    current_start = sorted_segments[0].get('start_time_absolute', 0)
+    current_end = sorted_segments[0].get('end_time_absolute', 0)
+
+    for segment in sorted_segments[1:]:
+        seg_start = segment.get('start_time_absolute', 0)
+        seg_end = segment.get('end_time_absolute', 0)
+
+        # Check if segments overlap or are adjacent (within 1 second tolerance)
+        if seg_start <= current_end + 1.0:
+            # Merge: extend current end time
+            current_end = max(current_end, seg_end)
+        else:
+            # No overlap: save current seizure and start new one
+            merged.append({
+                'start_time_absolute': current_start,
+                'end_time_absolute': current_end,
+                'duration_seconds': current_end - current_start
+            })
+            current_start = seg_start
+            current_end = seg_end
+
+    # Add the last seizure
+    merged.append({
+        'start_time_absolute': current_start,
+        'end_time_absolute': current_end,
+        'duration_seconds': current_end - current_start
+    })
+
+    return merged
 
 
 def analyze_directory(directory_path, output_file=None):
@@ -151,7 +208,8 @@ def analyze_directory(directory_path, output_file=None):
 
         if info['seizure_present']:
             print(f"  Seizure windows: {info['seizure_windows_count']}/{info['total_windows']}")
-            print(f"  Seizure segments: {info['total_seizure_segments']}")
+            print(f"  Total seizure segments (across all windows): {info['total_seizure_segments']}")
+            print(f"  Unique seizures (merged): {info['unique_seizures_count']}")
             print(f"  Total seizure duration: {info['total_seizure_duration_seconds']:.1f} seconds")
 
     # Generate summary statistics
@@ -169,13 +227,15 @@ def analyze_directory(directory_path, output_file=None):
     print(f"  Files with seizures: {summary['files_with_seizures']}")
     print(f"  Files without seizures: {summary['files_without_seizures']}")
     print(f"  Total seizure windows: {summary['total_seizure_windows']}")
-    print(f"  Total seizure segments: {summary['total_seizure_segments']}")
+    print(f"  Total seizure segments (across all windows): {summary['total_seizure_segments']}")
+    print(f"  Total unique seizures (merged): {summary['total_unique_seizures']}")
     print(f"  Total seizure duration: {summary['total_seizure_duration_seconds']:.1f} seconds ({summary['total_seizure_duration_minutes']:.2f} minutes)")
 
     if summary['files_with_seizures'] > 0:
         print(f"\nAVERAGE PER FILE WITH SEIZURES:")
         print(f"  Avg seizure windows per file: {summary['avg_seizure_windows_per_file']:.2f}")
         print(f"  Avg seizure segments per file: {summary['avg_seizure_segments_per_file']:.2f}")
+        print(f"  Avg unique seizures per file: {summary['avg_unique_seizures_per_file']:.2f}")
         print(f"  Avg seizure duration per file: {summary['avg_seizure_duration_per_file']:.2f} seconds")
 
     print(f"\nSUBJECTS AND RUNS:")
@@ -212,6 +272,7 @@ def generate_summary(all_results):
         'files_without_seizures': sum(1 for r in all_results if not r['seizure_present']),
         'total_seizure_windows': sum(r['seizure_windows_count'] for r in all_results),
         'total_seizure_segments': sum(r['total_seizure_segments'] for r in all_results),
+        'total_unique_seizures': sum(r['unique_seizures_count'] for r in all_results),
         'total_seizure_duration_seconds': sum(r['total_seizure_duration_seconds'] for r in all_results),
         'total_seizure_duration_minutes': sum(r['total_seizure_duration_seconds'] for r in all_results) / 60.0,
         'unique_subjects': set(r['subject_id'] for r in all_results if r['subject_id']),
@@ -219,6 +280,7 @@ def generate_summary(all_results):
         'subjects_with_seizures': defaultdict(int),
         'avg_seizure_windows_per_file': 0,
         'avg_seizure_segments_per_file': 0,
+        'avg_unique_seizures_per_file': 0,
         'avg_seizure_duration_per_file': 0
     }
 
@@ -231,6 +293,7 @@ def generate_summary(all_results):
     if summary['files_with_seizures'] > 0:
         summary['avg_seizure_windows_per_file'] = summary['total_seizure_windows'] / summary['files_with_seizures']
         summary['avg_seizure_segments_per_file'] = summary['total_seizure_segments'] / summary['files_with_seizures']
+        summary['avg_unique_seizures_per_file'] = summary['total_unique_seizures'] / summary['files_with_seizures']
         summary['avg_seizure_duration_per_file'] = summary['total_seizure_duration_seconds'] / summary['files_with_seizures']
 
     return summary
@@ -264,13 +327,15 @@ def save_report(summary, all_results, output_file):
         f.write(f"Files with seizures: {summary['files_with_seizures']}\n")
         f.write(f"Files without seizures: {summary['files_without_seizures']}\n")
         f.write(f"Total seizure windows: {summary['total_seizure_windows']}\n")
-        f.write(f"Total seizure segments: {summary['total_seizure_segments']}\n")
+        f.write(f"Total seizure segments (across all windows): {summary['total_seizure_segments']}\n")
+        f.write(f"Total unique seizures (merged): {summary['total_unique_seizures']}\n")
         f.write(f"Total seizure duration: {summary['total_seizure_duration_seconds']:.1f} seconds ({summary['total_seizure_duration_minutes']:.2f} minutes)\n")
         f.write(f"\n")
 
         if summary['files_with_seizures'] > 0:
             f.write(f"Average seizure windows per file: {summary['avg_seizure_windows_per_file']:.2f}\n")
             f.write(f"Average seizure segments per file: {summary['avg_seizure_segments_per_file']:.2f}\n")
+            f.write(f"Average unique seizures per file: {summary['avg_unique_seizures_per_file']:.2f}\n")
             f.write(f"Average seizure duration per file: {summary['avg_seizure_duration_per_file']:.2f} seconds\n")
 
         f.write(f"\n")
@@ -301,12 +366,20 @@ def save_report(summary, all_results, output_file):
             if result['seizure_present']:
                 f.write(f"  Total windows: {result['total_windows']}\n")
                 f.write(f"  Seizure windows: {result['seizure_windows_count']}\n")
-                f.write(f"  Seizure segments: {result['total_seizure_segments']}\n")
+                f.write(f"  Seizure segments (across all windows): {result['total_seizure_segments']}\n")
+                f.write(f"  Unique seizures (merged): {result['unique_seizures_count']}\n")
                 f.write(f"  Total seizure duration: {result['total_seizure_duration_seconds']:.1f} seconds\n")
 
-                # List each seizure window
+                # List unique merged seizures
+                if result['unique_seizures']:
+                    f.write(f"  Unique seizure details (after merging overlaps):\n")
+                    for idx, seizure in enumerate(result['unique_seizures'], 1):
+                        f.write(f"    Seizure {idx}: {seizure['start_time_absolute']:.1f}s - {seizure['end_time_absolute']:.1f}s "
+                               f"(duration: {seizure['duration_seconds']:.1f}s)\n")
+
+                # List each seizure window (for reference)
                 if result['seizure_windows']:
-                    f.write(f"  Seizure window details:\n")
+                    f.write(f"  Seizure window details (raw, may contain overlaps):\n")
                     for sw in result['seizure_windows']:
                         f.write(f"    Window {sw['window_index']}: {len(sw.get('seizure_segments', []))} segment(s), "
                                f"ratio: {sw.get('seizure_ratio', 0):.4f}\n")
