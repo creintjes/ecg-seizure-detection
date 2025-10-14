@@ -1,0 +1,439 @@
+{
+  "patients": {
+    "sub-001": {
+      "runs": {
+        "run-01": {
+          "ecg_file": "ds005873-1.1.0_example/sub-001/ses-01/ecg/sub-001_ses-01_task-szMonitoring_run-01_ecg.edf",
+          "events_file": "ds005873-1.1.0_example/sub-001/ses-01/eeg/sub-001_ses-01_task-szMonitoring_run-01_events.tsv",
+          "ecg_exists": true,
+          "ecg_filesize": 40890462,
+          "ecg_empty": false,
+          "ecg_duration": 38996.18339538574,
+          "seizures_annotated": 0,
+          "seizure_events": [],
+          "usable": true,
+          "all_event_types": [
+            "impd"
+          ]
+        },
+        "run-02": {
+          "ecg_file": "ds005873-1.1.0_example/sub-001/ses-01/ecg/sub-001_ses-01_task-szMonitoring_run-02_ecg.edf",
+          "events_file": "ds005873-1.1.0_example/sub-001/ses-01/eeg/sub-001_ses-01_task-szMonitoring_run-02_events.tsv",
+          "ecg_exists": true,
+          "ecg_filesize": 12405584,
+          "ecg_empty": false,
+          "ecg_duration": 11830.886840820312,
+          "seizures_annotated": 0,
+          "seizure_events": [],
+          "usable": true,
+          "all_event_types": [
+            "bckg"
+          ]
+        },
+        "run-03": {
+          "ecg_file": "ds005873-1.1.0_example/sub-001/ses-01/ecg/sub-001_ses-01_task-szMonitoring_run-03_ecg.edf",
+          "events_file": "ds005873-1.1.0_example/sub-001/ses-01/eeg/sub-001_ses-01_task-szMonitoring_run-03_events.tsv",
+          "ecg_exists": true,
+          "ecg_filesize": 40677622,
+          "ecg_empty": false,
+          "ecg_duration": 38793.203353881836,
+          "seizures_annotated": 1,
+          "seizure_events": [
+            {
+              "onset": 57975.0,
+              "duration": 72.0,
+              "eventType": "sz_foc_ia_nm"
+            }
+          ],
+          "usable": true,
+          "all_event_types": [
+            "impd",
+            "sz_foc_ia_nm"
+          ]
+        },
+        "run-04": {
+          "ecg_file": "ds005873-1.1.0_example/sub-001/ses-01/ecg/sub-001_ses-01_task-szMonitoring_run-04_ecg.edf",
+          "events_file": "ds005873-1.1.0_example/sub-001/ses-01/eeg/sub-001_ses-01_task-szMonitoring_run-04_events.tsv",
+          "ecg_exists": true,
+          "ecg_filesize": 13277602,
+          "ecg_empty": false,
+          "ecg_duration": 12662.508010864258,
+          "seizures_annotated": 0,
+          "seizure_events": [],
+          "usable": true,
+          "all_event_types": [
+            "bckg"
+          ]
+        },
+        "run-05": {
+          "ecg_file": "ds005873-1.1.0_example/sub-001/ses-01/ecg/sub-001_ses-01_task-szMonitoring_run-05_ecg.edf",
+          "events_file": "ds005873-1.1.0_example/sub-001/ses-01/eeg/sub-001_ses-01_task-szMonitoring_run-05_events.tsv",
+          "ecg_exists": true,
+          "ecg_filesize": 39132654,
+          "ecg_empty": false,
+          "ecg_duration": 37319.807052612305,
+          "seizures_annotated": 1,
+          "seizure_events": [
+            {
+              "onset": 60968.0,
+              "duration": 81.0,
+              "eventType": "sz_foc_a_nm"
+            }
+          ],
+          "usable": true,
+          "all_event_types": [
+            "impd",
+            "sz_foc_a_nm"
+          ]
+        },
+        "run-06": {
+          "ecg_file": "ds005873-1.1.0_example/sub-001/ses-01/ecg/sub-001_ses-01_task-szMonitoring_run-06_ecg.edf",
+          "events_file": "ds005873-1.1.0_example/sub-001/ses-01/eeg/sub-001_ses-01_task-szMonitoring_run-06_events.tsv",
+          "ecg_exists": true,
+          "ecg_filesize": 12640960,
+          "ecg_empty": false,
+          "ecg_duration": 12055.35888671875,
+          "seizures_annotated": 0,
+          "seizure_events": [],
+          "usable": true,
+          "all_event_types": [
+            "bckg"
+          ]
+        },
+        "run-07": {
+          "ecg_file": "ds005873-1.1.0_example/sub-001/ses-01/ecg/sub-001_ses-01_task-szMonitoring_run-07_ecg.edf",
+          "events_file": "ds005873-1.1.0_example/sub-001/ses-01/eeg/sub-001_ses-01_task-szMonitoring_run-07_events.tsv",
+          "ecg_exists": true,
+          "ecg_filesize": 18479036,
+          "ecg_empty": false,
+          "ecg_duration": 17622.982025146484,
+          "seizures_annotated": 1,
+          "seizure_events": [
+            {
+              "onset": 16300.0,
+              "duration": 143.0,
+              "eventType": "sz_foc_ia_m_tonic"
+            }
+          ],
+          "usable": true,
+          "all_event_types": [
+            "sz_foc_ia_m_tonic"
+          ]
+        },
+        "run-08": {
+          "ecg_file": "ds005873-1.1.0_example/sub-001/ses-01/ecg/sub-001_ses-01_task-szMonitoring_run-08_ecg.edf",
+          "events_file": "ds005873-1.1.0_example/sub-001/ses-01/eeg/sub-001_ses-01_task-szMonitoring_run-08_events.tsv",
+          "ecg_exists": true,
+          "ecg_filesize": 32225996,
+          "ecg_empty": false,
+          "ecg_duration": 30733.104705810547,
+          "seizures_annotated": 1,
+          "seizure_events": [
+            {
+              "onset": 28285.0,
+              "duration": 25.0,
+              "eventType": "sz_foc_a_m_automatisms"
+            }
+          ],
+          "usable": true,
+          "all_event_types": [
+            "sz_foc_a_m_automatisms",
+            "impd"
+          ]
+        },
+        "run-09": {
+          "ecg_file": "ds005873-1.1.0_example/sub-001/ses-01/ecg/sub-001_ses-01_task-szMonitoring_run-09_ecg.edf",
+          "events_file": "ds005873-1.1.0_example/sub-001/ses-01/eeg/sub-001_ses-01_task-szMonitoring_run-09_events.tsv",
+          "ecg_exists": true,
+          "ecg_filesize": 30460050,
+          "ecg_empty": false,
+          "ecg_duration": 29048.967361450195,
+          "seizures_annotated": 0,
+          "seizure_events": [],
+          "usable": true,
+          "all_event_types": [
+            "bckg"
+          ]
+        }
+      },
+      "total_runs": 9,
+      "runs_with_seizures": 4,
+      "runs_with_empty_ecg": 0,
+      "runs_with_missing_ecg": 0,
+      "total_seizures": 4,
+      "usable_runs": 9
+    },
+    "sub-002": {
+      "runs": {
+        "run-01": {
+          "ecg_file": "ds005873-1.1.0_example/sub-002/ses-01/ecg/sub-002_ses-01_task-szMonitoring_run-01_ecg.edf",
+          "events_file": "ds005873-1.1.0_example/sub-002/ses-01/eeg/sub-002_ses-01_task-szMonitoring_run-01_events.tsv",
+          "ecg_exists": true,
+          "ecg_filesize": 7124648,
+          "ecg_empty": false,
+          "ecg_duration": 6794.593811035156,
+          "seizures_annotated": 2,
+          "seizure_events": [
+            {
+              "onset": 4046.0,
+              "duration": 20.0,
+              "eventType": "sz_foc_a_nm"
+            },
+            {
+              "onset": 10629.0,
+              "duration": 181.0,
+              "eventType": "sz_foc_ia_m_hyperkinetic"
+            }
+          ],
+          "usable": true,
+          "all_event_types": [
+            "sz_foc_a_nm",
+            "sz_foc_ia_m_hyperkinetic"
+          ]
+        },
+        "run-02": {
+          "ecg_file": "ds005873-1.1.0_example/sub-002/ses-01/ecg/sub-002_ses-01_task-szMonitoring_run-02_ecg.edf",
+          "events_file": "ds005873-1.1.0_example/sub-002/ses-01/eeg/sub-002_ses-01_task-szMonitoring_run-02_events.tsv",
+          "ecg_exists": true,
+          "ecg_filesize": 15021012,
+          "ecg_empty": false,
+          "ecg_duration": 14325.153350830076,
+          "seizures_annotated": 2,
+          "seizure_events": [
+            {
+              "onset": 5224.0,
+              "duration": 112.0,
+              "eventType": "sz_foc_a_m_hyperkinetic"
+            },
+            {
+              "onset": 13745.0,
+              "duration": 180.0,
+              "eventType": "sz_foc_ia_m_hyperkinetic"
+            }
+          ],
+          "usable": true,
+          "all_event_types": [
+            "sz_foc_a_m_hyperkinetic",
+            "sz_foc_ia_m_hyperkinetic"
+          ]
+        },
+        "run-03": {
+          "ecg_file": "ds005873-1.1.0_example/sub-002/ses-01/ecg/sub-002_ses-01_task-szMonitoring_run-03_ecg.edf",
+          "events_file": "ds005873-1.1.0_example/sub-002/ses-01/eeg/sub-002_ses-01_task-szMonitoring_run-03_events.tsv",
+          "ecg_exists": true,
+          "ecg_filesize": 24467352,
+          "ecg_empty": false,
+          "ecg_duration": 23333.88519287109,
+          "seizures_annotated": 1,
+          "seizure_events": [
+            {
+              "onset": 31537.0,
+              "duration": 52.0,
+              "eventType": "sz_foc_ia_m_hyperkinetic"
+            }
+          ],
+          "usable": true,
+          "all_event_types": [
+            "sz_foc_ia_m_hyperkinetic"
+          ]
+        },
+        "run-04": {
+          "ecg_file": "ds005873-1.1.0_example/sub-002/ses-01/ecg/sub-002_ses-01_task-szMonitoring_run-04_ecg.edf",
+          "events_file": "ds005873-1.1.0_example/sub-002/ses-01/eeg/sub-002_ses-01_task-szMonitoring_run-04_events.tsv",
+          "ecg_exists": true,
+          "ecg_filesize": 3391810,
+          "ecg_empty": false,
+          "ecg_duration": 3234.682083129883,
+          "seizures_annotated": 0,
+          "seizure_events": [],
+          "usable": true,
+          "all_event_types": [
+            "bckg"
+          ]
+        },
+        "run-05": {
+          "ecg_file": "ds005873-1.1.0_example/sub-002/ses-01/ecg/sub-002_ses-01_task-szMonitoring_run-05_ecg.edf",
+          "events_file": "ds005873-1.1.0_example/sub-002/ses-01/eeg/sub-002_ses-01_task-szMonitoring_run-05_events.tsv",
+          "ecg_exists": true,
+          "ecg_filesize": 48803102,
+          "ecg_empty": false,
+          "ecg_duration": 46542.26493835449,
+          "seizures_annotated": 2,
+          "seizure_events": [
+            {
+              "onset": 69796.0,
+              "duration": 153.0,
+              "eventType": "sz_foc_ia_m_hyperkinetic"
+            },
+            {
+              "onset": 74529.0,
+              "duration": 64.0,
+              "eventType": "sz_foc_ia_m_hyperkinetic"
+            }
+          ],
+          "usable": true,
+          "all_event_types": [
+            "sz_foc_ia_m_hyperkinetic"
+          ]
+        },
+        "run-06": {
+          "ecg_file": "ds005873-1.1.0_example/sub-002/ses-01/ecg/sub-002_ses-01_task-szMonitoring_run-06_ecg.edf",
+          "events_file": "ds005873-1.1.0_example/sub-002/ses-01/eeg/sub-002_ses-01_task-szMonitoring_run-06_events.tsv",
+          "ecg_exists": true,
+          "ecg_filesize": 50612242,
+          "ecg_empty": false,
+          "ecg_duration": 48267.595291137695,
+          "seizures_annotated": 3,
+          "seizure_events": [
+            {
+              "onset": 72558.0,
+              "duration": 56.0,
+              "eventType": "sz_foc_ia_m_hyperkinetic"
+            },
+            {
+              "onset": 77054.0,
+              "duration": 180.0,
+              "eventType": "sz_foc_ia_m_hyperkinetic"
+            },
+            {
+              "onset": 80526.0,
+              "duration": 228.0,
+              "eventType": "sz_foc_ia_m_hyperkinetic"
+            }
+          ],
+          "usable": true,
+          "all_event_types": [
+            "sz_foc_ia_m_hyperkinetic"
+          ]
+        },
+        "run-07": {
+          "ecg_file": "ds005873-1.1.0_example/sub-002/ses-01/ecg/sub-002_ses-01_task-szMonitoring_run-07_ecg.edf",
+          "events_file": "ds005873-1.1.0_example/sub-002/ses-01/eeg/sub-002_ses-01_task-szMonitoring_run-07_events.tsv",
+          "ecg_exists": true,
+          "ecg_filesize": 2702584,
+          "ecg_empty": false,
+          "ecg_duration": 2577.3849487304688,
+          "seizures_annotated": 0,
+          "seizure_events": [],
+          "usable": true,
+          "all_event_types": [
+            "bckg"
+          ]
+        },
+        "run-08": {
+          "ecg_file": "ds005873-1.1.0_example/sub-002/ses-01/ecg/sub-002_ses-01_task-szMonitoring_run-08_ecg.edf",
+          "events_file": "ds005873-1.1.0_example/sub-002/ses-01/eeg/sub-002_ses-01_task-szMonitoring_run-08_events.tsv",
+          "ecg_exists": true,
+          "ecg_filesize": 29771450,
+          "ecg_empty": false,
+          "ecg_duration": 28392.26722717285,
+          "seizures_annotated": 0,
+          "seizure_events": [],
+          "usable": true,
+          "all_event_types": [
+            "impd"
+          ]
+        },
+        "run-09": {
+          "ecg_file": "ds005873-1.1.0_example/sub-002/ses-01/ecg/sub-002_ses-01_task-szMonitoring_run-09_ecg.edf",
+          "events_file": "ds005873-1.1.0_example/sub-002/ses-01/eeg/sub-002_ses-01_task-szMonitoring_run-09_events.tsv",
+          "ecg_exists": true,
+          "ecg_filesize": 17987000,
+          "ecg_empty": false,
+          "ecg_duration": 17153.73992919922,
+          "seizures_annotated": 4,
+          "seizure_events": [
+            {
+              "onset": 16790.0,
+              "duration": 59.0,
+              "eventType": "sz_foc_ia_m_hyperkinetic"
+            },
+            {
+              "onset": 22216.0,
+              "duration": 118.0,
+              "eventType": "sz_foc_ia_m_hyperkinetic"
+            },
+            {
+              "onset": 27736.0,
+              "duration": 100.0,
+              "eventType": "sz_foc_ia_m_hyperkinetic"
+            },
+            {
+              "onset": 28456.0,
+              "duration": 161.0,
+              "eventType": "sz_foc_ia_m_hyperkinetic"
+            }
+          ],
+          "usable": true,
+          "all_event_types": [
+            "sz_foc_ia_m_hyperkinetic"
+          ]
+        },
+        "run-10": {
+          "ecg_file": "ds005873-1.1.0_example/sub-002/ses-01/ecg/sub-002_ses-01_task-szMonitoring_run-10_ecg.edf",
+          "events_file": "ds005873-1.1.0_example/sub-002/ses-01/eeg/sub-002_ses-01_task-szMonitoring_run-10_events.tsv",
+          "ecg_exists": true,
+          "ecg_filesize": 3891984,
+          "ecg_empty": false,
+          "ecg_duration": 3711.685180664063,
+          "seizures_annotated": 1,
+          "seizure_events": [
+            {
+              "onset": 4494.0,
+              "duration": 156.0,
+              "eventType": "sz_foc_ia_m_hyperkinetic"
+            }
+          ],
+          "usable": true,
+          "all_event_types": [
+            "sz_foc_ia_m_hyperkinetic"
+          ]
+        },
+        "run-11": {
+          "ecg_file": "ds005873-1.1.0_example/sub-002/ses-01/ecg/sub-002_ses-01_task-szMonitoring_run-11_ecg.edf",
+          "events_file": "ds005873-1.1.0_example/sub-002/ses-01/eeg/sub-002_ses-01_task-szMonitoring_run-11_events.tsv",
+          "ecg_exists": true,
+          "ecg_filesize": 9867154,
+          "ecg_empty": false,
+          "ecg_duration": 9410.051345825195,
+          "seizures_annotated": 0,
+          "seizure_events": [],
+          "usable": true,
+          "all_event_types": [
+            "bckg"
+          ]
+        },
+        "run-12": {
+          "ecg_file": "ds005873-1.1.0_example/sub-002/ses-01/ecg/sub-002_ses-01_task-szMonitoring_run-12_ecg.edf",
+          "events_file": "ds005873-1.1.0_example/sub-002/ses-01/eeg/sub-002_ses-01_task-szMonitoring_run-12_events.tsv",
+          "ecg_exists": true,
+          "ecg_filesize": 9889064,
+          "ecg_empty": false,
+          "ecg_duration": 9430.946350097656,
+          "seizures_annotated": 0,
+          "seizure_events": [],
+          "usable": true,
+          "all_event_types": [
+            "bckg"
+          ]
+        }
+      },
+      "total_runs": 12,
+      "runs_with_seizures": 7,
+      "runs_with_empty_ecg": 0,
+      "runs_with_missing_ecg": 0,
+      "total_seizures": 15,
+      "usable_runs": 12
+    }
+  },
+  "summary": {
+    "total_patients": 2,
+    "total_runs": 21,
+    "runs_with_seizures": 11,
+    "runs_with_empty_ecg": 0,
+    "runs_with_missing_ecg": 0,
+    "total_seizures_annotated": 19,
+    "usable_runs": 21,
+    "unusable_runs": 0
+  }
+}
