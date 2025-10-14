@@ -12,9 +12,117 @@ import numpy as np
 from pathlib import Path
 import json
 from collections import defaultdict
+import pyedflib
+
+def analyze_ecg_signal(ecg_file_path, subject_id, run_id):
+    """
+    Detailed analysis of ECG signal quality
+    Returns dict with analysis results
+    """
+    analysis = {
+        'ecg_empty': False,
+        'ecg_duration': 0,
+        'ecg_channels_found': [],
+        'ecg_sampling_rates': [],
+        'ecg_problem': None,
+        'signal_quality': 'unknown',
+        'zero_signal_channels': 0,
+        'saturated_signal_channels': 0,
+        'total_channels': 0
+    }
+
+    try:
+        with pyedflib.EdfReader(ecg_file_path) as f:
+            # Basic file info
+            analysis['ecg_duration'] = f.file_duration
+            analysis['total_channels'] = f.signals_in_file
+            signal_labels = f.getSignalLabels()
+
+            # Find ECG channels
+            ecg_channel_indices = []
+            for i, label in enumerate(signal_labels):
+                label_lower = label.lower()
+                if any(ecg_keyword in label_lower for ecg_keyword in ['ecg', 'ekg', 'lead']):
+                    ecg_channel_indices.append(i)
+                    analysis['ecg_channels_found'].append(label)
+                    analysis['ecg_sampling_rates'].append(f.getSampleFrequency(i))
+
+            # Check if any ECG channels found
+            if not ecg_channel_indices:
+                analysis['ecg_empty'] = True
+                analysis['ecg_problem'] = f"no ECG channels found (available: {signal_labels})"
+                return analysis
+
+            # Analyze each ECG channel for signal quality
+            zero_channels = 0
+            saturated_channels = 0
+
+            for channel_idx in ecg_channel_indices:
+                try:
+                    # Read a sample of the signal (first 30 seconds or max 10000 samples)
+                    sample_size = min(10000, int(f.getSampleFrequency(channel_idx) * 30))
+                    if f.getNSamples()[channel_idx] < sample_size:
+                        sample_size = f.getNSamples()[channel_idx]
+
+                    if sample_size == 0:
+                        zero_channels += 1
+                        continue
+
+                    signal_data = f.readSignal(channel_idx, start=0, n=sample_size)
+
+                    if len(signal_data) == 0:
+                        zero_channels += 1
+                        continue
+
+                    # Check for all-zero signal
+                    if np.all(signal_data == 0):
+                        zero_channels += 1
+                        continue
+
+                    # Check for saturated signal (all values at same level)
+                    if len(np.unique(signal_data)) < 10:  # Less than 10 unique values suggests saturation
+                        saturated_channels += 1
+                        continue
+
+                    # Check for reasonable signal range (ECG should be in mV range, typically -5 to +5 mV)
+                    signal_range = np.max(signal_data) - np.min(signal_data)
+                    if signal_range < 0.001:  # Less than 1 microV range
+                        saturated_channels += 1
+                        continue
+
+                except Exception as e:
+                    print(f"      Error reading channel {channel_idx} ({signal_labels[channel_idx]}): {e}")
+                    zero_channels += 1
+                    continue
+
+            analysis['zero_signal_channels'] = zero_channels
+            analysis['saturated_signal_channels'] = saturated_channels
+
+            # Determine overall signal quality
+            usable_channels = len(ecg_channel_indices) - zero_channels - saturated_channels
+
+            if usable_channels == 0:
+                analysis['ecg_empty'] = True
+                if zero_channels > 0 and saturated_channels > 0:
+                    analysis['ecg_problem'] = f"{zero_channels} zero channels, {saturated_channels} saturated channels"
+                elif zero_channels > 0:
+                    analysis['ecg_problem'] = f"all {zero_channels} ECG channels contain zero signal"
+                elif saturated_channels > 0:
+                    analysis['ecg_problem'] = f"all {saturated_channels} ECG channels are saturated"
+            elif usable_channels < len(ecg_channel_indices):
+                analysis['signal_quality'] = 'partial'
+                analysis['ecg_problem'] = f"only {usable_channels}/{len(ecg_channel_indices)} ECG channels usable"
+            else:
+                analysis['signal_quality'] = 'good'
+
+    except Exception as e:
+        analysis['ecg_empty'] = True
+        analysis['ecg_problem'] = f"EDF read error: {str(e)}"
+
+    return analysis
 
 def analyze_example_data():
-    base_dir = Path("/home/swolf/asim_shared/raw_data/ds005873-1.1.0")
+    base_dir = Path("../ds005873-1.1.0_example")
 
     if not base_dir.exists():
         print(f"Error: Directory {base_dir} not found")
@@ -119,25 +227,27 @@ def analyze_example_data():
                     except Exception as e:
                         print(f"    Error reading events file {events_file}: {e}")
 
-                # Analyze ECG file (simplified - just check file size and existence)
+                # Analyze ECG file (detailed analysis with pyedflib)
                 if run_data['ecg_exists']:
                     try:
-                        # Basic file analysis without pyedflib
+                        # Check file size first
                         file_size = run_data['ecg_filesize']
-
-                        # Assume files smaller than 10KB are likely empty/corrupted
                         if file_size < 10000:
                             run_data['ecg_empty'] = True
+                            run_data['ecg_problem'] = f"file too small ({file_size} bytes)"
                             print(f"    {subject_id} {run_id}: ECG file too small ({file_size} bytes)")
                         else:
-                            # Estimate duration based on typical EDF file sizes (rough approximation)
-                            # A typical 1-hour ECG at 250Hz with 1 channel ≈ 3.6MB
-                            estimated_hours = file_size / (3.6 * 1024 * 1024)
-                            run_data['ecg_duration'] = estimated_hours * 3600
+                            # Detailed EDF analysis
+                            ecg_analysis = analyze_ecg_signal(str(ecg_file), subject_id, run_id)
+                            run_data.update(ecg_analysis)
+
+                            if ecg_analysis['ecg_empty']:
+                                print(f"    {subject_id} {run_id}: ECG unusable - {ecg_analysis.get('ecg_problem', 'unknown issue')}")
 
                     except Exception as e:
                         print(f"    {subject_id} {run_id}: Error analyzing ECG file: {e}")
                         run_data['ecg_empty'] = True
+                        run_data['ecg_problem'] = f"file read error: {str(e)}"
 
                 else:
                     run_data['ecg_empty'] = True
@@ -165,17 +275,26 @@ def analyze_example_data():
                 status = "✓ USABLE" if run_data['usable'] else "✗ UNUSABLE"
                 seizure_info = f", {run_data['seizures_annotated']} seizures" if run_data['seizures_annotated'] > 0 else ""
                 duration_info = f", {run_data['ecg_duration']:.1f}s" if run_data['ecg_duration'] > 0 else ""
+
+                # ECG quality info
+                ecg_quality_info = ""
+                if 'ecg_channels_found' in run_data and run_data['ecg_channels_found']:
+                    channels = len(run_data['ecg_channels_found'])
+                    quality = run_data.get('signal_quality', 'unknown')
+                    ecg_quality_info = f", ECG: {channels} channels ({quality})"
+
                 problem = ""
                 if run_data['ecg_empty']:
-                    problem = " (ECG empty/missing)"
-                elif run_data['ecg_filesize'] < 10000:
-                    problem = " (ECG file too small)"
+                    if 'ecg_problem' in run_data:
+                        problem = f" (ECG: {run_data['ecg_problem']})"
+                    else:
+                        problem = " (ECG empty/missing)"
 
                 event_types_info = ""
                 if 'all_event_types' in run_data and len(run_data['all_event_types']) > 0:
                     event_types_info = f", events: {run_data['all_event_types']}"
 
-                print(f"  {subject_id} {run_id}: {status}{seizure_info}{duration_info}{event_types_info}{problem}")
+                print(f"  {subject_id} {run_id}: {status}{seizure_info}{duration_info}{ecg_quality_info}{event_types_info}{problem}")
 
     return results
 
@@ -192,9 +311,43 @@ def print_summary_report(results):
     print(f"  Usable runs: {summary['usable_runs']} ({summary['usable_runs']/summary['total_runs']*100:.1f}%)")
     print(f"  Unusable runs: {summary['unusable_runs']} ({summary['unusable_runs']/summary['total_runs']*100:.1f}%)")
 
-    print(f"\nPROBLEMS IDENTIFIED:")
+    print(f"\nECG QUALITY ANALYSIS:")
     print(f"  Runs with missing ECG files: {summary['runs_with_missing_ecg']}")
     print(f"  Runs with empty/unusable ECG: {summary['runs_with_empty_ecg']}")
+
+    # Count ECG quality issues
+    ecg_quality_stats = {
+        'no_ecg_channels': 0,
+        'zero_signal': 0,
+        'saturated_signal': 0,
+        'partial_quality': 0,
+        'good_quality': 0,
+        'file_errors': 0
+    }
+
+    for patient_data in results['patients'].values():
+        for run_data in patient_data['runs'].values():
+            if 'ecg_problem' in run_data and run_data['ecg_problem']:
+                if 'no ECG channels found' in run_data['ecg_problem']:
+                    ecg_quality_stats['no_ecg_channels'] += 1
+                elif 'zero signal' in run_data['ecg_problem']:
+                    ecg_quality_stats['zero_signal'] += 1
+                elif 'saturated' in run_data['ecg_problem']:
+                    ecg_quality_stats['saturated_signal'] += 1
+                elif 'EDF read error' in run_data['ecg_problem'] or 'file read error' in run_data['ecg_problem']:
+                    ecg_quality_stats['file_errors'] += 1
+            elif run_data.get('signal_quality') == 'partial':
+                ecg_quality_stats['partial_quality'] += 1
+            elif run_data.get('signal_quality') == 'good':
+                ecg_quality_stats['good_quality'] += 1
+
+    print(f"  ECG Quality Breakdown:")
+    print(f"    Good quality: {ecg_quality_stats['good_quality']}")
+    print(f"    Partial quality: {ecg_quality_stats['partial_quality']}")
+    print(f"    No ECG channels found: {ecg_quality_stats['no_ecg_channels']}")
+    print(f"    Zero/empty signal: {ecg_quality_stats['zero_signal']}")
+    print(f"    Saturated signal: {ecg_quality_stats['saturated_signal']}")
+    print(f"    File read errors: {ecg_quality_stats['file_errors']}")
 
     print(f"\nSEIZURE ANNOTATIONS:")
     print(f"  Total annotated seizures: {summary['total_seizures_annotated']}")
