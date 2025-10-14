@@ -124,6 +124,34 @@ def analyze_ecg_signal(ecg_file_path, subject_id, run_id):
 
     return analysis
 
+import re
+
+def parse_run_id(name: str) -> str:
+    """Extrahiert run-ID als 'run-XX' (zweistellig). Fallback: Hash."""
+    m = re.search(r"_run-(\d+)\b", name)
+    if m:
+        return f"run-{int(m.group(1)):02d}"
+    base = Path(name).stem
+    return f"run-{hash(base) & 0xffff:04x}"
+
+def count_seizures_in_events_file(events_file: Path) -> tuple[int, list[dict]]:
+    """Liest *_events.tsv und zählt Seizures im SeizeIT2-Format. Gibt (count, events_list) zurück."""
+    try:
+        df = pd.read_csv(events_file, sep="\t")
+        if "eventType" not in df.columns:
+            return 0, []
+        seizures = df[
+            (df["eventType"].str.startswith("sz_", na=False)) &
+            (df["eventType"] != "bckg") &
+            (df["eventType"] != "impd")
+        ]
+        events_list = seizures[["onset", "duration", "eventType"]].to_dict("records")
+        return len(seizures), events_list
+    except Exception as e:
+        print(f"    Error reading events file {events_file}: {e}")
+        return 0, []
+
+
 def analyze_example_data():
     base_dir = Path("/home/swolf/asim_shared/raw_data/ds005873-1.1.0")
 
