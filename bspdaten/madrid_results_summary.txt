@@ -1,0 +1,55 @@
+================================================================================
+MADRID RESULTS ANALYSIS REPORT
+================================================================================
+Generated: 2025-10-14 19:32:09
+Total files analyzed: 2
+
+SUMMARY STATISTICS
+--------------------------------------------------------------------------------
+Successful analyses: 2
+Failed analyses: 0
+
+Files with seizures: 1
+Files without seizures: 1
+Total seizure windows: 2
+Total seizure segments: 2
+Total seizure duration: 144.0 seconds (2.40 minutes)
+
+Average seizure windows per file: 2.00
+Average seizure segments per file: 2.00
+Average seizure duration per file: 144.00 seconds
+
+Unique subjects: 1
+Unique runs: 2
+
+PER-SUBJECT BREAKDOWN
+--------------------------------------------------------------------------------
+sub-001: 1 file(s) with seizures
+
+
+================================================================================
+DETAILED FILE LISTING
+================================================================================
+
+File: madrid_windowed_results_sub-001_run-02_20250726_065505.json
+  Subject: sub-001, Run: run-02
+  Analysis successful: True
+  Seizure present: False
+
+File: madrid_windowed_results_sub-001_run-03_20250729_204128.json
+  Subject: sub-001, Run: run-03
+  Analysis successful: True
+  Seizure present: True
+  Total windows: 35
+  Seizure windows: 2
+  Seizure segments: 2
+  Total seizure duration: 144.0 seconds
+  Seizure window details:
+    Window 31: 1 segment(s), ratio: 0.0200
+      Segment: 57975.0s - 58047.0s (duration: 72.0s)
+    Window 32: 1 segment(s), ratio: 0.0200
+      Segment: 57975.0s - 58047.0s (duration: 72.0s)
+
+================================================================================
+END OF REPORT
+================================================================================
