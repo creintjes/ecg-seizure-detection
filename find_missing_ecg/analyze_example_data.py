@@ -122,7 +122,7 @@ def analyze_ecg_signal(ecg_file_path, subject_id, run_id):
     return analysis
 
 def analyze_example_data():
-    base_dir = Path("../ds005873-1.1.0_example")
+    base_dir = Path("/home/swolf/asim_shared/raw_data/ds005873-1.1.0")
 
     if not base_dir.exists():
         print(f"Error: Directory {base_dir} not found")
