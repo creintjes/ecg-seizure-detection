@@ -171,7 +171,9 @@ def analyze_example_data():
             'usable_runs': 0,
             'unusable_runs': 0,
             'orphaned_events': 0,  # Events ohne entsprechende ECG-Datei
-            'total_event_files': 0
+            'total_event_files': 0,
+            'runs_with_truncated_seizures': 0,  # Runs where seizures extend beyond ECG
+            'total_missing_duration': 0  # Total seconds of missing ECG data
         },
         'orphaned_event_files': []  # Liste von Event-Dateien ohne ECG
     }
@@ -227,7 +229,10 @@ def analyze_example_data():
                     'ecg_duration': 0,
                     'seizures_annotated': 0,
                     'seizure_events': [],
-                    'usable': False
+                    'usable': False,
+                    'seizures_truncated': False,
+                    'last_seizure_end': 0,
+                    'missing_duration': 0
                 }
 
                 # Check corresponding events file
@@ -254,6 +259,11 @@ def analyze_example_data():
 
                             results['patients'][subject_id]['total_seizures'] += len(seizures)
                             results['summary']['total_seizures_annotated'] += len(seizures)
+
+                            # Calculate last seizure end time
+                            if len(seizures) > 0:
+                                seizure_ends = seizures['onset'] + seizures['duration']
+                                run_data['last_seizure_end'] = float(seizure_ends.max())
 
                             # Also log all event types for debugging
                             all_events = events_df['eventType'].unique()
@@ -293,6 +303,18 @@ def analyze_example_data():
                     results['patients'][subject_id]['runs_with_empty_ecg'] += 1
                     results['summary']['runs_with_empty_ecg'] += 1
 
+                # Check if seizures are truncated (extend beyond ECG duration)
+                if run_data['last_seizure_end'] > 0 and run_data['ecg_duration'] > 0:
+                    if run_data['last_seizure_end'] > run_data['ecg_duration']:
+                        run_data['seizures_truncated'] = True
+                        run_data['missing_duration'] = run_data['last_seizure_end'] - run_data['ecg_duration']
+                        results['summary']['runs_with_truncated_seizures'] += 1
+                        results['summary']['total_missing_duration'] += run_data['missing_duration']
+                        print(f"    ⚠️  {subject_id} {run_id}: Seizure data TRUNCATED! "
+                              f"Last seizure ends at {run_data['last_seizure_end']:.1f}s, "
+                              f"but ECG only recorded {run_data['ecg_duration']:.1f}s "
+                              f"(missing {run_data['missing_duration']:.1f}s)")
+
                 # Determine if run is usable (has ECG data)
                 run_data['usable'] = (not run_data['ecg_empty'] and
                                     run_data['ecg_filesize'] > 10000)  # At least 10KB
@@ -317,6 +339,11 @@ def analyze_example_data():
                     quality = run_data.get('signal_quality', 'unknown')
                     ecg_quality_info = f", ECG: {channels} channels ({quality})"
 
+                # Truncation warning
+                truncation_warning = ""
+                if run_data.get('seizures_truncated'):
+                    truncation_warning = f" ⚠️ TRUNCATED (missing {run_data['missing_duration']:.1f}s)"
+
                 problem = ""
                 if run_data['ecg_empty']:
                     if 'ecg_problem' in run_data:
@@ -328,7 +355,7 @@ def analyze_example_data():
                 if 'all_event_types' in run_data and len(run_data['all_event_types']) > 0:
                     event_types_info = f", events: {run_data['all_event_types']}"
 
-                print(f"  {subject_id} {run_id}: {status}{seizure_info}{duration_info}{ecg_quality_info}{event_types_info}{problem}")
+                print(f"  {subject_id} {run_id}: {status}{seizure_info}{duration_info}{ecg_quality_info}{event_types_info}{problem}{truncation_warning}")
 
     # After processing all ECG files, check for orphaned event files
     print("\n" + "="*60)
@@ -399,6 +426,13 @@ def print_summary_report(results):
     print(f"\nECG QUALITY ANALYSIS:")
     print(f"  Runs with missing ECG files: {summary['runs_with_missing_ecg']}")
     print(f"  Runs with empty/unusable ECG: {summary['runs_with_empty_ecg']}")
+
+    print(f"\nSEIZURE TRUNCATION ANALYSIS:")
+    print(f"  Runs with truncated seizures: {summary['runs_with_truncated_seizures']}")
+    if summary['runs_with_truncated_seizures'] > 0:
+        print(f"    ⚠️  Total missing ECG duration: {summary['total_missing_duration']:.1f} seconds")
+        print(f"    ⚠️  Average missing duration: {summary['total_missing_duration']/summary['runs_with_truncated_seizures']:.1f} seconds per run")
+
     print(f"\nEVENT FILE ANALYSIS:")
     print(f"  Total event files found: {summary['total_event_files']}")
     print(f"  Orphaned event files (no ECG): {summary['orphaned_events']}")
@@ -547,6 +581,29 @@ def generate_problems_report(results):
     # Then add problems from runs with ECG files
     for patient_id, patient_data in sorted(results['patients'].items()):
         for run_id, run_data in sorted(patient_data['runs'].items()):
+            # Check if run has truncated seizures (even if ECG is otherwise usable)
+            if run_data.get('seizures_truncated'):
+                problem = {
+                    'patient_id': patient_id,
+                    'run_id': run_id,
+                    'ecg_file': run_data.get('ecg_file', 'N/A'),
+                    'problem_type': 'Truncated Seizures',
+                    'description': f"Seizures extend beyond ECG recording (missing {run_data['missing_duration']:.1f}s)",
+                    'severity': 'CRITICAL',
+                    'details': {
+                        'last_seizure_end': run_data['last_seizure_end'],
+                        'ecg_duration': run_data['ecg_duration'],
+                        'missing_duration': run_data['missing_duration']
+                    }
+                }
+                problem['details']['duration'] = run_data.get('ecg_duration', 0)
+                problem['details']['channels_found'] = run_data.get('ecg_channels_found', [])
+                problem['details']['sampling_rates'] = run_data.get('ecg_sampling_rates', [])
+                problem['details']['signal_quality'] = run_data.get('signal_quality', 'unknown')
+                problem['details']['has_seizures'] = run_data.get('seizures_annotated', 0) > 0
+                problem['details']['seizure_count'] = run_data.get('seizures_annotated', 0)
+                problems.append(problem)
+
             # Check if run has any problems
             if run_data.get('ecg_empty') or not run_data.get('usable'):
                 problem = {
@@ -698,6 +755,12 @@ def generate_problems_report(results):
                 seizure_count = problem['details']['seizure_count']
                 report_lines.append(f"  ⚠️  Contains {seizure_count} annotated seizure(s) - DATA LOSS!")
 
+            # Special info for truncated seizures
+            if problem['problem_type'] == 'Truncated Seizures':
+                report_lines.append(f"  Last Seizure End: {problem['details']['last_seizure_end']:.1f}s")
+                report_lines.append(f"  ECG Duration: {problem['details']['ecg_duration']:.1f}s")
+                report_lines.append(f"  Missing Duration: {problem['details']['missing_duration']:.1f}s")
+
             report_lines.append("")
 
     # Add recommendations section
@@ -746,6 +809,19 @@ def generate_problems_report(results):
         report_lines.append(f"5. SATURATED SIGNALS ({saturated} files):")
         report_lines.append("   - Check recording equipment calibration")
         report_lines.append("   - May indicate amplifier saturation or disconnected electrodes")
+        report_lines.append("")
+
+    truncated = sum(1 for p in problems if p['problem_type'] == 'Truncated Seizures')
+    if truncated > 0:
+        total_missing = sum(p['details']['missing_duration'] for p in problems if p['problem_type'] == 'Truncated Seizures')
+        report_lines.append(f"6. TRUNCATED SEIZURES ({truncated} runs):")
+        report_lines.append("   - ⚠️  CRITICAL: Seizure annotations extend beyond ECG recording duration")
+        report_lines.append(f"   - Total missing ECG data: {total_missing:.1f} seconds")
+        report_lines.append("   - Possible causes:")
+        report_lines.append("     * Recording stopped prematurely")
+        report_lines.append("     * Annotation timestamps incorrect")
+        report_lines.append("     * File corruption during transfer")
+        report_lines.append("   - These runs should be EXCLUDED from analysis or annotations corrected")
         report_lines.append("")
 
     report_lines.append("")
