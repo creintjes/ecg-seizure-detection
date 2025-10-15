@@ -125,10 +125,12 @@ def analyze_ecg_signal(ecg_file_path, subject_id, run_id):
     return analysis
 
 import re
-
 def parse_run_id(name: str) -> str:
-    """Extrahiert run-ID als 'run-XX' (zweistellig). Fallback: Hash."""
-    m = re.search(r"_run-(\d+)\b", name)
+    """
+    Extrahiert run-ID als 'run-XX' (zweistellig).
+    Akzeptiert ..._run-05_events.tsv, ..._run-05_ecg.edf, ..._run-5.edf usw.
+    """
+    m = re.search(r"[_-]run-(\d+)(?=[_.]|$)", name)  # <— kein \b, sondern Lookahead
     if m:
         return f"run-{int(m.group(1)):02d}"
     base = Path(name).stem
@@ -214,7 +216,7 @@ def analyze_example_data():
             for ecg_file in sorted(ecg_files):
                 # Extract run number from filename
                 run_match = ecg_file.name.split('_run-')[1].split('_')[0]
-                run_id = f"run-{run_match.zfill(2)}"
+                run_id = parse_run_id(ecg_file.name)
 
                 results['patients'][subject_id]['total_runs'] += 1
                 results['summary']['total_runs'] += 1
