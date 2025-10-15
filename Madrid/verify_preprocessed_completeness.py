@@ -610,7 +610,7 @@ def main():
 
     # Find the preprocessed directory
     preprocessed_base = Path(PREPROCESSED_DATA_PATH)
-    preprocessed_path = preprocessed_base / "downsample_freq=8,window_size=3600_0,stride=1800_0_reproduced"
+    preprocessed_path = preprocessed_base / "downsample_freq=8,window_size=3600_0,stride=1800_0_new"
 
     if not preprocessed_path.exists():
         print(f"Error: Preprocessed data path not found: {preprocessed_path}")
