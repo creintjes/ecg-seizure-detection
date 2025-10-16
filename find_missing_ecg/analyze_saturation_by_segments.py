@@ -18,6 +18,20 @@ from typing import Dict, List, Tuple
 import re
 
 
+class NumpyEncoder(json.JSONEncoder):
+    """Custom JSON encoder for NumPy data types."""
+    def default(self, obj):
+        if isinstance(obj, np.integer):
+            return int(obj)
+        elif isinstance(obj, np.floating):
+            return float(obj)
+        elif isinstance(obj, np.ndarray):
+            return obj.tolist()
+        elif isinstance(obj, np.bool_):
+            return bool(obj)
+        return super(NumpyEncoder, self).default(obj)
+
+
 def parse_run_id(name: str) -> str:
     """
     Extract run-ID as 'run-XX' (two digits).
@@ -459,7 +473,7 @@ def main():
 
     print(f"\nSaving results to {json_filename}...")
     with open(json_filename, 'w') as f:
-        json.dump(results, f, indent=2)
+        json.dump(results, f, indent=2, cls=NumpyEncoder)
     print(f"✓ Results saved to '{json_filename}'")
 
     # Generate threshold analysis report
