@@ -32,12 +32,21 @@ except ImportError:
 
 
 class MadridClusteredSeizureTypeAnalyzer:
+    # Saturated test patient runs to exclude (>=10% saturation)
+    SATURATED_TEST_RUNS = {
+        ("sub-099", "run-01"), ("sub-114", "run-03"), ("sub-115", "run-11"),
+        ("sub-115", "run-32"), ("sub-117", "run-13"), ("sub-118", "run-07"),
+        ("sub-119", "run-24"), ("sub-119", "run-36"), ("sub-123", "run-22"),
+        ("sub-124", "run-19"), ("sub-124", "run-43"), ("sub-124", "run-63"),
+        ("sub-125", "run-36"), ("sub-125", "run-67")
+    }
+
     def __init__(self, results_dir: str, seizeit2_data_path: str = None, output_dir: str = None,
                  pre_seizure_minutes: float = 5.0, post_seizure_minutes: float = 3.0,
                  threshold: float = None):
         """
         Initialize the clustered seizure type analyzer.
-        
+
         Args:
             results_dir: Directory containing Madrid windowed results JSON files
             seizeit2_data_path: Path to SeizeIT2 dataset for annotations (optional)
@@ -109,6 +118,19 @@ class MadridClusteredSeizureTypeAnalyzer:
             return 'seizure_unclassified'
         else:
             return 'non_seizure'
+
+    def is_saturated_run(self, subject_id: str, run_id: str) -> bool:
+        """
+        Check if a patient/run combination is in the saturated runs list.
+
+        Args:
+            subject_id: Subject ID (e.g., "sub-099")
+            run_id: Run ID (e.g., "run-01")
+
+        Returns:
+            True if run should be excluded due to saturation
+        """
+        return (subject_id, run_id) in self.SATURATED_TEST_RUNS
     
     def get_motor_classification(self, event_type: str) -> str:
         """
@@ -395,17 +417,22 @@ class MadridClusteredSeizureTypeAnalyzer:
     
     def process_single_file(self, filepath: Path) -> Dict[str, Any]:
         """Process a single file and analyze seizure type detection with clustering."""
-        
+
         result_data = self.load_result_file(filepath)
         if result_data is None:
             return None
-        
+
         # Get basic info
         input_data = result_data.get('input_data', {})
         validation_data = result_data.get('validation_data', {})
-        
+
         subject_id = input_data.get('subject_id', 'unknown')
         run_id = input_data.get('run_id', 'unknown')
+
+        # Skip saturated test runs
+        if self.is_saturated_run(subject_id, run_id):
+            print(f"  Skipping saturated run: {subject_id} {run_id}")
+            return None
         
         # Get signal duration
         signal_metadata = input_data.get('signal_metadata', {})

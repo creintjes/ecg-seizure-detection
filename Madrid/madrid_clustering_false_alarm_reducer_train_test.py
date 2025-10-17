@@ -16,11 +16,20 @@ from collections import defaultdict
 
 
 class MadridClusteringFalseAlarmReducerTrainTest:
+    # Saturated test patient runs to exclude (>=10% saturation)
+    SATURATED_TEST_RUNS = {
+        ("sub-099", "run-01"), ("sub-114", "run-03"), ("sub-115", "run-11"),
+        ("sub-115", "run-32"), ("sub-117", "run-13"), ("sub-118", "run-07"),
+        ("sub-119", "run-24"), ("sub-119", "run-36"), ("sub-123", "run-22"),
+        ("sub-124", "run-19"), ("sub-124", "run-43"), ("sub-124", "run-63"),
+        ("sub-125", "run-36"), ("sub-125", "run-67")
+    }
+
     def __init__(self, results_dir: str, output_dir: str = None, threshold: float = None,
                  pre_seizure_minutes: float = 5.0, post_seizure_minutes: float = 3.0):
         """
         Initialize the clustering-based false alarm reducer with train/test split.
-        
+
         Args:
             results_dir: Directory containing Madrid windowed results JSON files
             output_dir: Directory to save clustering results (default: same as results_dir)
@@ -34,16 +43,16 @@ class MadridClusteringFalseAlarmReducerTrainTest:
         self.pre_seizure_seconds = pre_seizure_minutes * 60.0
         self.post_seizure_seconds = post_seizure_minutes * 60.0
         self.output_dir.mkdir(exist_ok=True)
-        
+
         # Create subdirectories for organized output
         (self.output_dir / "metrics_before").mkdir(exist_ok=True)
         (self.output_dir / "strategy_comparison").mkdir(exist_ok=True)
         (self.output_dir / "clusters").mkdir(exist_ok=True)
         (self.output_dir / "metrics_after").mkdir(exist_ok=True)
-        
+
         # Define time-based clustering thresholds (2s to 1800s)
         self.time_thresholds = [
-            2, 5, 10, 15, 20, 30, 45, 60, 90, 120, 180, 240, 300, 
+            2, 5, 10, 15, 20, 30, 45, 60, 90, 120, 180, 240, 300,
             420, 600, 900, 1200, 1500, 1800
         ]
     
@@ -113,10 +122,10 @@ class MadridClusteringFalseAlarmReducerTrainTest:
     def is_training_file(self, filename: str) -> bool:
         """
         Determine if a file belongs to the training set (sub001-sub096).
-        
+
         Args:
             filename: Name of the file (e.g., "madrid_windowed_results_sub-077_run-04_20250730_040717.json")
-        
+
         Returns:
             True if file is in training set, False otherwise
         """
@@ -127,6 +136,19 @@ class MadridClusteringFalseAlarmReducerTrainTest:
             subject_num = int(match.group(1))
             return 1 <= subject_num <= 96
         return False
+
+    def is_saturated_run(self, subject_id: str, run_id: str) -> bool:
+        """
+        Check if a patient/run combination is in the saturated runs list.
+
+        Args:
+            subject_id: Subject ID (e.g., "sub-099")
+            run_id: Run ID (e.g., "run-01")
+
+        Returns:
+            True if run should be excluded due to saturation
+        """
+        return (subject_id, run_id) in self.SATURATED_TEST_RUNS
     
     def load_result_file(self, filepath: Path) -> Dict[str, Any]:
         """Load and parse a Madrid results JSON file."""
@@ -513,12 +535,21 @@ class MadridClusteringFalseAlarmReducerTrainTest:
     def process_single_file_with_global_strategy(self, filepath: Path, global_strategy_name: str) -> Dict[str, Any]:
         """Process a single file with the globally selected best strategy (Phase 2)."""
         print(f"Applying global strategy {global_strategy_name} to {filepath.name}...")
-        
+
         # Load result data
         result_data = self.load_result_file(filepath)
         if result_data is None:
             return None
-        
+
+        # Check if this is a saturated test run and skip it
+        input_data = result_data.get('input_data', {})
+        subject_id = input_data.get('subject_id', 'unknown')
+        run_id = input_data.get('run_id', 'unknown')
+
+        if self.is_saturated_run(subject_id, run_id):
+            print(f"  Skipping saturated run: {subject_id} {run_id}")
+            return None
+
         # Calculate base metrics
         base_metrics = self.calculate_base_metrics(result_data)
         

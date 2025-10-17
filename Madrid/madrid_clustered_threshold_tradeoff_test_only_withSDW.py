@@ -1,9 +1,16 @@
 #!/usr/bin/env python3
 """
-Madrid Clustered Threshold Trade-off Analysis - TEST SET ONLY
+Madrid Clustered Threshold Trade-off Analysis - TRAIN/TEST SPLIT
 Tests multiple thresholds with time_180s clustering and plots Sensitivity vs False Alarms per Hour trade-off
 using extended time windows (5 minutes before, 3 minutes after seizures).
-Only evaluates on test set: sub097-sub125.
+
+Workflow:
+1. Extract anomaly scores from TRAINING SET (sub001-sub096)
+2. Generate threshold range from training scores
+3. Evaluate all thresholds on TRAINING SET
+4. Select optimal thresholds based on training performance
+5. Evaluate optimal thresholds on TEST SET (sub097-sub125, excluding saturated runs)
+6. Report performance for both datasets
 """
 
 import json
@@ -19,11 +26,20 @@ from collections import defaultdict
 
 
 class MadridClusteredThresholdTradeoffAnalyzerTestOnly:
+    # Saturated test patient runs to exclude (>=10% saturation)
+    SATURATED_TEST_RUNS = {
+        ("sub-099", "run-01"), ("sub-114", "run-03"), ("sub-115", "run-11"),
+        ("sub-115", "run-32"), ("sub-117", "run-13"), ("sub-118", "run-07"),
+        ("sub-119", "run-24"), ("sub-119", "run-36"), ("sub-123", "run-22"),
+        ("sub-124", "run-19"), ("sub-124", "run-43"), ("sub-124", "run-63"),
+        ("sub-125", "run-36"), ("sub-125", "run-67")
+    }
+
     def __init__(self, results_dir: str, output_dir: str = None,
                  pre_seizure_minutes: float = 5.0, post_seizure_minutes: float = 3.0):
         """
         Initialize the clustered threshold trade-off analyzer for test set only.
-        
+
         Args:
             results_dir: Directory containing Madrid windowed results JSON files
             output_dir: Directory to save plots and results (default: same as results_dir)
@@ -37,13 +53,30 @@ class MadridClusteredThresholdTradeoffAnalyzerTestOnly:
         self.clustering_time_threshold = 180  # Fixed to time_180s strategy
         self.output_dir.mkdir(exist_ok=True)
     
+    def is_training_file(self, filename: str) -> bool:
+        """
+        Determine if a file belongs to the training set (sub001-sub096).
+
+        Args:
+            filename: Name of the file (e.g., "madrid_windowed_results_sub-077_run-04_20250730_040717.json")
+
+        Returns:
+            True if file is in training set, False otherwise
+        """
+        # Extract subject ID from filename
+        match = re.search(r'sub-(\d{3})', filename)
+        if match:
+            subject_num = int(match.group(1))
+            return 1 <= subject_num <= 96
+        return False
+
     def is_test_file(self, filename: str) -> bool:
         """
         Determine if a file belongs to the test set (sub097-sub125).
-        
+
         Args:
             filename: Name of the file (e.g., "madrid_windowed_results_sub-077_run-04_20250730_040717.json")
-        
+
         Returns:
             True if file is in test set, False otherwise
         """
@@ -53,6 +86,19 @@ class MadridClusteredThresholdTradeoffAnalyzerTestOnly:
             subject_num = int(match.group(1))
             return 97 <= subject_num <= 125
         return False
+
+    def is_saturated_run(self, subject_id: str, run_id: str) -> bool:
+        """
+        Check if a patient/run combination is in the saturated runs list.
+
+        Args:
+            subject_id: Subject ID (e.g., "sub-099")
+            run_id: Run ID (e.g., "run-01")
+
+        Returns:
+            True if run should be excluded due to saturation
+        """
+        return (subject_id, run_id) in self.SATURATED_TEST_RUNS
         
     def load_result_file(self, filepath: Path) -> Dict[str, Any]:
         """Load and parse a Madrid results JSON file."""
@@ -63,23 +109,42 @@ class MadridClusteredThresholdTradeoffAnalyzerTestOnly:
             print(f"Error loading {filepath}: {e}")
             return None
     
-    def extract_all_anomaly_scores(self) -> List[float]:
-        """Extract all anomaly scores from TEST SET files to determine threshold range."""
+    def extract_all_anomaly_scores(self, use_training_set: bool = True) -> List[float]:
+        """
+        Extract all anomaly scores from files to determine threshold range.
+
+        Args:
+            use_training_set: If True, extract from training set (sub001-sub096).
+                            If False, extract from test set (sub097-sub125).
+        """
         all_json_files = list(self.results_dir.glob("madrid_windowed_results_*.json"))
-        
-        # Filter for test set files only
-        json_files = [f for f in all_json_files if self.is_test_file(f.name)]
-        
+
+        # Filter for appropriate dataset
+        if use_training_set:
+            json_files = [f for f in all_json_files if self.is_training_file(f.name)]
+            dataset_name = "training set (sub001-sub096)"
+        else:
+            json_files = [f for f in all_json_files if self.is_test_file(f.name)]
+            dataset_name = "test set (sub097-sub125)"
+
         all_scores = []
-        
-        print(f"Extracting anomaly scores from {len(json_files)} test set files (sub097-sub125)...")
-        print(f"Skipping {len(all_json_files) - len(json_files)} training set files")
-        
+
+        print(f"Extracting anomaly scores from {len(json_files)} {dataset_name} files...")
+        print(f"Skipping {len(all_json_files) - len(json_files)} files from other dataset")
+
         for json_file in json_files:
             try:
                 with open(json_file, 'r') as f:
                     data = json.load(f)
-                
+
+                # Skip saturated runs if they're in test set
+                if not use_training_set:
+                    input_data = data.get('input_data', {})
+                    subject_id = input_data.get('subject_id', 'unknown')
+                    run_id = input_data.get('run_id', 'unknown')
+                    if self.is_saturated_run(subject_id, run_id):
+                        continue
+
                 window_results = data.get('analysis_results', {}).get('window_results', [])
                 for window in window_results:
                     anomalies = window.get('anomalies', [])
@@ -90,12 +155,12 @@ class MadridClusteredThresholdTradeoffAnalyzerTestOnly:
             except Exception as e:
                 print(f"Error processing {json_file}: {e}")
                 continue
-        
+
         all_scores.sort()
-        print(f"Extracted {len(all_scores)} anomaly scores from test set")
+        print(f"Extracted {len(all_scores)} anomaly scores from {dataset_name}")
         if all_scores:
             print(f"Score range: {min(all_scores):.6f} to {max(all_scores):.6f}")
-        
+
         return all_scores
     
     def generate_threshold_range(self, all_scores: List[float], num_thresholds: int = 50) -> List[float]:
@@ -345,14 +410,25 @@ class MadridClusteredThresholdTradeoffAnalyzerTestOnly:
             'non_responder_details': non_responders
         }
     
-    def calculate_clustered_metrics_for_threshold(self, threshold: float) -> Dict[str, Any]:
-        """Calculate clustered metrics for a single threshold using time_180s strategy - TEST SET ONLY."""
-        print(f"Processing threshold {threshold:.6f} with time_180s clustering on test set...")
-        
+    def calculate_clustered_metrics_for_threshold(self, threshold: float, use_training_set: bool = False) -> Dict[str, Any]:
+        """
+        Calculate clustered metrics for a single threshold using time_180s strategy.
+
+        Args:
+            threshold: Anomaly score threshold to use
+            use_training_set: If True, evaluate on training set (sub001-sub096).
+                            If False, evaluate on test set (sub097-sub125).
+        """
+        dataset_name = "training set" if use_training_set else "test set"
+        print(f"Processing threshold {threshold:.6f} with time_180s clustering on {dataset_name}...")
+
         all_json_files = list(self.results_dir.glob("madrid_windowed_results_*.json"))
-        
-        # Filter for test set files only
-        json_files = [f for f in all_json_files if self.is_test_file(f.name)]
+
+        # Filter for appropriate dataset
+        if use_training_set:
+            json_files = [f for f in all_json_files if self.is_training_file(f.name)]
+        else:
+            json_files = [f for f in all_json_files if self.is_test_file(f.name)]
         
         # Overall statistics
         overall_stats = {
@@ -375,12 +451,18 @@ class MadridClusteredThresholdTradeoffAnalyzerTestOnly:
                 result_data = self.load_result_file(json_file)
                 if result_data is None:
                     continue
-                
+
                 # Extract basic info
                 input_data = result_data.get('input_data', {})
                 validation_data = result_data.get('validation_data', {})
-                
+
                 subject_id = input_data.get('subject_id', 'unknown')
+                run_id = input_data.get('run_id', 'unknown')
+
+                # Skip saturated test runs (only when evaluating test set)
+                if not use_training_set and self.is_saturated_run(subject_id, run_id):
+                    overall_stats['files_skipped'] += 1
+                    continue
                 
                 # Initialize patient stats if not exists
                 if subject_id not in patient_stats:
@@ -464,11 +546,13 @@ class MadridClusteredThresholdTradeoffAnalyzerTestOnly:
         
         # Calculate responder analysis
         responder_analysis = self.calculate_responder_analysis(patient_stats)
-        
+
+        dataset_label = "TRAINING_SET (sub001-sub096)" if use_training_set else "TEST_SET (sub097-sub125)"
+
         return {
             'threshold': threshold,
             'clustering_strategy': 'time_180s',
-            'dataset': 'TEST_SET_ONLY (sub097-sub125)',
+            'dataset': dataset_label,
             'sensitivity': sensitivity,
             'false_alarms_per_hour': false_alarms_per_hour,
             'total_detections_before_clustering': overall_stats['total_anomalies_before_clustering'],
@@ -485,27 +569,104 @@ class MadridClusteredThresholdTradeoffAnalyzerTestOnly:
             'responder_analysis': responder_analysis
         }
     
-    def run_threshold_analysis(self, thresholds: List[float]) -> List[Dict[str, Any]]:
-        """Run clustered metrics calculation for each threshold on TEST SET."""
+    def run_threshold_analysis(self, thresholds: List[float], use_training_set: bool = False) -> List[Dict[str, Any]]:
+        """
+        Run clustered metrics calculation for each threshold.
+
+        Args:
+            thresholds: List of thresholds to evaluate
+            use_training_set: If True, evaluate on training set. If False, evaluate on test set.
+        """
         results = []
-        
-        print(f"Running clustered analysis for {len(thresholds)} thresholds on TEST SET...")
+
+        dataset_name = "TRAINING SET (sub001-sub096)" if use_training_set else "TEST SET (sub097-sub125)"
+
+        print(f"Running clustered analysis for {len(thresholds)} thresholds on {dataset_name}...")
         print(f"Using clustering strategy: time_{self.clustering_time_threshold}s")
         print(f"Extended window: -{self.pre_seizure_seconds/60:.1f} min to +{self.post_seizure_seconds/60:.1f} min")
-        print(f"Dataset: TEST SET ONLY (sub097-sub125)")
-        
+        print(f"Dataset: {dataset_name}")
+
         for i, threshold in enumerate(thresholds):
             print(f"Processing threshold {i+1}/{len(thresholds)}: {threshold:.6f}")
-            
+
             try:
-                threshold_result = self.calculate_clustered_metrics_for_threshold(threshold)
+                threshold_result = self.calculate_clustered_metrics_for_threshold(threshold, use_training_set)
                 results.append(threshold_result)
             except Exception as e:
                 print(f"Error processing threshold {threshold}: {e}")
                 continue
-        
+
         return results
     
+    def select_optimal_thresholds(self, training_results: List[Dict[str, Any]]) -> Dict[str, float]:
+        """
+        Select optimal thresholds based on training set performance.
+
+        Args:
+            training_results: List of results from training set evaluation
+
+        Returns:
+            Dictionary with optimal thresholds for different criteria
+        """
+        if not training_results:
+            return {}
+
+        # Find threshold with highest sensitivity
+        best_sens = max(training_results, key=lambda x: x['sensitivity'] if x['sensitivity'] is not None else 0)
+        best_sens_threshold = best_sens['threshold']
+
+        # Find threshold with lowest false alarms per hour (but sensitivity > 0)
+        valid_results = [r for r in training_results
+                        if r['sensitivity'] is not None and r['sensitivity'] > 0]
+        if valid_results:
+            best_fad = min(valid_results, key=lambda x: x['false_alarms_per_hour'])
+            best_fad_threshold = best_fad['threshold']
+        else:
+            best_fad_threshold = None
+
+        # Calculate Challenge Score for each result and find best
+        # Challenge Score = Sensitivity (%) - 0.4 * False Alarms per Hour
+        for r in training_results:
+            if r['sensitivity'] is not None:
+                challenge_score = (r['sensitivity'] * 100) - (0.4 * r['false_alarms_per_hour'])
+                r['challenge_score'] = challenge_score
+            else:
+                r['challenge_score'] = None
+
+        # Find threshold with highest challenge score
+        challenge_results = [r for r in training_results if r['challenge_score'] is not None]
+        if challenge_results:
+            best_challenge = max(challenge_results, key=lambda x: x['challenge_score'])
+            best_challenge_threshold = best_challenge['threshold']
+        else:
+            best_challenge_threshold = None
+
+        optimal_thresholds = {
+            'best_sensitivity': best_sens_threshold,
+            'best_fad': best_fad_threshold,
+            'best_challenge_score': best_challenge_threshold
+        }
+
+        print(f"\n{'='*60}")
+        print("OPTIMAL THRESHOLDS FROM TRAINING SET")
+        print(f"{'='*60}")
+        print(f"Best Sensitivity Threshold: {best_sens_threshold:.6f}")
+        print(f"  Training Sensitivity: {best_sens['sensitivity']:.4f}")
+        print(f"  Training False Alarms/Hour: {best_sens['false_alarms_per_hour']:.4f}")
+
+        if best_fad_threshold:
+            print(f"\nBest FAD Threshold: {best_fad_threshold:.6f}")
+            print(f"  Training Sensitivity: {best_fad['sensitivity']:.4f}")
+            print(f"  Training False Alarms/Hour: {best_fad['false_alarms_per_hour']:.4f}")
+
+        if best_challenge_threshold:
+            print(f"\nBest Challenge Score Threshold: {best_challenge_threshold:.6f}")
+            print(f"  Training Sensitivity: {best_challenge['sensitivity']:.4f}")
+            print(f"  Training False Alarms/Hour: {best_challenge['false_alarms_per_hour']:.4f}")
+            print(f"  Training Challenge Score: {best_challenge['challenge_score']:.2f}")
+
+        return optimal_thresholds
+
     def create_tradeoff_plot(self, results: List[Dict[str, Any]], output_filename: str):
         """Create and save the sensitivity vs false alarms per hour trade-off plot."""
         
@@ -681,81 +842,167 @@ class MadridClusteredThresholdTradeoffAnalyzerTestOnly:
         print(f"CSV results saved to: {csv_path}")
     
     def run_full_analysis(self, num_thresholds: int = 50):
-        """Run the complete clustered threshold trade-off analysis on TEST SET."""
+        """
+        Run the complete clustered threshold trade-off analysis with train/test split.
+
+        Workflow:
+        1. Extract anomaly scores from TRAINING SET
+        2. Generate threshold range from training scores
+        3. Evaluate all thresholds on TRAINING SET
+        4. Select optimal thresholds based on training performance
+        5. Evaluate optimal thresholds on TEST SET
+        6. Report results for both datasets
+        """
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        
-        print("Starting Madrid Clustered Threshold Trade-off Analysis - TEST SET ONLY...")
+
+        print("Starting Madrid Clustered Threshold Trade-off Analysis with Train/Test Split...")
         print(f"Results directory: {self.results_dir}")
         print(f"Output directory: {self.output_dir}")
-        print(f"Dataset: TEST SET ONLY (sub097-sub125)")
+        print(f"Training Set: sub001-sub096")
+        print(f"Test Set: sub097-sub125 (excluding saturated runs)")
         print(f"Clustering strategy: time_{self.clustering_time_threshold}s")
         print(f"Extended time window: -{self.pre_seizure_seconds/60:.1f} min to +{self.post_seizure_seconds/60:.1f} min")
-        
-        # Step 1: Extract all anomaly scores from TEST SET
-        all_scores = self.extract_all_anomaly_scores()
-        if not all_scores:
-            print("No anomaly scores found in test set!")
+
+        # Step 1: Extract all anomaly scores from TRAINING SET
+        print(f"\n{'='*60}")
+        print("STEP 1: Extracting anomaly scores from TRAINING SET")
+        print(f"{'='*60}")
+        training_scores = self.extract_all_anomaly_scores(use_training_set=True)
+        if not training_scores:
+            print("No anomaly scores found in training set!")
             return None
-        
-        # Step 2: Generate threshold range
-        thresholds = self.generate_threshold_range(all_scores, num_thresholds)
+
+        # Step 2: Generate threshold range from training scores
+        print(f"\n{'='*60}")
+        print("STEP 2: Generating threshold range from training scores")
+        print(f"{'='*60}")
+        thresholds = self.generate_threshold_range(training_scores, num_thresholds)
         if not thresholds:
             print("Could not generate thresholds!")
             return None
-        
-        # Step 3: Run analysis for each threshold on TEST SET
-        results = self.run_threshold_analysis(thresholds)
-        if not results:
-            print("No results generated!")
-            return None
-        
-        # Step 4: Create plots
-        plot_filename = f"madrid_clustered_time180s_threshold_tradeoff_test_only_{timestamp}.png"
-        self.create_tradeoff_plot(results, plot_filename)
-        
-        # Step 5: Save results
-        results_filename = f"madrid_clustered_time180s_threshold_tradeoff_test_only_{timestamp}"
-        self.save_results(results, results_filename)
-        
-        # Step 6: Print summary
+
+        # Step 3: Evaluate all thresholds on TRAINING SET
         print(f"\n{'='*60}")
-        print("CLUSTERED THRESHOLD TRADE-OFF ANALYSIS SUMMARY - TEST SET ONLY")
+        print("STEP 3: Evaluating all thresholds on TRAINING SET")
         print(f"{'='*60}")
-        print(f"Dataset: TEST SET (sub097-sub125)")
+        training_results = self.run_threshold_analysis(thresholds, use_training_set=True)
+        if not training_results:
+            print("No training results generated!")
+            return None
+
+        # Step 4: Select optimal thresholds based on training performance
+        print(f"\n{'='*60}")
+        print("STEP 4: Selecting optimal thresholds from training performance")
+        print(f"{'='*60}")
+        optimal_thresholds = self.select_optimal_thresholds(training_results)
+        if not optimal_thresholds:
+            print("Could not select optimal thresholds!")
+            return None
+
+        # Step 5: Evaluate optimal thresholds on TEST SET
+        print(f"\n{'='*60}")
+        print("STEP 5: Evaluating optimal thresholds on TEST SET")
+        print(f"{'='*60}")
+
+        # Collect unique optimal threshold values
+        unique_optimal_thresholds = list(set([v for v in optimal_thresholds.values() if v is not None]))
+        print(f"Evaluating {len(unique_optimal_thresholds)} unique optimal thresholds on test set...")
+
+        test_results = self.run_threshold_analysis(unique_optimal_thresholds, use_training_set=False)
+        if not test_results:
+            print("No test results generated!")
+            return None
+
+        # Step 6: Create plots for training set (full trade-off curve)
+        print(f"\n{'='*60}")
+        print("STEP 6: Generating plots and saving results")
+        print(f"{'='*60}")
+        training_plot_filename = f"madrid_clustered_time180s_threshold_tradeoff_TRAINING_{timestamp}.png"
+        self.create_tradeoff_plot(training_results, training_plot_filename)
+
+        # Step 7: Save training results
+        training_results_filename = f"madrid_clustered_time180s_threshold_tradeoff_TRAINING_{timestamp}"
+        self.save_results(training_results, training_results_filename)
+
+        # Step 8: Save test results with optimal threshold information
+        test_results_filename = f"madrid_clustered_time180s_optimal_thresholds_TEST_{timestamp}"
+        test_json_path = self.output_dir / f"{test_results_filename}_results.json"
+
+        with open(test_json_path, 'w') as f:
+            json_data = {
+                'analysis_metadata': {
+                    'analysis_type': 'optimal_thresholds_test_evaluation',
+                    'timestamp': timestamp,
+                    'results_directory': str(self.results_dir),
+                    'training_set': 'sub001-sub096',
+                    'test_set': 'sub097-sub125 (excluding saturated runs)',
+                    'clustering_strategy': f'time_{self.clustering_time_threshold}s',
+                    'pre_seizure_minutes': self.pre_seizure_seconds / 60.0,
+                    'post_seizure_minutes': self.post_seizure_seconds / 60.0,
+                    'num_thresholds_evaluated_on_training': len(training_results),
+                    'num_optimal_thresholds_tested': len(test_results)
+                },
+                'optimal_thresholds': optimal_thresholds,
+                'test_results': test_results
+            }
+            json.dump(json_data, f, indent=2)
+        print(f"Test results saved to: {test_json_path}")
+
+        # Step 9: Print comprehensive summary
+        print(f"\n{'='*80}")
+        print("COMPREHENSIVE ANALYSIS SUMMARY - TRAIN/TEST SPLIT")
+        print(f"{'='*80}")
         print(f"Clustering strategy: time_{self.clustering_time_threshold}s")
         print(f"Extended window: -{self.pre_seizure_seconds/60:.1f} min to +{self.post_seizure_seconds/60:.1f} min")
-        print(f"Total thresholds tested: {len(results)}")
-        
-        if results and len(results) > 0:
-            print(f"Files processed: {results[0]['files_processed']}")
-            print(f"Training files skipped: {results[0]['files_skipped']}")
-            
-            best_sens = max(results, key=lambda x: x['sensitivity'] or 0)
-            min_fa = min([r for r in results if r['false_alarms_per_hour'] > 0], 
-                        key=lambda x: x['false_alarms_per_hour'], default=results[0])
-            best_reduction = max(results, key=lambda x: x['anomaly_reduction'])
-            
-            print(f"\nBest Sensitivity on Test Set: {best_sens['sensitivity']:.4f}")
-            print(f"  Threshold: {best_sens['threshold']:.6f}")
-            print(f"  False Alarms/Hour: {best_sens['false_alarms_per_hour']:.4f}")
-            print(f"  Anomaly Reduction: {best_sens['anomaly_reduction']:.4f} ({best_sens['anomaly_reduction']*100:.1f}%)")
-            
-            print(f"\nMinimum False Alarms/Hour on Test Set: {min_fa['false_alarms_per_hour']:.4f}")
-            print(f"  Threshold: {min_fa['threshold']:.6f}")
-            print(f"  Sensitivity: {min_fa['sensitivity']:.4f}")
-            print(f"  Anomaly Reduction: {min_fa['anomaly_reduction']:.4f} ({min_fa['anomaly_reduction']*100:.1f}%)")
-            
-            print(f"\nBest Anomaly Reduction on Test Set: {best_reduction['anomaly_reduction']:.4f} ({best_reduction['anomaly_reduction']*100:.1f}%)")
-            print(f"  Threshold: {best_reduction['threshold']:.6f}")
-            print(f"  Sensitivity: {best_reduction['sensitivity']:.4f}")
-            print(f"  False Alarms/Hour: {best_reduction['false_alarms_per_hour']:.4f}")
-        
-        return results
+        print(f"\nTraining Set: sub001-sub096")
+        print(f"  Thresholds evaluated: {len(training_results)}")
+        if training_results:
+            print(f"  Files processed: {training_results[0]['files_processed']}")
+
+        print(f"\nTest Set: sub097-sub125 (excluding saturated runs)")
+        if test_results:
+            print(f"  Files processed: {test_results[0]['files_processed']}")
+            print(f"  Saturated files excluded: {test_results[0]['files_skipped']}")
+
+        # Print test set performance for each optimal threshold
+        print(f"\n{'='*80}")
+        print("TEST SET PERFORMANCE WITH OPTIMAL THRESHOLDS")
+        print(f"{'='*80}")
+
+        for criterion, threshold_value in optimal_thresholds.items():
+            if threshold_value is None:
+                continue
+
+            # Find the corresponding test result
+            test_result = next((r for r in test_results if r['threshold'] == threshold_value), None)
+            if test_result:
+                print(f"\n{criterion.replace('_', ' ').upper()}:")
+                print(f"  Threshold: {threshold_value:.6f}")
+                print(f"  Test Sensitivity: {test_result['sensitivity']:.4f}")
+                print(f"  Test False Alarms/Hour: {test_result['false_alarms_per_hour']:.4f}")
+                if 'challenge_score' in test_result:
+                    print(f"  Test Challenge Score: {test_result.get('challenge_score', 0):.2f}")
+                print(f"  Test Anomaly Reduction: {test_result['anomaly_reduction']:.4f} ({test_result['anomaly_reduction']*100:.1f}%)")
+
+                # Print responder analysis
+                resp = test_result.get('responder_analysis', {})
+                if resp:
+                    print(f"  Test Responders: {resp.get('num_responders', 0)}/{resp.get('total_patients_with_seizures', 0)} ({resp.get('responder_rate', 0)*100:.1f}%)")
+                    if resp.get('responder_sensitivity') is not None:
+                        print(f"    Responder Sensitivity: {resp['responder_sensitivity']:.4f}")
+                        print(f"    Responder FAD: {resp['responder_false_alarms_per_hour']:.4f}")
+
+        return {
+            'training_results': training_results,
+            'test_results': test_results,
+            'optimal_thresholds': optimal_thresholds
+        }
 
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Generate threshold trade-off analysis with time_180s clustering - TEST SET ONLY (sub097-sub125)"
+        description="Generate threshold trade-off analysis with time_180s clustering using train/test split. "
+                    "Optimizes thresholds on training set (sub001-sub096) and evaluates on test set (sub097-sub125)."
     )
     parser.add_argument(
         "results_dir", 
