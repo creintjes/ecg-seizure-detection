@@ -9,6 +9,7 @@ This script:
 4. Appends the trailing window results to the existing JSON
 
 This is much faster than reprocessing entire files!
+python Madrid/madrid_trailing_window_analyzer.py --data-dir /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new --results-dir Madrid/results_madrid/results_8hz_window3600_stride1800_new20min --n-workers 20
 """
 
 import os
