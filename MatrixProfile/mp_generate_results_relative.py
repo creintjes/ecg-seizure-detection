@@ -347,8 +347,8 @@ if __name__ == "__main__":
     downsample_freq = 8
     window_size_sec = 25
 
-    val_excel_path = "/home/jhagenbe_sw/ASIM/ecg-seizure-detection/MatrixProfile/configs/splits/by_subject_range_val_files_2042.xlsx"
-    test_excel_path = "/home/jhagenbe_sw/ASIM/ecg-seizure-detection/MatrixProfile/configs/splits/by_subject_range_test_files_753.xlsx"
+    val_excel_path = "/home/jhagenbe_sw/ASIM/ecg-seizure-detection/MatrixProfile/configs/splits/initial_tuning/by_subject_range_val_files_2042.xlsx"
+    test_excel_path = "/home/jhagenbe_sw/ASIM/ecg-seizure-detection/MatrixProfile/configs/splits/initial_tuning/by_subject_range_test_files_753.xlsx"
 
     # Try different anomaly ratios: 1%, 2%, 5%
     parameter_grid_relative = {
