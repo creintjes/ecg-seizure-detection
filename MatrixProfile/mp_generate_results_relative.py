@@ -6,7 +6,7 @@ import os
 import itertools
 import csv
 import sys
-from typing import Any, Callable, Dict, List
+from typing import Any, Callable, Dict, List, Optional, Tuple
 import pandas as pd
 from collections import defaultdict
 from collections import defaultdict
@@ -48,7 +48,8 @@ def produce_mp_results(
     MPs_path: str,
     recording_list_excel: str,
     verbose: bool,
-    anomaly_ratio: float = None
+    anomaly_ratio: float = None,
+    responders: List[tuple[str, str]] | None = None
 ) -> tuple:
     """
     Processes matrix profiles and computes evaluation metrics.
@@ -67,7 +68,7 @@ def produce_mp_results(
         recording_list_excel (str): Excel file with list of recordings.
         verbose (bool): Whether to print verbose output.
         anomaly_ratio (float, optional): Ratio of anomalies to find based on MP length (e.g. 0.01 finds 1% anomalies). If None, use amount_of_annomalies_per_record.
-
+        responders (List[tuple[str, str]], optional): List of responders defined by (subject, run). Only these will contribute to the responder metrics.
     Returns:
         tuple: (loaded_recs, loaded_recs_resp, sensitivity, false_alarms_per_hour, resp_sensitivity, resp_false_alarms_per_hour, overview)
     """
@@ -179,16 +180,15 @@ def produce_mp_results(
                 if not len(label_list) == len(mps_list):
                     print(f"len(label_list) not == len(mps_list)")
 
+            if responders and (subject, run) in responders:
+                resp_tp_list.append(true_positives)
+                resp_fp_list.append(false_positives)
+                resp_total_events_list.append(total_events)
+                resp_hours_list.append(hours)
+                loaded_recs_resp += 1
+
             mps_list = []
             label_list = []
-
-        responder_rate = 0.0 if sum(total_events_sub) == 0 else sum(true_positives_sub) / sum(total_events_sub)
-        if responder_rate >= 0.66:
-            resp_tp_list.append(sum(true_positives_sub))
-            resp_fp_list.append(sum(false_positives_sub))
-            resp_total_events_list.append(sum(total_events_sub))
-            resp_hours_list.append(sum(hours_sub))
-            loaded_recs_resp += loaded_recs_resp_sub
 
         tp_list.append(sum(true_positives_sub))
         fp_list.append(sum(false_positives_sub))
@@ -278,7 +278,8 @@ def run_grid_search(
     target_function: Callable[..., Any],
     val_excel_path: str,
     test_excel_path: str,
-    save_results: bool = False
+    save_results: bool = False,
+    responders: Optional[List[Tuple[str, str]]] = None
 ) -> None:
     """
     Runs a grid search on the target function.
@@ -297,8 +298,8 @@ def run_grid_search(
         params = dict(zip(keys, values))
         print(f"Testing combination: {params}")
         try:
-            test_results = target_function(**params, recording_list_excel=test_excel_path)
-            val_results = target_function(**params, recording_list_excel=val_excel_path)
+            test_results = target_function(**params, recording_list_excel=test_excel_path, responders=responders)
+            val_results = target_function(**params, recording_list_excel=val_excel_path, responders=responders)
 
             combined = {
                 **params,
@@ -381,6 +382,9 @@ if __name__ == "__main__":
 
     from concurrent.futures import ThreadPoolExecutor
     # Run both grid searches in parallel threads
+
+    # Replace with final responders
+    responders = [("S001", "run01"), ("S002", "run03")] 
     with ThreadPoolExecutor(max_workers=2) as executor:
         futures = [
             executor.submit(
@@ -390,6 +394,7 @@ if __name__ == "__main__":
                 val_excel_path,
                 test_excel_path,
                 True,
+                responders=responders,
             ),
             executor.submit(
                 run_grid_search,
@@ -398,6 +403,7 @@ if __name__ == "__main__":
                 val_excel_path,
                 test_excel_path,
                 True,
+                responders=responders,
             ),
         ]
 
