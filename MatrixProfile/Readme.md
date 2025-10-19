@@ -80,6 +80,15 @@ This will:
 - Run grid search over parameters (see below).  
 - Save results in Excel files, e.g. `results/hp_tuning_mp_results_resp_relative.xlsx`.  
 
+Run the evaluation of the experiment (to get the results as proposed in the paper) inside tmux:  
+
+```bash
+python3 mp_generate_results_relative_final.py
+```
+This will:  
+- Run 3 configs each for SDW and No-SDW, selected based on the grid search results (for easier access, filtered results can be found in `ecg-seizure-detection/MatrixProfile/results/results_sorted_for_final_paper`).
+- Save final results in Excel files in `ecg-seizure-detection/MatrixProfile/results/results_final_final_evaluation`.  
+
 To detach from the session (leaving the experiment running in the background), press:  
 ```
 Ctrl+b  d
