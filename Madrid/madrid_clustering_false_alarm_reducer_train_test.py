@@ -16,6 +16,19 @@ from collections import defaultdict
 
 
 class MadridClusteringFalseAlarmReducerTrainTest:
+    # ============================================================================
+    # RESPONDER DEFINITION - Configure here which patients are responders
+    # ============================================================================
+    # Set to None to use automatic 2/3 detection rule (old behavior)
+    # Set to a list of patient IDs to use fixed responder definition (new behavior)
+    # Test set responders (based on first seizure HR change >50 BPM):
+    FIXED_RESPONDERS = [
+        'sub-098', 'sub-099', 'sub-100', 'sub-101', 'sub-102', 'sub-103',
+        'sub-104', 'sub-105', 'sub-106', 'sub-107', 'sub-109', 'sub-110',
+        'sub-111', 'sub-112', 'sub-113', 'sub-114', 'sub-115', 'sub-116',
+        'sub-117', 'sub-118', 'sub-119', 'sub-121', 'sub-122', 'sub-125'
+    ]
+
     # Saturated test patient runs to exclude (>=10% saturation)
     SATURATED_TEST_RUNS = {
         ("sub-099", "run-01"), ("sub-114", "run-03"), ("sub-115", "run-11"),
@@ -59,23 +72,29 @@ class MadridClusteringFalseAlarmReducerTrainTest:
     def calculate_responder_metrics(self, patient_metrics: Dict[str, Dict]) -> Dict[str, Any]:
         """
         Calculate responder metrics for the test set.
-        A responder is a patient where at least 2/3 of seizures are detected.
-        
+
+        If FIXED_RESPONDERS is None: A responder is a patient where at least 2/3 of seizures are detected (old behavior).
+        If FIXED_RESPONDERS is set: Responders are determined by the fixed list.
+
         Args:
             patient_metrics: Dictionary with patient-specific seizure detection metrics
-        
+
         Returns:
             Dictionary with responder analysis results
         """
         responders = []
         non_responders = []
         patients_with_seizures = []
-        
+
+        # Check if we're using fixed responder definition
+        use_fixed_responders = self.FIXED_RESPONDERS is not None
+        fixed_responder_set = set(self.FIXED_RESPONDERS) if use_fixed_responders else set()
+
         for patient_id, metrics in patient_metrics.items():
             if metrics['total_seizures'] > 0:
                 patients_with_seizures.append(patient_id)
                 detection_rate = metrics['detected_seizures'] / metrics['total_seizures']
-                
+
                 patient_info = {
                     'patient_id': patient_id,
                     'total_seizures': metrics['total_seizures'],
@@ -83,9 +102,16 @@ class MadridClusteringFalseAlarmReducerTrainTest:
                     'detection_rate': detection_rate,
                     'files': metrics['files']
                 }
-                
-                # Check if patient is a responder (≥2/3 seizures detected)
-                if detection_rate >= 2/3:
+
+                # Determine if patient is a responder
+                if use_fixed_responders:
+                    # Use fixed responder list
+                    is_responder = patient_id in fixed_responder_set
+                else:
+                    # Use automatic 2/3 detection rule (old behavior)
+                    is_responder = detection_rate >= 2/3
+
+                if is_responder:
                     responders.append(patient_info)
                 else:
                     non_responders.append(patient_info)
@@ -998,8 +1024,12 @@ class MadridClusteringFalseAlarmReducerTrainTest:
         responder_analysis = results['test_results'].get('responder_analysis', {})
         if responder_analysis:
             print(f"\nRESPONDER ANALYSIS (Test Set):")
+            if self.FIXED_RESPONDERS is not None:
+                print(f"  Definition: Fixed responder list ({len(self.FIXED_RESPONDERS)} responders defined)")
+            else:
+                print(f"  Definition: Automatic (≥2/3 seizures detected)")
             print(f"  Total patients with seizures: {responder_analysis['total_patients_with_seizures']}")
-            print(f"  Responders (≥2/3 seizures detected): {responder_analysis['num_responders']}")
+            print(f"  Responders: {responder_analysis['num_responders']}")
             print(f"  Non-responders: {responder_analysis['num_non_responders']}")
             print(f"  Responder rate: {responder_analysis['responder_rate']:.4f} ({responder_analysis['responder_rate']*100:.2f}%)")
             

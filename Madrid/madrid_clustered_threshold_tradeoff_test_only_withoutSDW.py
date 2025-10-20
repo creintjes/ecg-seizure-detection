@@ -26,6 +26,19 @@ from collections import defaultdict
 
 
 class MadridClusteredThresholdTradeoffAnalyzerTestOnly:
+    # ============================================================================
+    # RESPONDER DEFINITION - Configure here which patients are responders
+    # ============================================================================
+    # Set to None to use automatic 2/3 detection rule (old behavior)
+    # Set to a list of patient IDs to use fixed responder definition (new behavior)
+    # Test set responders (based on first seizure HR change >50 BPM):
+    FIXED_RESPONDERS = [
+        'sub-098', 'sub-099', 'sub-100', 'sub-101', 'sub-102', 'sub-103',
+        'sub-104', 'sub-105', 'sub-106', 'sub-107', 'sub-109', 'sub-110',
+        'sub-111', 'sub-112', 'sub-113', 'sub-114', 'sub-115', 'sub-116',
+        'sub-117', 'sub-118', 'sub-119', 'sub-121', 'sub-122', 'sub-125'
+    ]
+
     # Saturated test patient runs to exclude (>=10% saturation)
     SATURATED_TEST_RUNS = {
         ("sub-099", "run-01"), ("sub-114", "run-03"), ("sub-115", "run-11"),
@@ -340,25 +353,31 @@ class MadridClusteredThresholdTradeoffAnalyzerTestOnly:
     
     def calculate_responder_analysis(self, patient_stats: Dict[str, Dict[str, Any]]) -> Dict[str, Any]:
         """
-        Calculate responder analysis for patients where at least 2/3 of seizures are detected.
-        
+        Calculate responder analysis based on either fixed responder list or automatic detection.
+
+        If FIXED_RESPONDERS is set, uses that list. Otherwise uses 2/3 detection rule.
+
         Args:
             patient_stats: Dictionary with patient-specific statistics
-            
+
         Returns:
             Dictionary with responder analysis results
         """
+        # Check if we're using fixed responder definition
+        use_fixed_responders = self.FIXED_RESPONDERS is not None
+        fixed_responder_set = set(self.FIXED_RESPONDERS) if use_fixed_responders else set()
+
         responders = []
         non_responders = []
         patients_with_seizures = []
-        
+
         # Analyze each patient
         for patient_id, stats in patient_stats.items():
             if stats['total_seizures'] > 0:
                 patients_with_seizures.append(patient_id)
                 detection_rate = stats['detected_seizures'] / stats['total_seizures']
                 fad = stats['total_false_positives'] / stats['total_duration_hours'] if stats['total_duration_hours'] > 0 else 0
-                
+
                 patient_info = {
                     'patient_id': patient_id,
                     'total_seizures': stats['total_seizures'],
@@ -368,9 +387,16 @@ class MadridClusteredThresholdTradeoffAnalyzerTestOnly:
                     'total_duration_hours': stats['total_duration_hours'],
                     'false_alarms_per_hour': fad
                 }
-                
-                # Check if patient is a responder (≥2/3 seizures detected)
-                if detection_rate >= 2/3:
+
+                # Determine if patient is a responder
+                if use_fixed_responders:
+                    # Use fixed responder list
+                    is_responder = patient_id in fixed_responder_set
+                else:
+                    # Use automatic 2/3 detection rule (old behavior)
+                    is_responder = detection_rate >= 2/3
+
+                if is_responder:
                     responders.append(patient_info)
                 else:
                     non_responders.append(patient_info)
@@ -585,6 +611,12 @@ class MadridClusteredThresholdTradeoffAnalyzerTestOnly:
         print(f"Using clustering strategy: time_{self.clustering_time_threshold}s")
         print(f"Extended window: -{self.pre_seizure_seconds/60:.1f} min to +{self.post_seizure_seconds/60:.1f} min")
         print(f"Dataset: {dataset_name}")
+
+        # Print responder definition being used
+        if self.FIXED_RESPONDERS is not None:
+            print(f"Responder definition: Using FIXED list of {len(self.FIXED_RESPONDERS)} patients")
+        else:
+            print(f"Responder definition: Using AUTOMATIC 2/3 detection rule")
 
         for i, threshold in enumerate(thresholds):
             print(f"Processing threshold {i+1}/{len(thresholds)}: {threshold:.6f}")
