@@ -25,6 +25,11 @@ import sys
 from typing import List, Tuple, Optional
 from scipy.signal import butter, filtfilt, medfilt
 import warnings
+import os
+import argparse
+import concurrent.futures
+from concurrent.futures import ProcessPoolExecutor, as_completed
+
 
 # ==================== CONFIGURATION ====================
 
@@ -69,6 +74,29 @@ if ECGPreprocessor is None:
     raise RuntimeError("ECGPreprocessor not found in preprocessing.py")
 
 pre = ECGPreprocessor()
+
+# ==================== PARALLEL WORKER INIT ====================
+
+PRE = None  # wird pro Prozess gesetzt
+
+def init_worker():
+    """
+    Initializer für jeden Worker-Prozess:
+    - begrenzt BLAS-Threads (verhindert Oversubscription)
+    - initialisiert den ECGPreprocessor (pro Prozess)
+    """
+    os.environ.setdefault("OMP_NUM_THREADS", "1")
+    os.environ.setdefault("OPENBLAS_NUM_THREADS", "1")
+    os.environ.setdefault("MKL_NUM_THREADS", "1")
+    os.environ.setdefault("VECLIB_MAXIMUM_THREADS", "1")
+    os.environ.setdefault("NUMEXPR_NUM_THREADS", "1")
+    global PRE, ECGPreprocessor
+    try:
+        PRE = ECGPreprocessor()
+    except Exception as e:
+        # Falls Import/Init fehlschlägt, Worker bleibt nutzbar; process_recording macht fallback
+        PRE = None
+
 
 # ==================== ELGENDI R-PEAK DETECTION ====================
 
@@ -373,9 +401,10 @@ def calculate_hr_diff_jeppesen(rr_intervals_ms: np.ndarray,
     central_diff = np.concatenate(([np.nan], central_diff, [np.nan]))
 
     # Rolling sum
+    #   old: min_periods=max(1, window_size // 2)
     hr_diff_sum = pd.Series(central_diff).rolling(
         window=window_size,
-        min_periods=max(1, window_size // 2)
+        min_periods=window_size
     ).sum().to_numpy()
 
     return hr_diff_sum
@@ -469,17 +498,16 @@ def discover_all_recordings(data_path: str) -> List[Tuple[str, str]]:
 def process_recording(subject_id: str, run_id: str) -> Optional[List[float]]:
     """
     Process a single recording to extract seizure-specific max HR changes.
-
-    Args:
-        subject_id: Subject identifier
-        run_id: Run identifier
-
-    Returns:
-        List of max HR changes for each seizure, or None if processing failed
+    ...
     """
+    global PRE
     try:
+        # Lazy-Init falls nicht über init_worker gesetzt (z.B. Single-Process-Run)
+        if PRE is None:
+            PRE = ECGPreprocessor()
+
         # Load raw data
-        data_obj, annotations = pre.load_data(DATA_PATH, subject_id, run_id)
+        data_obj, annotations = PRE.load_data(DATA_PATH, subject_id, run_id)
 
         if not data_obj or not data_obj.data:
             print(f"  No ECG data found")
@@ -606,6 +634,13 @@ def main():
     print("=" * 70)
     print()
 
+    # --- CLI-Argumente ---
+    parser = argparse.ArgumentParser(add_help=False)
+    parser.add_argument("--workers", type=int, default=os.cpu_count(),
+                        help="Anzahl paralleler Prozesse (Default: Anzahl CPU-Kerne)")
+    args, _ = parser.parse_known_args()
+    workers = max(1, int(args.workers or 1))
+
     # Discover recordings
     print("Discovering recordings...")
     recordings = discover_all_recordings(DATA_PATH)
@@ -614,49 +649,64 @@ def main():
         print("No recordings found!")
         return
 
-    print(f"\nProcessing {len(recordings)} recordings...\n")
+    print(f"\nProcessing {len(recordings)} recordings with {workers} workers...\n")
 
-    # Process all recordings
+    # --- Parallel: alle Recordings verarbeiten ---
     patient_seizure_maxima = {}
     processed_count = 0
     failed_count = 0
 
-    for subject_id, run_id in recordings:
-        print(f"Processing {subject_id} {run_id}...")
+    # Mapping für Fortschritt
+    total = len(recordings)
+    submitted = 0
+    done = 0
 
-        seizure_maxima = process_recording(subject_id, run_id)
+    with ProcessPoolExecutor(max_workers=workers, initializer=init_worker) as executor:
+        future_to_rec = {
+            executor.submit(process_recording, subject_id, run_id): (subject_id, run_id)
+            for (subject_id, run_id) in recordings
+        }
+        submitted = len(future_to_rec)
 
-        if seizure_maxima is not None:
-            patient_id = Path(subject_id).name
-            patient_seizure_maxima.setdefault(patient_id, []).extend(seizure_maxima)
-            processed_count += 1
-        else:
-            failed_count += 1
+        for future in as_completed(future_to_rec):
+            subject_id, run_id = future_to_rec[future]
+            done += 1
+            try:
+                seizure_maxima = future.result()
+            except Exception as e:
+                failed_count += 1
+                print(f"[{done}/{total}] {subject_id} {run_id} -> ERROR: {e}")
+                continue
+
+            if seizure_maxima is not None:
+                patient_id = Path(subject_id).name
+                patient_seizure_maxima.setdefault(patient_id, []).extend(seizure_maxima)
+                processed_count += 1
+                print(f"[{done}/{total}] {subject_id} {run_id} -> OK ({len(seizure_maxima)} seizures)")
+            else:
+                failed_count += 1
+                print(f"[{done}/{total}] {subject_id} {run_id} -> NO DATA")
 
     print(f"\n{'=' * 70}")
     print(f"Processing complete: {processed_count} successful, {failed_count} failed")
     print(f"{'=' * 70}\n")
 
-    # Classify patients
+    # --- (ab hier bleibt dein Code wie gehabt) ---
     responders = []
     non_responders = []
     unknown = []
 
     for patient_id, maxima in patient_seizure_maxima.items():
         valid = [m for m in maxima if m is not None and not np.isnan(m)]
-
         if len(valid) == 0:
             unknown.append(patient_id)
             continue
-
         mean_max = float(np.mean(valid))
-
         if mean_max > BPM_THRESHOLD:
             responders.append(patient_id)
         else:
             non_responders.append(patient_id)
 
-    # Sort lists
     responders.sort()
     non_responders.sort()
     unknown.sort()
@@ -677,12 +727,10 @@ def main():
     with open(OUTPUT_CSV, "w", newline="", encoding="utf-8") as csvf:
         writer = csv.writer(csvf)
         writer.writerow(["subject_id", "n_seizures", "mean_max_bpm", "std_max_bpm",
-                        "min_max_bpm", "max_max_bpm", "label"])
-
+                         "min_max_bpm", "max_max_bpm", "label"])
         for pid, maxima in sorted(patient_seizure_maxima.items()):
             valid = [m for m in maxima if m is not None and not np.isnan(m)]
             n = len(valid)
-
             if n > 0:
                 mean_m = float(np.mean(valid))
                 std_m = float(np.std(valid)) if n > 1 else 0.0
@@ -692,7 +740,6 @@ def main():
             else:
                 mean_m = std_m = min_m = max_m = float("nan")
                 label = "unknown"
-
             writer.writerow([pid, n, mean_m, std_m, min_m, max_m, label])
 
     # Print summary
