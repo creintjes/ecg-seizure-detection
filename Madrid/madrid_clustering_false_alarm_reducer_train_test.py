@@ -23,11 +23,8 @@ class MadridClusteringFalseAlarmReducerTrainTest:
     # Set to a list of patient IDs to use fixed responder definition (new behavior)
     # Test set responders (based on first seizure HR change >50 BPM):
     FIXED_RESPONDERS = [
-        'sub-098', 'sub-099', 'sub-100', 'sub-101', 'sub-102', 'sub-103',
-        'sub-104', 'sub-105', 'sub-106', 'sub-107', 'sub-109', 'sub-110',
-        'sub-111', 'sub-112', 'sub-113', 'sub-114', 'sub-115', 'sub-116',
-        'sub-117', 'sub-118', 'sub-119', 'sub-121', 'sub-122', 'sub-125'
-    ]
+    'sub-098', 'sub-100', 'sub-105', 'sub-106', 'sub-107', 'sub-110', 'sub-111', 'sub-114', 
+    'sub-115', 'sub-116', 'sub-118', 'sub-122', 'sub-123', 'sub-124', 'sub-125']
 
     # Saturated test patient runs to exclude (>=10% saturation)
     SATURATED_TEST_RUNS = {

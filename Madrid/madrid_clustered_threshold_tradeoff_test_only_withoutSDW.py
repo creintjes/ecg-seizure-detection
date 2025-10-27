@@ -33,11 +33,8 @@ class MadridClusteredThresholdTradeoffAnalyzerTestOnly:
     # Set to a list of patient IDs to use fixed responder definition (new behavior)
     # Test set responders (based on first seizure HR change >50 BPM):
     FIXED_RESPONDERS = [
-        'sub-098', 'sub-099', 'sub-100', 'sub-101', 'sub-102', 'sub-103',
-        'sub-104', 'sub-105', 'sub-106', 'sub-107', 'sub-109', 'sub-110',
-        'sub-111', 'sub-112', 'sub-113', 'sub-114', 'sub-115', 'sub-116',
-        'sub-117', 'sub-118', 'sub-119', 'sub-121', 'sub-122', 'sub-125'
-    ]
+    'sub-098', 'sub-100', 'sub-105', 'sub-106', 'sub-107', 'sub-110', 'sub-111', 'sub-114', 
+    'sub-115', 'sub-116', 'sub-118', 'sub-122', 'sub-123', 'sub-124', 'sub-125']
 
     # Saturated test patient runs to exclude (>=10% saturation)
     SATURATED_TEST_RUNS = {
@@ -649,7 +646,7 @@ class MadridClusteredThresholdTradeoffAnalyzerTestOnly:
 
         # Find threshold with lowest false alarms per hour (but sensitivity > 0)
         valid_results = [r for r in training_results
-                        if r['sensitivity'] is not None and r['sensitivity'] > 0]
+                        if r['sensitivity'] is not None and r['sensitivity'] > 0.05]
         if valid_results:
             best_fad = min(valid_results, key=lambda x: x['false_alarms_per_hour'])
             best_fad_threshold = best_fad['threshold']
