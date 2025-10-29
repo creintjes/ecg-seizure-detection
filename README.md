@@ -95,7 +95,7 @@ Results are saved as:
 - `patient_responder_summary_elgendi_first_seizure_extended.csv` - Detailed metrics per patient
 
 ### 7. Run Model Experiments
-After preprocessing, follow the steps described in the respective README files of each model to reproduce the experiments:
+After preprocessing and exploration, follow the steps described in the respective README files of each model to reproduce the experiments:
 
 - [Madrid/README.md](Madrid/README.md)
 - [TimeVQVAE-AD/README.md](TimeVQVAE-AD/README.md)
