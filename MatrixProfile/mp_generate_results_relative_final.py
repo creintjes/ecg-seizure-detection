@@ -49,7 +49,7 @@ def produce_mp_results(
     recording_list_excel: str,
     verbose: bool,
     anomaly_ratio: float = None,
-    responders: List[tuple[str, str]] | None = None
+    responders: List[str] | None = None
 ) -> tuple:
     """
     Processes matrix profiles and computes evaluation metrics.
@@ -68,7 +68,7 @@ def produce_mp_results(
         recording_list_excel (str): Excel file with list of recordings.
         verbose (bool): Whether to print verbose output.
         anomaly_ratio (float, optional): Ratio of anomalies to find based on MP length (e.g. 0.01 finds 1% anomalies). If None, use amount_of_annomalies_per_record.
-        responders (List[tuple[str, str]], optional): List of responders defined by (subject, run). Only these will contribute to the responder metrics.
+        responders (List[str], optional): List of responders defined by (subject, run). Only these will contribute to the responder metrics.
     Returns:
         tuple: (loaded_recs, loaded_recs_resp, sensitivity, false_alarms_per_hour, resp_sensitivity, resp_false_alarms_per_hour, overview)
     """
@@ -179,22 +179,25 @@ def produce_mp_results(
                 print(loaded_recs)
                 if not len(label_list) == len(mps_list):
                     print(f"len(label_list) not == len(mps_list)")
-
-            if responders and (subject, run) in responders:
-                resp_tp_list.append(true_positives)
-                resp_fp_list.append(false_positives)
-                resp_total_events_list.append(total_events)
-                resp_hours_list.append(hours)
-                loaded_recs_resp += 1
-
             mps_list = []
             label_list = []
+
+        if responders and subject in responders:
+            resp_tp_list.append(sum(true_positives_sub))
+            resp_fp_list.append(sum(false_positives_sub))
+            resp_total_events_list.append(sum(total_events_sub))
+            resp_hours_list.append(sum(hours_sub))
+            loaded_recs_resp += sum(total_events_sub)
+        
+
+
 
         tp_list.append(sum(true_positives_sub))
         fp_list.append(sum(false_positives_sub))
         hours_list.append(sum(hours_sub))
         total_events_list.append(sum(total_events_sub))
 
+    # print("Final metrics calc:")
     sensitivity = 0.0 if sum(total_events_list) == 0 else sum(tp_list) / sum(total_events_list)
     resp_sensitivity = 0.0 if sum(resp_total_events_list) == 0 else sum(resp_tp_list) / sum(resp_total_events_list)
     resp_false_alarms_per_hour = 0.0 if sum(resp_hours_list) == 0 else sum(resp_fp_list) / sum(resp_hours_list)
@@ -278,7 +281,7 @@ def run_grid_search(
     target_function: Callable[..., Any],
     test_excel_path: str,
     save_results: bool = False,
-    responders: Optional[List[Tuple[str, str]]] = None
+    responders: List[str] = None
 ) -> None:
     """
     Runs a grid search on the target function.
@@ -436,12 +439,11 @@ if __name__ == "__main__":
         "MPs_path": [f"/home/swolf/asim_shared/results/MP/downsample_freq={downsample_freq},no_windows/seq_len{window_size_sec}sec"]
     }
 
-
     from concurrent.futures import ThreadPoolExecutor
     # Run both grid searches in parallel threads
 
-    # TODO: Replace with final responders
-    responders = [("S001", "run01"), ("S002", "run03")] 
+    responders = ['sub-098', 'sub-100', 'sub-105', 'sub-106', 'sub-107', 'sub-110', 'sub-111', 'sub-114', 
+        'sub-115', 'sub-116', 'sub-118', 'sub-122', 'sub-123', 'sub-124', 'sub-125']
 
     with ThreadPoolExecutor(max_workers=2) as executor:
         futures = [
