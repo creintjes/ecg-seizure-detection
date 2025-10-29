@@ -49,7 +49,7 @@ def produce_mp_results(
     recording_list_excel: str,
     verbose: bool,
     anomaly_ratio: float = None,
-    responders: List[tuple[str, str]] | None = None
+    responders: List[str] | None = None
 ) -> tuple:
     """
     Processes matrix profiles and computes evaluation metrics.
@@ -68,7 +68,7 @@ def produce_mp_results(
         recording_list_excel (str): Excel file with list of recordings.
         verbose (bool): Whether to print verbose output.
         anomaly_ratio (float, optional): Ratio of anomalies to find based on MP length (e.g. 0.01 finds 1% anomalies). If None, use amount_of_annomalies_per_record.
-        responders (List[tuple[str, str]], optional): List of responders defined by (subject, run). Only these will contribute to the responder metrics.
+        responders (List[str], optional): List of responders defined by (subject, run). Only these will contribute to the responder metrics.
     Returns:
         tuple: (loaded_recs, loaded_recs_resp, sensitivity, false_alarms_per_hour, resp_sensitivity, resp_false_alarms_per_hour, overview)
     """
@@ -179,22 +179,25 @@ def produce_mp_results(
                 print(loaded_recs)
                 if not len(label_list) == len(mps_list):
                     print(f"len(label_list) not == len(mps_list)")
-
-            if responders and (subject, run) in responders:
-                resp_tp_list.append(true_positives)
-                resp_fp_list.append(false_positives)
-                resp_total_events_list.append(total_events)
-                resp_hours_list.append(hours)
-                loaded_recs_resp += 1
-
             mps_list = []
             label_list = []
+
+        if responders and subject in responders:
+            resp_tp_list.append(sum(true_positives_sub))
+            resp_fp_list.append(sum(false_positives_sub))
+            resp_total_events_list.append(sum(total_events_sub))
+            resp_hours_list.append(sum(hours_sub))
+            loaded_recs_resp += sum(total_events_sub)
+        
+
+
 
         tp_list.append(sum(true_positives_sub))
         fp_list.append(sum(false_positives_sub))
         hours_list.append(sum(hours_sub))
         total_events_list.append(sum(total_events_sub))
 
+    # print("Final metrics calc:")
     sensitivity = 0.0 if sum(total_events_list) == 0 else sum(tp_list) / sum(total_events_list)
     resp_sensitivity = 0.0 if sum(resp_total_events_list) == 0 else sum(resp_tp_list) / sum(resp_total_events_list)
     resp_false_alarms_per_hour = 0.0 if sum(resp_hours_list) == 0 else sum(resp_fp_list) / sum(resp_hours_list)
@@ -276,10 +279,9 @@ def append_rf_samples_to_xlsx(
 def run_grid_search(
     param_grid: Dict[str, List[Any]],
     target_function: Callable[..., Any],
-    val_excel_path: str,
     test_excel_path: str,
     save_results: bool = False,
-    responders: Optional[List[Tuple[str, str]]] = None
+    responders: List[str] = None
 ) -> None:
     """
     Runs a grid search on the target function.
@@ -287,7 +289,6 @@ def run_grid_search(
     Args:
         param_grid (Dict[str, List[Any]]): Dictionary of parameters to try.
         target_function (Callable): Function to evaluate.
-        val_excel_path (str): Path to validation file list.
         test_excel_path (str): Path to test file list.
         save_results (bool): Whether to save results to file.
     """
@@ -299,7 +300,6 @@ def run_grid_search(
         print(f"Testing combination: {params}")
         try:
             test_results = target_function(**params, recording_list_excel=test_excel_path, responders=responders)
-            val_results = target_function(**params, recording_list_excel=val_excel_path, responders=responders)
 
             combined = {
                 **params,
@@ -311,14 +311,6 @@ def run_grid_search(
                 "test_resp_sensitivity": test_results[4],
                 "test_resp_false_alarms_per_hour": test_results[5],
                 "test_overview": test_results[6],
-                # Val-metrics
-                "val_loaded_recs": val_results[0],
-                "val_loaded_recs_resp": val_results[1],
-                "val_sensitivity": val_results[2],
-                "val_false_alarms_per_hour": val_results[3],
-                "val_resp_sensitivity": val_results[4],
-                "val_resp_false_alarms_per_hour": val_results[5],
-                "val_overview": val_results[6]
             }
 
             if save_results:
@@ -328,7 +320,7 @@ def run_grid_search(
                     "post_thresh_sec" in params and params["post_thresh_sec"] > 0
                 )
                 excel_suffix = "_detection_window" if detection_window_used else ""
-                excel_path = f"/home/jhagenbe_sw/ASIM/ecg-seizure-detection/MatrixProfile/results/hp_tuning_mp_results_resp{excel_suffix}_relative.xlsx"
+                excel_path = f"/home/jhagenbe_sw/ASIM/ecg-seizure-detection/MatrixProfile/results/results_final_final_evaluation/hp_tuning_mp_results_resp{excel_suffix}_relative.xlsx"
 
                 df_row = pd.DataFrame([combined])
                 if os.path.isfile(excel_path):
@@ -347,17 +339,17 @@ if __name__ == "__main__":
     downsample_freq = 8
     window_size_sec = 25
 
-    val_excel_path = "/home/jhagenbe_sw/ASIM/ecg-seizure-detection/MatrixProfile/configs/splits/initial_tuning/by_subject_range_val_files_2042.xlsx"
-    test_excel_path = "/home/jhagenbe_sw/ASIM/ecg-seizure-detection/MatrixProfile/configs/splits/initial_tuning/by_subject_range_test_files_753.xlsx"
+    # Note: Amount of files is lower than 753 due to manual exclusion of files as explained in the paper. Naming has keept the same for consistency. 
+    test_excel_path = "/home/jhagenbe_sw/ASIM/ecg-seizure-detection/MatrixProfile/configs/splits/evaluation/by_subject_range_test_files_753.xlsx"
 
-    # Try different anomaly ratios: 1%, 2%, 5%
-    parameter_grid_relative = {
+    # FAR & no SDW:
+    parameter_grid_relative_1 = {
         "amount_of_annomalies_per_record": [1500],  # Legacy fallback, will be ignored if anomaly_ratio is set
-        "anomaly_ratio": [0.01, 0.02, 0.04, 0.06],        # Relative anomaly ratios
+        "anomaly_ratio": [0.01,],        # Relative anomaly ratios
         "batch_size_load": [100],
         "downsample_freq": [downsample_freq],
-        "max_gap_annos_in_sec": [0.2, 1, 5, 10, 20, 30],
-        "n_cons": [1, 3, 5, 10, 35],
+        "max_gap_annos_in_sec": [30],
+        "n_cons": [35],
         "window_size_sec": [window_size_sec],
         "pre_thresh_sec": [0],
         "post_thresh_sec": [0],
@@ -365,13 +357,80 @@ if __name__ == "__main__":
         "DIR_preprocessed": [f"/home/swolf/asim_shared/preprocessed_data/downsample_freq={downsample_freq},no_windows"],
         "MPs_path": [f"/home/swolf/asim_shared/results/MP/downsample_freq={downsample_freq},no_windows/seq_len{window_size_sec}sec"]
     }
-    parameter_grid_detection_window_relative = {
-        "amount_of_annomalies_per_record": [1500],  # Legacy fallback
-        "anomaly_ratio": [0.01, 0.02, 0.04, 0.06],
+    # Sensitivity & no SDW:
+    parameter_grid_relative_2 = {
+        "amount_of_annomalies_per_record": [1500],  # Legacy fallback, will be ignored if anomaly_ratio is set
+        "anomaly_ratio": [0.06,],        # Relative anomaly ratios
         "batch_size_load": [100],
         "downsample_freq": [downsample_freq],
-        "max_gap_annos_in_sec": [0.2, 1, 5, 10, 20, 30],
-        "n_cons": [1, 3, 5, 10, 35],
+        "max_gap_annos_in_sec": [0.2],
+        "n_cons": [1],
+        "window_size_sec": [window_size_sec],
+        "pre_thresh_sec": [0],
+        "post_thresh_sec": [0],
+        "verbose": [False],
+        "DIR_preprocessed": [f"/home/swolf/asim_shared/preprocessed_data/downsample_freq={downsample_freq},no_windows"],
+        "MPs_path": [f"/home/swolf/asim_shared/results/MP/downsample_freq={downsample_freq},no_windows/seq_len{window_size_sec}sec"]
+    }
+    
+    # HMC & no SDW:
+    parameter_grid_relative_3 = {
+        "amount_of_annomalies_per_record": [1500],  # Legacy fallback, will be ignored if anomaly_ratio is set
+        "anomaly_ratio": [0.06,],        # Relative anomaly ratios
+        "batch_size_load": [100],
+        "downsample_freq": [downsample_freq],
+        "max_gap_annos_in_sec": [5],
+        "n_cons": [1],
+        "window_size_sec": [window_size_sec],
+        "pre_thresh_sec": [0],
+        "post_thresh_sec": [0],
+        "verbose": [False],
+        "DIR_preprocessed": [f"/home/swolf/asim_shared/preprocessed_data/downsample_freq={downsample_freq},no_windows"],
+        "MPs_path": [f"/home/swolf/asim_shared/results/MP/downsample_freq={downsample_freq},no_windows/seq_len{window_size_sec}sec"]
+    }
+    
+    # FAR & SDW:
+    
+    parameter_grid_detection_window_relative_1 = {
+        "amount_of_annomalies_per_record": [1500],  # Legacy fallback
+        "anomaly_ratio": [0.01,],
+        "batch_size_load": [100],
+        "downsample_freq": [downsample_freq],
+        "max_gap_annos_in_sec": [30,],
+        "n_cons": [35],
+        "window_size_sec": [window_size_sec],
+        "pre_thresh_sec": [60 * 5],
+        "post_thresh_sec": [60 * 3],
+        "verbose": [False],
+        "DIR_preprocessed": [f"/home/swolf/asim_shared/preprocessed_data/downsample_freq={downsample_freq},no_windows"],
+        "MPs_path": [f"/home/swolf/asim_shared/results/MP/downsample_freq={downsample_freq},no_windows/seq_len{window_size_sec}sec"]
+    }
+
+    
+    # Sensitivity & SDW:
+    parameter_grid_detection_window_relative_2 = {
+        "amount_of_annomalies_per_record": [1500],  # Legacy fallback
+        "anomaly_ratio": [0.06,],
+        "batch_size_load": [100],
+        "downsample_freq": [downsample_freq],
+        "max_gap_annos_in_sec": [20,],
+        "n_cons": [1],
+        "window_size_sec": [window_size_sec],
+        "pre_thresh_sec": [60 * 5],
+        "post_thresh_sec": [60 * 3],
+        "verbose": [False],
+        "DIR_preprocessed": [f"/home/swolf/asim_shared/preprocessed_data/downsample_freq={downsample_freq},no_windows"],
+        "MPs_path": [f"/home/swolf/asim_shared/results/MP/downsample_freq={downsample_freq},no_windows/seq_len{window_size_sec}sec"]
+    }
+    
+    # HMC & SDW:
+    parameter_grid_detection_window_relative_3 = {
+        "amount_of_annomalies_per_record": [1500],  # Legacy fallback
+        "anomaly_ratio": [0.06,],
+        "batch_size_load": [100],
+        "downsample_freq": [downsample_freq],
+        "max_gap_annos_in_sec": [30,],
+        "n_cons": [1],
         "window_size_sec": [window_size_sec],
         "pre_thresh_sec": [60 * 5],
         "post_thresh_sec": [60 * 3],
@@ -383,24 +442,23 @@ if __name__ == "__main__":
     from concurrent.futures import ThreadPoolExecutor
     # Run both grid searches in parallel threads
 
-    # Replace with final responders
-    responders = [("S001", "run01"), ("S002", "run03")] 
+    responders = ['sub-098', 'sub-100', 'sub-105', 'sub-106', 'sub-107', 'sub-110', 'sub-111', 'sub-114', 
+        'sub-115', 'sub-116', 'sub-118', 'sub-122', 'sub-123', 'sub-124', 'sub-125']
+
     with ThreadPoolExecutor(max_workers=2) as executor:
         futures = [
             executor.submit(
                 run_grid_search,
-                parameter_grid_relative,
+                parameter_grid_relative_1,
                 produce_mp_results,
-                val_excel_path,
                 test_excel_path,
                 True,
                 responders=responders,
             ),
             executor.submit(
                 run_grid_search,
-                parameter_grid_detection_window_relative,
+                parameter_grid_detection_window_relative_1,
                 produce_mp_results,
-                val_excel_path,
                 test_excel_path,
                 True,
                 responders=responders,
@@ -410,3 +468,48 @@ if __name__ == "__main__":
         for f in futures:
             f.result()
 
+    with ThreadPoolExecutor(max_workers=2) as executor:
+        futures = [
+            executor.submit(
+                run_grid_search,
+                parameter_grid_relative_2,
+                produce_mp_results,
+                test_excel_path,
+                True,
+                responders=responders,
+            ),
+            executor.submit(
+                run_grid_search,
+                parameter_grid_detection_window_relative_2,
+                produce_mp_results,
+                test_excel_path,
+                True,
+                responders=responders,
+            ),
+        ]
+
+        for f in futures:
+            f.result()
+
+    with ThreadPoolExecutor(max_workers=2) as executor:
+        futures = [
+            executor.submit(
+                run_grid_search,
+                parameter_grid_relative_3,
+                produce_mp_results,
+                test_excel_path,
+                True,
+                responders=responders,
+            ),
+            executor.submit(
+                run_grid_search,
+                parameter_grid_detection_window_relative_3,
+                produce_mp_results,
+                test_excel_path,
+                True,
+                responders=responders,
+            ),
+        ]
+
+        for f in futures:
+            f.result()
