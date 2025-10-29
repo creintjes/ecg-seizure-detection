@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Analyze ds005873-1.1.0_example data to identify:
+Analyze ds005873-1.1.0 data to identify:
 1. Patients with missing or empty ECG signals
 2. Count annotated seizures vs actual seizures in ECG data
 3. Generate report of usable vs unusable data
@@ -555,7 +555,7 @@ def generate_problems_report(results):
     report_lines.append("ECG DATA QUALITY PROBLEMS REPORT")
     report_lines.append("="*80)
     report_lines.append(f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-    report_lines.append(f"Dataset: ds005873-1.1.0_example")
+    report_lines.append(f"Dataset: ds005873-1.1.0")
     report_lines.append("")
 
     # Collect all problems
@@ -1102,7 +1102,7 @@ def plot_seizure_saturation(results, pre_pad=5.0, post_pad=5.0, max_plots=50):
 
 
 def main():
-    print("Analyzing ds005873-1.1.0_example data...")
+    print("Analyzing ds005873-1.1.0 data...")
     print("="*60)
 
     try:
@@ -1110,7 +1110,7 @@ def main():
         print_summary_report(results)
 
         # Save detailed results to JSON
-        json_filename = 'example_data_analysis.json'
+        json_filename = 'data_analysis.json'
         with open(json_filename, 'w') as f:
             json.dump(results, f, indent=2, default=str)
         print(f"\n✓ Detailed results saved to '{json_filename}'")
@@ -1119,7 +1119,7 @@ def main():
         print("\nGenerating problems report...")
         problems_report = generate_problems_report(results)
 
-        report_filename = 'example_data_problems_report.txt'
+        report_filename = 'data_problems_report.txt'
         with open(report_filename, 'w', encoding='utf-8') as f:
             f.write(problems_report)
 

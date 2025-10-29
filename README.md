@@ -60,14 +60,14 @@ Before running experiments, you can analyze ECG signal quality to identify poten
 ```bash
 cd find_missing_ecg
 
-# Analyze example data for missing or empty ECG signals
-python3 analyze_example_data.py
+# Analyze data for missing or empty ECG signals
+python3 analyze_data.py
 
 # Analyze test patients for signal saturation
-python3 analyze_test_patients_saturation.py results/example_data_analysis.json
+python3 analyze_test_patients_saturation.py results/data_analysis.json
 
 # Extract saturated test patients with threshold (e.g., 10%)
-python3 extract_saturated_test_patients.py results/example_data_analysis.json 10
+python3 extract_saturated_test_patients.py results/data_analysis.json 10
 
 # Analyze seizure loss due to saturation
 python3 analyze_seizure_loss_from_saturation.py
