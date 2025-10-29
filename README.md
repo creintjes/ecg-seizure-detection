@@ -51,7 +51,7 @@ nohup ./filtered_download_script.sh > filtered_download.log 2>&1 &
 ```
 ### 4. Preprocess Data:
 ```bash
-nohup python3 preprocess_all_data.py > output.log 2>&1 &
+python3 preprocess_all_data.py
 ```
 
 ### 5. Analyze ECG Data Quality
