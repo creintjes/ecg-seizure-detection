@@ -1,0 +1,955 @@
+{
+  "timestamp": "2025-10-15T15:34:26.619371",
+  "summary": {
+    "raw_total": 2795,
+    "preprocessed_total": 2795,
+    "completeness_percentage": 100.0,
+    "missing_in_preprocessed": 0,
+    "missing_with_seizures": 0,
+    "total_missing_seizures": 0,
+    "present_but_missing_seizures": 117,
+    "total_seizures_lost_in_present_runs": 144,
+    "total_lost_seizures": 144,
+    "seizure_loss_percentage": 16.822429906542055
+  },
+  "missing_runs_with_seizures": [],
+  "present_runs_missing_seizure_data": [
+    {
+      "subject_id": "sub-005",
+      "run_id": "run-22",
+      "expected_seizures": 1,
+      "n_windows": 2,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-005_run-22_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-008",
+      "run_id": "run-01",
+      "expected_seizures": 1,
+      "n_windows": 4,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-008_run-01_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-008",
+      "run_id": "run-09",
+      "expected_seizures": 1,
+      "n_windows": 1,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-008_run-09_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-010",
+      "run_id": "run-08",
+      "expected_seizures": 1,
+      "n_windows": 6,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-010_run-08_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-011",
+      "run_id": "run-05",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-011_run-05_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-015",
+      "run_id": "run-03",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-015_run-03_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-015",
+      "run_id": "run-08",
+      "expected_seizures": 1,
+      "n_windows": 2,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-015_run-08_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-018",
+      "run_id": "run-03",
+      "expected_seizures": 1,
+      "n_windows": 30,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-018_run-03_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-021",
+      "run_id": "run-01",
+      "expected_seizures": 1,
+      "n_windows": 6,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-021_run-01_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-022",
+      "run_id": "run-10",
+      "expected_seizures": 1,
+      "n_windows": 7,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-022_run-10_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-025",
+      "run_id": "run-03",
+      "expected_seizures": 1,
+      "n_windows": 1,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-025_run-03_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-026",
+      "run_id": "run-01",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-026_run-01_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-026",
+      "run_id": "run-06",
+      "expected_seizures": 1,
+      "n_windows": 1,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-026_run-06_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-032",
+      "run_id": "run-05",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-032_run-05_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-033",
+      "run_id": "run-12",
+      "expected_seizures": 1,
+      "n_windows": 4,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-033_run-12_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-034",
+      "run_id": "run-01",
+      "expected_seizures": 1,
+      "n_windows": 2,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-034_run-01_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-034",
+      "run_id": "run-04",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-034_run-04_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-035",
+      "run_id": "run-12",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-035_run-12_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-038",
+      "run_id": "run-07",
+      "expected_seizures": 1,
+      "n_windows": 47,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-038_run-07_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-039",
+      "run_id": "run-03",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-039_run-03_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-039",
+      "run_id": "run-08",
+      "expected_seizures": 1,
+      "n_windows": 7,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-039_run-08_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-043",
+      "run_id": "run-06",
+      "expected_seizures": 1,
+      "n_windows": 2,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-043_run-06_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-045",
+      "run_id": "run-03",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-045_run-03_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-045",
+      "run_id": "run-09",
+      "expected_seizures": 1,
+      "n_windows": 1,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-045_run-09_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-047",
+      "run_id": "run-06",
+      "expected_seizures": 6,
+      "n_windows": 7,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-047_run-06_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-062",
+      "run_id": "run-01",
+      "expected_seizures": 1,
+      "n_windows": 18,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-062_run-01_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-073",
+      "run_id": "run-20",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-073_run-20_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-073",
+      "run_id": "run-54",
+      "expected_seizures": 1,
+      "n_windows": 10,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-073_run-54_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-076",
+      "run_id": "run-01",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-076_run-01_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-081",
+      "run_id": "run-05",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-081_run-05_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-081",
+      "run_id": "run-18",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-081_run-18_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-081",
+      "run_id": "run-45",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-081_run-45_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-083",
+      "run_id": "run-32",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-083_run-32_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-084",
+      "run_id": "run-05",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-084_run-05_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-084",
+      "run_id": "run-07",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-084_run-07_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-084",
+      "run_id": "run-09",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-084_run-09_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-084",
+      "run_id": "run-21",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-084_run-21_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-085",
+      "run_id": "run-34",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-085_run-34_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-085",
+      "run_id": "run-40",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-085_run-40_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-085",
+      "run_id": "run-42",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-085_run-42_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-086",
+      "run_id": "run-05",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-086_run-05_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-086",
+      "run_id": "run-29",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-086_run-29_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-086",
+      "run_id": "run-35",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-086_run-35_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-086",
+      "run_id": "run-49",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-086_run-49_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-087",
+      "run_id": "run-01",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-087_run-01_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-087",
+      "run_id": "run-02",
+      "expected_seizures": 2,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-087_run-02_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-087",
+      "run_id": "run-03",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-087_run-03_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-087",
+      "run_id": "run-04",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-087_run-04_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-087",
+      "run_id": "run-05",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-087_run-05_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-087",
+      "run_id": "run-06",
+      "expected_seizures": 3,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-087_run-06_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-087",
+      "run_id": "run-07",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-087_run-07_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-087",
+      "run_id": "run-08",
+      "expected_seizures": 2,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-087_run-08_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-087",
+      "run_id": "run-09",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-087_run-09_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-087",
+      "run_id": "run-10",
+      "expected_seizures": 2,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-087_run-10_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-087",
+      "run_id": "run-11",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-087_run-11_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-087",
+      "run_id": "run-12",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-087_run-12_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-087",
+      "run_id": "run-13",
+      "expected_seizures": 4,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-087_run-13_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-087",
+      "run_id": "run-15",
+      "expected_seizures": 2,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-087_run-15_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-087",
+      "run_id": "run-16",
+      "expected_seizures": 3,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-087_run-16_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-087",
+      "run_id": "run-17",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-087_run-17_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-087",
+      "run_id": "run-18",
+      "expected_seizures": 2,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-087_run-18_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-087",
+      "run_id": "run-20",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-087_run-20_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-087",
+      "run_id": "run-21",
+      "expected_seizures": 2,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-087_run-21_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-087",
+      "run_id": "run-22",
+      "expected_seizures": 2,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-087_run-22_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-087",
+      "run_id": "run-23",
+      "expected_seizures": 2,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-087_run-23_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-087",
+      "run_id": "run-24",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-087_run-24_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-088",
+      "run_id": "run-21",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-088_run-21_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-089",
+      "run_id": "run-105",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-089_run-105_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-089",
+      "run_id": "run-36",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-089_run-36_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-089",
+      "run_id": "run-57",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-089_run-57_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-089",
+      "run_id": "run-61",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-089_run-61_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-089",
+      "run_id": "run-80",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-089_run-80_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-090",
+      "run_id": "run-02",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-090_run-02_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-090",
+      "run_id": "run-03",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-090_run-03_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-090",
+      "run_id": "run-04",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-090_run-04_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-091",
+      "run_id": "run-01",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-091_run-01_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-091",
+      "run_id": "run-02",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-091_run-02_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-091",
+      "run_id": "run-03",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-091_run-03_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-091",
+      "run_id": "run-04",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-091_run-04_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-091",
+      "run_id": "run-05",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-091_run-05_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-092",
+      "run_id": "run-44",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-092_run-44_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-092",
+      "run_id": "run-50",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-092_run-50_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-092",
+      "run_id": "run-53",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-092_run-53_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-092",
+      "run_id": "run-68",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-092_run-68_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-092",
+      "run_id": "run-74",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-092_run-74_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-092",
+      "run_id": "run-79",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-092_run-79_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-093",
+      "run_id": "run-63",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-093_run-63_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-094",
+      "run_id": "run-08",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-094_run-08_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-094",
+      "run_id": "run-13",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-094_run-13_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-094",
+      "run_id": "run-26",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-094_run-26_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-095",
+      "run_id": "run-60",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-095_run-60_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-096",
+      "run_id": "run-30",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-096_run-30_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-101",
+      "run_id": "run-02",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-101_run-02_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-101",
+      "run_id": "run-07",
+      "expected_seizures": 1,
+      "n_windows": 1,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-101_run-07_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-101",
+      "run_id": "run-08",
+      "expected_seizures": 1,
+      "n_windows": 7,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-101_run-08_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-104",
+      "run_id": "run-07",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-104_run-07_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-107",
+      "run_id": "run-01",
+      "expected_seizures": 1,
+      "n_windows": 2,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-107_run-01_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-109",
+      "run_id": "run-08",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-109_run-08_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-114",
+      "run_id": "run-02",
+      "expected_seizures": 1,
+      "n_windows": 22,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-114_run-02_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-115",
+      "run_id": "run-49",
+      "expected_seizures": 1,
+      "n_windows": 10,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-115_run-49_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-116",
+      "run_id": "run-24",
+      "expected_seizures": 1,
+      "n_windows": 2,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-116_run-24_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-118",
+      "run_id": "run-03",
+      "expected_seizures": 1,
+      "n_windows": 7,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-118_run-03_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-120",
+      "run_id": "run-01",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-120_run-01_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-120",
+      "run_id": "run-02",
+      "expected_seizures": 5,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-120_run-02_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-120",
+      "run_id": "run-03",
+      "expected_seizures": 4,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-120_run-03_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-121",
+      "run_id": "run-62",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-121_run-62_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-121",
+      "run_id": "run-64",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-121_run-64_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-121",
+      "run_id": "run-66",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-121_run-66_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-121",
+      "run_id": "run-80",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-121_run-80_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-122",
+      "run_id": "run-01",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-122_run-01_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-122",
+      "run_id": "run-10",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-122_run-10_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-122",
+      "run_id": "run-24",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-122_run-24_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-122",
+      "run_id": "run-30",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-122_run-30_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-123",
+      "run_id": "run-50",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-123_run-50_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-123",
+      "run_id": "run-81",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-123_run-81_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-124",
+      "run_id": "run-47",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-124_run-47_preprocessed.pkl"
+    },
+    {
+      "subject_id": "sub-125",
+      "run_id": "run-37",
+      "expected_seizures": 1,
+      "n_windows": 0,
+      "n_seizure_windows": 0,
+      "pkl_file": "/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-125_run-37_preprocessed.pkl"
+    }
+  ],
+  "missing_runs_without_seizures": []
+}

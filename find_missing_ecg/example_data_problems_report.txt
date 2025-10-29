@@ -1,0 +1,561 @@
+================================================================================
+ECG DATA QUALITY PROBLEMS REPORT
+================================================================================
+Generated: 2025-10-14 16:27:02
+Dataset: ds005873-1.1.0_example
+
+SUMMARY
+--------------------------------------------------------------------------------
+Total problems found: 61
+  - CRITICAL: 61
+  - WARNING: 0
+
+Problems by type:
+  - Orphaned Event File: 55
+  - Saturated Signal: 6
+
+⚠️  CRITICAL: 17 problematic runs contain 27 annotated seizures!
+
+
+================================================================================
+DETAILED PROBLEM LISTING
+================================================================================
+
+PATIENT: sub-016
+--------------------------------------------------------------------------------
+  Run: run-02
+  Severity: CRITICAL
+  Problem Type: Orphaned Event File
+  Description: Event file exists but corresponding ECG file is missing
+  Event File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-016/ses-01/eeg/sub-016_ses-01_task-szMonitoring_run-02_events.tsv
+  Expected ECG File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-016/ses-01/ecg/sub-016_ses-01_task-szMonitoring_run-02_ecg.edf
+  ⚠️  Contains 1 annotated seizure(s) - DATA LOSS!
+
+PATIENT: sub-026
+--------------------------------------------------------------------------------
+  Run: run-08
+  Severity: CRITICAL
+  Problem Type: Orphaned Event File
+  Description: Event file exists but corresponding ECG file is missing
+  Event File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-026/ses-01/eeg/sub-026_ses-01_task-szMonitoring_run-08_events.tsv
+  Expected ECG File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-026/ses-01/ecg/sub-026_ses-01_task-szMonitoring_run-08_ecg.edf
+
+PATIENT: sub-027
+--------------------------------------------------------------------------------
+  Run: run-01
+  Severity: CRITICAL
+  Problem Type: Saturated Signal
+  Description: all 1 ECG channels are saturated
+  File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-027/ses-01/ecg/sub-027_ses-01_task-szMonitoring_run-01_ecg.edf
+  Duration: 71237.0 seconds
+  Channels Found: ECG SD
+  Sampling Rates: 256.0 Hz
+
+PATIENT: sub-035
+--------------------------------------------------------------------------------
+  Run: run-01
+  Severity: CRITICAL
+  Problem Type: Saturated Signal
+  Description: all 1 ECG channels are saturated
+  File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-035/ses-01/ecg/sub-035_ses-01_task-szMonitoring_run-01_ecg.edf
+  Duration: 9368.0 seconds
+  Channels Found: ECG SD
+  Sampling Rates: 256.0 Hz
+
+PATIENT: sub-042
+--------------------------------------------------------------------------------
+  Run: run-01
+  Severity: CRITICAL
+  Problem Type: Orphaned Event File
+  Description: Event file exists but corresponding ECG file is missing
+  Event File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-042/ses-01/eeg/sub-042_ses-01_task-szMonitoring_run-01_events.tsv
+  Expected ECG File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-042/ses-01/ecg/sub-042_ses-01_task-szMonitoring_run-01_ecg.edf
+  ⚠️  Contains 3 annotated seizure(s) - DATA LOSS!
+
+  Run: run-02
+  Severity: CRITICAL
+  Problem Type: Orphaned Event File
+  Description: Event file exists but corresponding ECG file is missing
+  Event File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-042/ses-01/eeg/sub-042_ses-01_task-szMonitoring_run-02_events.tsv
+  Expected ECG File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-042/ses-01/ecg/sub-042_ses-01_task-szMonitoring_run-02_ecg.edf
+
+  Run: run-06
+  Severity: CRITICAL
+  Problem Type: Orphaned Event File
+  Description: Event file exists but corresponding ECG file is missing
+  Event File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-042/ses-01/eeg/sub-042_ses-01_task-szMonitoring_run-06_events.tsv
+  Expected ECG File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-042/ses-01/ecg/sub-042_ses-01_task-szMonitoring_run-06_ecg.edf
+  ⚠️  Contains 1 annotated seizure(s) - DATA LOSS!
+
+  Run: run-07
+  Severity: CRITICAL
+  Problem Type: Orphaned Event File
+  Description: Event file exists but corresponding ECG file is missing
+  Event File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-042/ses-01/eeg/sub-042_ses-01_task-szMonitoring_run-07_events.tsv
+  Expected ECG File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-042/ses-01/ecg/sub-042_ses-01_task-szMonitoring_run-07_ecg.edf
+  ⚠️  Contains 2 annotated seizure(s) - DATA LOSS!
+
+PATIENT: sub-048
+--------------------------------------------------------------------------------
+  Run: run-05
+  Severity: CRITICAL
+  Problem Type: Orphaned Event File
+  Description: Event file exists but corresponding ECG file is missing
+  Event File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-048/ses-01/eeg/sub-048_ses-01_task-szMonitoring_run-05_events.tsv
+  Expected ECG File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-048/ses-01/ecg/sub-048_ses-01_task-szMonitoring_run-05_ecg.edf
+
+  Run: run-06
+  Severity: CRITICAL
+  Problem Type: Orphaned Event File
+  Description: Event file exists but corresponding ECG file is missing
+  Event File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-048/ses-01/eeg/sub-048_ses-01_task-szMonitoring_run-06_events.tsv
+  Expected ECG File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-048/ses-01/ecg/sub-048_ses-01_task-szMonitoring_run-06_ecg.edf
+  ⚠️  Contains 1 annotated seizure(s) - DATA LOSS!
+
+PATIENT: sub-049
+--------------------------------------------------------------------------------
+  Run: run-02
+  Severity: CRITICAL
+  Problem Type: Orphaned Event File
+  Description: Event file exists but corresponding ECG file is missing
+  Event File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-049/ses-01/eeg/sub-049_ses-01_task-szMonitoring_run-02_events.tsv
+  Expected ECG File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-049/ses-01/ecg/sub-049_ses-01_task-szMonitoring_run-02_ecg.edf
+  ⚠️  Contains 1 annotated seizure(s) - DATA LOSS!
+
+  Run: run-03
+  Severity: CRITICAL
+  Problem Type: Orphaned Event File
+  Description: Event file exists but corresponding ECG file is missing
+  Event File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-049/ses-01/eeg/sub-049_ses-01_task-szMonitoring_run-03_events.tsv
+  Expected ECG File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-049/ses-01/ecg/sub-049_ses-01_task-szMonitoring_run-03_ecg.edf
+
+  Run: run-04
+  Severity: CRITICAL
+  Problem Type: Orphaned Event File
+  Description: Event file exists but corresponding ECG file is missing
+  Event File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-049/ses-01/eeg/sub-049_ses-01_task-szMonitoring_run-04_events.tsv
+  Expected ECG File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-049/ses-01/ecg/sub-049_ses-01_task-szMonitoring_run-04_ecg.edf
+
+  Run: run-05
+  Severity: CRITICAL
+  Problem Type: Orphaned Event File
+  Description: Event file exists but corresponding ECG file is missing
+  Event File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-049/ses-01/eeg/sub-049_ses-01_task-szMonitoring_run-05_events.tsv
+  Expected ECG File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-049/ses-01/ecg/sub-049_ses-01_task-szMonitoring_run-05_ecg.edf
+
+  Run: run-06
+  Severity: CRITICAL
+  Problem Type: Orphaned Event File
+  Description: Event file exists but corresponding ECG file is missing
+  Event File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-049/ses-01/eeg/sub-049_ses-01_task-szMonitoring_run-06_events.tsv
+  Expected ECG File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-049/ses-01/ecg/sub-049_ses-01_task-szMonitoring_run-06_ecg.edf
+
+PATIENT: sub-054
+--------------------------------------------------------------------------------
+  Run: run-04
+  Severity: CRITICAL
+  Problem Type: Orphaned Event File
+  Description: Event file exists but corresponding ECG file is missing
+  Event File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-054/ses-01/eeg/sub-054_ses-01_task-szMonitoring_run-04_events.tsv
+  Expected ECG File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-054/ses-01/ecg/sub-054_ses-01_task-szMonitoring_run-04_ecg.edf
+  ⚠️  Contains 1 annotated seizure(s) - DATA LOSS!
+
+  Run: run-05
+  Severity: CRITICAL
+  Problem Type: Orphaned Event File
+  Description: Event file exists but corresponding ECG file is missing
+  Event File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-054/ses-01/eeg/sub-054_ses-01_task-szMonitoring_run-05_events.tsv
+  Expected ECG File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-054/ses-01/ecg/sub-054_ses-01_task-szMonitoring_run-05_ecg.edf
+
+PATIENT: sub-058
+--------------------------------------------------------------------------------
+  Run: run-02
+  Severity: CRITICAL
+  Problem Type: Orphaned Event File
+  Description: Event file exists but corresponding ECG file is missing
+  Event File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-058/ses-01/eeg/sub-058_ses-01_task-szMonitoring_run-02_events.tsv
+  Expected ECG File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-058/ses-01/ecg/sub-058_ses-01_task-szMonitoring_run-02_ecg.edf
+  ⚠️  Contains 1 annotated seizure(s) - DATA LOSS!
+
+PATIENT: sub-061
+--------------------------------------------------------------------------------
+  Run: run-01
+  Severity: CRITICAL
+  Problem Type: Orphaned Event File
+  Description: Event file exists but corresponding ECG file is missing
+  Event File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-061/ses-01/eeg/sub-061_ses-01_task-szMonitoring_run-01_events.tsv
+  Expected ECG File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-061/ses-01/ecg/sub-061_ses-01_task-szMonitoring_run-01_ecg.edf
+
+  Run: run-02
+  Severity: CRITICAL
+  Problem Type: Orphaned Event File
+  Description: Event file exists but corresponding ECG file is missing
+  Event File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-061/ses-01/eeg/sub-061_ses-01_task-szMonitoring_run-02_events.tsv
+  Expected ECG File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-061/ses-01/ecg/sub-061_ses-01_task-szMonitoring_run-02_ecg.edf
+
+PATIENT: sub-065
+--------------------------------------------------------------------------------
+  Run: run-01
+  Severity: CRITICAL
+  Problem Type: Orphaned Event File
+  Description: Event file exists but corresponding ECG file is missing
+  Event File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-065/ses-01/eeg/sub-065_ses-01_task-szMonitoring_run-01_events.tsv
+  Expected ECG File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-065/ses-01/ecg/sub-065_ses-01_task-szMonitoring_run-01_ecg.edf
+
+  Run: run-02
+  Severity: CRITICAL
+  Problem Type: Orphaned Event File
+  Description: Event file exists but corresponding ECG file is missing
+  Event File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-065/ses-01/eeg/sub-065_ses-01_task-szMonitoring_run-02_events.tsv
+  Expected ECG File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-065/ses-01/ecg/sub-065_ses-01_task-szMonitoring_run-02_ecg.edf
+
+  Run: run-03
+  Severity: CRITICAL
+  Problem Type: Orphaned Event File
+  Description: Event file exists but corresponding ECG file is missing
+  Event File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-065/ses-01/eeg/sub-065_ses-01_task-szMonitoring_run-03_events.tsv
+  Expected ECG File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-065/ses-01/ecg/sub-065_ses-01_task-szMonitoring_run-03_ecg.edf
+  ⚠️  Contains 1 annotated seizure(s) - DATA LOSS!
+
+PATIENT: sub-069
+--------------------------------------------------------------------------------
+  Run: run-10
+  Severity: CRITICAL
+  Problem Type: Orphaned Event File
+  Description: Event file exists but corresponding ECG file is missing
+  Event File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-069/ses-01/eeg/sub-069_ses-01_task-szMonitoring_run-10_events.tsv
+  Expected ECG File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-069/ses-01/ecg/sub-069_ses-01_task-szMonitoring_run-10_ecg.edf
+
+PATIENT: sub-071
+--------------------------------------------------------------------------------
+  Run: run-03
+  Severity: CRITICAL
+  Problem Type: Orphaned Event File
+  Description: Event file exists but corresponding ECG file is missing
+  Event File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-071/ses-01/eeg/sub-071_ses-01_task-szMonitoring_run-03_events.tsv
+  Expected ECG File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-071/ses-01/ecg/sub-071_ses-01_task-szMonitoring_run-03_ecg.edf
+
+  Run: run-15
+  Severity: CRITICAL
+  Problem Type: Orphaned Event File
+  Description: Event file exists but corresponding ECG file is missing
+  Event File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-071/ses-01/eeg/sub-071_ses-01_task-szMonitoring_run-15_events.tsv
+  Expected ECG File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-071/ses-01/ecg/sub-071_ses-01_task-szMonitoring_run-15_ecg.edf
+
+PATIENT: sub-073
+--------------------------------------------------------------------------------
+  Run: run-21
+  Severity: CRITICAL
+  Problem Type: Orphaned Event File
+  Description: Event file exists but corresponding ECG file is missing
+  Event File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-073/ses-01/eeg/sub-073_ses-01_task-szMonitoring_run-21_events.tsv
+  Expected ECG File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-073/ses-01/ecg/sub-073_ses-01_task-szMonitoring_run-21_ecg.edf
+
+PATIENT: sub-075
+--------------------------------------------------------------------------------
+  Run: run-27
+  Severity: CRITICAL
+  Problem Type: Orphaned Event File
+  Description: Event file exists but corresponding ECG file is missing
+  Event File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-075/ses-01/eeg/sub-075_ses-01_task-szMonitoring_run-27_events.tsv
+  Expected ECG File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-075/ses-01/ecg/sub-075_ses-01_task-szMonitoring_run-27_ecg.edf
+
+  Run: run-43
+  Severity: CRITICAL
+  Problem Type: Saturated Signal
+  Description: all 1 ECG channels are saturated
+  File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-075/ses-01/ecg/sub-075_ses-01_task-szMonitoring_run-43_ecg.edf
+  Duration: 6626.0 seconds
+  Channels Found: ECG SD
+  Sampling Rates: 256.0 Hz
+
+PATIENT: sub-076
+--------------------------------------------------------------------------------
+  Run: run-22
+  Severity: CRITICAL
+  Problem Type: Orphaned Event File
+  Description: Event file exists but corresponding ECG file is missing
+  Event File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-076/ses-01/eeg/sub-076_ses-01_task-szMonitoring_run-22_events.tsv
+  Expected ECG File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-076/ses-01/ecg/sub-076_ses-01_task-szMonitoring_run-22_ecg.edf
+
+PATIENT: sub-080
+--------------------------------------------------------------------------------
+  Run: run-23
+  Severity: CRITICAL
+  Problem Type: Orphaned Event File
+  Description: Event file exists but corresponding ECG file is missing
+  Event File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-080/ses-01/eeg/sub-080_ses-01_task-szMonitoring_run-23_events.tsv
+  Expected ECG File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-080/ses-01/ecg/sub-080_ses-01_task-szMonitoring_run-23_ecg.edf
+
+PATIENT: sub-093
+--------------------------------------------------------------------------------
+  Run: run-78
+  Severity: CRITICAL
+  Problem Type: Orphaned Event File
+  Description: Event file exists but corresponding ECG file is missing
+  Event File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-093/ses-01/eeg/sub-093_ses-01_task-szMonitoring_run-78_events.tsv
+  Expected ECG File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-093/ses-01/ecg/sub-093_ses-01_task-szMonitoring_run-78_ecg.edf
+
+PATIENT: sub-096
+--------------------------------------------------------------------------------
+  Run: run-67
+  Severity: CRITICAL
+  Problem Type: Orphaned Event File
+  Description: Event file exists but corresponding ECG file is missing
+  Event File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-096/ses-01/eeg/sub-096_ses-01_task-szMonitoring_run-67_events.tsv
+  Expected ECG File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-096/ses-01/ecg/sub-096_ses-01_task-szMonitoring_run-67_ecg.edf
+
+PATIENT: sub-097
+--------------------------------------------------------------------------------
+  Run: run-01
+  Severity: CRITICAL
+  Problem Type: Orphaned Event File
+  Description: Event file exists but corresponding ECG file is missing
+  Event File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-097/ses-01/eeg/sub-097_ses-01_task-szMonitoring_run-01_events.tsv
+  Expected ECG File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-097/ses-01/ecg/sub-097_ses-01_task-szMonitoring_run-01_ecg.edf
+
+  Run: run-02
+  Severity: CRITICAL
+  Problem Type: Orphaned Event File
+  Description: Event file exists but corresponding ECG file is missing
+  Event File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-097/ses-01/eeg/sub-097_ses-01_task-szMonitoring_run-02_events.tsv
+  Expected ECG File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-097/ses-01/ecg/sub-097_ses-01_task-szMonitoring_run-02_ecg.edf
+  ⚠️  Contains 1 annotated seizure(s) - DATA LOSS!
+
+  Run: run-03
+  Severity: CRITICAL
+  Problem Type: Orphaned Event File
+  Description: Event file exists but corresponding ECG file is missing
+  Event File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-097/ses-01/eeg/sub-097_ses-01_task-szMonitoring_run-03_events.tsv
+  Expected ECG File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-097/ses-01/ecg/sub-097_ses-01_task-szMonitoring_run-03_ecg.edf
+
+  Run: run-04
+  Severity: CRITICAL
+  Problem Type: Orphaned Event File
+  Description: Event file exists but corresponding ECG file is missing
+  Event File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-097/ses-01/eeg/sub-097_ses-01_task-szMonitoring_run-04_events.tsv
+  Expected ECG File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-097/ses-01/ecg/sub-097_ses-01_task-szMonitoring_run-04_ecg.edf
+  ⚠️  Contains 3 annotated seizure(s) - DATA LOSS!
+
+  Run: run-05
+  Severity: CRITICAL
+  Problem Type: Orphaned Event File
+  Description: Event file exists but corresponding ECG file is missing
+  Event File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-097/ses-01/eeg/sub-097_ses-01_task-szMonitoring_run-05_events.tsv
+  Expected ECG File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-097/ses-01/ecg/sub-097_ses-01_task-szMonitoring_run-05_ecg.edf
+  ⚠️  Contains 1 annotated seizure(s) - DATA LOSS!
+
+  Run: run-06
+  Severity: CRITICAL
+  Problem Type: Orphaned Event File
+  Description: Event file exists but corresponding ECG file is missing
+  Event File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-097/ses-01/eeg/sub-097_ses-01_task-szMonitoring_run-06_events.tsv
+  Expected ECG File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-097/ses-01/ecg/sub-097_ses-01_task-szMonitoring_run-06_ecg.edf
+
+  Run: run-07
+  Severity: CRITICAL
+  Problem Type: Orphaned Event File
+  Description: Event file exists but corresponding ECG file is missing
+  Event File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-097/ses-01/eeg/sub-097_ses-01_task-szMonitoring_run-07_events.tsv
+  Expected ECG File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-097/ses-01/ecg/sub-097_ses-01_task-szMonitoring_run-07_ecg.edf
+  ⚠️  Contains 6 annotated seizure(s) - DATA LOSS!
+
+  Run: run-08
+  Severity: CRITICAL
+  Problem Type: Orphaned Event File
+  Description: Event file exists but corresponding ECG file is missing
+  Event File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-097/ses-01/eeg/sub-097_ses-01_task-szMonitoring_run-08_events.tsv
+  Expected ECG File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-097/ses-01/ecg/sub-097_ses-01_task-szMonitoring_run-08_ecg.edf
+
+  Run: run-09
+  Severity: CRITICAL
+  Problem Type: Orphaned Event File
+  Description: Event file exists but corresponding ECG file is missing
+  Event File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-097/ses-01/eeg/sub-097_ses-01_task-szMonitoring_run-09_events.tsv
+  Expected ECG File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-097/ses-01/ecg/sub-097_ses-01_task-szMonitoring_run-09_ecg.edf
+  ⚠️  Contains 1 annotated seizure(s) - DATA LOSS!
+
+  Run: run-10
+  Severity: CRITICAL
+  Problem Type: Orphaned Event File
+  Description: Event file exists but corresponding ECG file is missing
+  Event File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-097/ses-01/eeg/sub-097_ses-01_task-szMonitoring_run-10_events.tsv
+  Expected ECG File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-097/ses-01/ecg/sub-097_ses-01_task-szMonitoring_run-10_ecg.edf
+  ⚠️  Contains 1 annotated seizure(s) - DATA LOSS!
+
+  Run: run-11
+  Severity: CRITICAL
+  Problem Type: Orphaned Event File
+  Description: Event file exists but corresponding ECG file is missing
+  Event File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-097/ses-01/eeg/sub-097_ses-01_task-szMonitoring_run-11_events.tsv
+  Expected ECG File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-097/ses-01/ecg/sub-097_ses-01_task-szMonitoring_run-11_ecg.edf
+
+PATIENT: sub-099
+--------------------------------------------------------------------------------
+  Run: run-02
+  Severity: CRITICAL
+  Problem Type: Orphaned Event File
+  Description: Event file exists but corresponding ECG file is missing
+  Event File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-099/ses-01/eeg/sub-099_ses-01_task-szMonitoring_run-02_events.tsv
+  Expected ECG File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-099/ses-01/ecg/sub-099_ses-01_task-szMonitoring_run-02_ecg.edf
+  ⚠️  Contains 1 annotated seizure(s) - DATA LOSS!
+
+PATIENT: sub-100
+--------------------------------------------------------------------------------
+  Run: run-10
+  Severity: CRITICAL
+  Problem Type: Orphaned Event File
+  Description: Event file exists but corresponding ECG file is missing
+  Event File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-100/ses-01/eeg/sub-100_ses-01_task-szMonitoring_run-10_events.tsv
+  Expected ECG File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-100/ses-01/ecg/sub-100_ses-01_task-szMonitoring_run-10_ecg.edf
+
+PATIENT: sub-105
+--------------------------------------------------------------------------------
+  Run: run-04
+  Severity: CRITICAL
+  Problem Type: Orphaned Event File
+  Description: Event file exists but corresponding ECG file is missing
+  Event File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-105/ses-01/eeg/sub-105_ses-01_task-szMonitoring_run-04_events.tsv
+  Expected ECG File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-105/ses-01/ecg/sub-105_ses-01_task-szMonitoring_run-04_ecg.edf
+
+  Run: run-05
+  Severity: CRITICAL
+  Problem Type: Saturated Signal
+  Description: all 1 ECG channels are saturated
+  File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-105/ses-01/ecg/sub-105_ses-01_task-szMonitoring_run-05_ecg.edf
+  Duration: 72176.0 seconds
+  Channels Found: ECG SD
+  Sampling Rates: 256.0 Hz
+
+PATIENT: sub-109
+--------------------------------------------------------------------------------
+  Run: run-01
+  Severity: CRITICAL
+  Problem Type: Saturated Signal
+  Description: all 1 ECG channels are saturated
+  File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-109/ses-01/ecg/sub-109_ses-01_task-szMonitoring_run-01_ecg.edf
+  Duration: 71167.0 seconds
+  Channels Found: ECG SD
+  Sampling Rates: 256.0 Hz
+
+PATIENT: sub-114
+--------------------------------------------------------------------------------
+  Run: run-04
+  Severity: CRITICAL
+  Problem Type: Orphaned Event File
+  Description: Event file exists but corresponding ECG file is missing
+  Event File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-114/ses-01/eeg/sub-114_ses-01_task-szMonitoring_run-04_events.tsv
+  Expected ECG File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-114/ses-01/ecg/sub-114_ses-01_task-szMonitoring_run-04_ecg.edf
+
+  Run: run-05
+  Severity: CRITICAL
+  Problem Type: Orphaned Event File
+  Description: Event file exists but corresponding ECG file is missing
+  Event File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-114/ses-01/eeg/sub-114_ses-01_task-szMonitoring_run-05_events.tsv
+  Expected ECG File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-114/ses-01/ecg/sub-114_ses-01_task-szMonitoring_run-05_ecg.edf
+
+  Run: run-12
+  Severity: CRITICAL
+  Problem Type: Orphaned Event File
+  Description: Event file exists but corresponding ECG file is missing
+  Event File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-114/ses-01/eeg/sub-114_ses-01_task-szMonitoring_run-12_events.tsv
+  Expected ECG File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-114/ses-01/ecg/sub-114_ses-01_task-szMonitoring_run-12_ecg.edf
+
+  Run: run-13
+  Severity: CRITICAL
+  Problem Type: Orphaned Event File
+  Description: Event file exists but corresponding ECG file is missing
+  Event File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-114/ses-01/eeg/sub-114_ses-01_task-szMonitoring_run-13_events.tsv
+  Expected ECG File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-114/ses-01/ecg/sub-114_ses-01_task-szMonitoring_run-13_ecg.edf
+
+  Run: run-14
+  Severity: CRITICAL
+  Problem Type: Orphaned Event File
+  Description: Event file exists but corresponding ECG file is missing
+  Event File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-114/ses-01/eeg/sub-114_ses-01_task-szMonitoring_run-14_events.tsv
+  Expected ECG File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-114/ses-01/ecg/sub-114_ses-01_task-szMonitoring_run-14_ecg.edf
+
+  Run: run-15
+  Severity: CRITICAL
+  Problem Type: Orphaned Event File
+  Description: Event file exists but corresponding ECG file is missing
+  Event File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-114/ses-01/eeg/sub-114_ses-01_task-szMonitoring_run-15_events.tsv
+  Expected ECG File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-114/ses-01/ecg/sub-114_ses-01_task-szMonitoring_run-15_ecg.edf
+
+  Run: run-16
+  Severity: CRITICAL
+  Problem Type: Orphaned Event File
+  Description: Event file exists but corresponding ECG file is missing
+  Event File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-114/ses-01/eeg/sub-114_ses-01_task-szMonitoring_run-16_events.tsv
+  Expected ECG File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-114/ses-01/ecg/sub-114_ses-01_task-szMonitoring_run-16_ecg.edf
+
+PATIENT: sub-115
+--------------------------------------------------------------------------------
+  Run: run-12
+  Severity: CRITICAL
+  Problem Type: Orphaned Event File
+  Description: Event file exists but corresponding ECG file is missing
+  Event File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-115/ses-01/eeg/sub-115_ses-01_task-szMonitoring_run-12_events.tsv
+  Expected ECG File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-115/ses-01/ecg/sub-115_ses-01_task-szMonitoring_run-12_ecg.edf
+  ⚠️  Contains 1 annotated seizure(s) - DATA LOSS!
+
+  Run: run-32
+  Severity: CRITICAL
+  Problem Type: Saturated Signal
+  Description: all 1 ECG channels are saturated
+  File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-115/ses-01/ecg/sub-115_ses-01_task-szMonitoring_run-32_ecg.edf
+  Duration: 19459.0 seconds
+  Channels Found: ECG SD
+  Sampling Rates: 256.0 Hz
+
+PATIENT: sub-117
+--------------------------------------------------------------------------------
+  Run: run-16
+  Severity: CRITICAL
+  Problem Type: Orphaned Event File
+  Description: Event file exists but corresponding ECG file is missing
+  Event File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-117/ses-01/eeg/sub-117_ses-01_task-szMonitoring_run-16_events.tsv
+  Expected ECG File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-117/ses-01/ecg/sub-117_ses-01_task-szMonitoring_run-16_ecg.edf
+
+PATIENT: sub-124
+--------------------------------------------------------------------------------
+  Run: run-56
+  Severity: CRITICAL
+  Problem Type: Orphaned Event File
+  Description: Event file exists but corresponding ECG file is missing
+  Event File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-124/ses-01/eeg/sub-124_ses-01_task-szMonitoring_run-56_events.tsv
+  Expected ECG File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-124/ses-01/ecg/sub-124_ses-01_task-szMonitoring_run-56_ecg.edf
+
+PATIENT: sub-125
+--------------------------------------------------------------------------------
+  Run: run-13
+  Severity: CRITICAL
+  Problem Type: Orphaned Event File
+  Description: Event file exists but corresponding ECG file is missing
+  Event File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-125/ses-01/eeg/sub-125_ses-01_task-szMonitoring_run-13_events.tsv
+  Expected ECG File: /home/swolf/asim_shared/raw_data/ds005873-1.1.0/sub-125/ses-01/ecg/sub-125_ses-01_task-szMonitoring_run-13_ecg.edf
+
+
+================================================================================
+RECOMMENDATIONS
+================================================================================
+
+1. CRITICAL ISSUES FOUND:
+   - Review files with missing or corrupted ECG data
+   - Consider re-downloading or re-processing affected files
+   - URGENT: 17 runs with seizures are unusable!
+
+2. ORPHANED EVENT FILES (55 files):
+   - Event files exist but corresponding ECG files are missing
+   - Check if ECG files were not recorded or lost during transfer
+   - Verify file naming conventions match between EEG and ECG directories
+   - ⚠️  CRITICAL: 17 orphaned files contain seizure annotations!
+
+5. SATURATED SIGNALS (6 files):
+   - Check recording equipment calibration
+   - May indicate amplifier saturation or disconnected electrodes
+
+
+================================================================================
+END OF REPORT
+================================================================================

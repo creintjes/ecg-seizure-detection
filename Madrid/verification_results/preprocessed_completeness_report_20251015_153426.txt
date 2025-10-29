@@ -1,0 +1,763 @@
+================================================================================
+PREPROCESSED DATA COMPLETENESS VERIFICATION REPORT
+================================================================================
+Generated: 2025-10-15 15:34:26
+
+OVERVIEW
+--------------------------------------------------------------------------------
+Total runs in raw data:              2795
+Total runs in preprocessed data:     2795
+Runs present in both:                2795
+Runs missing in preprocessed:        0
+Extra runs in preprocessed:          0
+
+Completeness: 100.0%
+
+SEIZURE ANALYSIS
+--------------------------------------------------------------------------------
+Missing runs WITH seizures:          0
+Missing runs WITHOUT seizures:       0
+Total seizures in missing runs:      0
+
+Common runs with seizures:           378
+Total seizures in common runs:       856
+
+Present runs missing seizure data:   117
+Seizures lost in present runs:       144
+
+Expected total seizures (raw data):  856
+Total lost seizures:                 144
+  - From missing runs:               0
+  - From present runs (no data):     144
+Seizure loss percentage:             16.8%
+
+CRITICAL ISSUES
+--------------------------------------------------------------------------------
+
+⚠️  117 runs exist but have NO seizure data!
+⚠️  These runs should contain 144 seizures!
+⚠️  Possible causes:
+     - Preprocessing failed to label seizure windows
+     - Seizure annotations not properly transferred
+     - Windows don't overlap with seizure events
+
+TOTAL SEIZURE LOSS: 144 seizures (16.8%)
+This explains the discrepancy between expected (856) and actual (794) seizures.
+
+
+PRESENT RUNS WITH MISSING SEIZURE DATA (DETAILED)
+--------------------------------------------------------------------------------
+These runs exist in preprocessed data but contain NO seizure windows,
+even though the raw data has seizure annotations!
+
+
+sub-005:
+  run-22:
+    Expected seizures (raw): 1
+    Total windows: 2
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-005_run-22_preprocessed.pkl
+
+sub-008:
+  run-01:
+    Expected seizures (raw): 1
+    Total windows: 4
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-008_run-01_preprocessed.pkl
+  run-09:
+    Expected seizures (raw): 1
+    Total windows: 1
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-008_run-09_preprocessed.pkl
+
+sub-010:
+  run-08:
+    Expected seizures (raw): 1
+    Total windows: 6
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-010_run-08_preprocessed.pkl
+
+sub-011:
+  run-05:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-011_run-05_preprocessed.pkl
+
+sub-015:
+  run-03:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-015_run-03_preprocessed.pkl
+  run-08:
+    Expected seizures (raw): 1
+    Total windows: 2
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-015_run-08_preprocessed.pkl
+
+sub-018:
+  run-03:
+    Expected seizures (raw): 1
+    Total windows: 30
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-018_run-03_preprocessed.pkl
+
+sub-021:
+  run-01:
+    Expected seizures (raw): 1
+    Total windows: 6
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-021_run-01_preprocessed.pkl
+
+sub-022:
+  run-10:
+    Expected seizures (raw): 1
+    Total windows: 7
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-022_run-10_preprocessed.pkl
+
+sub-025:
+  run-03:
+    Expected seizures (raw): 1
+    Total windows: 1
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-025_run-03_preprocessed.pkl
+
+sub-026:
+  run-01:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-026_run-01_preprocessed.pkl
+  run-06:
+    Expected seizures (raw): 1
+    Total windows: 1
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-026_run-06_preprocessed.pkl
+
+sub-032:
+  run-05:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-032_run-05_preprocessed.pkl
+
+sub-033:
+  run-12:
+    Expected seizures (raw): 1
+    Total windows: 4
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-033_run-12_preprocessed.pkl
+
+sub-034:
+  run-01:
+    Expected seizures (raw): 1
+    Total windows: 2
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-034_run-01_preprocessed.pkl
+  run-04:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-034_run-04_preprocessed.pkl
+
+sub-035:
+  run-12:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-035_run-12_preprocessed.pkl
+
+sub-038:
+  run-07:
+    Expected seizures (raw): 1
+    Total windows: 47
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-038_run-07_preprocessed.pkl
+
+sub-039:
+  run-03:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-039_run-03_preprocessed.pkl
+  run-08:
+    Expected seizures (raw): 1
+    Total windows: 7
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-039_run-08_preprocessed.pkl
+
+sub-043:
+  run-06:
+    Expected seizures (raw): 1
+    Total windows: 2
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-043_run-06_preprocessed.pkl
+
+sub-045:
+  run-03:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-045_run-03_preprocessed.pkl
+  run-09:
+    Expected seizures (raw): 1
+    Total windows: 1
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-045_run-09_preprocessed.pkl
+
+sub-047:
+  run-06:
+    Expected seizures (raw): 6
+    Total windows: 7
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-047_run-06_preprocessed.pkl
+
+sub-062:
+  run-01:
+    Expected seizures (raw): 1
+    Total windows: 18
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-062_run-01_preprocessed.pkl
+
+sub-073:
+  run-20:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-073_run-20_preprocessed.pkl
+  run-54:
+    Expected seizures (raw): 1
+    Total windows: 10
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-073_run-54_preprocessed.pkl
+
+sub-076:
+  run-01:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-076_run-01_preprocessed.pkl
+
+sub-081:
+  run-05:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-081_run-05_preprocessed.pkl
+  run-18:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-081_run-18_preprocessed.pkl
+  run-45:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-081_run-45_preprocessed.pkl
+
+sub-083:
+  run-32:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-083_run-32_preprocessed.pkl
+
+sub-084:
+  run-05:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-084_run-05_preprocessed.pkl
+  run-07:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-084_run-07_preprocessed.pkl
+  run-09:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-084_run-09_preprocessed.pkl
+  run-21:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-084_run-21_preprocessed.pkl
+
+sub-085:
+  run-34:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-085_run-34_preprocessed.pkl
+  run-40:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-085_run-40_preprocessed.pkl
+  run-42:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-085_run-42_preprocessed.pkl
+
+sub-086:
+  run-05:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-086_run-05_preprocessed.pkl
+  run-29:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-086_run-29_preprocessed.pkl
+  run-35:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-086_run-35_preprocessed.pkl
+  run-49:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-086_run-49_preprocessed.pkl
+
+sub-087:
+  run-01:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-087_run-01_preprocessed.pkl
+  run-02:
+    Expected seizures (raw): 2
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-087_run-02_preprocessed.pkl
+  run-03:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-087_run-03_preprocessed.pkl
+  run-04:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-087_run-04_preprocessed.pkl
+  run-05:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-087_run-05_preprocessed.pkl
+  run-06:
+    Expected seizures (raw): 3
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-087_run-06_preprocessed.pkl
+  run-07:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-087_run-07_preprocessed.pkl
+  run-08:
+    Expected seizures (raw): 2
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-087_run-08_preprocessed.pkl
+  run-09:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-087_run-09_preprocessed.pkl
+  run-10:
+    Expected seizures (raw): 2
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-087_run-10_preprocessed.pkl
+  run-11:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-087_run-11_preprocessed.pkl
+  run-12:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-087_run-12_preprocessed.pkl
+  run-13:
+    Expected seizures (raw): 4
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-087_run-13_preprocessed.pkl
+  run-15:
+    Expected seizures (raw): 2
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-087_run-15_preprocessed.pkl
+  run-16:
+    Expected seizures (raw): 3
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-087_run-16_preprocessed.pkl
+  run-17:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-087_run-17_preprocessed.pkl
+  run-18:
+    Expected seizures (raw): 2
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-087_run-18_preprocessed.pkl
+  run-20:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-087_run-20_preprocessed.pkl
+  run-21:
+    Expected seizures (raw): 2
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-087_run-21_preprocessed.pkl
+  run-22:
+    Expected seizures (raw): 2
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-087_run-22_preprocessed.pkl
+  run-23:
+    Expected seizures (raw): 2
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-087_run-23_preprocessed.pkl
+  run-24:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-087_run-24_preprocessed.pkl
+
+sub-088:
+  run-21:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-088_run-21_preprocessed.pkl
+
+sub-089:
+  run-105:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-089_run-105_preprocessed.pkl
+  run-36:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-089_run-36_preprocessed.pkl
+  run-57:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-089_run-57_preprocessed.pkl
+  run-61:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-089_run-61_preprocessed.pkl
+  run-80:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-089_run-80_preprocessed.pkl
+
+sub-090:
+  run-02:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-090_run-02_preprocessed.pkl
+  run-03:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-090_run-03_preprocessed.pkl
+  run-04:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-090_run-04_preprocessed.pkl
+
+sub-091:
+  run-01:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-091_run-01_preprocessed.pkl
+  run-02:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-091_run-02_preprocessed.pkl
+  run-03:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-091_run-03_preprocessed.pkl
+  run-04:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-091_run-04_preprocessed.pkl
+  run-05:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-091_run-05_preprocessed.pkl
+
+sub-092:
+  run-44:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-092_run-44_preprocessed.pkl
+  run-50:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-092_run-50_preprocessed.pkl
+  run-53:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-092_run-53_preprocessed.pkl
+  run-68:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-092_run-68_preprocessed.pkl
+  run-74:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-092_run-74_preprocessed.pkl
+  run-79:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-092_run-79_preprocessed.pkl
+
+sub-093:
+  run-63:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-093_run-63_preprocessed.pkl
+
+sub-094:
+  run-08:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-094_run-08_preprocessed.pkl
+  run-13:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-094_run-13_preprocessed.pkl
+  run-26:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-094_run-26_preprocessed.pkl
+
+sub-095:
+  run-60:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-095_run-60_preprocessed.pkl
+
+sub-096:
+  run-30:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-096_run-30_preprocessed.pkl
+
+sub-101:
+  run-02:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-101_run-02_preprocessed.pkl
+  run-07:
+    Expected seizures (raw): 1
+    Total windows: 1
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-101_run-07_preprocessed.pkl
+  run-08:
+    Expected seizures (raw): 1
+    Total windows: 7
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-101_run-08_preprocessed.pkl
+
+sub-104:
+  run-07:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-104_run-07_preprocessed.pkl
+
+sub-107:
+  run-01:
+    Expected seizures (raw): 1
+    Total windows: 2
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-107_run-01_preprocessed.pkl
+
+sub-109:
+  run-08:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-109_run-08_preprocessed.pkl
+
+sub-114:
+  run-02:
+    Expected seizures (raw): 1
+    Total windows: 22
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-114_run-02_preprocessed.pkl
+
+sub-115:
+  run-49:
+    Expected seizures (raw): 1
+    Total windows: 10
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-115_run-49_preprocessed.pkl
+
+sub-116:
+  run-24:
+    Expected seizures (raw): 1
+    Total windows: 2
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-116_run-24_preprocessed.pkl
+
+sub-118:
+  run-03:
+    Expected seizures (raw): 1
+    Total windows: 7
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-118_run-03_preprocessed.pkl
+
+sub-120:
+  run-01:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-120_run-01_preprocessed.pkl
+  run-02:
+    Expected seizures (raw): 5
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-120_run-02_preprocessed.pkl
+  run-03:
+    Expected seizures (raw): 4
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-120_run-03_preprocessed.pkl
+
+sub-121:
+  run-62:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-121_run-62_preprocessed.pkl
+  run-64:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-121_run-64_preprocessed.pkl
+  run-66:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-121_run-66_preprocessed.pkl
+  run-80:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-121_run-80_preprocessed.pkl
+
+sub-122:
+  run-01:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-122_run-01_preprocessed.pkl
+  run-10:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-122_run-10_preprocessed.pkl
+  run-24:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-122_run-24_preprocessed.pkl
+  run-30:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-122_run-30_preprocessed.pkl
+
+sub-123:
+  run-50:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-123_run-50_preprocessed.pkl
+  run-81:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-123_run-81_preprocessed.pkl
+
+sub-124:
+  run-47:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-124_run-47_preprocessed.pkl
+
+sub-125:
+  run-37:
+    Expected seizures (raw): 1
+    Total windows: 0
+    Seizure windows: 0
+    pkl file: /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new/sub-125_run-37_preprocessed.pkl
+
+RECOMMENDATIONS
+--------------------------------------------------------------------------------
+3. CRITICAL: Runs exist but have no seizure data!
+   - 117 runs should contain seizures but don't
+   - 144 seizures are missing from these runs
+   - Possible solutions:
+     * Re-run preprocessing with correct annotation transfer
+     * Check if window size/stride causes seizures to be missed
+     * Verify enhance_with_sample_level_labels() function
+
+4. Check failed_recordings_preprocessing_SeizeIT2_ECG.csv
+   - This file should list any runs that failed during preprocessing
+
+5. Total seizure accounting:
+   - Expected from raw data: 856
+   - Lost from missing runs: 0
+   - Lost from present runs: 144
+   - Total loss: 144 (16.8%)
+
+
+================================================================================
+END OF REPORT
+================================================================================

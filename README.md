@@ -8,9 +8,11 @@ Epileptic seizures can cause serious medical and psychosocial consequences. Whil
 
 In this project, we evaluate the performance of three modern anomaly detection algorithms on ECG data for the purpose of seizure detection:
 
-- **MERLIN++**
+- **Madrid**
 - **TimeVQVAE-AD**
 - **Matrix Profile**
+
+Each folder contains a dedicated README file with instructions.
 
 We aim to identify approaches that achieve a favorable balance between **sensitivity** and **false alarm rate** (FAR), using the [SeizeIT2 dataset](https://doi.org/10.48550/arXiv.2502.01224).
 
@@ -28,20 +30,23 @@ We follow a structured analysis approach based on the **CRISP-DM** model. Key st
   Includes heart rate (HR), heart rate variability (HRV)-based features, and Cardiac Sympathetic Index (CSI)  
 - **Model Implementation**  
   Evaluation of three anomaly detection algorithms (MERLIN++, TimeVQVAE-AD, Matrix Profile)  
-- **Baseline**  
-  A 1-class SVM is used for comparison  
 - **Tracking & Evaluation**  
   Using [Weights & Biases](https://wandb.ai/) for experiment tracking  
-  Metrics: Sensitivity, FAR, AUC, Specificity, PPV  
+  Metrics: Sensitivity, FAR, Challenge Score  
 
 ## 📁 Project Structure
 
 - `ecg-seizure-detection/`
+  - `MatrixProfile/` – All code used for the MatrixProfile experiments
+  - `Madrid/` – All code used for the Madrid experiments
+  - `TimeVQVAE-AD/` – All code used for the TimeVQVAE-AD experiments
+  - `jeppesen_seizeit2/` – All code used for the jeppesen implementation experiments
   - `data/` – Data loaders and preprocessed ECG files
   - `notebooks/` – Jupyter notebooks for exploration and prototyping
+  - `sandbox/` – Jupyter notebooks for exploration and prototyping
   - `models/` – Implementation of MERLIN++, TimeVQVAE-AD, etc.
   - `scripts/` – Scripts for training, evaluation, and metrics
-  - `results/` – Evaluation outputs and plots
+  - `results/` – Evaluation outputs and plots. For MP results check `MatrixProfile/`
   - `README.md` – Project overview and instructions
   - `requirements.txt` – Python dependencies
 

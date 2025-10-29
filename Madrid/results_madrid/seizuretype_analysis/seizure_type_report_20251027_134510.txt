@@ -1,0 +1,135 @@
+================================================================================
+SEIZURE TYPE DETECTION ANALYSIS REPORT
+Clustering Strategy: time_180s
+Detection Strategy: threshold=0.01
+Extended Window: -5.0 min to +3.0 min
+================================================================================
+
+TOP PERFORMING SEIZURE TYPES (by Sensitivity):
+----------------------------------------
+
+sz_gen_nm_typical:
+  Sensitivity: 0.7857 (78.57%)
+  Detected: 11/14 seizures
+  Precision: 0.1846
+  False Alarms/Hour: 2.9103
+  Anomaly Reduction: 94.6%
+  Patients: 1
+
+sz_foc_ia_nm:
+  Sensitivity: 0.7778 (77.78%)
+  Detected: 7/9 seizures
+  Precision: 0.1400
+  False Alarms/Hour: 3.0932
+  Anomaly Reduction: 94.1%
+  Patients: 1
+
+sz_foc_a_m_automatisms:
+  Sensitivity: 0.7439 (74.39%)
+  Detected: 61/82 seizures
+  Precision: 0.1366
+  False Alarms/Hour: 3.2747
+  Anomaly Reduction: 94.3%
+  Patients: 1
+
+sz_gen_m_tonicClonic:
+  Sensitivity: 0.7143 (71.43%)
+  Detected: 55/77 seizures
+  Precision: 0.1405
+  False Alarms/Hour: 4.0229
+  Anomaly Reduction: 92.1%
+  Patients: 1
+
+sz_foc_a_m:
+  Sensitivity: 0.6769 (67.69%)
+  Detected: 132/195 seizures
+  Precision: 0.0332
+  False Alarms/Hour: 4.4069
+  Anomaly Reduction: 93.0%
+  Patients: 37
+
+sz_gen_m:
+  Sensitivity: 0.6633 (66.33%)
+  Detected: 65/98 seizures
+  Precision: 0.1610
+  False Alarms/Hour: 3.0834
+  Anomaly Reduction: 93.0%
+  Patients: 18
+
+sz_gen_nm:
+  Sensitivity: 0.6376 (63.76%)
+  Detected: 95/149 seizures
+  Precision: 0.0360
+  False Alarms/Hour: 4.3641
+  Anomaly Reduction: 92.6%
+  Patients: 25
+
+sz_foc_ia_m:
+  Sensitivity: 0.5870 (58.70%)
+  Detected: 145/247 seizures
+  Precision: 0.0415
+  False Alarms/Hour: 4.1016
+  Anomaly Reduction: 93.3%
+  Patients: 35
+
+========================================
+PERFORMANCE BY CATEGORY:
+----------------------------------------
+
+focal_aware:
+  Sensitivity: 0.6968 (69.68%)
+  Detected: 193/277 seizures
+  Precision: 0.0432
+  False Alarms/Hour: 4.2774
+  Anomaly Reduction: 93.2%
+  Patients: 38
+  Total Duration: 1096.9 hours
+
+generalized_motor:
+  Sensitivity: 0.6857 (68.57%)
+  Detected: 120/175 seizures
+  Precision: 0.1510
+  False Alarms/Hour: 3.4854
+  Anomaly Reduction: 92.6%
+  Patients: 19
+  Total Duration: 209.7 hours
+
+generalized_nonmotor:
+  Sensitivity: 0.6503 (65.03%)
+  Detected: 106/163 seizures
+  Precision: 0.0393
+  False Alarms/Hour: 4.3227
+  Anomaly Reduction: 92.7%
+  Patients: 26
+  Total Duration: 638.3 hours
+
+focal_impaired:
+  Sensitivity: 0.5938 (59.38%)
+  Detected: 152/256 seizures
+  Precision: 0.0427
+  False Alarms/Hour: 4.0865
+  Anomaly Reduction: 93.3%
+  Patients: 36
+  Total Duration: 927.2 hours
+
+========================================
+PERFORMANCE BY MOTOR CLASSIFICATION:
+----------------------------------------
+
+non-motor:
+  Sensitivity: 0.6570 (65.70%)
+  Detected: 113/172 seizures
+  Precision: 0.0411
+  False Alarms/Hour: 4.2964
+  Anomaly Reduction: 92.7%
+  Patients: 27
+
+motor:
+  Sensitivity: 0.6552 (65.52%)
+  Detected: 458/699 seizures
+  Precision: 0.0521
+  False Alarms/Hour: 4.1302
+  Anomaly Reduction: 93.2%
+  Patients: 92
+
+================================================================================

@@ -349,32 +349,15 @@ def compute_downsample_rate(input_length: int,
     return round(input_length / (np.log2(n_fft) - 1) / downsampled_length) if input_length >= downsampled_length else 1
 
 
-# def set_window_size(train_data, min_window_size: int = 200, max_window_size_rate: float = 0.3, min_acf: float = 0.3):
-#     """
-#     :param train_data: (length,)
-#     :param min_acf: minimum ACF value
-#     :return window_size
-#     """
-#     acf_train = sm.tsa.acf(train_data, nlags=train_data.shape[0] - 1)[:train_data.shape[0] // 4]
-#     local_maxima = argrelextrema(acf_train, np.greater)[0]
-#     local_maxima = np.array([i for i in local_maxima if acf_train[i] > min_acf])
-#
-#     if len(local_maxima) > 0:
-#         cycle_length = local_maxima[acf_train[local_maxima].argmax()]
-#         window_size = 5 * cycle_length if len(local_maxima) > 0 else min_window_size
-#         max_window_size = int(max_window_size_rate * train_data.shape[0])
-#         window_size = np.clip(window_size, min_window_size, max_window_size)
-#     else:
-#         window_size = min_window_size
-#     return window_size
-
-
-def set_window_size(dataset_id, n_periods: int):
-    period_data = get_root_dir().joinpath('preprocessing', 'UCR_anomaly_dataset_periods.csv')
-    df = pd.read_csv(str(period_data))
-    single_period = int(df.query(f"dataset_idx == {dataset_id}")['period'].item())
-    return single_period * n_periods
-
+def set_window_size(sampling_rate: int, n_periods: int = 120, bpm: int = 75) -> int:
+    """n_periods ≈ number of beats in the window."""
+    seconds_per_beat = 60.0 / max(bpm, 30)
+    samples_per_beat = sampling_rate * seconds_per_beat
+    win = int(round(samples_per_beat * n_periods))
+    # keep within 32 s .. 160 s unless explicitly overridden
+    min_s, max_s = 32, 160
+    win = max(int(min_s * sampling_rate), min(win, int(max_s * sampling_rate)))
+    return win
 
 def compute_receptive_field(layers):
     """

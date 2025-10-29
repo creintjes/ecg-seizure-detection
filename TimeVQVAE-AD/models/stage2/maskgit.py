@@ -74,9 +74,10 @@ class MaskGIT(nn.Module):
         self.n_fft = self.config['VQ-VAE']['n_fft']
         self.mask_token_id = config['VQ-VAE']['codebook_size']
         self.gamma = gamma_func(config['MaskGIT']['mask_scheduling_func'])
+        self.expand_labels = config['dataset']['expand_labels']
         self.input_length = input_length
 
-        self.stage1 = ExpStage1.load_from_checkpoint(os.path.join('saved_models', f'stage1-{dataset_idx}.ckpt'), 
+        self.stage1 = ExpStage1.load_from_checkpoint(os.path.join('saved_models', f'stage1-{dataset_idx}{"_window" if config["dataset"]["expand_labels"] else "_no_window"}.ckpt'),
                                                      input_length=input_length, 
                                                      config=config,
                                                      map_location='cpu')
