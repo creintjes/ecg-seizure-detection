@@ -21,7 +21,7 @@ Update these paths according to your local setup:
 - `RAW_DATA_PATH`: Path to the downloaded SeizeIT2 dataset
 - `PREPROCESSED_DATA_PATH`: Directory where preprocessed files will be saved
 
-> **Note for supervisors (Tim & Simon):** Raw data is available on both ds01 and ds03 servers at the path specified above: `/home/swolf/asim_shared/raw_data/ds005873-1.1.0`
+
 
 ### 2. Data Preprocessing
 
@@ -55,7 +55,7 @@ This script will:
 - Summary file: `preprocessing_summary.xlsx`
 - Processing statistics and data overview
 
-> **Note for supervisors (Tim & Simon):** Preprocessed data is available on both ds01 and ds03 servers at: `/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new`
+
 
 ### 3. Handle Short Recordings 
 
@@ -68,7 +68,7 @@ python preprocessing/reprocess_empty_windows.py \
     --dry-run
 ```
 
-**Reprocess empty files with flexible windowing (recommended approach):**
+**Reprocess empty files:**
 ```bash
 python preprocessing/reprocess_empty_windows.py \
     --preprocessed-dir /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new \
@@ -81,11 +81,22 @@ python preprocessing/reprocess_empty_windows.py \
 - `--output-dir`: Where to save the reprocessed files with flexible windows
 - `--original-data-dir`: Path to raw SeizeIT2 dataset (needed to reload original ECG data)
 
-**Why set output-dir to the same directory:**
-- **All data in one place**: Both original and recovered files in the same location
-- **Safe overwriting**: Only replaces the empty files (0 windows), preserves all other files
+**Reprocess incomplete trailing windows:**
 
-> **Note for supervisors (Tim & Simon):** Reprocessed data (including recovered short recordings) is available on both ds01 and ds03 servers at: `/home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new`
+Some recordings have trailing data (< 3600 seconds) that was discarded during windowing. This data may contain seizures. Recover these by adding flexible-size trailing windows:
+
+```bash
+python preprocessing/reprocess_incomplete_windows.py \
+    --preprocessed-dir /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new \
+    --output-dir /home/swolf/asim_shared/preprocessed_data/downsample_freq=8,window_size=3600_0,stride=1800_0_new \
+    --original-data-dir /path/to/seizeit2/data \
+```
+
+**Parameter explanation:**
+- `--preprocessed-dir`: Directory containing preprocessed files
+- `--output-dir`: Where to save files with trailing windows (can be same as preprocessed-dir)
+- `--original-data-dir`: Path to raw SeizeIT2 dataset
+
 
 ### 4. Madrid Algorithm Analysis
 
@@ -112,7 +123,6 @@ python madrid_windowed_batch_processor_parallel.py \
 - JSON files with Madrid analysis results: `madrid_windowed_results_{subject_id}_{run_id}_{timestamp}.json`
 - Processing logs and progress information
 
-> **Note for supervisors (Tim & Simon):** Madrid analysis results are available on ds01 server at: `/home/creintj2_sw/ecg-seizure-detection/Madrid/results_madrid/results_8hz_window3600_stride1800_new20min` (Runtime: ~4 days total. You can use these existing results for reproduction instead of re-running the analysis.)
 
 ### 5. False Alarm Reduction with Clustering
 
@@ -165,9 +175,7 @@ Each configuration typically results in different optimal clustering strategies.
 - Final clustered results in `train_test_clustered_results/clusters/`
 - Complete summary in `train_test_clustered_results/complete_train_test_results_{timestamp}.json`
 
-> **Note for supervisors (Tim & Simon):** Clustering results are available on ds01 server at:
-> - **Without extended seizure window:** `/home/creintj2_sw/ecg-seizure-detection/Madrid/results_madrid/clustering_withoutSDW`
-> - **With extended seizure window:** `/home/creintj2_sw/ecg-seizure-detection/Madrid/results_madrid/clustering_withSDW`
+
 
 ### 6. Threshold Trade-off Analysis (Test Set Only)
 
@@ -175,22 +183,22 @@ After determining the optimal clustering strategies from step 5, perform thresho
 
 **Choose the appropriate script based on your clustering results:**
 
-*With extended seizure windows (withSDW) - uses time_180s clustering strategy:*
+*With extended seizure windows (withSDW) - uses time_180s clustering strategy, which performed best in Step 5 with the SDW:*
 ```bash
 python madrid_clustered_threshold_tradeoff_test_only_withSDW.py <results_dir>
 ```
 
-*Without extended seizure windows (withoutSDW) - uses time_600s clustering strategy:*
+*Without extended seizure windows (withoutSDW) - uses time_600s clustering strategy, which performed best in Step 5 without the SDW:*
 ```bash
 python madrid_clustered_threshold_tradeoff_test_only_withoutSDW.py <results_dir>
 ```
 
 **Example Commands (based on paper results):**
 ```bash
-# For extended seizure window analysis (typically uses time_180s strategy)
+# For extended seizure window analysis
 python madrid_clustered_threshold_tradeoff_test_only_withSDW.py results_8hz_window3600_stride1800_new20min -n 100
 
-# For strict seizure boundary analysis (typically uses time_600s strategy)  
+# For strict seizure boundary analysis 
 python madrid_clustered_threshold_tradeoff_test_only_withoutSDW.py results_8hz_window3600_stride1800_new20min -n 100 --post-seizure-minutes 0 --pre-seizure-minutes 0
 ```
 
@@ -200,11 +208,6 @@ python madrid_clustered_threshold_tradeoff_test_only_withoutSDW.py results_8hz_w
 - `-n NUM_THRESHOLDS`: Number of thresholds to test (default: 50, recommended: 100)
 - `--pre-seizure-minutes`: Minutes before seizure start to consider as detection window (default: 5.0)
 - `--post-seizure-minutes`: Minutes after seizure end to consider as detection window (default: 3.0)
-
-**Script Selection Note:**
-The choice between `withSDW` and `withoutSDW` scripts depends on your optimal clustering strategy from step 5:
-- If your best strategy was **time_180s** → use `madrid_clustered_threshold_tradeoff_test_only_withSDW.py`
-- If your best strategy was **time_600s** → use `madrid_clustered_threshold_tradeoff_test_only_withoutSDW.py`
 
 **Important:** If you want to use a different clustering strategy than the hardcoded ones (time_180s or time_600s), you need to modify line 37 in the respective script:
 ```python
@@ -223,9 +226,6 @@ self.clustering_time_threshold = 180  # Change this value to your desired strate
 - JSON files with detailed results for each threshold
 - Sensitivity vs FAR curves for publication
 
-> **Note for supervisors (Tim & Simon):** Threshold trade-off results are available on ds01 server at:
-> - **With extended seizure window:** `/home/creintj2_sw/ecg-seizure-detection/Madrid/results_madrid/trade_off_FAR_vs_Sens_withSDW`
-> - **Without extended seizure window:** `/home/creintj2_sw/ecg-seizure-detection/Madrid/results_madrid/trade_off_FAR_vs_Sens_n100_withoutSDW`
 
 ### 7. Seizure Type Analysis
 
@@ -261,7 +261,7 @@ python madrid_clustered_seizure_type_analysis.py results_8hz_window3600_stride18
 - Visualization plots showing performance per seizure type
 - Statistical analysis of seizure type detection patterns
 
-> **Note for supervisors (Tim & Simon):** Seizure type analysis results are available on ds01 server at: `/home/creintj2_sw/ecg-seizure-detection/Madrid/results_madrid/seizureTypeAnalysis`
+> 
 
 
 ### 8. File Structure
@@ -272,6 +272,7 @@ Madrid/
 ├── preprocessing/
 │   └── preprocess_all_data.py
 │   └── reprocess_empty_windows.py
+│   └── reprocess_incomplete_windows.py
 │   └── preprocessing.py
 ├── madrid_windowed_batch_processor_parallel.py          # Madrid analysis
 ├── madrid_clustering_false_alarm_reducer_train_test.py  # Clustering false alarm reduction
