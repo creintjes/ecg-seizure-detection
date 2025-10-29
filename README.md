@@ -46,9 +46,7 @@ pip install -r requirements.txt
 ```
 ### 3. Download Data:
 
-```bash
-nohup ./filtered_download_script.sh > filtered_download.log 2>&1 &
-```
+Follow the instructions from the dataset providers [here](https://openneuro.org/datasets/ds005873/versions/1.1.0).
 ### 4. Preprocess Data:
 ```bash
 python3 preprocess_all_data.py
