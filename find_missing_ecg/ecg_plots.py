@@ -159,7 +159,7 @@ class ECGPlotter:
 
     def plot_raw_only(self, segment: dict, output_path: Path, title: str = None):
         """Plot only raw signal (for saturated examples)."""
-        fig, ax = plt.subplots(figsize=(10, 4))
+        fig, ax = plt.subplots(figsize=(5, 4))
 
         signal = segment['signal']
         fs = segment['fs']
@@ -188,7 +188,7 @@ class ECGPlotter:
         filtered, downsampled, new_fs = self.preprocess_signal(segment['signal'], segment['fs'])
 
         # Create figure with 2 subplots
-        fig, axes = plt.subplots(2, 1, figsize=(10, 8))
+        fig, axes = plt.subplots(2, 1, figsize=(5, 8))
 
         # Time axes
         time_raw = np.arange(len(segment['signal'])) / segment['fs'] + segment['start_time']
@@ -500,7 +500,7 @@ class ECGPlotter:
             # Load random 10-second segment
             segment = self.load_ecg_segment(subject_id, run_id,
                                            start_time=60.0,  # Start at 1 minute
-                                           duration=10.0)
+                                           duration=5.0)
 
             if segment is None:
                 print(f"  ✗ Failed to load segment")
@@ -530,7 +530,7 @@ class ECGPlotter:
             # Load 10-second segment starting at seizure onset
             segment = self.load_ecg_segment(subject_id, run_id,
                                            start_time=onset,
-                                           duration=10.0)
+                                           duration=5.0)
 
             if segment is None:
                 print(f"  ✗ Failed to load segment")
