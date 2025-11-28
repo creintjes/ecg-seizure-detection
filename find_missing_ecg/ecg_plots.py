@@ -165,7 +165,7 @@ class ECGPlotter:
         fs = segment['fs']
         time_axis = np.arange(len(signal)) / fs + segment['start_time']
 
-        ax.plot(time_axis, signal, linewidth=0.5, color='blue')
+        ax.plot(time_axis, signal, linewidth=2.5, color='blue')
         ax.set_xlabel('Time (seconds)', fontsize=12)
         ax.set_ylabel('Amplitude (mV)', fontsize=12)
         ax.grid(True, alpha=0.3)
@@ -508,8 +508,8 @@ class ECGPlotter:
 
             # Plot before and after
             output_path = self.normal_dir / f"normal_{idx}_{subject_id}_{run_id}.png"
-            self.plot_before_after(segment, output_path,
-                                  title=f"Normal ECG Signal #{idx}: {subject_id} {run_id}")
+            #self.plot_before_after(segment, output_path,
+                                  #title=f"Normal ECG Signal #{idx}: {subject_id} {run_id}")
 
         # 3. Seizure signals (before and after)
         print("\n" + "="*80)
@@ -538,8 +538,8 @@ class ECGPlotter:
 
             # Plot before and after
             output_path = self.seizure_dir / f"seizure_{idx}_{subject_id}_{run_id}.png"
-            self.plot_before_after(segment, output_path,
-                                  title=f"Seizure ECG Signal #{idx}: {subject_id} {run_id} (onset at t={onset:.1f}s)")
+            #self.plot_before_after(segment, output_path,
+                                  #title=f"Seizure ECG Signal #{idx}: {subject_id} {run_id} (onset at t={onset:.1f}s)")
 
         print("\n" + "="*80)
         print("PLOTTING COMPLETE!")
