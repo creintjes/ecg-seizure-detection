@@ -177,7 +177,7 @@ class ECGPlotter:
                         fontsize=14, fontweight='bold')
 
         plt.tight_layout()
-        plt.savefig(output_path, dpi=300, bbox_inches='tight')
+        plt.savefig(output_path, dpi=3000, bbox_inches='tight')
         plt.close()
 
         print(f"  ✓ Saved: {output_path}")
@@ -216,7 +216,7 @@ class ECGPlotter:
                         fontsize=14, fontweight='bold', y=0.995)
 
         plt.tight_layout()
-        plt.savefig(output_path, dpi=300, bbox_inches='tight')
+        plt.savefig(output_path, dpi=3000, bbox_inches='tight')
         plt.close()
 
         print(f"  ✓ Saved: {output_path}")
