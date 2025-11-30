@@ -1,0 +1,152 @@
+================================================================================
+SEIZURE DETECTION TABLE - SUMMARY REPORT
+================================================================================
+Configuration: time_30s, threshold=0.65
+Window suffix: _window
+Detection window: -0.0s to +0.0s
+
+OVERALL STATISTICS:
+  Total seizures: 148
+  Detected: 148
+  Missed: 0
+  Sensitivity: 100.00%
+
+PER-SUBJECT BREAKDOWN:
+--------------------------------------------------------------------------------
+
+sub-098:
+  Seizures: 1
+  Detected: 1 (100.0%)
+  Runs: 1
+
+sub-100:
+  Seizures: 2
+  Detected: 2 (100.0%)
+  Runs: 2
+
+sub-101:
+  Seizures: 7
+  Detected: 7 (100.0%)
+  Runs: 6
+
+sub-102:
+  Seizures: 3
+  Detected: 3 (100.0%)
+  Runs: 2
+
+sub-103:
+  Seizures: 15
+  Detected: 15 (100.0%)
+  Runs: 7
+
+sub-104:
+  Seizures: 2
+  Detected: 2 (100.0%)
+  Runs: 2
+
+sub-105:
+  Seizures: 2
+  Detected: 2 (100.0%)
+  Runs: 1
+
+sub-106:
+  Seizures: 2
+  Detected: 2 (100.0%)
+  Runs: 1
+
+sub-107:
+  Seizures: 2
+  Detected: 2 (100.0%)
+  Runs: 2
+
+sub-108:
+  Seizures: 2
+  Detected: 2 (100.0%)
+  Runs: 1
+
+sub-109:
+  Seizures: 30
+  Detected: 30 (100.0%)
+  Runs: 3
+
+sub-110:
+  Seizures: 2
+  Detected: 2 (100.0%)
+  Runs: 1
+
+sub-111:
+  Seizures: 2
+  Detected: 2 (100.0%)
+  Runs: 1
+
+sub-112:
+  Seizures: 7
+  Detected: 7 (100.0%)
+  Runs: 4
+
+sub-113:
+  Seizures: 9
+  Detected: 9 (100.0%)
+  Runs: 5
+
+sub-114:
+  Seizures: 4
+  Detected: 4 (100.0%)
+  Runs: 4
+
+sub-115:
+  Seizures: 6
+  Detected: 6 (100.0%)
+  Runs: 5
+
+sub-116:
+  Seizures: 7
+  Detected: 7 (100.0%)
+  Runs: 7
+
+sub-117:
+  Seizures: 11
+  Detected: 11 (100.0%)
+  Runs: 4
+
+sub-118:
+  Seizures: 2
+  Detected: 2 (100.0%)
+  Runs: 2
+
+sub-119:
+  Seizures: 14
+  Detected: 14 (100.0%)
+  Runs: 4
+
+sub-120:
+  Seizures: 3
+  Detected: 3 (100.0%)
+  Runs: 3
+
+sub-121:
+  Seizures: 4
+  Detected: 4 (100.0%)
+  Runs: 4
+
+sub-122:
+  Seizures: 4
+  Detected: 4 (100.0%)
+  Runs: 4
+
+sub-123:
+  Seizures: 2
+  Detected: 2 (100.0%)
+  Runs: 2
+
+sub-124:
+  Seizures: 1
+  Detected: 1 (100.0%)
+  Runs: 1
+
+sub-125:
+  Seizures: 2
+  Detected: 2 (100.0%)
+  Runs: 2
+
+================================================================================

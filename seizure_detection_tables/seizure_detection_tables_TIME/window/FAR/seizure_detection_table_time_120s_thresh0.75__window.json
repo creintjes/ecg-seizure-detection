@@ -1,0 +1,1350 @@
+{
+  "config": {
+    "clustering_strategy": "time_120s",
+    "threshold_scale": 0.75,
+    "pre_seizure_seconds": 0.0,
+    "post_seizure_seconds": 0.0,
+    "sampling_rate": 8.0,
+    "window_suffix": "_window"
+  },
+  "statistics": {
+    "total_seizures": 148,
+    "detected_seizures": 90,
+    "missed_seizures": 58,
+    "sensitivity": 0.6081081081081081
+  },
+  "seizures": [
+    {
+      "subject_id": "sub-098",
+      "run_id": "run-03",
+      "seizure_index": 0,
+      "start_time": 69769.0,
+      "end_time": 70357.0,
+      "duration": 588.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-100",
+      "run_id": "run-03",
+      "seizure_index": 0,
+      "start_time": 2328.0,
+      "end_time": 2980.0,
+      "duration": 652.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-100",
+      "run_id": "run-09",
+      "seizure_index": 1,
+      "start_time": 4607.0,
+      "end_time": 5194.0,
+      "duration": 587.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-101",
+      "run_id": "run-01",
+      "seizure_index": 0,
+      "start_time": 3500.0,
+      "end_time": 4015.0,
+      "duration": 515.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-101",
+      "run_id": "run-02",
+      "seizure_index": 1,
+      "start_time": 2664.0,
+      "end_time": 3164.0,
+      "duration": 500.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-101",
+      "run_id": "run-03",
+      "seizure_index": 2,
+      "start_time": 16619.0,
+      "end_time": 17134.0,
+      "duration": 515.0,
+      "detected": false
+    },
+    {
+      "subject_id": "sub-101",
+      "run_id": "run-06",
+      "seizure_index": 3,
+      "start_time": 3835.0,
+      "end_time": 4336.0,
+      "duration": 501.0,
+      "detected": false
+    },
+    {
+      "subject_id": "sub-101",
+      "run_id": "run-06",
+      "seizure_index": 4,
+      "start_time": 13113.0,
+      "end_time": 13618.0,
+      "duration": 505.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-101",
+      "run_id": "run-07",
+      "seizure_index": 5,
+      "start_time": 3849.0,
+      "end_time": 4351.0,
+      "duration": 502.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-101",
+      "run_id": "run-08",
+      "seizure_index": 6,
+      "start_time": 15122.0,
+      "end_time": 15638.0,
+      "duration": 516.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-102",
+      "run_id": "run-01",
+      "seizure_index": 0,
+      "start_time": 24057.0,
+      "end_time": 24586.0,
+      "duration": 529.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-102",
+      "run_id": "run-01",
+      "seizure_index": 1,
+      "start_time": 75084.0,
+      "end_time": 75611.0,
+      "duration": 527.0,
+      "detected": false
+    },
+    {
+      "subject_id": "sub-102",
+      "run_id": "run-03",
+      "seizure_index": 2,
+      "start_time": 4611.0,
+      "end_time": 5107.0,
+      "duration": 496.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-103",
+      "run_id": "run-01",
+      "seizure_index": 0,
+      "start_time": 28351.0,
+      "end_time": 28837.0,
+      "duration": 486.0,
+      "detected": false
+    },
+    {
+      "subject_id": "sub-103",
+      "run_id": "run-02",
+      "seizure_index": 1,
+      "start_time": 7471.0,
+      "end_time": 7966.0,
+      "duration": 495.0,
+      "detected": false
+    },
+    {
+      "subject_id": "sub-103",
+      "run_id": "run-02",
+      "seizure_index": 2,
+      "start_time": 34045.0,
+      "end_time": 34540.0,
+      "duration": 495.0,
+      "detected": false
+    },
+    {
+      "subject_id": "sub-103",
+      "run_id": "run-03",
+      "seizure_index": 3,
+      "start_time": 22468.0,
+      "end_time": 22961.0,
+      "duration": 493.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-103",
+      "run_id": "run-04",
+      "seizure_index": 4,
+      "start_time": 270.0,
+      "end_time": 764.0,
+      "duration": 494.0,
+      "detected": false
+    },
+    {
+      "subject_id": "sub-103",
+      "run_id": "run-04",
+      "seizure_index": 5,
+      "start_time": 1795.0,
+      "end_time": 2286.0,
+      "duration": 491.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-103",
+      "run_id": "run-04",
+      "seizure_index": 6,
+      "start_time": 3518.0,
+      "end_time": 4014.0,
+      "duration": 496.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-103",
+      "run_id": "run-04",
+      "seizure_index": 7,
+      "start_time": 7932.0,
+      "end_time": 8427.0,
+      "duration": 495.0,
+      "detected": false
+    },
+    {
+      "subject_id": "sub-103",
+      "run_id": "run-04",
+      "seizure_index": 8,
+      "start_time": 12123.0,
+      "end_time": 12613.0,
+      "duration": 490.0,
+      "detected": false
+    },
+    {
+      "subject_id": "sub-103",
+      "run_id": "run-04",
+      "seizure_index": 9,
+      "start_time": 16581.0,
+      "end_time": 17072.0,
+      "duration": 491.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-103",
+      "run_id": "run-04",
+      "seizure_index": 10,
+      "start_time": 17520.0,
+      "end_time": 18009.0,
+      "duration": 489.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-103",
+      "run_id": "run-04",
+      "seizure_index": 11,
+      "start_time": 53677.0,
+      "end_time": 54168.0,
+      "duration": 491.0,
+      "detected": false
+    },
+    {
+      "subject_id": "sub-103",
+      "run_id": "run-05",
+      "seizure_index": 12,
+      "start_time": 0.0,
+      "end_time": 255.0,
+      "duration": 255.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-103",
+      "run_id": "run-06",
+      "seizure_index": 13,
+      "start_time": 40871.0,
+      "end_time": 41365.0,
+      "duration": 494.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-103",
+      "run_id": "run-07",
+      "seizure_index": 14,
+      "start_time": 22361.0,
+      "end_time": 22913.0,
+      "duration": 552.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-104",
+      "run_id": "run-05",
+      "seizure_index": 0,
+      "start_time": 20603.0,
+      "end_time": 21134.0,
+      "duration": 531.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-104",
+      "run_id": "run-07",
+      "seizure_index": 1,
+      "start_time": 719.0,
+      "end_time": 1272.0,
+      "duration": 553.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-105",
+      "run_id": "run-07",
+      "seizure_index": 0,
+      "start_time": 52395.0,
+      "end_time": 52913.0,
+      "duration": 518.0,
+      "detected": false
+    },
+    {
+      "subject_id": "sub-105",
+      "run_id": "run-07",
+      "seizure_index": 1,
+      "start_time": 70045.0,
+      "end_time": 70566.0,
+      "duration": 521.0,
+      "detected": false
+    },
+    {
+      "subject_id": "sub-106",
+      "run_id": "run-01",
+      "seizure_index": 0,
+      "start_time": 5911.0,
+      "end_time": 6521.0,
+      "duration": 610.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-106",
+      "run_id": "run-01",
+      "seizure_index": 1,
+      "start_time": 16741.0,
+      "end_time": 17306.0,
+      "duration": 565.0,
+      "detected": false
+    },
+    {
+      "subject_id": "sub-107",
+      "run_id": "run-01",
+      "seizure_index": 0,
+      "start_time": 5952.0,
+      "end_time": 6468.0,
+      "duration": 516.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-107",
+      "run_id": "run-06",
+      "seizure_index": 1,
+      "start_time": 56074.0,
+      "end_time": 56588.0,
+      "duration": 514.0,
+      "detected": false
+    },
+    {
+      "subject_id": "sub-108",
+      "run_id": "run-01",
+      "seizure_index": 0,
+      "start_time": 9565.0,
+      "end_time": 10053.0,
+      "duration": 488.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-108",
+      "run_id": "run-01",
+      "seizure_index": 1,
+      "start_time": 32409.0,
+      "end_time": 32897.0,
+      "duration": 488.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-109",
+      "run_id": "run-03",
+      "seizure_index": 0,
+      "start_time": 48300.0,
+      "end_time": 48808.0,
+      "duration": 508.0,
+      "detected": false
+    },
+    {
+      "subject_id": "sub-109",
+      "run_id": "run-03",
+      "seizure_index": 1,
+      "start_time": 48941.0,
+      "end_time": 50559.0,
+      "duration": 1618.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-109",
+      "run_id": "run-03",
+      "seizure_index": 2,
+      "start_time": 50591.0,
+      "end_time": 52023.0,
+      "duration": 1432.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-109",
+      "run_id": "run-03",
+      "seizure_index": 3,
+      "start_time": 52130.0,
+      "end_time": 53114.0,
+      "duration": 984.0,
+      "detected": false
+    },
+    {
+      "subject_id": "sub-109",
+      "run_id": "run-03",
+      "seizure_index": 4,
+      "start_time": 53317.0,
+      "end_time": 53818.0,
+      "duration": 501.0,
+      "detected": false
+    },
+    {
+      "subject_id": "sub-109",
+      "run_id": "run-03",
+      "seizure_index": 5,
+      "start_time": 54794.0,
+      "end_time": 55745.0,
+      "duration": 951.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-109",
+      "run_id": "run-03",
+      "seizure_index": 6,
+      "start_time": 55860.0,
+      "end_time": 56372.0,
+      "duration": 512.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-109",
+      "run_id": "run-03",
+      "seizure_index": 7,
+      "start_time": 56714.0,
+      "end_time": 57232.0,
+      "duration": 518.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-109",
+      "run_id": "run-03",
+      "seizure_index": 8,
+      "start_time": 57633.0,
+      "end_time": 58151.0,
+      "duration": 518.0,
+      "detected": false
+    },
+    {
+      "subject_id": "sub-109",
+      "run_id": "run-03",
+      "seizure_index": 9,
+      "start_time": 58170.0,
+      "end_time": 58677.0,
+      "duration": 507.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-109",
+      "run_id": "run-03",
+      "seizure_index": 10,
+      "start_time": 58699.0,
+      "end_time": 59213.0,
+      "duration": 514.0,
+      "detected": false
+    },
+    {
+      "subject_id": "sub-109",
+      "run_id": "run-03",
+      "seizure_index": 11,
+      "start_time": 59295.0,
+      "end_time": 59808.0,
+      "duration": 513.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-109",
+      "run_id": "run-03",
+      "seizure_index": 12,
+      "start_time": 59969.0,
+      "end_time": 60471.0,
+      "duration": 502.0,
+      "detected": false
+    },
+    {
+      "subject_id": "sub-109",
+      "run_id": "run-03",
+      "seizure_index": 13,
+      "start_time": 60607.0,
+      "end_time": 61109.0,
+      "duration": 502.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-109",
+      "run_id": "run-03",
+      "seizure_index": 14,
+      "start_time": 61271.0,
+      "end_time": 61773.0,
+      "duration": 502.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-109",
+      "run_id": "run-03",
+      "seizure_index": 15,
+      "start_time": 63045.0,
+      "end_time": 63544.0,
+      "duration": 499.0,
+      "detected": false
+    },
+    {
+      "subject_id": "sub-109",
+      "run_id": "run-03",
+      "seizure_index": 16,
+      "start_time": 63655.0,
+      "end_time": 64155.0,
+      "duration": 500.0,
+      "detected": false
+    },
+    {
+      "subject_id": "sub-109",
+      "run_id": "run-03",
+      "seizure_index": 17,
+      "start_time": 64201.0,
+      "end_time": 64702.0,
+      "duration": 501.0,
+      "detected": false
+    },
+    {
+      "subject_id": "sub-109",
+      "run_id": "run-03",
+      "seizure_index": 18,
+      "start_time": 64742.0,
+      "end_time": 65260.0,
+      "duration": 518.0,
+      "detected": false
+    },
+    {
+      "subject_id": "sub-109",
+      "run_id": "run-03",
+      "seizure_index": 19,
+      "start_time": 66162.0,
+      "end_time": 66662.0,
+      "duration": 500.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-109",
+      "run_id": "run-03",
+      "seizure_index": 20,
+      "start_time": 66727.0,
+      "end_time": 67229.0,
+      "duration": 502.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-109",
+      "run_id": "run-07",
+      "seizure_index": 21,
+      "start_time": 58479.0,
+      "end_time": 58975.0,
+      "duration": 496.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-109",
+      "run_id": "run-07",
+      "seizure_index": 22,
+      "start_time": 62497.0,
+      "end_time": 63089.0,
+      "duration": 592.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-109",
+      "run_id": "run-07",
+      "seizure_index": 23,
+      "start_time": 69765.0,
+      "end_time": 70270.0,
+      "duration": 505.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-109",
+      "run_id": "run-07",
+      "seizure_index": 24,
+      "start_time": 72993.0,
+      "end_time": 73489.0,
+      "duration": 496.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-109",
+      "run_id": "run-07",
+      "seizure_index": 25,
+      "start_time": 73707.0,
+      "end_time": 74203.0,
+      "duration": 496.0,
+      "detected": false
+    },
+    {
+      "subject_id": "sub-109",
+      "run_id": "run-07",
+      "seizure_index": 26,
+      "start_time": 74556.0,
+      "end_time": 75052.0,
+      "duration": 496.0,
+      "detected": false
+    },
+    {
+      "subject_id": "sub-109",
+      "run_id": "run-07",
+      "seizure_index": 27,
+      "start_time": 76392.0,
+      "end_time": 76893.0,
+      "duration": 501.0,
+      "detected": false
+    },
+    {
+      "subject_id": "sub-109",
+      "run_id": "run-07",
+      "seizure_index": 28,
+      "start_time": 77422.0,
+      "end_time": 77924.0,
+      "duration": 502.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-109",
+      "run_id": "run-08",
+      "seizure_index": 29,
+      "start_time": 981.0,
+      "end_time": 1483.0,
+      "duration": 502.0,
+      "detected": false
+    },
+    {
+      "subject_id": "sub-110",
+      "run_id": "run-08",
+      "seizure_index": 0,
+      "start_time": 3202.0,
+      "end_time": 3771.0,
+      "duration": 569.0,
+      "detected": false
+    },
+    {
+      "subject_id": "sub-110",
+      "run_id": "run-08",
+      "seizure_index": 1,
+      "start_time": 18355.0,
+      "end_time": 18924.0,
+      "duration": 569.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-111",
+      "run_id": "run-06",
+      "seizure_index": 0,
+      "start_time": 9787.0,
+      "end_time": 10401.0,
+      "duration": 614.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-111",
+      "run_id": "run-06",
+      "seizure_index": 1,
+      "start_time": 39730.0,
+      "end_time": 40324.0,
+      "duration": 594.0,
+      "detected": false
+    },
+    {
+      "subject_id": "sub-112",
+      "run_id": "run-03",
+      "seizure_index": 0,
+      "start_time": 28111.0,
+      "end_time": 28843.0,
+      "duration": 732.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-112",
+      "run_id": "run-04",
+      "seizure_index": 1,
+      "start_time": 35035.0,
+      "end_time": 35684.0,
+      "duration": 649.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-112",
+      "run_id": "run-04",
+      "seizure_index": 2,
+      "start_time": 41587.0,
+      "end_time": 42198.0,
+      "duration": 611.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-112",
+      "run_id": "run-05",
+      "seizure_index": 3,
+      "start_time": 30175.0,
+      "end_time": 30673.0,
+      "duration": 498.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-112",
+      "run_id": "run-06",
+      "seizure_index": 4,
+      "start_time": 2525.0,
+      "end_time": 3145.0,
+      "duration": 620.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-112",
+      "run_id": "run-06",
+      "seizure_index": 5,
+      "start_time": 8404.0,
+      "end_time": 9076.0,
+      "duration": 672.0,
+      "detected": false
+    },
+    {
+      "subject_id": "sub-112",
+      "run_id": "run-06",
+      "seizure_index": 6,
+      "start_time": 17188.0,
+      "end_time": 17687.0,
+      "duration": 499.0,
+      "detected": false
+    },
+    {
+      "subject_id": "sub-113",
+      "run_id": "run-02",
+      "seizure_index": 0,
+      "start_time": 45037.0,
+      "end_time": 45539.0,
+      "duration": 502.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-113",
+      "run_id": "run-02",
+      "seizure_index": 1,
+      "start_time": 68113.0,
+      "end_time": 68620.0,
+      "duration": 507.0,
+      "detected": false
+    },
+    {
+      "subject_id": "sub-113",
+      "run_id": "run-04",
+      "seizure_index": 2,
+      "start_time": 38795.0,
+      "end_time": 39310.0,
+      "duration": 515.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-113",
+      "run_id": "run-04",
+      "seizure_index": 3,
+      "start_time": 56463.0,
+      "end_time": 56952.0,
+      "duration": 489.0,
+      "detected": false
+    },
+    {
+      "subject_id": "sub-113",
+      "run_id": "run-04",
+      "seizure_index": 4,
+      "start_time": 62917.0,
+      "end_time": 64112.0,
+      "duration": 1195.0,
+      "detected": false
+    },
+    {
+      "subject_id": "sub-113",
+      "run_id": "run-05",
+      "seizure_index": 5,
+      "start_time": 8206.0,
+      "end_time": 8724.0,
+      "duration": 518.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-113",
+      "run_id": "run-06",
+      "seizure_index": 6,
+      "start_time": 44789.0,
+      "end_time": 45300.0,
+      "duration": 511.0,
+      "detected": false
+    },
+    {
+      "subject_id": "sub-113",
+      "run_id": "run-08",
+      "seizure_index": 7,
+      "start_time": 30689.0,
+      "end_time": 31183.0,
+      "duration": 494.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-113",
+      "run_id": "run-08",
+      "seizure_index": 8,
+      "start_time": 69023.0,
+      "end_time": 69518.0,
+      "duration": 495.0,
+      "detected": false
+    },
+    {
+      "subject_id": "sub-114",
+      "run_id": "run-02",
+      "seizure_index": 0,
+      "start_time": 41108.0,
+      "end_time": 41666.0,
+      "duration": 558.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-114",
+      "run_id": "run-06",
+      "seizure_index": 1,
+      "start_time": 16913.0,
+      "end_time": 17491.0,
+      "duration": 578.0,
+      "detected": false
+    },
+    {
+      "subject_id": "sub-114",
+      "run_id": "run-10",
+      "seizure_index": 2,
+      "start_time": 39581.0,
+      "end_time": 40065.0,
+      "duration": 484.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-114",
+      "run_id": "run-11",
+      "seizure_index": 3,
+      "start_time": 1555.0,
+      "end_time": 2069.0,
+      "duration": 514.0,
+      "detected": false
+    },
+    {
+      "subject_id": "sub-115",
+      "run_id": "run-09",
+      "seizure_index": 0,
+      "start_time": 18446.0,
+      "end_time": 19093.0,
+      "duration": 647.0,
+      "detected": false
+    },
+    {
+      "subject_id": "sub-115",
+      "run_id": "run-49",
+      "seizure_index": 1,
+      "start_time": 20046.0,
+      "end_time": 20603.0,
+      "duration": 557.0,
+      "detected": false
+    },
+    {
+      "subject_id": "sub-115",
+      "run_id": "run-52",
+      "seizure_index": 2,
+      "start_time": 4771.0,
+      "end_time": 5352.0,
+      "duration": 581.0,
+      "detected": false
+    },
+    {
+      "subject_id": "sub-115",
+      "run_id": "run-52",
+      "seizure_index": 3,
+      "start_time": 5720.0,
+      "end_time": 6109.0,
+      "duration": 389.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-115",
+      "run_id": "run-55",
+      "seizure_index": 4,
+      "start_time": 18948.0,
+      "end_time": 19544.0,
+      "duration": 596.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-115",
+      "run_id": "run-57",
+      "seizure_index": 5,
+      "start_time": 10886.0,
+      "end_time": 11464.0,
+      "duration": 578.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-116",
+      "run_id": "run-06",
+      "seizure_index": 0,
+      "start_time": 4595.0,
+      "end_time": 5143.0,
+      "duration": 548.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-116",
+      "run_id": "run-18",
+      "seizure_index": 1,
+      "start_time": 4850.0,
+      "end_time": 5438.0,
+      "duration": 588.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-116",
+      "run_id": "run-19",
+      "seizure_index": 2,
+      "start_time": 8505.0,
+      "end_time": 9099.0,
+      "duration": 594.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-116",
+      "run_id": "run-24",
+      "seizure_index": 3,
+      "start_time": 6234.0,
+      "end_time": 6823.0,
+      "duration": 589.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-116",
+      "run_id": "run-25",
+      "seizure_index": 4,
+      "start_time": 9659.0,
+      "end_time": 10192.0,
+      "duration": 533.0,
+      "detected": false
+    },
+    {
+      "subject_id": "sub-116",
+      "run_id": "run-26",
+      "seizure_index": 5,
+      "start_time": 8757.0,
+      "end_time": 9348.0,
+      "duration": 591.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-116",
+      "run_id": "run-27",
+      "seizure_index": 6,
+      "start_time": 7810.0,
+      "end_time": 8405.0,
+      "duration": 595.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-117",
+      "run_id": "run-06",
+      "seizure_index": 0,
+      "start_time": 16547.0,
+      "end_time": 17032.0,
+      "duration": 485.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-117",
+      "run_id": "run-06",
+      "seizure_index": 1,
+      "start_time": 20390.0,
+      "end_time": 20877.0,
+      "duration": 487.0,
+      "detected": false
+    },
+    {
+      "subject_id": "sub-117",
+      "run_id": "run-07",
+      "seizure_index": 2,
+      "start_time": 3392.0,
+      "end_time": 3879.0,
+      "duration": 487.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-117",
+      "run_id": "run-07",
+      "seizure_index": 3,
+      "start_time": 4667.0,
+      "end_time": 5153.0,
+      "duration": 486.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-117",
+      "run_id": "run-07",
+      "seizure_index": 4,
+      "start_time": 5636.0,
+      "end_time": 6126.0,
+      "duration": 490.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-117",
+      "run_id": "run-07",
+      "seizure_index": 5,
+      "start_time": 6824.0,
+      "end_time": 7311.0,
+      "duration": 487.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-117",
+      "run_id": "run-07",
+      "seizure_index": 6,
+      "start_time": 7876.0,
+      "end_time": 8362.0,
+      "duration": 486.0,
+      "detected": false
+    },
+    {
+      "subject_id": "sub-117",
+      "run_id": "run-10",
+      "seizure_index": 7,
+      "start_time": 17935.0,
+      "end_time": 18424.0,
+      "duration": 489.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-117",
+      "run_id": "run-10",
+      "seizure_index": 8,
+      "start_time": 18887.0,
+      "end_time": 19381.0,
+      "duration": 494.0,
+      "detected": false
+    },
+    {
+      "subject_id": "sub-117",
+      "run_id": "run-10",
+      "seizure_index": 9,
+      "start_time": 20342.0,
+      "end_time": 20840.0,
+      "duration": 498.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-117",
+      "run_id": "run-11",
+      "seizure_index": 10,
+      "start_time": 812.0,
+      "end_time": 1318.0,
+      "duration": 506.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-118",
+      "run_id": "run-03",
+      "seizure_index": 0,
+      "start_time": 14474.0,
+      "end_time": 14915.0,
+      "duration": 441.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-118",
+      "run_id": "run-10",
+      "seizure_index": 1,
+      "start_time": 262.0,
+      "end_time": 794.0,
+      "duration": 532.0,
+      "detected": false
+    },
+    {
+      "subject_id": "sub-119",
+      "run_id": "run-28",
+      "seizure_index": 0,
+      "start_time": 94.0,
+      "end_time": 606.0,
+      "duration": 512.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-119",
+      "run_id": "run-28",
+      "seizure_index": 1,
+      "start_time": 3552.0,
+      "end_time": 4073.0,
+      "duration": 521.0,
+      "detected": false
+    },
+    {
+      "subject_id": "sub-119",
+      "run_id": "run-28",
+      "seizure_index": 2,
+      "start_time": 4518.0,
+      "end_time": 5041.0,
+      "duration": 523.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-119",
+      "run_id": "run-28",
+      "seizure_index": 3,
+      "start_time": 5833.0,
+      "end_time": 6330.0,
+      "duration": 497.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-119",
+      "run_id": "run-28",
+      "seizure_index": 4,
+      "start_time": 7059.0,
+      "end_time": 7570.0,
+      "duration": 511.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-119",
+      "run_id": "run-28",
+      "seizure_index": 5,
+      "start_time": 8337.0,
+      "end_time": 8844.0,
+      "duration": 507.0,
+      "detected": false
+    },
+    {
+      "subject_id": "sub-119",
+      "run_id": "run-28",
+      "seizure_index": 6,
+      "start_time": 10058.0,
+      "end_time": 10559.0,
+      "duration": 501.0,
+      "detected": false
+    },
+    {
+      "subject_id": "sub-119",
+      "run_id": "run-28",
+      "seizure_index": 7,
+      "start_time": 13796.0,
+      "end_time": 14290.0,
+      "duration": 494.0,
+      "detected": false
+    },
+    {
+      "subject_id": "sub-119",
+      "run_id": "run-28",
+      "seizure_index": 8,
+      "start_time": 15809.0,
+      "end_time": 16319.0,
+      "duration": 510.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-119",
+      "run_id": "run-28",
+      "seizure_index": 9,
+      "start_time": 18878.0,
+      "end_time": 19377.0,
+      "duration": 499.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-119",
+      "run_id": "run-30",
+      "seizure_index": 10,
+      "start_time": 4643.0,
+      "end_time": 5232.0,
+      "duration": 589.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-119",
+      "run_id": "run-30",
+      "seizure_index": 11,
+      "start_time": 7015.0,
+      "end_time": 7583.0,
+      "duration": 568.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-119",
+      "run_id": "run-31",
+      "seizure_index": 12,
+      "start_time": 8450.0,
+      "end_time": 8973.0,
+      "duration": 523.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-119",
+      "run_id": "run-33",
+      "seizure_index": 13,
+      "start_time": 340.0,
+      "end_time": 904.0,
+      "duration": 564.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-120",
+      "run_id": "run-01",
+      "seizure_index": 0,
+      "start_time": 631.0,
+      "end_time": 1135.0,
+      "duration": 504.0,
+      "detected": false
+    },
+    {
+      "subject_id": "sub-120",
+      "run_id": "run-02",
+      "seizure_index": 1,
+      "start_time": 780.0,
+      "end_time": 1987.0,
+      "duration": 1207.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-120",
+      "run_id": "run-03",
+      "seizure_index": 2,
+      "start_time": 0.0,
+      "end_time": 831.0,
+      "duration": 831.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-121",
+      "run_id": "run-62",
+      "seizure_index": 0,
+      "start_time": 1067.0,
+      "end_time": 1567.0,
+      "duration": 500.0,
+      "detected": false
+    },
+    {
+      "subject_id": "sub-121",
+      "run_id": "run-64",
+      "seizure_index": 1,
+      "start_time": 756.0,
+      "end_time": 1404.0,
+      "duration": 648.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-121",
+      "run_id": "run-66",
+      "seizure_index": 2,
+      "start_time": 0.0,
+      "end_time": 453.0,
+      "duration": 453.0,
+      "detected": false
+    },
+    {
+      "subject_id": "sub-121",
+      "run_id": "run-80",
+      "seizure_index": 3,
+      "start_time": 609.0,
+      "end_time": 1183.0,
+      "duration": 574.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-122",
+      "run_id": "run-01",
+      "seizure_index": 0,
+      "start_time": 3112.0,
+      "end_time": 3558.0,
+      "duration": 446.0,
+      "detected": false
+    },
+    {
+      "subject_id": "sub-122",
+      "run_id": "run-10",
+      "seizure_index": 1,
+      "start_time": 2684.0,
+      "end_time": 3250.0,
+      "duration": 566.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-122",
+      "run_id": "run-24",
+      "seizure_index": 2,
+      "start_time": 0.0,
+      "end_time": 264.0,
+      "duration": 264.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-122",
+      "run_id": "run-30",
+      "seizure_index": 3,
+      "start_time": 562.0,
+      "end_time": 1124.0,
+      "duration": 562.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-123",
+      "run_id": "run-50",
+      "seizure_index": 0,
+      "start_time": 0.0,
+      "end_time": 399.0,
+      "duration": 399.0,
+      "detected": false
+    },
+    {
+      "subject_id": "sub-123",
+      "run_id": "run-81",
+      "seizure_index": 1,
+      "start_time": 688.0,
+      "end_time": 1240.0,
+      "duration": 552.0,
+      "detected": false
+    },
+    {
+      "subject_id": "sub-124",
+      "run_id": "run-47",
+      "seizure_index": 0,
+      "start_time": 651.0,
+      "end_time": 1569.0,
+      "duration": 918.0,
+      "detected": true
+    },
+    {
+      "subject_id": "sub-125",
+      "run_id": "run-21",
+      "seizure_index": 0,
+      "start_time": 4664.0,
+      "end_time": 5714.0,
+      "duration": 1050.0,
+      "detected": false
+    },
+    {
+      "subject_id": "sub-125",
+      "run_id": "run-37",
+      "seizure_index": 1,
+      "start_time": 954.0,
+      "end_time": 1547.0,
+      "duration": 593.0,
+      "detected": true
+    }
+  ]
+}
