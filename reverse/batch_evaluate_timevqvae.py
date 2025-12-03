@@ -177,6 +177,7 @@ def evaluate_single_file(pkl_path: Path, scale: float, clustering_strategy: str,
                 warnings.warn(f"Clustering failed for {pkl_path.name}: {e}")
 
         # Create plots if requested
+        
         if save_plots:
             try:
                 file_output_dir = output_dir / "plots" / dataset_index
