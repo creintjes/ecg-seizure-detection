@@ -71,3 +71,5 @@ reverse/117_window-joint_anomaly_score.pkl
 madrid_results_summary_20251017_092225.txt
 madrid_trailing_window_analyzer.log
 reprocess_incomplete_windows.log
+reverse/results_batch_no_window
+reverse/results_batch
