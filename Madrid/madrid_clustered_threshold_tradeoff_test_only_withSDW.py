@@ -592,7 +592,82 @@ class MadridClusteredThresholdTradeoffAnalyzerTestOnly:
                                 overall_stats['total_anomalies_before_clustering'] if overall_stats['total_anomalies_before_clustering'] > 0 else 0),
             'responder_analysis': responder_analysis
         }
-    
+
+    def get_per_seizure_detections(self, threshold: float, use_training_set: bool = False) -> List[Dict[str, Any]]:
+        """
+        Get per-seizure detection results for a specific threshold.
+
+        Args:
+            threshold: Anomaly score threshold to use
+            use_training_set: If True, evaluate on training set. If False, evaluate on test set.
+
+        Returns:
+            List of dictionaries with per-seizure detection info:
+            [{'subject': 'sub-098', 'run': 'run-03', 'seizure_idx': 0, 'detected': True}, ...]
+        """
+        all_json_files = list(self.results_dir.glob("madrid_windowed_results_*.json"))
+
+        # Filter for appropriate dataset
+        if use_training_set:
+            json_files = [f for f in all_json_files if self.is_training_file(f.name)]
+        else:
+            json_files = [f for f in all_json_files if self.is_test_file(f.name)]
+
+        per_seizure_results = []
+
+        for json_file in json_files:
+            try:
+                result_data = self.load_result_file(json_file)
+                if result_data is None:
+                    continue
+
+                # Extract basic info
+                input_data = result_data.get('input_data', {})
+                validation_data = result_data.get('validation_data', {})
+
+                subject_id = input_data.get('subject_id', 'unknown')
+                run_id = input_data.get('run_id', 'unknown')
+
+                # Skip saturated test runs (only when evaluating test set)
+                if not use_training_set and self.is_saturated_run(subject_id, run_id):
+                    continue
+
+                # Get anomalies at file level (filtered by threshold)
+                all_anomalies = self.extract_file_level_anomalies(result_data, threshold)
+
+                # Get seizures
+                ground_truth = validation_data.get('ground_truth', {})
+                seizure_windows = ground_truth.get('seizure_windows', [])
+                individual_seizures = self.group_seizures_by_time(seizure_windows)
+
+                # Apply time_180s clustering
+                clusters = self.time_based_clustering(all_anomalies, self.clustering_time_threshold)
+                representatives = [self.select_cluster_representative(cluster) for cluster in clusters]
+
+                # Check detection for each seizure
+                for seizure_idx, seizure in enumerate(individual_seizures):
+                    detected = False
+
+                    # Check if any representative overlaps with extended seizure window
+                    for rep in representatives:
+                        rep_time = rep['absolute_time']
+                        if seizure['extended_start_time'] <= rep_time <= seizure['extended_end_time']:
+                            detected = True
+                            break
+
+                    per_seizure_results.append({
+                        'subject': subject_id,
+                        'run': run_id,
+                        'seizure_idx': seizure_idx,
+                        'detected': detected
+                    })
+
+            except Exception as e:
+                print(f"Error processing {json_file} for per-seizure detections: {e}")
+                continue
+
+        return per_seizure_results
+
     def run_threshold_analysis(self, thresholds: List[float], use_training_set: bool = False) -> List[Dict[str, Any]]:
         """
         Run clustered metrics calculation for each threshold.
@@ -971,6 +1046,68 @@ class MadridClusteredThresholdTradeoffAnalyzerTestOnly:
             }
             json.dump(json_data, f, indent=2)
         print(f"Test results saved to: {test_json_path}")
+
+        # Step 8.5: Generate per-seizure detection CSV for best configs
+        print(f"\n{'='*60}")
+        print("STEP 8.5: Generating per-seizure detection CSV for best configs")
+        print(f"{'='*60}")
+
+        # Find best configs from test results
+        best_configs = {}
+
+        if test_results:
+            # Best Sensitivity
+            best_sens = max(test_results, key=lambda x: x['sensitivity'] if x['sensitivity'] is not None else 0)
+            best_configs['Sensitivity'] = best_sens
+
+            # Best FAR (lowest FAR with sensitivity > 0)
+            valid_results = [r for r in test_results if r['sensitivity'] is not None and r['sensitivity'] > 0]
+            if valid_results:
+                best_far = min(valid_results, key=lambda x: x['false_alarms_per_hour'])
+                best_configs['FAR'] = best_far
+
+            # Best HMS (Challenge Score)
+            # Calculate challenge score for each result
+            for r in test_results:
+                if r['sensitivity'] is not None:
+                    r['challenge_score'] = (r['sensitivity'] * 100) - (0.4 * r['false_alarms_per_hour'])
+
+            best_hms = max(test_results, key=lambda x: x.get('challenge_score', 0))
+            best_configs['HMS'] = best_hms
+
+            print(f"Found {len(best_configs)} best configurations")
+
+            # Collect per-seizure detections for each config
+            all_per_seizure_detections = []
+
+            for config_name, config_result in best_configs.items():
+                threshold = config_result['threshold']
+                print(f"Generating per-seizure detections for {config_name} (threshold={threshold:.6f})...")
+
+                per_seizure = self.get_per_seizure_detections(threshold, use_training_set=False)
+
+                # Add config and window_type to each entry
+                for detection in per_seizure:
+                    detection['config'] = config_name
+                    detection['window_type'] = 'window'
+                    all_per_seizure_detections.append(detection)
+
+            # Save per-seizure CSV
+            if all_per_seizure_detections:
+                import pandas as pd
+                per_seizure_df = pd.DataFrame(all_per_seizure_detections)
+
+                # Ensure column order
+                per_seizure_df = per_seizure_df[['subject', 'run', 'seizure_idx', 'detected', 'config', 'window_type']]
+
+                per_seizure_csv_path = self.output_dir / f"madrid_per_seizure_detections_window_{timestamp}.csv"
+                per_seizure_df.to_csv(per_seizure_csv_path, index=False)
+
+                print(f"Per-seizure detection CSV saved to: {per_seizure_csv_path}")
+                print(f"  Total records: {len(per_seizure_df)}")
+                print(f"  Configurations: {per_seizure_df['config'].unique().tolist()}")
+                print(f"  Unique subjects: {per_seizure_df['subject'].nunique()}")
+                print(f"  Total seizures: {per_seizure_df.groupby('config')['seizure_idx'].count().to_dict()}")
 
         # Step 9: Print comprehensive summary
         print(f"\n{'='*80}")

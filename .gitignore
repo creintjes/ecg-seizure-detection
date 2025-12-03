@@ -59,3 +59,15 @@ find_missing_ecg/seizure_loss_threshold_comparison_20251017_091038.txt
 find_missing_ecg/results/ecg_plots/saturated/saturated_1_sub-115_run-32.png
 find_missing_ecg/results/ecg_plots/saturated/saturated_2_sub-117_run-13.png
 synthetic_ecg_plots_sdw
+Madrid/results_madrid_old
+Madrid/results_madrid_dirty_data
+Madrid/results_madrid
+Madrid/results_madrid/SDW_CSV
+Madrid/different_responder_first_valid
+Madrid/different_responder_extended
+Madrid/different_responder_all
+Madrid/different_responder
+reverse/117_window-joint_anomaly_score.pkl
+madrid_results_summary_20251017_092225.txt
+madrid_trailing_window_analyzer.log
+reprocess_incomplete_windows.log
