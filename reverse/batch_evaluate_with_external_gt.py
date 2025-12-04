@@ -64,9 +64,24 @@ def get_events(mask) -> List[Tuple[int, int]]:
     return events
 
 
-def evaluate_event_detection(pred: np.ndarray, truth: np.ndarray, fs: float = 8.0) -> Dict[str, Any]:
-    """Evaluate event-based detection metrics."""
-    truth_events = get_events(truth)
+def evaluate_event_detection(pred: np.ndarray, truth: np.ndarray, fs: float = 8.0,
+                            truth_events: Optional[List[Tuple[int, int]]] = None) -> Dict[str, Any]:
+    """
+    Evaluate event-based detection metrics.
+
+    Args:
+        pred: Prediction mask
+        truth: Ground truth mask (may be expanded)
+        fs: Sampling rate
+        truth_events: Optional pre-computed truth events (for expanded labels with original positions)
+
+    Returns:
+        Dictionary with evaluation metrics
+    """
+    # Use provided truth_events or extract from truth mask
+    if truth_events is None:
+        truth_events = get_events(truth)
+
     pred_events = get_events(pred)
 
     TP = sum(1 for (ts, te) in truth_events if pred[ts:te+1].any())
@@ -137,9 +152,56 @@ def extract_dataset_index(pkl_path: Path) -> str:
     return None
 
 
-def load_ground_truth_from_external(gt_dir: Path, dataset_index: str, pattern: str = '*joint_anomaly_score.pkl') -> Optional[np.ndarray]:
+def expand_labels_keep_seizure_events(labels: np.ndarray,
+                                      fs: float = 8.0,
+                                      pre_minutes: float = 5.0,
+                                      post_minutes: float = 3.0) -> Tuple[np.ndarray, List[Tuple[int, int]]]:
+    """
+    Expand ground truth labels temporally while preserving original seizure event positions.
+
+    Expands each seizure by pre_minutes before and post_minutes after.
+    Overlapping expanded regions are allowed (merged in the output labels),
+    but original seizure positions are tracked separately.
+
+    Args:
+        labels: Original boolean labels (1D array)
+        fs: Sampling rate in Hz (default: 8.0)
+        pre_minutes: Minutes to expand before seizure onset
+        post_minutes: Minutes to expand after seizure end
+
+    Returns:
+        Tuple of (expanded_labels, original_seizure_events)
+        - expanded_labels: Boolean array with temporally expanded labels
+        - original_seizure_events: List of (start, end) tuples for original seizures
+    """
+    labels = np.asarray(labels).astype(bool)
+    expanded = np.zeros_like(labels, dtype=bool)
+
+    # Extract original seizure events
+    original_events = get_events(labels)
+
+    # Calculate expansion in samples
+    pre_samples = int(pre_minutes * 60 * fs)
+    post_samples = int(post_minutes * 60 * fs)
+
+    n = len(labels)
+
+    # Expand each seizure event
+    for start, end in original_events:
+        # Expand boundaries
+        expanded_start = max(0, start - pre_samples)
+        expanded_end = min(n - 1, end + post_samples)
+
+        # Mark expanded region (overlaps are OK, will be merged)
+        expanded[expanded_start:expanded_end + 1] = True
+
+    return expanded, original_events
+
+
+def load_ground_truth_from_external(gt_dir: Path, dataset_index: str, pattern: str = '*joint_anomaly_score.pkl') -> Optional[Tuple[np.ndarray, List[Tuple[int, int]]]]:
     """
     Load ground truth Y from external directory based on dataset_index matching.
+    Applies temporal expansion (5 min pre, 3 min post) to the labels.
 
     Args:
         gt_dir: Directory containing ground truth pkl files
@@ -147,7 +209,9 @@ def load_ground_truth_from_external(gt_dir: Path, dataset_index: str, pattern: s
         pattern: File pattern to search for
 
     Returns:
-        Y array if found, None otherwise
+        Tuple of (expanded_Y, original_events) if found, None otherwise
+        - expanded_Y: Temporally expanded boolean labels
+        - original_events: List of (start, end) tuples for original seizures
     """
     # Search for files matching the dataset_index
     for gt_file in gt_dir.rglob(pattern):
@@ -162,7 +226,14 @@ def load_ground_truth_from_external(gt_dir: Path, dataset_index: str, pattern: s
                 if Y is not None:
                     if isinstance(Y, torch.Tensor):
                         Y = Y.cpu().numpy()
-                    return Y.astype(bool)
+                    Y = Y.astype(bool)
+
+                    # Expand labels while keeping track of original events
+                    expanded_Y, original_events = expand_labels_keep_seizure_events(
+                        Y, fs=8.0, pre_minutes=5.0, post_minutes=3.0
+                    )
+
+                    return expanded_Y, original_events
                 else:
                     warnings.warn(f"GT file {gt_file.name} has no 'Y' key")
                     return None
@@ -228,13 +299,14 @@ def evaluate_single_file(pkl_path: Path, scale: float, clustering_strategy: str,
 
         # Load Y - either from external GT dir or from this file
         dataset_index = data.get('dataset_index', pkl_path.stem.split('_')[0])
+        original_truth_events = None  # Will store original seizure positions
 
         if gt_dir is not None:
-            # Try to load Y from external GT directory
-            Y_external = load_ground_truth_from_external(gt_dir, str(dataset_index))
+            # Try to load Y from external GT directory (with expansion)
+            result = load_ground_truth_from_external(gt_dir, str(dataset_index))
 
-            if Y_external is not None:
-                Y = Y_external
+            if result is not None:
+                Y, original_truth_events = result
                 # Verify length matches
                 if len(Y) != len(a_final):
                     warnings.warn(f"GT length mismatch for {pkl_path.name}: "
@@ -245,11 +317,13 @@ def evaluate_single_file(pkl_path: Path, scale: float, clustering_strategy: str,
                 warnings.warn(f"No external GT found for dataset_index={dataset_index} ({pkl_path.name}). Skipping.")
                 return None, []
         else:
-            # Use Y from this file
+            # Use Y from this file (no expansion, might already be expanded)
             Y = data['Y']
             if isinstance(Y, torch.Tensor):
                 Y = Y.cpu().numpy()
             Y = Y.astype(bool)
+            # Extract events from Y as-is
+            original_truth_events = None  # Will be extracted later
 
         final_threshold_original = data['final_threshold']
 
@@ -266,8 +340,11 @@ def evaluate_single_file(pkl_path: Path, scale: float, clustering_strategy: str,
         # Baseline prediction
         predicted = a_final > scaled_threshold
 
-        # Evaluate baseline
-        metrics_baseline = evaluate_event_detection(predicted, Y, fs=8.0)
+        # Evaluate baseline (pass original_truth_events if available)
+        metrics_baseline = evaluate_event_detection(
+            predicted, Y, fs=8.0,
+            truth_events=original_truth_events
+        )
 
         # Apply clustering if available
         metrics_clustered = None
@@ -276,7 +353,13 @@ def evaluate_single_file(pkl_path: Path, scale: float, clustering_strategy: str,
 
         if CLUSTERING_AVAILABLE:
             try:
-                truth_events = get_events(Y)
+                # Use original seizure events if available (from expanded external GT)
+                # Otherwise extract from Y (which might already be expanded in the pkl)
+                if original_truth_events is not None:
+                    truth_events = original_truth_events
+                else:
+                    truth_events = get_events(Y)
+
                 gt_intervals = [(s/8.0, (e+1)/8.0) for s, e in truth_events]
 
                 results_cluster = analyze_detection_mask(
@@ -297,7 +380,10 @@ def evaluate_single_file(pkl_path: Path, scale: float, clustering_strategy: str,
                 n_representatives = len(representatives)
 
                 clustered_mask = get_clustered_mask_from_representatives(representatives, len(Y), 8.0)
-                metrics_clustered = evaluate_event_detection(clustered_mask, Y, fs=8.0)
+                metrics_clustered = evaluate_event_detection(
+                    clustered_mask, Y, fs=8.0,
+                    truth_events=original_truth_events
+                )
 
             except Exception as e:
                 warnings.warn(f"Clustering failed for {pkl_path.name}: {e}")
@@ -368,12 +454,18 @@ def evaluate_single_file(pkl_path: Path, scale: float, clustering_strategy: str,
 
         # Generate per-seizure detection results
         seizure_detections = []
-        truth_events = get_events(Y)
 
-        if len(truth_events) > 0 and metrics_clustered:
+        # Use original seizure events if available (from expanded external GT)
+        # Otherwise extract from Y
+        if original_truth_events is not None:
+            truth_events_for_detection = original_truth_events
+        else:
+            truth_events_for_detection = get_events(Y)
+
+        if len(truth_events_for_detection) > 0 and metrics_clustered:
             # Only generate seizure detections if there are GT seizures and clustering succeeded
             seizure_detections = check_seizure_detections(
-                truth_events,
+                truth_events_for_detection,
                 clustered_mask,
                 subject_id
             )
