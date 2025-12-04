@@ -3,7 +3,8 @@
 Create Seizure Type Mapping CSV for Test Set
 Generates a CSV file with columns: subject, seizure_idx, seizure_type
 - Only includes test subjects (sub-097 to sub-125)
-- Excludes saturated runs
+- Excludes saturated runs (predefined list)
+- Excludes runs without ECG files
 - seizure_idx is sequential per subject (across all runs)
 - Only includes runs with seizures
 """
@@ -82,6 +83,30 @@ class SeizureTypeMappingCreator:
 
         return sorted(run_ids)
 
+    def has_ecg_file(self, subject_id: str, run_id: str) -> bool:
+        """
+        Check if ECG file exists for a given subject and run.
+
+        Args:
+            subject_id: Subject ID (e.g., "sub-097")
+            run_id: Run ID (e.g., "run-01")
+
+        Returns:
+            True if ECG file exists, False otherwise
+        """
+        # Path to ECG directory
+        ecg_dir = self.seizeit2_data_path / subject_id / "ses-01" / "ecg"
+
+        # Check if ECG directory exists
+        if not ecg_dir.exists():
+            return False
+
+        # Check for ECG file
+        # Format: sub-098_ses-01_task-szMonitoring_run-01_ecg.edf
+        ecg_file = ecg_dir / f"{subject_id}_ses-01_task-szMonitoring_{run_id}_ecg.edf"
+
+        return ecg_file.exists()
+
     def load_seizure_types(self, subject_id: str, run_id: str) -> List[Tuple[str, float, float]]:
         """
         Load seizure types and timings for a specific subject and run.
@@ -150,6 +175,9 @@ class SeizureTypeMappingCreator:
 
         total_seizures = 0
         subjects_with_seizures = 0
+        skipped_saturated = 0
+        skipped_no_ecg = 0
+        skipped_no_seizures = 0
 
         # Process each test subject
         for subject_id in self.test_subjects:
@@ -171,12 +199,20 @@ class SeizureTypeMappingCreator:
                 # Skip saturated runs
                 if (subject_id, run_id) in SATURATED_TEST_RUNS:
                     print(f"  Skipping saturated run: {run_id}")
+                    skipped_saturated += 1
+                    continue
+
+                # Skip runs without ECG file
+                if not self.has_ecg_file(subject_id, run_id):
+                    print(f"  Skipping run without ECG: {run_id}")
+                    skipped_no_ecg += 1
                     continue
 
                 # Load seizure types for this run
                 seizures = self.load_seizure_types(subject_id, run_id)
 
                 if not seizures:
+                    skipped_no_seizures += 1
                     continue
 
                 # Add each seizure to mapping
@@ -208,6 +244,11 @@ class SeizureTypeMappingCreator:
         print(f"Mapping complete!")
         print(f"Total subjects with seizures: {subjects_with_seizures}/{len(self.test_subjects)}")
         print(f"Total seizures: {total_seizures}")
+        print(f"\nSkipped runs:")
+        print(f"  Saturated: {skipped_saturated}")
+        print(f"  No ECG file: {skipped_no_ecg}")
+        print(f"  No seizures: {skipped_no_seizures}")
+        print(f"  Total skipped: {skipped_saturated + skipped_no_ecg + skipped_no_seizures}")
         print("="*60)
 
         return mapping_data
