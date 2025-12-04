@@ -140,7 +140,8 @@ def produce_mp_results(
     Returns:
         tuple: (loaded_recs, loaded_recs_resp, sensitivity, false_alarms_per_hour, resp_sensitivity, resp_false_alarms_per_hour, overview)
     """
-    
+    subject_metric_rows = []
+
     # basic validation
     if not recording_list_excel:
         return 0, 0, 0.0, 0.0, 0.0, 0.0, {}
@@ -257,6 +258,23 @@ def produce_mp_results(
             if loaded_recs % batch_size_load == 0 and verbose:
                 print(f"Processed {loaded_recs} records (last: {subject}_{run})")
 
+        # compute per-subject metrics
+        tp_sub = sum(true_positives_sub)
+        fp_sub = sum(false_positives_sub)
+        hours_sub_total = sum(hours_sub)
+        events_sub = sum(total_events_sub)
+
+        sens_sub = 0.0 if events_sub == 0 else tp_sub / events_sub
+        far_sub = 0.0 if hours_sub_total == 0 else fp_sub / hours_sub_total
+
+        subject_metric_rows.append({
+            "subject": subject,
+            "sensitivity": sens_sub,
+            "false_alarms_per_hour": far_sub
+        })
+
+
+
         # subject-level aggregation for responders if needed
         if responders and subject in responders:
             resp_tp_list.append(sum(true_positives_sub))
@@ -285,6 +303,8 @@ def produce_mp_results(
     false_alarms_per_hour = 0.0 if sum(hours_list) == 0 else sum(fp_list) / sum(hours_list)
 
     overview = {"# TP": int(sum(tp_list)), "# FP": int(sum(fp_list)), "# Total seizures": int(sum(total_events_list))}
+    df_subjects = pd.DataFrame(subject_metric_rows)
+    df_subjects.to_excel(os.path.join(f"subject_level_metrics{per_seizure_outfile[16:-5]}.xlsx"), index=False)
     return loaded_recs, loaded_recs_resp, sensitivity, false_alarms_per_hour, resp_sensitivity, resp_false_alarms_per_hour, overview
 
 
