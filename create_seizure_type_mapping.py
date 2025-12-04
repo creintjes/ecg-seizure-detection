@@ -53,7 +53,7 @@ class SeizureTypeMappingCreator:
 
     def get_available_runs(self, subject_id: str) -> List[str]:
         """
-        Get all available run IDs for a subject.
+        Get all available run IDs for a subject by checking TSV files.
 
         Args:
             subject_id: Subject ID (e.g., "sub-097")
@@ -61,16 +61,26 @@ class SeizureTypeMappingCreator:
         Returns:
             List of run IDs (e.g., ["run-01", "run-02", ...])
         """
-        subject_dir = self.seizeit2_data_path / subject_id
+        # Path to EEG directory with event files
+        eeg_dir = self.seizeit2_data_path / subject_id / "ses-01" / "eeg"
 
-        if not subject_dir.exists():
+        if not eeg_dir.exists():
             return []
 
-        # Find all run directories
-        run_dirs = [d.name for d in subject_dir.iterdir()
-                   if d.is_dir() and d.name.startswith('run-')]
+        # Find all event TSV files
+        event_files = list(eeg_dir.glob(f"{subject_id}_ses-01_task-szMonitoring_run-*_events.tsv"))
 
-        return sorted(run_dirs)
+        # Extract run IDs from filenames
+        run_ids = []
+        for event_file in event_files:
+            # Filename format: sub-097_ses-01_task-szMonitoring_run-01_events.tsv
+            parts = event_file.stem.split('_')
+            for part in parts:
+                if part.startswith('run-'):
+                    run_ids.append(part)
+                    break
+
+        return sorted(run_ids)
 
     def load_seizure_types(self, subject_id: str, run_id: str) -> List[Tuple[str, float, float]]:
         """
@@ -85,34 +95,41 @@ class SeizureTypeMappingCreator:
             Empty list if no seizures or loading fails
         """
         try:
-            # Load annotation
+            # Load annotation using SeizeIT2 Annotation class
+            # annotation_path is the root directory (e.g., /path/to/ds005873-1.1.0/)
+            # recording is [subject_id, run_id]
             annotation = Annotation.loadAnnotation(
                 str(self.seizeit2_data_path),
                 [subject_id, run_id]
             )
 
             # Check if annotation has seizure information
-            if not hasattr(annotation, 'types') or not annotation.types:
+            # annotation.types contains the eventType values (already filtered, no 'bckg' or 'impd')
+            # annotation.events contains [[start, end], [start, end], ...] in seconds
+            if not annotation.types or not annotation.events:
                 return []
 
             # Collect seizures with types and timings
             seizures = []
 
-            # Get starts and ends if available
-            starts = annotation.starts if hasattr(annotation, 'starts') else []
-            ends = annotation.ends if hasattr(annotation, 'ends') else []
-
-            # Match types with timings
+            # Match types with events (should have same length)
             for i, seizure_type in enumerate(annotation.types):
-                start_time = starts[i] if i < len(starts) else 0.0
-                end_time = ends[i] if i < len(ends) else 0.0
+                if i >= len(annotation.events):
+                    break
+
+                start_time, end_time = annotation.events[i]
 
                 # Only include actual seizures (filter out non-seizure events)
-                if seizure_type and (seizure_type.startswith('sz_') or 'seizure' in seizure_type.lower()):
+                # The Annotation class already filters out 'bckg' and 'impd'
+                # We want to keep only events that start with 'sz_'
+                if seizure_type and seizure_type.startswith('sz_'):
                     seizures.append((seizure_type, start_time, end_time))
 
             return seizures
 
+        except FileNotFoundError as e:
+            # TSV file doesn't exist for this run - expected for some runs
+            return []
         except Exception as e:
             print(f"Warning: Could not load annotations for {subject_id} {run_id}: {e}")
             return []
