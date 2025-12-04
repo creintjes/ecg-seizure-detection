@@ -105,13 +105,49 @@ def get_clustered_mask_from_representatives(representatives: List[Dict[str, Any]
     return mask
 
 
+def extract_subject_from_filename(filename: str) -> str:
+    """Extract subject ID from filename as fallback."""
+    # Try patterns like "117_window..." or "sub-117_..."
+    import re
+    match = re.search(r'(?:sub-)?(\d{3})', filename)
+    if match:
+        return f"sub-{match.group(1)}"
+    return "unknown"
+
+
+def check_seizure_detections(truth_events: List[Tuple[int, int]],
+                             clustered_mask: np.ndarray,
+                             subject_id: str) -> List[Dict[str, Any]]:
+    """
+    Check which ground truth seizures were detected by clustered predictions.
+
+    Returns:
+        List of dicts with seizure-level detection results
+    """
+    seizure_detections = []
+
+    for seizure_idx, (start, end) in enumerate(truth_events):
+        # Check if any clustered prediction overlaps with this GT seizure
+        detected = bool(clustered_mask[start:end+1].any())
+
+        seizure_detections.append({
+            'subject': subject_id,
+            'seizure_idx': seizure_idx,
+            'detected': detected
+        })
+
+    return seizure_detections
+
+
 def evaluate_single_file(pkl_path: Path, scale: float, clustering_strategy: str,
-                         output_dir: Path, save_plots: bool = True) -> Dict[str, Any]:
+                         output_dir: Path, save_plots: bool = True) -> Tuple[Optional[Dict[str, Any]], List[Dict[str, Any]]]:
     """
     Evaluate a single pickle file.
 
     Returns:
-        Dictionary with evaluation results, or None if failed
+        Tuple of (file_metrics_dict, seizure_detections_list)
+        file_metrics_dict: Dictionary with evaluation results, or None if failed
+        seizure_detections_list: List of per-seizure detection results
     """
     try:
         # Load data
@@ -131,7 +167,10 @@ def evaluate_single_file(pkl_path: Path, scale: float, clustering_strategy: str,
         dataset_index = data.get('dataset_index', pkl_path.stem.split('_')[0])
 
         # Get subject and run IDs (if available)
-        subject_id = data.get('subject_id', f'sub-{dataset_index}')
+        # Try pkl first, fallback to filename parsing
+        subject_id = data.get('subject_id', None)
+        if not subject_id or subject_id == 'unknown':
+            subject_id = extract_subject_from_filename(pkl_path.name)
         run_id = data.get('run_id', 'unknown')
 
         # Calculate scaled threshold
@@ -240,11 +279,23 @@ def evaluate_single_file(pkl_path: Path, scale: float, clustering_strategy: str,
                                                  metrics_baseline['false_alarm_rate_per_hour'] * 100) if metrics_baseline['false_alarm_rate_per_hour'] > 0 else 0.0
             })
 
-        return result
+        # Generate per-seizure detection results
+        seizure_detections = []
+        truth_events = get_events(Y)
+
+        if len(truth_events) > 0 and metrics_clustered:
+            # Only generate seizure detections if there are GT seizures and clustering succeeded
+            seizure_detections = check_seizure_detections(
+                truth_events,
+                clustered_mask,
+                subject_id
+            )
+
+        return result, seizure_detections
 
     except Exception as e:
         warnings.warn(f"Failed to process {pkl_path.name}: {e}")
-        return None
+        return None, []
 
 
 def create_plots(a_final, Y, predicted, clustered_mask, threshold,
@@ -410,6 +461,8 @@ def main():
     parser.add_argument('--clustering', type=str, default='time_90s', help='Clustering strategy (default: time_90s)')
     parser.add_argument('--pattern', type=str, default='*joint_anomaly_score.pkl', help='File pattern (default: *joint_anomaly_score.pkl)')
     parser.add_argument('--no_plots', action='store_true', help='Skip individual plot generation')
+    parser.add_argument('--config', type=str, required=True, help='Configuration name (e.g., "baseline", "optimized")')
+    parser.add_argument('--window_type', type=str, required=True, help='Window type (e.g., "window", "no_window")')
 
     args = parser.parse_args()
 
@@ -435,6 +488,8 @@ def main():
     print(f"Input directory: {input_dir}")
     print(f"Output directory: {output_dir}")
     print(f"Files found: {len(pkl_files)}")
+    print(f"Config: {args.config}")
+    print(f"Window type: {args.window_type}")
     print(f"Scale: {args.scale}")
     print(f"Clustering: {args.clustering}")
     print(f"Clustering available: {CLUSTERING_AVAILABLE}")
@@ -443,10 +498,11 @@ def main():
 
     # Process files
     results = []
+    all_seizure_detections = []
     failed_files = []
 
     for pkl_file in tqdm(pkl_files, desc="Processing files"):
-        result = evaluate_single_file(
+        result, seizure_detections = evaluate_single_file(
             pkl_file,
             scale=args.scale,
             clustering_strategy=args.clustering,
@@ -456,6 +512,11 @@ def main():
 
         if result is not None:
             results.append(result)
+            # Add config and window_type to each seizure detection
+            for sd in seizure_detections:
+                sd['config'] = args.config
+                sd['window_type'] = args.window_type
+            all_seizure_detections.extend(seizure_detections)
         else:
             failed_files.append(pkl_file.name)
 
@@ -467,6 +528,20 @@ def main():
     csv_path = output_dir / f'batch_results_{timestamp}.csv'
     results_df.to_csv(csv_path, index=False)
     print(f"\n✓ Saved CSV: {csv_path}")
+
+    # Save seizure-level detections CSV
+    if all_seizure_detections:
+        seizure_df = pd.DataFrame(all_seizure_detections)
+        # Reorder columns: subject, seizure_idx, detected, config, window_type
+        seizure_df = seizure_df[['subject', 'seizure_idx', 'detected', 'config', 'window_type']]
+        seizure_csv_path = output_dir / f'seizure_detections_{timestamp}.csv'
+        seizure_df.to_csv(seizure_csv_path, index=False)
+        print(f"✓ Saved seizure detections CSV: {seizure_csv_path}")
+        print(f"  Total seizures: {len(seizure_df)}")
+        print(f"  Detected: {seizure_df['detected'].sum()} ({seizure_df['detected'].sum()/len(seizure_df)*100:.1f}%)")
+    else:
+        print("⚠ No seizure detections to save (no files with ground truth seizures)")
+
 
     # Generate summary report
     report_path = output_dir / f'summary_report_{timestamp}.txt'
