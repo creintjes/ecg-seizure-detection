@@ -18,6 +18,9 @@ import sys
 import argparse
 from pathlib import Path
 from typing import List, Tuple, Dict, Any, Optional
+from multiprocessing import Pool, cpu_count
+import matplotlib
+matplotlib.use('Agg')  # Non-interactive backend for parallel processing
 import matplotlib.pyplot as plt
 import pandas as pd
 from datetime import datetime
@@ -243,6 +246,20 @@ def load_ground_truth_from_external(gt_dir: Path, dataset_index: str, pattern: s
                 return None
 
     return None
+
+
+def process_file_worker(args: Tuple) -> Tuple[Optional[Dict[str, Any]], List[Dict[str, Any]]]:
+    """
+    Worker function for parallel processing of files.
+
+    Args:
+        args: Tuple of (pkl_path, scale, clustering_strategy, output_dir, save_plots, gt_dir)
+
+    Returns:
+        Tuple of (file_metrics_dict, seizure_detections_list)
+    """
+    pkl_path, scale, clustering_strategy, output_dir, save_plots, gt_dir = args
+    return evaluate_single_file(pkl_path, scale, clustering_strategy, output_dir, save_plots, gt_dir)
 
 
 def check_seizure_detections(truth_events: List[Tuple[int, int]],
@@ -648,6 +665,7 @@ def main():
     parser.add_argument('--no_plots', action='store_true', help='Skip individual plot generation')
     parser.add_argument('--config', type=str, required=True, help='Configuration name (e.g., "baseline", "optimized")')
     parser.add_argument('--window_type', type=str, required=True, help='Window type (e.g., "window", "no_window")')
+    parser.add_argument('--workers', type=int, default=4, help='Number of parallel workers (default: 4)')
 
     args = parser.parse_args()
 
@@ -674,7 +692,7 @@ def main():
         return
 
     print("="*80)
-    print("TIMEVQVAE-AD BATCH EVALUATION (WITH EXTERNAL GT)")
+    print("TIMEVQVAE-AD BATCH EVALUATION (WITH EXTERNAL GT + PARALLEL)")
     print("="*80)
     print(f"Input directory (scores): {input_dir}")
     print(f"Ground truth directory: {gt_dir if gt_dir else 'SAME (use scores Y)'}")
@@ -686,32 +704,37 @@ def main():
     print(f"Clustering: {args.clustering}")
     print(f"Clustering available: {CLUSTERING_AVAILABLE}")
     print(f"Generate plots: {not args.no_plots}")
+    print(f"Workers: {args.workers}")
     print()
 
-    # Process files
+    # Prepare arguments for parallel processing
+    worker_args = [
+        (pkl_file, args.scale, args.clustering, output_dir, not args.no_plots, gt_dir)
+        for pkl_file in pkl_files
+    ]
+
+    # Process files in parallel
     results = []
     all_seizure_detections = []
     failed_files = []
 
-    for pkl_file in tqdm(pkl_files, desc="Processing files"):
-        result, seizure_detections = evaluate_single_file(
-            pkl_file,
-            scale=args.scale,
-            clustering_strategy=args.clustering,
-            output_dir=output_dir,
-            save_plots=not args.no_plots,
-            gt_dir=gt_dir  # Pass external GT directory
-        )
-
-        if result is not None:
-            results.append(result)
-            # Add config and window_type to each seizure detection
-            for sd in seizure_detections:
-                sd['config'] = args.config
-                sd['window_type'] = args.window_type
-            all_seizure_detections.extend(seizure_detections)
-        else:
-            failed_files.append(pkl_file.name)
+    with Pool(processes=args.workers) as pool:
+        # Use imap for progress tracking with tqdm
+        for idx, (result, seizure_detections) in enumerate(tqdm(
+            pool.imap(process_file_worker, worker_args),
+            total=len(pkl_files),
+            desc="Processing files"
+        )):
+            if result is not None:
+                results.append(result)
+                # Add config and window_type to each seizure detection
+                for sd in seizure_detections:
+                    sd['config'] = args.config
+                    sd['window_type'] = args.window_type
+                all_seizure_detections.extend(seizure_detections)
+            else:
+                # Track failed file using the index
+                failed_files.append(worker_args[idx][0].name)
 
     # Create DataFrame
     results_df = pd.DataFrame(results)
