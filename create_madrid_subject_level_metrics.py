@@ -43,16 +43,39 @@ class MadridSubjectMetricsCreator:
         self.pre_seizure_seconds = pre_seizure_window * 60.0
         self.post_seizure_seconds = post_seizure_window * 60.0
 
+        # Training set subjects (sub-001 to sub-096)
+        self.training_subjects = [f"sub-{i:03d}" for i in range(1, 97)]
+
         # Test set subjects (sub-097 to sub-125)
         self.test_subjects = [f"sub-{i:03d}" for i in range(97, 126)]
 
-    def load_raw_results(self) -> List[Dict]:
-        """Load all raw Madrid JSON result files."""
+        # Saturated test runs to exclude
+        self.saturated_test_runs = {
+            ("sub-099", "run-01"), ("sub-114", "run-03"), ("sub-115", "run-11"),
+            ("sub-115", "run-32"), ("sub-117", "run-13"), ("sub-118", "run-07"),
+            ("sub-119", "run-24"), ("sub-119", "run-36"), ("sub-123", "run-22"),
+            ("sub-124", "run-19"), ("sub-124", "run-43"), ("sub-124", "run-63"),
+            ("sub-125", "run-36"), ("sub-125", "run-67")
+        }
+
+    def load_raw_results(self, subset: str = 'test', exclude_saturated: bool = False) -> List[Dict]:
+        """
+        Load raw Madrid JSON result files.
+
+        Args:
+            subset: Which subset to load - 'training', 'test', or 'both'
+            exclude_saturated: If True, exclude saturated test runs
+
+        Returns:
+            List of result dictionaries
+        """
         json_files = list(self.raw_data_dir.glob("madrid_windowed_results_*.json"))
 
         print(f"Found {len(json_files)} raw result files")
 
         results = []
+        skipped_saturated = 0
+
         for json_file in json_files:
             try:
                 with open(json_file, 'r') as f:
@@ -62,8 +85,23 @@ class MadridSubjectMetricsCreator:
                 subject_id = data['input_data']['subject_id']
                 run_id = data['input_data']['run_id']
 
-                # Only process test set
-                if subject_id not in self.test_subjects:
+                # Filter by subset
+                if subset == 'training':
+                    if subject_id not in self.training_subjects:
+                        continue
+                elif subset == 'test':
+                    if subject_id not in self.test_subjects:
+                        continue
+                elif subset == 'both':
+                    # Include all subjects
+                    if subject_id not in self.training_subjects and subject_id not in self.test_subjects:
+                        continue
+                else:
+                    raise ValueError(f"Invalid subset: {subset}. Must be 'training', 'test', or 'both'")
+
+                # Exclude saturated runs if requested
+                if exclude_saturated and (subject_id, run_id) in self.saturated_test_runs:
+                    skipped_saturated += 1
                     continue
 
                 results.append({
@@ -77,7 +115,10 @@ class MadridSubjectMetricsCreator:
                 print(f"Error loading {json_file}: {e}")
                 continue
 
-        print(f"Loaded {len(results)} test set files")
+        print(f"Loaded {len(results)} files from {subset} set")
+        if exclude_saturated and skipped_saturated > 0:
+            print(f"Excluded {skipped_saturated} saturated runs")
+
         return results
 
     def extract_seizures(self, result: Dict) -> List[Dict]:
@@ -329,37 +370,38 @@ class MadridSubjectMetricsCreator:
             'total_false_positives': total_false_positives
         }
 
-    def find_best_threshold(self, results: List[Dict],
+    def find_best_threshold(self, training_results: List[Dict], test_results: List[Dict],
                            use_extended_window: bool = False,
                            optimization_target: str = 'sensitivity',
-                           n_thresholds: int = 100) -> Tuple[float, Dict[str, Dict]]:
+                           n_thresholds: int = 100) -> Tuple[float, Dict[str, Dict], Dict]:
         """
-        Find best threshold based on GLOBAL metrics (like process_madrid_results.py).
-        Then calculate per-subject metrics with that threshold.
+        Find best threshold based on GLOBAL metrics on training data.
+        Then calculate per-subject metrics on test data with that threshold.
 
         Args:
-            results: List of raw result dictionaries
+            training_results: Training data for threshold selection
+            test_results: Test data for final evaluation
             use_extended_window: Use extended detection window
             optimization_target: 'sensitivity', 'far', or 'hms'
             n_thresholds: Number of thresholds to test
 
         Returns:
-            Tuple of (best_threshold, subject_metrics_dict)
+            Tuple of (best_threshold, test_subject_metrics_dict, global_test_metrics_dict)
         """
         # Determine clustering strategy based on window type
         clustering_time = 180.0 if use_extended_window else 600.0
 
-        # Test thresholds from 0.0 to 1.0
+        # Test thresholds from 0.0 to 1.0 on TRAINING data
         thresholds = np.linspace(0.0, 1.0, n_thresholds)
 
         evaluations = []
         for threshold in thresholds:
             eval_result = self.evaluate_threshold_global(
-                results, threshold, clustering_time, use_extended_window
+                training_results, threshold, clustering_time, use_extended_window
             )
             evaluations.append(eval_result)
 
-        # Find best threshold based on global metrics
+        # Find best threshold based on global training metrics
         if optimization_target == 'sensitivity':
             # Maximize global sensitivity
             best_eval = max(evaluations, key=lambda x: x['sensitivity'])
@@ -379,24 +421,51 @@ class MadridSubjectMetricsCreator:
 
         best_threshold = best_eval['threshold']
 
-        # Now calculate per-subject metrics with the best threshold
-        subject_metrics = self.evaluate_threshold_per_subject(
-            results, best_threshold, clustering_time, use_extended_window
+        # Now calculate per-subject metrics on TEST data with the best threshold
+        test_subject_metrics = self.evaluate_threshold_per_subject(
+            test_results, best_threshold, clustering_time, use_extended_window
         )
 
-        return best_threshold, subject_metrics
+        # Also calculate global test metrics for reporting
+        global_test_metrics = self.evaluate_threshold_global(
+            test_results, best_threshold, clustering_time, use_extended_window
+        )
+
+        return best_threshold, test_subject_metrics, global_test_metrics
 
     def create_subject_metrics_csv(self, output_file: Path, n_thresholds: int = 100):
         """
         Create subject-level metrics CSV in the same format as merged_mp_results.csv
 
+        Strategy:
+        1. Load training data (sub-001 to sub-096)
+        2. Load test data (sub-097 to sub-125, excluding saturated runs)
+        3. Find best thresholds using training data
+        4. Apply best thresholds to test data
+        5. Output per-subject metrics for test data only
+
         Output columns: subject, sensitivity, false_alarms_per_hour, HMS, config, window_type
         """
-        # Load raw results
-        results = self.load_raw_results()
+        print(f"\n{'='*80}")
+        print(f"STEP 1: LOAD TRAINING DATA")
+        print(f"{'='*80}")
 
-        if not results:
-            print("No raw results found!")
+        # Load training data for threshold selection
+        training_results = self.load_raw_results(subset='training', exclude_saturated=False)
+
+        if not training_results:
+            print("ERROR: No training data found!")
+            return
+
+        print(f"\n{'='*80}")
+        print(f"STEP 2: LOAD TEST DATA (excluding saturated runs)")
+        print(f"{'='*80}")
+
+        # Load test data (excluding saturated runs) for final evaluation
+        test_results = self.load_raw_results(subset='test', exclude_saturated=True)
+
+        if not test_results:
+            print("ERROR: No test data found!")
             return
 
         all_metrics = []
@@ -407,35 +476,31 @@ class MadridSubjectMetricsCreator:
             clustering_time = 180.0 if use_extended_window else 600.0
 
             print(f"\n{'='*80}")
-            print(f"Processing {window_type} (clustering: {clustering_time}s)")
+            print(f"STEP 3: FIND BEST THRESHOLDS ON TRAINING DATA ({window_type})")
             print(f"{'='*80}")
 
             # Find best configurations for each optimization target
             for config_name in ['Sensitivity', 'FAR', 'HMS']:
-                print(f"\nFinding best threshold for {config_name} (GLOBAL optimization)...")
+                print(f"\nFinding best threshold for {config_name} using TRAINING data...")
 
-                best_threshold, subject_metrics = self.find_best_threshold(
-                    results,
+                best_threshold, test_subject_metrics, global_test_metrics = self.find_best_threshold(
+                    training_results,
+                    test_results,
                     use_extended_window=use_extended_window,
                     optimization_target=config_name.lower(),
                     n_thresholds=n_thresholds
                 )
 
-                # Calculate global metrics at this threshold for display
-                global_eval = self.evaluate_threshold_global(
-                    results, best_threshold, clustering_time, use_extended_window
-                )
+                print(f"  Best threshold (from training): {best_threshold:.4f}")
+                print(f"  Test global sensitivity: {global_test_metrics['sensitivity']:.4f} "
+                      f"({global_test_metrics['detected_seizures']}/{global_test_metrics['total_seizures']} seizures)")
+                print(f"  Test global FAR: {global_test_metrics['far']:.4f} events/hour")
+                print(f"  Test global HMS: {global_test_metrics['hms']:.4f}")
+                print(f"  Test per-subject avg sensitivity: {np.mean([m['sensitivity'] for m in test_subject_metrics.values()]):.4f}")
+                print(f"  Test per-subject avg FAR: {np.mean([m['false_alarms_per_hour'] for m in test_subject_metrics.values()]):.4f}")
 
-                print(f"  Best threshold: {best_threshold:.4f}")
-                print(f"  Global sensitivity: {global_eval['sensitivity']:.4f} "
-                      f"({global_eval['detected_seizures']}/{global_eval['total_seizures']} seizures)")
-                print(f"  Global FAR: {global_eval['far']:.4f} events/hour")
-                print(f"  Global HMS: {global_eval['hms']:.4f}")
-                print(f"  Per-subject avg sensitivity: {np.mean([m['sensitivity'] for m in subject_metrics.values()]):.4f}")
-                print(f"  Per-subject avg FAR: {np.mean([m['false_alarms_per_hour'] for m in subject_metrics.values()]):.4f}")
-
-                # Add to results
-                for subject, metrics in subject_metrics.items():
+                # Add to results (TEST subject metrics only)
+                for subject, metrics in test_subject_metrics.items():
                     all_metrics.append({
                         'subject': subject,
                         'sensitivity': metrics['sensitivity'],
@@ -462,6 +527,7 @@ class MadridSubjectMetricsCreator:
         print(f"Unique subjects: {df['subject'].nunique()}")
         print(f"Configurations: {df['config'].unique().tolist()}")
         print(f"Window types: {df['window_type'].unique().tolist()}")
+        print(f"Test subjects only (saturated runs excluded)")
         print(f"\nFormat matches: confidence/MP/merged_mp_results.csv")
         print(f"{'='*80}")
 

@@ -667,6 +667,134 @@ class MadridClusteredThresholdTradeoffAnalyzerTestOnly:
 
         return per_seizure_results
 
+    def get_subject_level_metrics(self, threshold: float, use_training_set: bool = False) -> Dict[str, Dict[str, Any]]:
+        """
+        Get subject-level aggregated metrics for a specific threshold.
+
+        Args:
+            threshold: Anomaly score threshold to use
+            use_training_set: If True, evaluate on training set. If False, evaluate on test set.
+
+        Returns:
+            Dictionary mapping subject_id to metrics:
+            {
+                'sub-098': {
+                    'sensitivity': 0.85,
+                    'false_alarms_per_hour': 2.3,
+                    'HMS': 84.08,
+                    'total_seizures': 10,
+                    'detected_seizures': 8,
+                    'total_false_positives': 12,
+                    'total_duration_hours': 5.2
+                },
+                ...
+            }
+        """
+        all_json_files = list(self.results_dir.glob("madrid_windowed_results_*.json"))
+
+        # Filter for appropriate dataset
+        if use_training_set:
+            json_files = [f for f in all_json_files if self.is_training_file(f.name)]
+        else:
+            json_files = [f for f in all_json_files if self.is_test_file(f.name)]
+
+        # Patient-specific tracking
+        patient_stats = {}
+
+        for json_file in json_files:
+            try:
+                result_data = self.load_result_file(json_file)
+                if result_data is None:
+                    continue
+
+                # Extract basic info
+                input_data = result_data.get('input_data', {})
+                validation_data = result_data.get('validation_data', {})
+
+                subject_id = input_data.get('subject_id', 'unknown')
+                run_id = input_data.get('run_id', 'unknown')
+
+                # Skip saturated test runs (only when evaluating test set)
+                if not use_training_set and self.is_saturated_run(subject_id, run_id):
+                    continue
+
+                # Initialize patient stats if not exists
+                if subject_id not in patient_stats:
+                    patient_stats[subject_id] = {
+                        'total_seizures': 0,
+                        'detected_seizures': 0,
+                        'total_false_positives': 0,
+                        'total_duration_hours': 0.0
+                    }
+
+                # Get signal duration
+                signal_metadata = input_data.get('signal_metadata', {})
+                file_duration_hours = signal_metadata.get('total_duration_seconds', 0) / 3600.0
+                patient_stats[subject_id]['total_duration_hours'] += file_duration_hours
+
+                # Get anomalies at file level (filtered by threshold)
+                all_anomalies = self.extract_file_level_anomalies(result_data, threshold)
+
+                # Get seizures
+                ground_truth = validation_data.get('ground_truth', {})
+                seizure_windows = ground_truth.get('seizure_windows', [])
+                individual_seizures = self.group_seizures_by_time(seizure_windows)
+                patient_stats[subject_id]['total_seizures'] += len(individual_seizures)
+
+                # Apply time_600s clustering
+                clusters = self.time_based_clustering(all_anomalies, self.clustering_time_threshold)
+                representatives = [self.select_cluster_representative(cluster) for cluster in clusters]
+
+                # Calculate TP/FP based on extended time overlap for representatives
+                file_detected_seizures = set()
+                file_false_positives = 0
+
+                for rep in representatives:
+                    rep_time = rep['absolute_time']
+                    is_true_positive = False
+
+                    # Check if representative overlaps with any extended seizure window
+                    for i, seizure in enumerate(individual_seizures):
+                        if seizure['extended_start_time'] <= rep_time <= seizure['extended_end_time']:
+                            is_true_positive = True
+                            file_detected_seizures.add(i)
+                            break
+
+                    if not is_true_positive:
+                        file_false_positives += 1
+
+                # Update patient-specific stats
+                patient_stats[subject_id]['detected_seizures'] += len(file_detected_seizures)
+                patient_stats[subject_id]['total_false_positives'] += file_false_positives
+
+            except Exception as e:
+                print(f"Error processing {json_file} for subject-level metrics: {e}")
+                continue
+
+        # Calculate per-subject metrics
+        subject_metrics = {}
+        for subject_id, stats in patient_stats.items():
+            total_seizures = stats['total_seizures']
+            detected_seizures = stats['detected_seizures']
+            false_positives = stats['total_false_positives']
+            duration_hours = stats['total_duration_hours']
+
+            sensitivity = detected_seizures / total_seizures if total_seizures > 0 else 0.0
+            far = false_positives / duration_hours if duration_hours > 0 else 0.0
+            hms = (sensitivity * 100) - (0.4 * far)
+
+            subject_metrics[subject_id] = {
+                'sensitivity': sensitivity,
+                'false_alarms_per_hour': far,
+                'HMS': hms,
+                'total_seizures': total_seizures,
+                'detected_seizures': detected_seizures,
+                'total_false_positives': false_positives,
+                'total_duration_hours': duration_hours
+            }
+
+        return subject_metrics
+
     def run_threshold_analysis(self, thresholds: List[float], use_training_set: bool = False) -> List[Dict[str, Any]]:
         """
         Run clustered metrics calculation for each threshold.
@@ -1113,6 +1241,51 @@ class MadridClusteredThresholdTradeoffAnalyzerTestOnly:
                 print(f"  Configurations: {per_seizure_df['config'].unique().tolist()}")
                 print(f"  Unique subjects: {per_seizure_df['subject'].nunique()}")
                 print(f"  Total seizures: {per_seizure_df.groupby('config')['seizure_idx'].count().to_dict()}")
+
+        # Step 8.6: Generate subject-level metrics CSV for best configs
+        print(f"\n{'='*60}")
+        print("STEP 8.6: Generating subject-level metrics CSV for best configs")
+        print(f"{'='*60}")
+
+        if test_results:
+            all_subject_metrics = []
+
+            for config_name, config_result in best_configs.items():
+                threshold = config_result['threshold']
+                print(f"Generating subject-level metrics for {config_name} (threshold={threshold:.6f})...")
+
+                subject_metrics = self.get_subject_level_metrics(threshold, use_training_set=False)
+
+                # Add config and window_type to each subject's metrics
+                for subject_id, metrics in subject_metrics.items():
+                    all_subject_metrics.append({
+                        'subject': subject_id,
+                        'sensitivity': metrics['sensitivity'],
+                        'false_alarms_per_hour': metrics['false_alarms_per_hour'],
+                        'HMS': metrics['HMS'],
+                        'config': config_name,
+                        'window_type': 'no_window'
+                    })
+
+            # Save subject-level CSV
+            if all_subject_metrics:
+                import pandas as pd
+                subject_df = pd.DataFrame(all_subject_metrics)
+
+                # Ensure column order
+                subject_df = subject_df[['subject', 'sensitivity', 'false_alarms_per_hour', 'HMS', 'config', 'window_type']]
+
+                # Sort by subject and config
+                subject_df = subject_df.sort_values(['subject', 'config'])
+
+                subject_csv_path = self.output_dir / f"madrid_subject_level_metrics_no_window_{timestamp}.csv"
+                subject_df.to_csv(subject_csv_path, index=False)
+
+                print(f"Subject-level metrics CSV saved to: {subject_csv_path}")
+                print(f"  Total records: {len(subject_df)}")
+                print(f"  Configurations: {subject_df['config'].unique().tolist()}")
+                print(f"  Unique subjects: {subject_df['subject'].nunique()}")
+                print(f"  Format: subject, sensitivity, false_alarms_per_hour, HMS, config, window_type")
 
         # Step 9: Print comprehensive summary
         print(f"\n{'='*80}")
