@@ -35,6 +35,66 @@ def find_files_with_prefix(directory: str, prefix: str) -> List[Path]:
     dir_path = Path(directory)
     return [file for file in dir_path.iterdir() if file.is_file() and file.name.startswith(prefix)]
 
+from typing import List, Tuple, Dict, Any, Optional
+import os
+import pickle
+import numpy as np
+import pandas as pd
+from collections import defaultdict
+
+def extract_seizures_from_labels(labels: np.ndarray) -> List[Tuple[int, int]]:
+    """
+    Extract contiguous seizure intervals from a binary label sequence.
+
+    Args:
+        labels (np.ndarray): 1D array of labels where seizure samples are marked as 1 (or truthy).
+
+    Returns:
+        List[Tuple[int, int]]: List of (start_index, end_index) pairs, inclusive start and inclusive end.
+    """
+    labels = np.asarray(labels).flatten().astype(int)
+    seizures: List[Tuple[int, int]] = []
+    if labels.size == 0:
+        return seizures
+
+    in_seizure = False
+    start_idx = 0
+    for i, val in enumerate(labels):
+        if not in_seizure and val == 1:
+            in_seizure = True
+            start_idx = i
+        elif in_seizure and val == 0:
+            # close current seizure at i-1 (inclusive)
+            seizures.append((start_idx, i - 1))
+            in_seizure = False
+    # if sequence ends while inside seizure, close it
+    if in_seizure:
+        seizures.append((start_idx, len(labels) - 1))
+    return seizures
+
+def write_per_seizure_results(rows: List[Dict[str, Any]], out_path: str) -> None:
+    """
+    Append per-seizure detection rows to an Excel file. If file exists, rows are appended; otherwise a new file is created.
+
+    Args:
+        rows (List[Dict[str, Any]]): List of dict rows with keys matching columns, e.g. sub, run, seizure_index, detected.
+        out_path (str): Path to output Excel file.
+    """
+    if not rows:
+        return
+    df_new = pd.DataFrame(rows)
+    if os.path.isfile(out_path):
+        try:
+            df_existing = pd.read_excel(out_path)
+            df_out = pd.concat([df_existing, df_new], ignore_index=True)
+        except Exception:
+            # If reading fails for any reason, overwrite with new
+            df_out = df_new
+    else:
+        df_out = df_new
+    df_out.to_excel(out_path, index=False)
+
+
 def produce_mp_results(
     amount_of_annomalies_per_record: int,
     batch_size_load: int,
@@ -48,49 +108,60 @@ def produce_mp_results(
     MPs_path: str,
     recording_list_excel: str,
     verbose: bool,
-    anomaly_ratio: float = None,
-    responders: List[str] | None = None
+    anomaly_ratio: Optional[float] = None,
+    responders: Optional[List[str]] = None,
+    per_seizure_outfile: Optional[str] = None
 ) -> tuple:
     """
-    Processes matrix profiles and computes evaluation metrics.
+    Replacement produce_mp_results that additionally evaluates each seizure separately and writes per-seizure
+    detection results to an Excel file with columns: sub, run, seizure_index, detected (boolean).
+
+    The function is intended to replace the existing produce_mp_results implementation. It reuses existing helpers:
+    - MatrixProfile.get_top_k_anomaly_indices
+    - MatrixProfile.mean_of_all_consecutive_anomalies
+    - compute_sensitivity_false_alarm_rate_timing_tolerance
 
     Args:
         amount_of_annomalies_per_record (int): Default number of anomalies per record if anomaly_ratio is not used.
         batch_size_load (int): Number of files to process before reporting.
-        downsample_freq (int): Downsampling frequency.
+        downsample_freq (int): Downsampling frequency (samples/second).
         max_gap_annos_in_sec (int): Maximum allowed gap in seconds for anomalies to be grouped.
         n_cons (int): Minimum consecutive anomalies to be grouped.
         window_size_sec (int): Window size in seconds.
-        pre_thresh_sec (int): Pre threshold in seconds.
-        post_thresh_sec (int): Post threshold in seconds.
-        DIR_preprocessed (str): Directory with preprocessed files.
+        pre_thresh_sec (int): Pre detection threshold in seconds.
+        post_thresh_sec (int): Post detection threshold in seconds.
+        DIR_preprocessed (str): Directory with preprocessed files (contains label pickles).
         MPs_path (str): Path to MatrixProfile files.
-        recording_list_excel (str): Excel file with list of recordings.
+        recording_list_excel (str): Excel file with list of recordings (column "subject_run" expected).
         verbose (bool): Whether to print verbose output.
-        anomaly_ratio (float, optional): Ratio of anomalies to find based on MP length (e.g. 0.01 finds 1% anomalies). If None, use amount_of_annomalies_per_record.
-        responders (List[str], optional): List of responders defined by (subject, run). Only these will contribute to the responder metrics.
+        anomaly_ratio (Optional[float]): Ratio of anomalies to find based on MP length (e.g. 0.01 finds 1% anomalies).
+        responders (Optional[List[str]]): List of responders (subjects) for responder metrics.
+        per_seizure_outfile (Optional[str]): Optional path for per-seizure Excel output. If None, defaults to MPs_path/per_seizure_detection_results.xlsx
     Returns:
         tuple: (loaded_recs, loaded_recs_resp, sensitivity, false_alarms_per_hour, resp_sensitivity, resp_false_alarms_per_hour, overview)
     """
+    
+    # basic validation
     if not recording_list_excel:
         return 0, 0, 0.0, 0.0, 0.0, 0.0, {}
 
+    if per_seizure_outfile is None:
+        per_seizure_outfile = os.path.join(MPs_path if MPs_path else ".", "per_seizure_detection_results.xlsx")
+
+    # read recording list; expects column "subject_run" formatted "sub_run"
     df = pd.read_excel(recording_list_excel)
     recs = [tuple(sr.split("_")) for sr in df["subject_run"].tolist()]
 
-    mps_list = []
-    label_list = []
+    # prepare accumulators for aggregated metrics
+    tp_list = []
+    fp_list = []
+    hours_list = []
+    total_events_list = []
 
     resp_tp_list = []
     resp_fp_list = []
     resp_total_events_list = []
     resp_hours_list = []
-
-    tp_list = []
-    fp_list = []
-
-    hours_list = []
-    total_events_list = []
 
     grouped_recs = defaultdict(list)
     for subject, run in recs:
@@ -100,28 +171,30 @@ def produce_mp_results(
     loaded_recs = 0
     loaded_recs_resp = 0
 
+    per_seizure_rows_buffer: List[Dict[str, Any]] = []
+
+    # process each subject/run
     for subject, runs in grouped_recs.items():
         true_positives_sub = []
         false_positives_sub = []
         hours_sub = []
         total_events_sub = []
-        loaded_recs_resp_sub = 0
 
         for run in runs:
             mp_filename = f"mp_{subject}_{run}.pkl"
             mp_path = os.path.join(MPs_path, mp_filename)
             preprocessed_path = os.path.join(DIR_preprocessed, mp_filename[3:-4] + "_preprocessed.pkl")
+
             try:
                 with open(mp_path, "rb") as f:
                     mp_loaded = pickle.load(f)[:, 0].reshape(-1, 1)
-                    mps_list.append(mp_loaded)
                 with open(preprocessed_path, "rb") as g:
-                    label_list.append(pickle.load(g)["channels"][0]["labels"][0])
+                    preproc = pickle.load(g)
+                    # assume labels located at preproc["channels"][0]["labels"][0] as in previous code
+                    labels = preproc["channels"][0]["labels"][0]
             except Exception as e:
                 if verbose:
-                    print(f"Error loading {mp_filename}: {e}")
-                mps_list = []
-                label_list = []
+                    print(f"Skipping {subject}_{run} due to load error: {e}")
                 continue
 
             mp_length = len(mp_loaded)
@@ -132,79 +205,88 @@ def produce_mp_results(
 
             if mp_length < k:
                 if verbose:
-                    print(f"{subject=}, {run=}, {mp_length=}, {k=}")
-                mps_list = []
-                label_list = []
+                    print(f"Skipping {subject}_{run}: mp_length {mp_length} < k {k}")
                 continue
 
-            anomaly_indices = [
-                MatrixProfile.get_top_k_anomaly_indices(matrix_profile=mp.flatten(), k=k)
-                for mp in mps_list
-            ]
-            anomaly_indices_cons = [
-                MatrixProfile.mean_of_all_consecutive_anomalies(
-                    indices=annos, n=n_cons, max_gap=downsample_freq * max_gap_annos_in_sec
-                )
-                for annos in anomaly_indices
-            ]
-            suffix = ""
-            if (pre_thresh_sec and pre_thresh_sec > 0) or (post_thresh_sec and post_thresh_sec > 0):
-                suffix = "_detection_window"
-            rf_xlsx_path = f"/home/jhagenbe_sw/ASIM/ecg-seizure-detection/MatrixProfile/rf_train_data/rf_train_samples{suffix}.xlsx"
-
-            if False: #Set to True to create RF samples. NOTE: This can create a very large file - do not use in grid search
-                append_rf_samples_to_xlsx(
-                    mp=mp_loaded,
-                    labels=label_list[0],
-                    anomaly_indices=anomaly_indices_cons[0],
-                    subject=subject,
-                    run=run,
-                    downsample_freq=downsample_freq,
-                    out_path=rf_xlsx_path
-                )
-
-
-            true_positives, false_positives, hours, total_events = compute_sensitivity_false_alarm_rate_timing_tolerance(
-                label_sequences=label_list, detection_indices=anomaly_indices_cons,
-                lower=pre_thresh_sec, upper=post_thresh_sec, frequency=downsample_freq
+            # get anomaly indices and aggregate consecutive detections
+            anomaly_indices = MatrixProfile.get_top_k_anomaly_indices(matrix_profile=mp_loaded.flatten(), k=k)
+            anomaly_indices_cons = MatrixProfile.mean_of_all_consecutive_anomalies(
+                indices=anomaly_indices, n=n_cons, max_gap=downsample_freq * max_gap_annos_in_sec
             )
+
+            # compute overall metrics using existing helper
+            true_positives, false_positives, hours, total_events = compute_sensitivity_false_alarm_rate_timing_tolerance(
+                label_sequences=[labels],
+                detection_indices=[anomaly_indices_cons],
+                lower=pre_thresh_sec,
+                upper=post_thresh_sec,
+                frequency=downsample_freq
+            )
+
             true_positives_sub.append(true_positives)
             false_positives_sub.append(false_positives)
             hours_sub.append(hours)
             total_events_sub.append(total_events)
             loaded_recs += 1
-            loaded_recs_resp_sub += 1
+
+            # --- per-seizure evaluation ---
+            seizures = extract_seizures_from_labels(np.asarray(labels))
+            pre_thresh_samples = int(pre_thresh_sec * downsample_freq) if pre_thresh_sec is not None else 0
+            post_thresh_samples = int(post_thresh_sec * downsample_freq) if post_thresh_sec is not None else 0
+
+            detection_indices_array = np.asarray(anomaly_indices_cons).flatten() if anomaly_indices_cons is not None else np.array([], dtype=int)
+
+            for s_idx, (s_start, s_end) in enumerate(seizures, start=1):
+                window_start = max(0, s_start - pre_thresh_samples)
+                window_end = min(len(labels) - 1, s_end + post_thresh_samples)
+                detected = bool(np.any((detection_indices_array >= window_start) & (detection_indices_array <= window_end)))
+                per_seizure_rows_buffer.append({
+                    "sub": subject,
+                    "run": run,
+                    "seizure_index": s_idx,
+                    "detected": bool(detected)
+                })
+
+            try:
+                write_per_seizure_results(per_seizure_rows_buffer, per_seizure_outfile)
+                per_seizure_rows_buffer = []
+            except Exception as e:
+                if verbose:
+                    print(f"Failed to write per-seizure results for buffer: {e}")
 
             if loaded_recs % batch_size_load == 0 and verbose:
-                print(loaded_recs)
-                if not len(label_list) == len(mps_list):
-                    print(f"len(label_list) not == len(mps_list)")
-            mps_list = []
-            label_list = []
+                print(f"Processed {loaded_recs} records (last: {subject}_{run})")
 
+        # subject-level aggregation for responders if needed
         if responders and subject in responders:
             resp_tp_list.append(sum(true_positives_sub))
             resp_fp_list.append(sum(false_positives_sub))
             resp_total_events_list.append(sum(total_events_sub))
             resp_hours_list.append(sum(hours_sub))
             loaded_recs_resp += sum(total_events_sub)
-        
-
-
 
         tp_list.append(sum(true_positives_sub))
         fp_list.append(sum(false_positives_sub))
         hours_list.append(sum(hours_sub))
         total_events_list.append(sum(total_events_sub))
 
-    # print("Final metrics calc:")
+    # final flush of per-seizure buffer
+    if per_seizure_rows_buffer:
+        try:
+            write_per_seizure_results(per_seizure_rows_buffer, per_seizure_outfile)
+        except Exception as e:
+            if verbose:
+                print(f"Failed final write of per-seizure results: {e}")
+
+    # compute aggregated metrics
     sensitivity = 0.0 if sum(total_events_list) == 0 else sum(tp_list) / sum(total_events_list)
     resp_sensitivity = 0.0 if sum(resp_total_events_list) == 0 else sum(resp_tp_list) / sum(resp_total_events_list)
     resp_false_alarms_per_hour = 0.0 if sum(resp_hours_list) == 0 else sum(resp_fp_list) / sum(resp_hours_list)
     false_alarms_per_hour = 0.0 if sum(hours_list) == 0 else sum(fp_list) / sum(hours_list)
 
-    overview = {"# TP": sum(tp_list), "# FP": sum(fp_list), "# Total seizures": sum(total_events_list)}
+    overview = {"# TP": int(sum(tp_list)), "# FP": int(sum(fp_list)), "# Total seizures": int(sum(total_events_list))}
     return loaded_recs, loaded_recs_resp, sensitivity, false_alarms_per_hour, resp_sensitivity, resp_false_alarms_per_hour, overview
+
 
 import pickle
 import numpy as np
@@ -355,7 +437,9 @@ if __name__ == "__main__":
         "post_thresh_sec": [0],
         "verbose": [False],
         "DIR_preprocessed": [f"/home/swolf/asim_shared/preprocessed_data/downsample_freq={downsample_freq},no_windows"],
-        "MPs_path": [f"/home/swolf/asim_shared/results/MP/downsample_freq={downsample_freq},no_windows/seq_len{window_size_sec}sec"]
+        "MPs_path": [f"/home/swolf/asim_shared/results/MP/downsample_freq={downsample_freq},no_windows/seq_len{window_size_sec}sec"],
+        "per_seizure_outfile" : ["seizure_analysis_FAR & no SDW.xlsx"]
+
     }
     # Sensitivity & no SDW:
     parameter_grid_relative_2 = {
@@ -370,7 +454,9 @@ if __name__ == "__main__":
         "post_thresh_sec": [0],
         "verbose": [False],
         "DIR_preprocessed": [f"/home/swolf/asim_shared/preprocessed_data/downsample_freq={downsample_freq},no_windows"],
-        "MPs_path": [f"/home/swolf/asim_shared/results/MP/downsample_freq={downsample_freq},no_windows/seq_len{window_size_sec}sec"]
+        "MPs_path": [f"/home/swolf/asim_shared/results/MP/downsample_freq={downsample_freq},no_windows/seq_len{window_size_sec}sec"],
+        "per_seizure_outfile" : ["seizure_analysis_Sensitivity & no SDW.xlsx"]
+
     }
     
     # HMC & no SDW:
@@ -386,7 +472,8 @@ if __name__ == "__main__":
         "post_thresh_sec": [0],
         "verbose": [False],
         "DIR_preprocessed": [f"/home/swolf/asim_shared/preprocessed_data/downsample_freq={downsample_freq},no_windows"],
-        "MPs_path": [f"/home/swolf/asim_shared/results/MP/downsample_freq={downsample_freq},no_windows/seq_len{window_size_sec}sec"]
+        "MPs_path": [f"/home/swolf/asim_shared/results/MP/downsample_freq={downsample_freq},no_windows/seq_len{window_size_sec}sec"],
+        "per_seizure_outfile" : ["seizure_analysis_HMC & no SDW.xlsx"]
     }
     
     # FAR & SDW:
@@ -403,7 +490,9 @@ if __name__ == "__main__":
         "post_thresh_sec": [60 * 3],
         "verbose": [False],
         "DIR_preprocessed": [f"/home/swolf/asim_shared/preprocessed_data/downsample_freq={downsample_freq},no_windows"],
-        "MPs_path": [f"/home/swolf/asim_shared/results/MP/downsample_freq={downsample_freq},no_windows/seq_len{window_size_sec}sec"]
+        "MPs_path": [f"/home/swolf/asim_shared/results/MP/downsample_freq={downsample_freq},no_windows/seq_len{window_size_sec}sec"],
+        "per_seizure_outfile" : ["seizure_analysis_FAR & SDW.xlsx"]
+
     }
 
     
@@ -420,7 +509,8 @@ if __name__ == "__main__":
         "post_thresh_sec": [60 * 3],
         "verbose": [False],
         "DIR_preprocessed": [f"/home/swolf/asim_shared/preprocessed_data/downsample_freq={downsample_freq},no_windows"],
-        "MPs_path": [f"/home/swolf/asim_shared/results/MP/downsample_freq={downsample_freq},no_windows/seq_len{window_size_sec}sec"]
+        "MPs_path": [f"/home/swolf/asim_shared/results/MP/downsample_freq={downsample_freq},no_windows/seq_len{window_size_sec}sec"],
+        "per_seizure_outfile" : ["seizure_analysis_Sensitivity & SDW.xlsx"]
     }
     
     # HMC & SDW:
@@ -436,7 +526,8 @@ if __name__ == "__main__":
         "post_thresh_sec": [60 * 3],
         "verbose": [False],
         "DIR_preprocessed": [f"/home/swolf/asim_shared/preprocessed_data/downsample_freq={downsample_freq},no_windows"],
-        "MPs_path": [f"/home/swolf/asim_shared/results/MP/downsample_freq={downsample_freq},no_windows/seq_len{window_size_sec}sec"]
+        "MPs_path": [f"/home/swolf/asim_shared/results/MP/downsample_freq={downsample_freq},no_windows/seq_len{window_size_sec}sec"],
+        "per_seizure_outfile" : ["seizure_analysis_HMC & SDW.xlsx"]
     }
 
     from concurrent.futures import ThreadPoolExecutor
