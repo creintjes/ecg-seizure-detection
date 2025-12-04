@@ -73,3 +73,8 @@ madrid_trailing_window_analyzer.log
 reprocess_incomplete_windows.log
 reverse/results_batch_no_window
 reverse/results_batch
+**/plots
+reverse/results_batch_window_075_FAR_final
+reverse/results_batch_window_065_Sens_final
+reverse/results_batch_window_07_HMS_final
+reverse/counting

@@ -665,7 +665,7 @@ def main():
     parser.add_argument('--no_plots', action='store_true', help='Skip individual plot generation')
     parser.add_argument('--config', type=str, required=True, help='Configuration name (e.g., "baseline", "optimized")')
     parser.add_argument('--window_type', type=str, required=True, help='Window type (e.g., "window", "no_window")')
-    parser.add_argument('--workers', type=int, default=4, help='Number of parallel workers (default: 4)')
+    parser.add_argument('--workers', type=int, default=5, help='Number of parallel workers (default: 5)')
 
     args = parser.parse_args()
 

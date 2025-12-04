@@ -1,0 +1,79 @@
+================================================================================
+TIMEVQVAE-AD BATCH EVALUATION SUMMARY REPORT (PARALLEL)
+================================================================================
+Generated: 2025-12-04 16:10:44
+Total files processed: 28
+
+--------------------------------------------------------------------------------
+DATASET OVERVIEW
+--------------------------------------------------------------------------------
+Total recording duration: 2696.41 hours
+Mean recording duration: 96.30 hours
+Total samples: 77,656,704
+Total true anomaly samples: 662,072
+Mean true anomaly percentage: 1.847%
+Total true events: 148
+Files with anomalies: 27/28
+
+--------------------------------------------------------------------------------
+THRESHOLD INFORMATION
+--------------------------------------------------------------------------------
+Scaling factor used: 0.7
+Mean original threshold: 436.52
+Mean scaled threshold: 305.56
+Mean max score: 369.78
+Files with max_score > threshold: 28/28
+
+--------------------------------------------------------------------------------
+BASELINE PERFORMANCE (No Clustering)
+--------------------------------------------------------------------------------
+Mean Sensitivity: 0.929 (±0.224)
+Median Sensitivity: 1.000
+Mean FAR: 43.58 events/hour (±12.62)
+Median FAR: 39.98 events/hour
+Mean IoU: 0.003
+Total TP: 146
+Total FN: 2
+Total FP: 117324
+Mean predicted events per file: 4228.4
+
+--------------------------------------------------------------------------------
+CLUSTERED PERFORMANCE (time_60s)
+--------------------------------------------------------------------------------
+Mean Sensitivity: 0.929 (±0.224)
+Median Sensitivity: 1.000
+Mean FAR: 15.25 events/hour (±2.36)
+Median FAR: 15.66 events/hour
+Mean IoU: 0.007
+Total TP: 146
+Total FN: 2
+Total FP: 41166
+Mean clusters per file: 1486.1
+Mean FAR reduction: 63.6%
+
+--------------------------------------------------------------------------------
+CLUSTERING IMPACT
+--------------------------------------------------------------------------------
+Sensitivity change: +0.000 (+0.0%)
+FAR change: -28.34 events/hour (-65.0%)
+Mean FP reduction: 2719.9 events
+
+--------------------------------------------------------------------------------
+TOP 5 FILES BY SENSITIVITY (Baseline)
+--------------------------------------------------------------------------------
+  098: Sens=1.000, FAR=41.46/h
+  100: Sens=1.000, FAR=36.63/h
+  101: Sens=1.000, FAR=51.26/h
+  102: Sens=1.000, FAR=38.18/h
+  103: Sens=1.000, FAR=42.70/h
+
+--------------------------------------------------------------------------------
+BOTTOM 5 FILES BY FAR (Baseline - Best)
+--------------------------------------------------------------------------------
+  117: Sens=1.000, FAR=22.17/h
+  110: Sens=1.000, FAR=25.51/h
+  099: Sens=0.000, FAR=26.48/h
+  120: Sens=1.000, FAR=31.20/h
+  123: Sens=1.000, FAR=32.48/h
+
+================================================================================
