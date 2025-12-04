@@ -264,12 +264,78 @@ class MadridSubjectMetricsCreator:
 
         return subject_results
 
+    def evaluate_threshold_global(self, results: List[Dict], threshold: float,
+                                  clustering_time: float,
+                                  use_extended_window: bool = False) -> Dict:
+        """
+        Evaluate detection performance globally (file-level) for a specific threshold.
+        Same as process_madrid_results.py approach.
+
+        Returns:
+            Dictionary with global performance metrics
+        """
+        total_seizures = 0
+        detected_seizures = 0
+        total_false_positives = 0
+        total_duration = 0.0
+
+        for result in results:
+            # Get recording duration
+            duration = result['data']['input_data']['signal_metadata']['total_duration_seconds']
+            total_duration += duration
+
+            # Extract seizures and anomalies
+            seizures = self.extract_seizures(result)
+            all_anomalies = self.extract_anomalies(result)
+
+            # Filter anomalies by threshold
+            filtered_anomalies = [a for a in all_anomalies if a['score'] >= threshold]
+
+            # Cluster anomalies
+            clusters = self.cluster_anomalies(filtered_anomalies, clustering_time)
+
+            # Check each seizure
+            for seizure in seizures:
+                total_seizures += 1
+                detected = self.check_seizure_detection(seizure, clusters, use_extended_window)
+
+                if detected:
+                    detected_seizures += 1
+
+            # Count false positives (clusters not matching any seizure)
+            for cluster in clusters:
+                is_false_positive = True
+                for seizure in seizures:
+                    if self.check_seizure_detection(seizure, [cluster], use_extended_window):
+                        is_false_positive = False
+                        break
+
+                if is_false_positive:
+                    total_false_positives += 1
+
+        # Calculate global metrics
+        sensitivity = detected_seizures / total_seizures if total_seizures > 0 else 0.0
+        total_duration_hours = total_duration / 3600.0
+        far = total_false_positives / total_duration_hours if total_duration_hours > 0 else 0.0
+        hms = (sensitivity * 100) - (0.4 * far)
+
+        return {
+            'threshold': threshold,
+            'sensitivity': sensitivity,
+            'far': far,
+            'hms': hms,
+            'detected_seizures': detected_seizures,
+            'total_seizures': total_seizures,
+            'total_false_positives': total_false_positives
+        }
+
     def find_best_threshold(self, results: List[Dict],
                            use_extended_window: bool = False,
                            optimization_target: str = 'sensitivity',
                            n_thresholds: int = 100) -> Tuple[float, Dict[str, Dict]]:
         """
-        Find best threshold for a given optimization target.
+        Find best threshold based on GLOBAL metrics (like process_madrid_results.py).
+        Then calculate per-subject metrics with that threshold.
 
         Args:
             results: List of raw result dictionaries
@@ -286,47 +352,39 @@ class MadridSubjectMetricsCreator:
         # Test thresholds from 0.0 to 1.0
         thresholds = np.linspace(0.0, 1.0, n_thresholds)
 
-        best_threshold = None
-        best_score = -float('inf') if optimization_target != 'far' else float('inf')
-        best_subject_metrics = None
-
+        evaluations = []
         for threshold in thresholds:
-            subject_metrics = self.evaluate_threshold_per_subject(
+            eval_result = self.evaluate_threshold_global(
                 results, threshold, clustering_time, use_extended_window
             )
+            evaluations.append(eval_result)
 
-            # Calculate aggregate metric for optimization
-            if optimization_target == 'sensitivity':
-                # Maximize average sensitivity
-                avg_sensitivity = np.mean([m['sensitivity'] for m in subject_metrics.values()])
-                score = avg_sensitivity
-                is_better = score > best_score
-
-            elif optimization_target == 'far':
-                # Minimize average FAR (only if sensitivity > 0)
-                subjects_with_detection = [m for m in subject_metrics.values() if m['sensitivity'] > 0]
-                if subjects_with_detection:
-                    avg_far = np.mean([m['false_alarms_per_hour'] for m in subjects_with_detection])
-                    score = avg_far
-                    is_better = score < best_score
-                else:
-                    is_better = False
-
-            elif optimization_target == 'hms':
-                # Maximize average HMS
-                avg_hms = np.mean([m['HMS'] for m in subject_metrics.values()])
-                score = avg_hms
-                is_better = score > best_score
-
+        # Find best threshold based on global metrics
+        if optimization_target == 'sensitivity':
+            # Maximize global sensitivity
+            best_eval = max(evaluations, key=lambda x: x['sensitivity'])
+        elif optimization_target == 'far':
+            # Minimize global FAR (only if sensitivity > 0)
+            valid_evals = [e for e in evaluations if e['sensitivity'] > 0]
+            if valid_evals:
+                best_eval = min(valid_evals, key=lambda x: x['far'])
             else:
-                raise ValueError(f"Invalid optimization_target: {optimization_target}")
+                # Fallback to highest sensitivity if no valid FAR
+                best_eval = max(evaluations, key=lambda x: x['sensitivity'])
+        elif optimization_target == 'hms':
+            # Maximize global HMS
+            best_eval = max(evaluations, key=lambda x: x['hms'])
+        else:
+            raise ValueError(f"Invalid optimization_target: {optimization_target}")
 
-            if is_better:
-                best_score = score
-                best_threshold = threshold
-                best_subject_metrics = subject_metrics
+        best_threshold = best_eval['threshold']
 
-        return best_threshold, best_subject_metrics
+        # Now calculate per-subject metrics with the best threshold
+        subject_metrics = self.evaluate_threshold_per_subject(
+            results, best_threshold, clustering_time, use_extended_window
+        )
+
+        return best_threshold, subject_metrics
 
     def create_subject_metrics_csv(self, output_file: Path, n_thresholds: int = 100):
         """
@@ -354,7 +412,7 @@ class MadridSubjectMetricsCreator:
 
             # Find best configurations for each optimization target
             for config_name in ['Sensitivity', 'FAR', 'HMS']:
-                print(f"\nFinding best threshold for {config_name}...")
+                print(f"\nFinding best threshold for {config_name} (GLOBAL optimization)...")
 
                 best_threshold, subject_metrics = self.find_best_threshold(
                     results,
@@ -363,10 +421,18 @@ class MadridSubjectMetricsCreator:
                     n_thresholds=n_thresholds
                 )
 
+                # Calculate global metrics at this threshold for display
+                global_eval = self.evaluate_threshold_global(
+                    results, best_threshold, clustering_time, use_extended_window
+                )
+
                 print(f"  Best threshold: {best_threshold:.4f}")
-                print(f"  Avg sensitivity: {np.mean([m['sensitivity'] for m in subject_metrics.values()]):.4f}")
-                print(f"  Avg FAR: {np.mean([m['false_alarms_per_hour'] for m in subject_metrics.values()]):.4f}")
-                print(f"  Avg HMS: {np.mean([m['HMS'] for m in subject_metrics.values()]):.4f}")
+                print(f"  Global sensitivity: {global_eval['sensitivity']:.4f} "
+                      f"({global_eval['detected_seizures']}/{global_eval['total_seizures']} seizures)")
+                print(f"  Global FAR: {global_eval['far']:.4f} events/hour")
+                print(f"  Global HMS: {global_eval['hms']:.4f}")
+                print(f"  Per-subject avg sensitivity: {np.mean([m['sensitivity'] for m in subject_metrics.values()]):.4f}")
+                print(f"  Per-subject avg FAR: {np.mean([m['false_alarms_per_hour'] for m in subject_metrics.values()]):.4f}")
 
                 # Add to results
                 for subject, metrics in subject_metrics.items():
